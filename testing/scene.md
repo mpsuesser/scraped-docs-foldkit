@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/scene
 title: "Scene"
 description: "Test features through the rendered view with Scene. Click buttons, type into inputs, and assert on the HTML using accessible locators."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Scene

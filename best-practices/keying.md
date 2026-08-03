@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/keying
 title: "Keying"
 description: "Key branch points to prevent stale DOM when views switch between different trees."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Keying

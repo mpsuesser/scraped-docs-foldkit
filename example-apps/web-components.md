@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/web-components
 title: "Web Components"
 description: "QR code designer wiring two real third-party web components into Foldkit with CustomElement.define. A hex color picker from vanilla-colorful emits color-changed CustomEvents that flow back as Messages, and the sl-qr-code element from Shoelace accepts typed properties. The picker and the QR never touch each other directly; they share state through the Model."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

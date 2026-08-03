@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/freeze-model
 title: "Freeze Model"
 description: "Catch accidental Model mutations at the write site in development."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Freeze Model

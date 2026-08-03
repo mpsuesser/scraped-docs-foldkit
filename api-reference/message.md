@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/message
 title: "Message"
 description: "API documentation for the Message module."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Message

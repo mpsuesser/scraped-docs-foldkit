@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/radio-group
 title: "Radio Group"
 description: "Accessible radio button group with keyboard navigation."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Radio Group

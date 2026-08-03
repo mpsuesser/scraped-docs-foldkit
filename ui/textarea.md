@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/textarea
 title: "Textarea"
 description: "A thin wrapper around the native textarea with ARIA linking and styling hooks."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Textarea

@@ -2,13 +2,11 @@
 url: https://foldkit.dev/example-apps/api-cache
 title: "API Cache"
 description: "Query caching without a query client. Demonstrates stale-while-revalidate, request deduplication, invalidation, and interval refetching."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
-[All Examples](https://foldkit.dev/example-apps)
-
-# API Cache
+## API Cache
 
 Query caching without a query client. Demonstrates stale-while-revalidate, request deduplication, invalidation, and interval refetching.
 
@@ -18,11 +16,13 @@ Subscriptions
 
 UI Components
 
-[Launch Playground](https://foldkit.dev/playground/api-cache)
-
 [View source on GitHub](https://github.com/foldkit/foldkit/tree/main/examples/api-cache/src)
 
 /
+
+<iframe aria-label="API Cache example running live" src="https://foldkit.dev/example-apps-embed/api-cache/index.html?embedded"></iframe>
+
+#### src/main.ts
 
 ```
 import {
@@ -638,12 +638,11 @@ const postDetailCard = (
     [h.Class('bg-white rounded-xl shadow p-6 flex flex-col gap-3')],
     [
       h.h2([h.Class('text-2xl font-bold text-slate-900')], [detail.title]),
-      h.p([h.Class('text-sm text-slate-500')], [`By ${detail.author}`]),
       h.p([h.Class('text-slate-700 leading-relaxed')], [detail.body]),
       h.p(
         [h.Class('text-xs text-slate-400')],
         [
-          `Fetched at ${formatFetchedAt(fetchedAt)}. Future visits render instantly from the Model.`,
+          \`Fetched at ${formatFetchedAt(fetchedAt)}. Future visits render instantly from the Model.\`,
         ],
       ),
     ],
@@ -716,15 +715,15 @@ const statsCards = (
       h.div(
         [h.Class('grid grid-cols-3 gap-4')],
         [
-          statCard('Active users', `${stats.activeUsers}`, h),
-          statCard('Requests per second', `${stats.requestsPerSecond}`, h),
-          statCard('Cache hit rate', `${stats.cacheHitRatePercent}%`, h),
+          statCard('Active users', \`${stats.activeUsers}\`, h),
+          statCard('Requests per second', \`${stats.requestsPerSecond}\`, h),
+          statCard('Cache hit rate', \`${stats.cacheHitRatePercent}%\`, h),
         ],
       ),
       h.div(
         [h.Class('flex items-center gap-3 text-sm text-slate-500')],
         [
-          h.span([], [`Updated at ${formatFetchedAt(fetchedAt)}`]),
+          h.span([], [\`Updated at ${formatFetchedAt(fetchedAt)}\`]),
           ...(isRefreshing
             ? [
                 h.span(

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/render
 title: "Render"
 description: "Primitives for synchronizing with the browser render cycle so DOM reads and CSS transitions land on the right frame."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Render

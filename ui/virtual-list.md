@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/virtual-list
 title: "Virtual List"
 description: "Virtualization primitive for large lists. Only items inside the viewport plus an overscan buffer are mounted; spacers above and below keep the scrollbar physically correct."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # VirtualList

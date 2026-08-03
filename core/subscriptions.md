@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/subscriptions
 title: "Subscriptions"
 description: "Declarative streams that start and stop based on Model state, with built-in helpers like Subscription.animationFrame for requestAnimationFrame-driven motion. Foldkit Subscriptions replace useEffect cleanup patterns with automatic lifecycle management."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Subscriptions

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps
 title: "Example Apps"
 description: "Working Foldkit example apps: counter, forms, routing, auth, websocket chat, and more. Each demonstrates Effect-TS and Elm Architecture patterns."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Examples

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/slow-warnings
 title: "Slow Warnings"
 description: "Per-phase performance warnings for update, view, patch, and subscription dependencies."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Slow Warnings

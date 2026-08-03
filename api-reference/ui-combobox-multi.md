@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-combobox-multi
 title: "Ui/Combobox/Multi"
 description: "API documentation for the Ui/Combobox/Multi module."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Ui/Combobox/Multi

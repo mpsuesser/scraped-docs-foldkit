@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/async-data
 title: "Async Data"
 description: "A six-state value type for asynchronously loaded data in the Model: Idle, Loading, Refreshing, Failure, Stale, and Success, with stale-while-revalidate and keep-stale-on-failure built in."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Async Data

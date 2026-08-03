@@ -2,8 +2,8 @@
 url: https://foldkit.dev/elm/foldkit-vs-elm-side-by-side
 title: "Foldkit vs Elm: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and Elm. Same architecture, different host: ports vs Commands, decoders vs Schema, and what each side gives up."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Foldkit vs Elm: Side by Side

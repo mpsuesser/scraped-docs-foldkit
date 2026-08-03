@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing
 title: "Testing"
 description: "Test Foldkit programs with Story and Scene. Story simulates the update loop. Scene tests features through the rendered view with accessible locators."
-access_date: 2026-08-03T17:27:13.509Z
-current_date: 2026-08-03T17:27:13.509Z
+access_date: 2026-08-03T18:13:14.939Z
+current_date: 2026-08-03T18:13:14.939Z
 ---
 
 # Testing
