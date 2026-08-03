@@ -2,8 +2,8 @@
 url: https://foldkit.dev/faq/why-no-jsx
 title: "Why no JSX?"
 description: "Why Foldkit uses a typed function-call DSL instead of JSX, with side-by-side comparisons of buttons, inputs, and conditional rendering."
-access_date: 2026-08-03T18:23:29.850Z
-current_date: 2026-08-03T18:23:29.850Z
+access_date: 2026-08-03T18:55:49.002Z
+current_date: 2026-08-03T18:55:49.002Z
 ---
 
 # Why no JSX?

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/shopping-cart
 title: "Shopping Cart"
 description: "E-commerce app with product listing, cart management, and checkout flow."
-access_date: 2026-08-03T18:23:29.850Z
-current_date: 2026-08-03T18:23:29.850Z
+access_date: 2026-08-03T18:55:49.002Z
+current_date: 2026-08-03T18:55:49.002Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

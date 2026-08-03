@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/http
 title: "Http"
 description: "Provide a Fetch-backed HttpClient to a Command with trace header propagation disabled by default, so browser requests stay CORS-simple instead of triggering preflights."
-access_date: 2026-08-03T18:23:29.850Z
-current_date: 2026-08-03T18:23:29.850Z
+access_date: 2026-08-03T18:55:49.002Z
+current_date: 2026-08-03T18:55:49.002Z
 ---
 
 # Http

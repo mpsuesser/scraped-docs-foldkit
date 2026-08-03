@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/state-machine
 title: "State Machine"
 description: "Checkout workflow powered by the experimental state machine module. Guards skip Shipping for digital orders, gate Place order behind a complete review, and parse promo codes into applied discounts."
-access_date: 2026-08-03T18:23:29.850Z
-current_date: 2026-08-03T18:23:29.850Z
+access_date: 2026-08-03T18:55:49.002Z
+current_date: 2026-08-03T18:55:49.002Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/preserve-scroll
 title: "Preserve Scroll"
 description: "Keep the window scroll position across Vite HMR reloads in development."
-access_date: 2026-08-03T18:23:29.850Z
-current_date: 2026-08-03T18:23:29.850Z
+access_date: 2026-08-03T18:55:49.002Z
+current_date: 2026-08-03T18:55:49.002Z
 ---
 
 # Preserve Scroll

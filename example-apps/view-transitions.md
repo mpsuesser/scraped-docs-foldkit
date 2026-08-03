@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/view-transitions
 title: "View Transitions"
 description: "Animated route changes with the View Transitions API. Direction-aware slides via transition types and a shared-element morph from gallery card to detail hero."
-access_date: 2026-08-03T18:23:29.850Z
-current_date: 2026-08-03T18:23:29.850Z
+access_date: 2026-08-03T18:55:49.002Z
+current_date: 2026-08-03T18:55:49.002Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

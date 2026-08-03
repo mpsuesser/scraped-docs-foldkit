@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/stopwatch
 title: "Stopwatch"
 description: "A stopwatch with start, stop, and reset. Demonstrates time-based subscriptions."
-access_date: 2026-08-03T18:23:29.850Z
-current_date: 2026-08-03T18:23:29.850Z
+access_date: 2026-08-03T18:55:49.002Z
+current_date: 2026-08-03T18:55:49.002Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

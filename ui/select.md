@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/select
 title: "Select"
 description: "A thin wrapper around the native select with ARIA linking and styling hooks."
-access_date: 2026-08-03T18:23:29.850Z
-current_date: 2026-08-03T18:23:29.850Z
+access_date: 2026-08-03T18:55:49.002Z
+current_date: 2026-08-03T18:55:49.002Z
 ---
 
 # Select
