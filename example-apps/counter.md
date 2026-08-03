@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/counter
 title: "Counter"
 description: "The classic counter example. Increment, decrement, and reset a number."
-access_date: 2026-08-03T18:13:14.939Z
-current_date: 2026-08-03T18:13:14.939Z
+access_date: 2026-08-03T18:23:29.850Z
+current_date: 2026-08-03T18:23:29.850Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

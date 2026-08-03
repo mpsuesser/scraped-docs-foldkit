@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/custom-element
 title: "CustomElement"
 description: "Bind native web components to Foldkit with CustomElement.define. Declare properties and events with Schema once and get a typed builder back."
-access_date: 2026-08-03T18:13:14.939Z
-current_date: 2026-08-03T18:13:14.939Z
+access_date: 2026-08-03T18:23:29.850Z
+current_date: 2026-08-03T18:23:29.850Z
 ---
 
 # CustomElement

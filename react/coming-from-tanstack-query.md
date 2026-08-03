@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/coming-from-tanstack-query
 title: "Coming from TanStack Query"
 description: "Coming from TanStack Query? Foldkit has no useQuery. AsyncData ships the six query states, with stale-while-revalidate built in, and caching, background refetch, deduplication, and invalidation stay ordinary Model state and a pure update function. Maps query status flags onto the six states and includes the latest-request-wins pattern for response races."
-access_date: 2026-08-03T18:13:14.939Z
-current_date: 2026-08-03T18:13:14.939Z
+access_date: 2026-08-03T18:23:29.850Z
+current_date: 2026-08-03T18:23:29.850Z
 ---
 
 # Coming from TanStack Query

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/file
 title: "File"
 description: "API documentation for the File module."
-access_date: 2026-08-03T18:13:14.939Z
-current_date: 2026-08-03T18:13:14.939Z
+access_date: 2026-08-03T18:23:29.850Z
+current_date: 2026-08-03T18:23:29.850Z
 ---
 
 # File

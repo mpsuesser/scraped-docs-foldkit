@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/counter-example
 title: "Counter Example"
 description: "A minimal Foldkit application explained step by step."
-access_date: 2026-08-03T18:13:14.939Z
-current_date: 2026-08-03T18:13:14.939Z
+access_date: 2026-08-03T18:23:29.850Z
+current_date: 2026-08-03T18:23:29.850Z
 ---
 
 # A Simple Counter Example

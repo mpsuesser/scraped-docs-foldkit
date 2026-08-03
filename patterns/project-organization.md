@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/project-organization
 title: "Project Organization"
 description: "How to structure a Foldkit project for maintainability."
-access_date: 2026-08-03T18:13:14.939Z
-current_date: 2026-08-03T18:13:14.939Z
+access_date: 2026-08-03T18:23:29.850Z
+current_date: 2026-08-03T18:23:29.850Z
 ---
 
 # Project Organization

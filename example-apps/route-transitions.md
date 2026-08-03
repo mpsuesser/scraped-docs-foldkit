@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/route-transitions
 title: "Route Transitions"
 description: "Live log of every navigation, narrated by the Transition helpers. Entering the gallery loads the catalog once, the stayed helper refetches a painting only when its id changes, and the exited helper saves a draft when you leave the studio."
-access_date: 2026-08-03T18:13:14.939Z
-current_date: 2026-08-03T18:13:14.939Z
+access_date: 2026-08-03T18:23:29.850Z
+current_date: 2026-08-03T18:23:29.850Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

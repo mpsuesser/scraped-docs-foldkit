@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/snake
 title: "Snake"
 description: "The classic snake game. Keyboard input, game loop, and collision detection."
-access_date: 2026-08-03T18:13:14.939Z
-current_date: 2026-08-03T18:13:14.939Z
+access_date: 2026-08-03T18:23:29.850Z
+current_date: 2026-08-03T18:23:29.850Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

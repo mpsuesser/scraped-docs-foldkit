@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/canvas
 title: "Canvas"
 description: "API documentation for the Canvas module."
-access_date: 2026-08-03T18:13:14.939Z
-current_date: 2026-08-03T18:13:14.939Z
+access_date: 2026-08-03T18:23:29.850Z
+current_date: 2026-08-03T18:23:29.850Z
 ---
 
 # Canvas
