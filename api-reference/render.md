@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/render
 title: "Render"
 description: "API documentation for the Render module."
-access_date: 2026-08-03T19:09:41.518Z
-current_date: 2026-08-03T19:09:41.518Z
+access_date: 2026-08-03T19:40:01.169Z
+current_date: 2026-08-03T19:40:01.169Z
 ---
 
 # Render

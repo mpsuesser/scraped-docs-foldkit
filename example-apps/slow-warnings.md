@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/slow-warnings
 title: "Slow Warnings"
 description: "Interactive lab for triggering slow update, view, patch, and Subscription dependency warnings with default thresholds and a visible warning log."
-access_date: 2026-08-03T19:09:41.518Z
-current_date: 2026-08-03T19:09:41.518Z
+access_date: 2026-08-03T19:40:01.169Z
+current_date: 2026-08-03T19:40:01.169Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

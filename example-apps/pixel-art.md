@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/pixel-art
 title: "Pixel Art"
 description: "Pixel art editor showcasing undo/redo with immutable snapshots, time-travel history, UI components (RadioGroup, Switch, Listbox, Dialog, Button), createLazy view optimization, Subscriptions, Commands with error handling, and localStorage persistence via Flags."
-access_date: 2026-08-03T19:09:41.518Z
-current_date: 2026-08-03T19:09:41.518Z
+access_date: 2026-08-03T19:40:01.169Z
+current_date: 2026-08-03T19:40:01.169Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

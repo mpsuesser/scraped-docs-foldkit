@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/routing
 title: "Routing"
 description: "Client-side routing with URL parameters, nested routes, rest segments, and navigation."
-access_date: 2026-08-03T19:09:41.518Z
-current_date: 2026-08-03T19:09:41.518Z
+access_date: 2026-08-03T19:40:01.169Z
+current_date: 2026-08-03T19:40:01.169Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

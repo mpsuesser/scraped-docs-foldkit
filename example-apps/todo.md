@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/todo
 title: "Todo"
 description: "A todo list with local storage persistence. Add, complete, and delete tasks."
-access_date: 2026-08-03T19:09:41.518Z
-current_date: 2026-08-03T19:09:41.518Z
+access_date: 2026-08-03T19:40:01.169Z
+current_date: 2026-08-03T19:40:01.169Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

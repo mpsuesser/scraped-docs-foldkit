@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/ui-showcase
 title: "UI Showcase"
 description: "Interactive showcase of every Foldkit UI component with styled examples, routing, and component state management."
-access_date: 2026-08-03T19:09:41.518Z
-current_date: 2026-08-03T19:09:41.518Z
+access_date: 2026-08-03T19:40:01.169Z
+current_date: 2026-08-03T19:40:01.169Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

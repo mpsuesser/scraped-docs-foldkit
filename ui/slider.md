@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/slider
 title: "Slider"
 description: "Accessible slider for numeric range input. Pointer drag, keyboard navigation, ARIA slider semantics."
-access_date: 2026-08-03T19:09:41.518Z
-current_date: 2026-08-03T19:09:41.518Z
+access_date: 2026-08-03T19:40:01.169Z
+current_date: 2026-08-03T19:40:01.169Z
 ---
 
 # Slider
