@@ -1,0 +1,708 @@
+---
+url: https://foldkit.dev/ui/listbox
+title: "Listbox"
+description: "Accessible list selection with single and multi-select modes."
+access_date: 2026-08-03T17:27:13.509Z
+current_date: 2026-08-03T17:27:13.509Z
+---
+
+# Listbox
+
+## Overview
+
+A custom select dropdown with keyboard navigation, typeahead search, and anchor positioning. Unlike Menu (which is for actions), Listbox is for choosing a value. The parent owns the selection: it passes the chosen value in as `maybeSelectedValue` (multi-select passes `selectedValues`) and folds the `Selected` OutMessage into its own state (single-select stores the value, multi-select toggles the value in its array). For a searchable input with filtering, use Combobox instead.
+
+Embed Listbox via the [`create<Item, Value?>()` factory](https://foldkit.dev/ui/selection-submodels) at module scope: `const PlanListbox = Listbox.create<Plan>()`. The factory binds the view, update, and imperative helpers to the same `Item` type so the selected value flows through the OutMessage typed end-to-end.
+
+For programmatic control in update functions, use the factory instance helpers `PlanListbox.open(model)`, `PlanListbox.close(model)`, and `PlanListbox.selectItem(model, item)`. Each returns `[Model, Commands, Option<OutMessage>]` directly.
+
+What the factory returns is typed [`Listbox.Bundle<Item, Value>`](https://foldkit.dev/ui/selection-submodels#bundle-type) (`Listbox.Multi.Bundle` for the multi-select variant), for the cases where a created bundle has to be named rather than called directly.
+
+See it in an app
+
+Check out how Listbox is wired up in a [real Foldkit app](https://github.com/foldkit/foldkit/blob/main/examples/ui-showcase/src/ui/view/listbox.ts).
+
+## Examples
+
+### Single-Select
+
+Pass an `itemToConfig` callback that maps each item to its content. The context provides `isSelected` and `isActive` for styling the highlighted and selected states.
+
+Family member
+
+```
+// Pseudocode walkthrough of the Foldkit integration points. Each labeled
+// block below is an excerpt. Fit them into your own Model, init, Message,
+// update, and view definitions.
+import { Match as M, Option } from 'effect'
+import { Command } from 'foldkit'
+import type { HtmlBuilder } from 'foldkit/html'
+import { m } from 'foldkit/message'
+import { evo } from 'foldkit/struct'
+
+import { Listbox } from '@foldkit/ui'
+
+const Plan = S.Literals(['Free', 'Pro', 'Enterprise'])
+type Plan = typeof Plan.Type
+
+// Declare a typed Listbox once at module scope. `view` and `update` are
+// bound to `Plan`: `items` is typed as `ReadonlyArray<Plan>` and the
+// OutMessage carries `value: Plan`.
+const PlanListbox = Listbox.create<Plan>()
+
+// Add a field to your Model for the Listbox Submodel, plus a field for
+// the selected value your app actually cares about. Using the `Plan`
+// Schema keeps the field literal-typed end to end:
+const Model = S.Struct({
+  maybePlan: S.Option(Plan),
+  listbox: Listbox.Model,
+  // ...your other fields
+})
+
+// In your init function, initialize the Listbox Submodel with a unique id:
+const init = () => [
+  {
+    maybePlan: Option.none(),
+    listbox: Listbox.init({ id: 'plan' }),
+    // ...your other fields
+  },
+  [],
+]
+
+// Wrap Listbox's Messages so they can flow through your update:
+const GotListboxMessage = m('GotListboxMessage', {
+  message: Listbox.Message,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), delegate keyboard
+// navigation, typeahead, and open/close to PlanListbox.update. The
+// third tuple element is `Option<OutMessage>`; when the user commits a
+// selection it carries `Selected({ value })` where `value: Plan`:
+GotListboxMessage: ({ message }) => {
+  const [nextListbox, commands, maybeOutMessage] = PlanListbox.update(
+    model.listbox,
+    message,
+  )
+  const mappedCommands = Command.mapMessages(commands, message =>
+    GotListboxMessage({ message }),
+  )
+
+  return Option.match(maybeOutMessage, {
+    onNone: () => [evo(model, { listbox: () => nextListbox }), mappedCommands],
+    onSome: M.type<Listbox.OutMessage<Plan>>().pipe(
+      M.tagsExhaustive({
+        Selected: ({ value }) => [
+          evo(model, {
+            listbox: () => nextListbox,
+            maybePlan: () => Option.some(value),
+          }),
+          mappedCommands,
+        ],
+      }),
+    ),
+  })
+}
+
+const plans: ReadonlyArray<Plan> = ['Free', 'Pro', 'Enterprise']
+
+// Inside your view function, embed the Listbox via h.submodel using
+// `PlanListbox.view`. Associate a visible label with the trigger via a native
+// `<label for>`: target the trigger id with `Listbox.buttonId('plan')`. The
+// `for` association gives the trigger both its accessible name and
+// click-to-focus, so ariaLabelledBy is not needed here.
+const view = (model: Model, h: HtmlBuilder<Message>) =>
+  h.div(
+    [],
+    [
+      h.label([h.For(Listbox.buttonId('plan'))], ['Plan']),
+      h.submodel({
+        slotId: 'plan',
+        model: model.listbox,
+        view: PlanListbox.view,
+        viewInputs: {
+          // `items` must be ReadonlyArray<Plan>. The factory's <Plan> parameter constrains the shape.
+          items: plans,
+          // The parent owns the selection and passes it in. Single-select
+          // takes an Option: None when nothing is selected yet.
+          maybeSelectedValue: model.maybePlan,
+          buttonContent: h.span(
+            [],
+            [Option.getOrElse(model.maybePlan, () => 'Select a plan')],
+          ),
+          buttonClassName: 'w-full rounded-lg border px-3 py-2 text-left',
+          itemsClassName: 'rounded-lg border shadow-lg',
+          itemToConfig: (plan, { isSelected, isActive }) => ({
+            className: isActive ? 'bg-blue-100' : '',
+            content: h.div(
+              [h.Class('flex items-center gap-2 px-3 py-2')],
+              [
+                isSelected ? h.span([], ['✓']) : h.span([h.Class('w-4')]),
+                h.span([], [plan]),
+              ],
+            ),
+          }),
+          backdropClassName: 'fixed inset-0',
+          anchor: { placement: 'bottom-start', gap: 4, padding: 8 },
+        },
+        toParentMessage: message => GotListboxMessage({ message }),
+      }),
+    ],
+  )
+```
+
+### Multi-select
+
+Use `Listbox.Multi` for multi-selection. The dropdown stays open on selection and items toggle on/off. The parent stores the selected values and folds each `Selected` OutMessage by toggling the value in its array.
+
+Family members
+
+```
+// Pseudocode walkthrough of the Foldkit integration points. Each labeled
+// block below is an excerpt. Fit them into your own Model, init, Message,
+// update, and view definitions.
+import { Array, Match as M, Option } from 'effect'
+import { Command } from 'foldkit'
+import type { HtmlBuilder } from 'foldkit/html'
+import { m } from 'foldkit/message'
+import { evo } from 'foldkit/struct'
+
+import { Listbox } from '@foldkit/ui'
+
+const Person = S.Literals(['Michael Bluth', 'Lindsay Funke', 'Tobias Funke'])
+type Person = typeof Person.Type
+
+// Declare a typed multi-select Listbox once at module scope:
+const PeopleListbox = Listbox.Multi.create<Person>()
+
+// Add a field to your Model for the Listbox.Multi Submodel, plus a field
+// for the selected values your app actually cares about. Using the
+// `Person` Schema keeps the field literal-typed end to end:
+const Model = S.Struct({
+  selectedPeople: S.Array(Person),
+  listboxMulti: Listbox.Multi.Model,
+  // ...your other fields
+})
+
+// In your init function, initialize the Listbox Submodel with a unique id:
+const init = () => [
+  {
+    selectedPeople: [],
+    listboxMulti: Listbox.Multi.init({ id: 'people' }),
+    // ...your other fields
+  },
+  [],
+]
+
+// Wrap Listbox's Messages so they can flow through your update:
+const GotListboxMultiMessage = m('GotListboxMultiMessage', {
+  message: Listbox.Message,
+})
+
+// Delegate keyboard navigation, typeahead, and open/close to
+// PeopleListbox.update. The OutMessage's `Selected` carries the activated
+// value. The parent owns the selection and decides what it means: for
+// multi-select, toggle the value in and out of its array:
+GotListboxMultiMessage: ({ message }) => {
+  const [nextListbox, commands, maybeOutMessage] = PeopleListbox.update(
+    model.listboxMulti,
+    message,
+  )
+  const mappedCommands = Command.mapMessages(commands, message =>
+    GotListboxMultiMessage({ message }),
+  )
+
+  return Option.match(maybeOutMessage, {
+    onNone: () => [
+      evo(model, { listboxMulti: () => nextListbox }),
+      mappedCommands,
+    ],
+    onSome: M.type<Listbox.OutMessage<Person>>().pipe(
+      M.tagsExhaustive({
+        Selected: ({ value }) => [
+          evo(model, {
+            listboxMulti: () => nextListbox,
+            selectedPeople: () =>
+              Array.contains(model.selectedPeople, value)
+                ? Array.filter(model.selectedPeople, person => person !== value)
+                : Array.append(model.selectedPeople, value),
+          }),
+          mappedCommands,
+        ],
+      }),
+    ),
+  })
+}
+
+const people: ReadonlyArray<Person> = [
+  'Michael Bluth',
+  'Lindsay Funke',
+  'Tobias Funke',
+]
+
+// Inside your view function, embed the Listbox via h.submodel. Multi-select
+// stays open on selection so the user can toggle several items:
+const view = (model: Model, h: HtmlBuilder<Message>) =>
+  h.submodel({
+    slotId: 'people',
+    model: model.listboxMulti,
+    view: PeopleListbox.view,
+    viewInputs: {
+      items: people,
+      // The parent owns the selection and passes its full array in.
+      selectedValues: model.selectedPeople,
+      buttonContent: h.span(
+        [],
+        [
+          Array.isReadonlyArrayNonEmpty(model.selectedPeople)
+            ? `${model.selectedPeople.length} selected`
+            : 'Select people',
+        ],
+      ),
+      buttonClassName: 'w-full rounded-lg border px-3 py-2 text-left',
+      itemsClassName: 'rounded-lg border shadow-lg',
+      itemToConfig: (person, { isSelected, isActive }) => ({
+        className: isActive ? 'bg-blue-100' : '',
+        content: h.div(
+          [h.Class('flex items-center gap-2 px-3 py-2')],
+          [
+            isSelected ? h.span([], ['✓']) : h.span([h.Class('w-4')]),
+            h.span([], [person]),
+          ],
+        ),
+      }),
+      backdropClassName: 'fixed inset-0',
+      anchor: { placement: 'bottom-start', gap: 4, padding: 8 },
+    },
+    toParentMessage: message => GotListboxMultiMessage({ message }),
+  })
+```
+
+### Grouped
+
+Pass `itemGroupKey` to group contiguous items by key, and `groupToHeading` to render section headers. Groups are separated automatically.
+
+Character
+
+```
+// Pseudocode walkthrough of the Foldkit integration points. Each labeled
+// block below is an excerpt. Fit them into your own Model, init, Message,
+// update, and view definitions.
+import { Match as M, Option } from 'effect'
+import { Command } from 'foldkit'
+import { type HtmlBuilder, childAttributes } from 'foldkit/html'
+import { m } from 'foldkit/message'
+import { evo } from 'foldkit/struct'
+
+import { Listbox } from '@foldkit/ui'
+
+type Character = Readonly<{
+  firstName: string
+  lastName: string
+}>
+
+const characterName = (character: Character): string =>
+  `${character.firstName} ${character.lastName}`
+
+// Declare the Listbox once at module scope, typed for the source item
+// (`Character`). `view`'s `items` are typed as `ReadonlyArray<Character>`;
+// the OutMessage carries the string returned by `itemToValue`:
+const CharacterListbox = Listbox.create<Character>()
+
+// Add a field to your Model for the Listbox Submodel, plus a field for
+// the selected value your app actually cares about:
+const Model = S.Struct({
+  maybeCharacter: S.Option(S.String),
+  listbox: Listbox.Model,
+  // ...your other fields
+})
+
+// In your init function, initialize the Listbox Submodel with a unique id:
+const init = () => [
+  {
+    maybeCharacter: Option.none(),
+    listbox: Listbox.init({ id: 'character' }),
+    // ...your other fields
+  },
+  [],
+]
+
+// Wrap Listbox's Messages so they can flow through your update:
+const GotListboxMessage = m('GotListboxMessage', {
+  message: Listbox.Message,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), delegate
+// keyboard navigation, typeahead, and open/close to
+// CharacterListbox.update. On selection, the OutMessage's `Selected`
+// variant carries the chosen item's string value (the result of
+// `itemToValue`):
+GotListboxMessage: ({ message }) => {
+  const [nextListbox, commands, maybeOutMessage] = CharacterListbox.update(
+    model.listbox,
+    message,
+  )
+  const mappedCommands = Command.mapMessages(commands, message =>
+    GotListboxMessage({ message }),
+  )
+
+  return Option.match(maybeOutMessage, {
+    onNone: () => [evo(model, { listbox: () => nextListbox }), mappedCommands],
+    onSome: M.type<Listbox.OutMessage>().pipe(
+      M.tagsExhaustive({
+        Selected: ({ value }) => [
+          evo(model, {
+            listbox: () => nextListbox,
+            maybeCharacter: () => Option.some(value),
+          }),
+          mappedCommands,
+        ],
+      }),
+    ),
+  })
+}
+
+const characters: ReadonlyArray<Character> = [
+  { firstName: 'Michael', lastName: 'Bluth' },
+  { firstName: 'Gob', lastName: 'Bluth' },
+  { firstName: 'George Michael', lastName: 'Bluth' },
+  { firstName: 'Lindsay', lastName: 'Funke' },
+  { firstName: 'Maeby', lastName: 'Funke' },
+  { firstName: 'Tobias', lastName: 'Funke' },
+]
+
+// Inside your view function, group items by a key and render a heading for
+// each group. Items are grouped in the order they appear. Make sure items
+// with the same key are contiguous in the items array:
+const view = (model: Model, h: HtmlBuilder<Message>) =>
+  h.submodel({
+    slotId: 'character',
+    model: model.listbox,
+    view: CharacterListbox.view,
+    viewInputs: {
+      items: characters,
+      // The parent owns the selection and passes it in.
+      maybeSelectedValue: model.maybeCharacter,
+      itemToValue: characterName,
+      // Group contiguous items by a shared key:
+      itemGroupKey: character => character.lastName,
+      // Render a heading for each group:
+      groupToHeading: lastName => ({
+        content: h.span([], [`${lastName}s`]),
+        className: 'px-3 py-1 text-xs font-semibold uppercase text-gray-500',
+      }),
+      // Optional separator between groups:
+      separatorAttributes: childAttributes([h.Class('my-1 border-t')]),
+      itemToConfig: character => ({
+        className:
+          'px-3 py-2 cursor-pointer data-[active]:bg-blue-100 data-[selected]:font-semibold',
+        content: h.div(
+          [h.Class('flex items-center gap-2')],
+          [h.span([], [characterName(character)])],
+        ),
+      }),
+      buttonContent: h.span(
+        [],
+        [Option.getOrElse(model.maybeCharacter, () => 'Select a character')],
+      ),
+      buttonClassName: 'w-full rounded-lg border px-3 py-2 text-left',
+      itemsClassName: 'rounded-lg border shadow-lg',
+      backdropClassName: 'fixed inset-0',
+      anchor: { placement: 'bottom-start', gap: 4, padding: 8 },
+    },
+    toParentMessage: message => GotListboxMessage({ message }),
+  })
+```
+
+## Styling
+
+Listbox is headless. The `itemToConfig` callback controls all item markup. Use `data-active` for the keyboard/pointer highlight and `data-selected` for the persistent selection indicator.
+
+The items panel is portaled to the document body and positioned relative to the trigger button with Floating UI. Ancestor stacking contexts and overflow clipping no longer apply, so a clipped container or a sibling listbox wrapper cannot hide an open dropdown. The panel still stacks at the document level: give it a z-index above elevated content like sticky headers or toasts, as the demos on this page do with `z-10`. Pass `anchor: { portal: false }` to keep the panel inside the wrapper instead.
+
+To make the items panel match the trigger button width, set `width: var(--button-width)` (or Tailwind `w-(--button-width)`) on the items class. The anchor system writes the trigger button’s measured width to this CSS variable on the items element every time it positions the panel, so the panel always matches the button even as content or viewport sizes change. Without it, the items panel sizes to its content.
+
+Attribute
+
+Condition
+
+`data-open`
+
+Present on button and wrapper when the dropdown is open.
+
+`data-active`
+
+Present on the item currently highlighted by keyboard or pointer.
+
+`data-selected`
+
+Present on selected item(s).
+
+`data-disabled`
+
+Present on disabled items and on the button when the listbox is disabled.
+
+`data-invalid`
+
+Present on the button and wrapper when isInvalid is true.
+
+`data-closed`
+
+Present during close animation when isAnimated is true.
+
+`data-placement`
+
+Present on the items panel, set to the side it currently sits on: top, right, bottom, or left. Fixed to the first resolved side when isPlacementLocked is true.
+
+## Keyboard Interaction
+
+Listbox uses typeahead search: typing printable characters jumps to the first matching item. Characters accumulate for 350ms before the search resets.
+
+Key
+
+Description
+
+`Enter / Space`
+
+Opens the dropdown (from button) or selects the active item (from items).
+
+`Arrow Down`
+
+Opens with first item active (from button) or moves to next item.
+
+`Arrow Up`
+
+Opens with last item active (from button) or moves to previous item.
+
+`Home`
+
+Moves to the first enabled item.
+
+`End`
+
+Moves to the last enabled item.
+
+`Escape`
+
+Closes the dropdown and returns focus to the button.
+
+`Type a character`
+
+Typeahead search: jumps to the first matching item. Accumulates characters for 350ms.
+
+## Accessibility
+
+The button receives `aria-haspopup="listbox"` and `aria-expanded`. The items container receives `role="listbox"` with `aria-activedescendant` tracking the highlighted item. Each item receives `role="option"` with `aria-selected`.
+
+The trigger is a form field, so give it an accessible name. For a visible label, wire a native `<label for>` that targets the trigger id with `Listbox.buttonId(id)` rather than hardcoding the `-button` convention. The `for` association makes the trigger properly labeled: assistive technology announces it by the visible label text, and clicking the label focuses and opens the listbox. That is why it is the recommended pattern.
+
+Two ViewConfig fields cover the cases a `<label for>` does not. Pass `ariaLabel` for an icon-only trigger with no visible label, or `ariaLabelledBy` when the element that names the trigger is not a `<label>` you can point `for` at.
+
+## API Reference
+
+### InitConfig
+
+Configuration object passed to `Listbox.init()` or `Listbox.Multi.init()`.
+
+Name
+
+Type
+
+Default
+
+Description
+
+`id`
+
+`string`
+
+—
+
+Unique ID for the listbox instance.
+
+`isAnimated`
+
+`boolean`
+
+`false`
+
+Enables animation coordination for open/close animations.
+
+`isModal`
+
+`boolean`
+
+`false`
+
+Locks page scroll and marks other elements inert when open.
+
+`orientation`
+
+`'Vertical' | 'Horizontal'`
+
+`'Vertical'`
+
+Whether items flow vertically or horizontally. Sets aria-orientation and switches keyboard navigation to Arrow Left and Arrow Right when Horizontal.
+
+### ViewConfig
+
+Configuration object passed to the view returned by `Listbox.create()`. The same structure is used for the view returned by `Listbox.Multi.create()`.
+
+Name
+
+Type
+
+Default
+
+Description
+
+`model`
+
+`Listbox.Model`
+
+—
+
+The listbox state from your parent Model.
+
+`toParentMessage`
+
+`(childMessage: Listbox.Message) => ParentMessage`
+
+—
+
+Wraps Listbox Messages in your parent Message type for Submodel delegation.
+
+`items`
+
+`ReadonlyArray<Item>`
+
+—
+
+The list of items. The generic Item type narrows the value passed to itemToConfig.
+
+`maybeSelectedValue`
+
+`Option<Value>`
+
+—
+
+The selection the parent owns. None when nothing is selected yet. Multi-select takes selectedValues:
+
+`ReadonlyArray<Value>`
+
+instead. Drives the isSelected context and aria-selected.
+
+`itemToConfig`
+
+`(item, context) => ItemConfig`
+
+—
+
+Maps each item to its className and content. The context provides isActive, isSelected, and isDisabled.
+
+`buttonContent`
+
+`Html`
+
+—
+
+Content rendered inside the listbox button (typically the selected value).
+
+`itemToValue`
+
+`(item: Item) => Value`
+
+—
+
+Extracts the value from an item. Optional when Item is a string, defaulting to the item itself. Required when items are objects.
+
+`isItemDisabled`
+
+`(item, index) => boolean`
+
+—
+
+Disables individual items.
+
+`itemGroupKey`
+
+`(item, index) => string`
+
+—
+
+Groups contiguous items by key. Use with groupToHeading to render section headers.
+
+`groupToHeading`
+
+`(groupKey) => GroupHeading | undefined`
+
+—
+
+Renders a heading for each group.
+
+`anchor`
+
+`AnchorConfig`
+
+—
+
+Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. The items panel is always anchored to the button; when omitted, the panel uses bottom-start placement. Portaled to the document body by default; pass portal: false to keep the panel inside the wrapper.
+
+`name`
+
+`string`
+
+—
+
+Form field name. Creates hidden input(s) with the selected value(s).
+
+`isDisabled`
+
+`boolean`
+
+`false`
+
+Disables the entire listbox.
+
+`isInvalid`
+
+`boolean`
+
+`false`
+
+Marks the listbox as invalid for validation styling.
+
+`ariaLabel`
+
+`string`
+
+—
+
+Accessible name for the trigger button. Use for an icon-only trigger with no visible label. Applied as aria-label, and takes precedence over ariaLabelledBy.
+
+`ariaLabelledBy`
+
+`string`
+
+—
+
+Id of an external element that labels the trigger button, applied as aria-labelledby. Pair with a visible label element.
+
+### OutMessage
+
+Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler. The same shape applies to the update returned by `Listbox.Multi.create()`, as in `PeopleListbox.update`.
+
+Name
+
+Type
+
+Default
+
+Description
+
+`Selected`
+
+`{ value: Value }`
+
+—
+
+Emitted when an item is activated. Carries the neutral fact that the item was activated; the parent owns the selection and decides what it means. Single-select stores the value; multi-select toggles the value in and out of its array. Pattern-match the third tuple element of PlanListbox.update in your GotListboxMessage handler to fold the value into the selection you own.

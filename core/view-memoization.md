@@ -1,0 +1,150 @@
+---
+url: https://foldkit.dev/core/view-memoization
+title: "View Memoization"
+description: "Optimize rendering performance with memoized views."
+access_date: 2026-08-03T17:27:13.509Z
+current_date: 2026-08-03T17:27:13.509Z
+---
+
+# View Memoization
+
+## Overview
+
+In [The Elm Architecture](https://guide.elm-lang.org/architecture/), every model change triggers a full call to `view(model)`. The entire virtual DOM tree is rebuilt from scratch, then diffed against the previous tree to compute minimal DOM updates. For most apps this is fast enough, but when a view contains a large subtree that rarely changes, the cost of rebuilding and diffing that subtree on every render adds up.
+
+Foldkit provides two functions for skipping unnecessary view work: `createLazy` for single views and `createKeyedLazy` for lists. Both work by caching the VNode returned by a view function. When the function reference and all arguments are referentially equal (`===`) to the previous call, the cached VNode is returned without re-running the view function. The differ short-circuits when it sees the same VNode reference, so both VNode construction and subtree diffing are skipped.
+
+## createLazy
+
+`createLazy` creates a single memoization slot. Call it at module level to create a cache, then use it in your view to wrap an expensive subtree:
+
+```
+import { type HtmlBuilder, createLazy } from 'foldkit/html'
+
+// Define the view function at module level for a stable reference.
+// If defined inside the view, a new function is created each render,
+// defeating the cache.
+const statsView = (
+  revenue: number,
+  orderCount: number,
+  topProducts: ReadonlyArray<string>,
+  h: HtmlBuilder<Message>,
+) =>
+  h.div(
+    [],
+    [
+      h.h2([], ['Dashboard']),
+      h.p([], [`Revenue: $${revenue}`]),
+      h.p([], [`Orders: ${orderCount}`]),
+      h.ul(
+        [],
+        topProducts.map(name => h.li([], [name])),
+      ),
+    ],
+  )
+
+// Create the lazy slot at module level. One slot per view.
+const lazyStats = createLazy()
+
+// In your view, wrap the call with the lazy slot.
+// If revenue, orderCount, and topProducts are the same references
+// as last render, the cached VNode is returned instantly.
+// both VNode construction and subtree diffing are skipped.
+// The builder travels through the args array like any other argument.
+// The runtime hands every render the same builder object, so it never
+// invalidates the cache.
+const view = (model: Model, h: HtmlBuilder<Message>) => ({
+  title: 'Dashboard',
+  body: h.div(
+    [],
+    [
+      headerView(model, h),
+      lazyStats(statsView, [
+        model.revenue,
+        model.orderCount,
+        model.topProducts,
+        h,
+      ]),
+      sidebarView(model, h),
+    ],
+  ),
+})
+```
+
+Both the view function and the lazy slot must be defined at module level. If the view function is defined inside the view, a new function reference is created on every render, which means the `fn === previousFn` check always fails and the cache is never used.
+
+Arguments are compared by reference, not by value. This works naturally with [evo](https://foldkit.dev/best-practices/immutability#immutable-updates): when a Model field isn’t updated, `evo` preserves its reference. Only fields that actually changed get new references, so unchanged arguments automatically pass the `===` check.
+
+## createKeyedLazy
+
+`createKeyedLazy` creates a `Map`-backed cache where each key gets its own independent memoization slot. This is designed for lists where individual items change independently:
+
+```
+import { Array, Option } from 'effect'
+import { type HtmlBuilder, createKeyedLazy } from 'foldkit/html'
+
+// Define the per-item view at module level
+const contactView = (
+  name: string,
+  email: string,
+  isSelected: boolean,
+  h: HtmlBuilder<Message>,
+) =>
+  h.li(
+    [],
+    [
+      h.span([], [name]),
+      h.span([], [email]),
+      ...(isSelected ? [h.span([], ['✓'])] : []),
+    ],
+  )
+
+// Create the keyed lazy map at module level.
+// Each key gets its own independent cache slot.
+const lazyContact = createKeyedLazy()
+
+// When rendering a list, only items whose args changed are recomputed.
+// If you select a different contact, only the previously-selected
+// and newly-selected items re-render. All others return cached VNodes.
+const contactListView = (
+  contacts: ReadonlyArray<Contact>,
+  maybeSelectedId: Option.Option<string>,
+  h: HtmlBuilder<Message>,
+) =>
+  h.ul(
+    [],
+    Array.map(contacts, contact => {
+      const isSelected = Option.exists(
+        maybeSelectedId,
+        selectedId => selectedId === contact.id,
+      )
+
+      return lazyContact(contact.id, contactView, [
+        contact.name,
+        contact.email,
+        isSelected,
+        h,
+      ])
+    }),
+  )
+```
+
+When one item in the list changes, only that item is recomputed. All other items return their cached VNodes instantly. This reduces the expensive item-subtree recomputation to `O(1)` for the common case where only one or two items change, though the parent view still traverses the full list.
+
+One slot per position
+
+A cached VNode can only be rendered at one position in the tree. The differ records each VNode object's real DOM element on the VNode itself, so rendering the same cached VNode at two positions causes patches to collide and can duplicate or misplace DOM nodes. If the same content needs to appear in multiple positions (for example, the same navigation in a desktop sidebar and a mobile menu), create a separate lazy slot for each position.
+
+## When to Use Lazy Views
+
+Lazy views help most when:
+
+- A large view subtree changes infrequently relative to how often the parent re-renders
+- A list has many items but only a few change at a time (table of contents, contact lists, dashboards)
+- The view function is expensive to compute (deeply nested trees, many elements)
+
+Lazy views are unnecessary for small views, views that change on every model update, or leaf nodes with minimal children. The memoization check itself has a small cost, so applying it everywhere would add overhead without benefit.
+
+How it works under the hood
+
+Foldkit’s differ (a vendored fork of [Snabbdom](https://github.com/snabbdom/snabbdom)) compares the old and new VNode by reference before diffing. When `oldVnode === newVnode`, it returns immediately. No attribute comparison, no child reconciliation, no DOM touching. `createLazy` and `createKeyedLazy` exploit this by returning the exact same VNode object when inputs are unchanged.
