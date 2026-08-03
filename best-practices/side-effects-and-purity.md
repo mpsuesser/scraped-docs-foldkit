@@ -2,11 +2,11 @@
 url: https://foldkit.dev/best-practices/side-effects-and-purity
 title: "Side Effects & Purity"
 description: "Why Foldkit programs should have zero side effects outside of Commands."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Side Effects & Purity
+## Side Effects & Purity
 
 ## Overview
 
@@ -84,7 +84,7 @@ const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
     [h.Class('container')],
     [
       h.h1([], [model.title]),
-      h.p([], [`Count: ${model.count}`]),
+      h.p([], [\`Count: ${model.count}\`]),
       h.button([h.OnClick(ClickedIncrement())], ['+']),
     ],
   ),

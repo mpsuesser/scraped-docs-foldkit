@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/textarea
 title: "Textarea"
 description: "A thin wrapper around the native textarea with ARIA linking and styling hooks."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Textarea
+## Textarea
 
 ## Overview
 
@@ -21,8 +21,6 @@ Check out how Textarea is wired up in a [real Foldkit app](https://github.com/fo
 ### Basic
 
 The `toView` callback receives attribute groups for the label, description, and textarea element. Spread `attributes.textarea` onto a `<textarea>` in your layout to wire up ARIA, focus, and change handling.
-
-Bio
 
 A brief introduction about yourself.
 
@@ -67,8 +65,6 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
 ### Disabled
 
 Set `isDisabled: true` to disable the textarea. Like Input, this sets both the native `disabled` attribute and `aria-disabled`.
-
-Bio
 
 This textarea is disabled.
 
@@ -115,29 +111,18 @@ const view = (h: HtmlBuilder<Message>) =>
 
 Textarea is headless. Your `toView` callback controls all markup and styling. Use the data attributes below to style different states.
 
-Attribute
-
-Condition
-
-`data-disabled`
-
-Present when isDisabled is true.
-
-`data-invalid`
-
-Present when isInvalid is true.
+| Attribute | Condition |
+| --- | --- |
+| `data-disabled` | Present when isDisabled is true. |
+| `data-invalid` | Present when isInvalid is true. |
 
 ## Keyboard Interaction
 
 Textarea uses the native `<textarea>` element, so all keyboard interaction is handled by the browser.
 
-Key
-
-Description
-
-`Tab`
-
-Moves focus to or away from the textarea.
+| Key | Description |
+| --- | --- |
+| `Tab` | Moves focus to or away from the textarea. |
 
 ## Accessibility
 
@@ -151,134 +136,25 @@ When `isInvalid` is true, `aria-invalid="true"` is set on the textarea element.
 
 Configuration object passed to `Textarea.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the textarea element. Used to link the label and description via ARIA attributes.
-
-`toView`
-
-`(attributes: TextareaAttributes) => Html`
-
-—
-
-Callback that receives attribute groups for the textarea, label, and description elements.
-
-`onInput`
-
-`(value: string) => Message`
-
-—
-
-Function that maps the current textarea value to a Message on each input event.
-
-`value`
-
-`string`
-
-—
-
-The current value of the textarea.
-
-`isDisabled`
-
-`boolean`
-
-`false`
-
-Whether the textarea is disabled. Sets both the native disabled attribute and aria-disabled.
-
-`isInvalid`
-
-`boolean`
-
-`false`
-
-Whether the textarea is in an invalid state. Sets aria-invalid and adds a data-invalid attribute for styling.
-
-`isAutofocus`
-
-`boolean`
-
-`false`
-
-Whether the textarea receives focus when the page loads.
-
-`name`
-
-`string`
-
-—
-
-The form field name for native form submission.
-
-`rows`
-
-`number`
-
-—
-
-The visible number of text lines.
-
-`placeholder`
-
-`string`
-
-—
-
-Placeholder text shown when the textarea is empty.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the textarea element. Used to link the label and description via ARIA attributes. |
+| `toView` | `(attributes: TextareaAttributes) => Html` | — | Callback that receives attribute groups for the textarea, label, and description elements. |
+| `onInput` | `(value: string) => Message` | — | Function that maps the current textarea value to a Message on each input event. |
+| `value` | `string` | — | The current value of the textarea. |
+| `isDisabled` | `boolean` | `false` | Whether the textarea is disabled. Sets both the native disabled attribute and aria-disabled. |
+| `isInvalid` | `boolean` | `false` | Whether the textarea is in an invalid state. Sets aria-invalid and adds a data-invalid attribute for styling. |
+| `isAutofocus` | `boolean` | `false` | Whether the textarea receives focus when the page loads. |
+| `name` | `string` | — | The form field name for native form submission. |
+| `rows` | `number` | — | The visible number of text lines. |
+| `placeholder` | `string` | — | Placeholder text shown when the textarea is empty. |
 
 ### TextareaAttributes
 
 Attribute groups provided to the `toView` callback.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`textarea`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the
-
-`<textarea>`
-
-element. Includes id, rows, value, ARIA attributes, and event handlers.
-
-`label`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the
-
-`<label>`
-
-element. Includes a for attribute linking to the textarea id.
-
-`description`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto a description element. Includes an id that the textarea references via aria-describedby.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `textarea` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the `<textarea>` element. Includes id, rows, value, ARIA attributes, and event handlers. |
+| `label` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the `<label>` element. Includes a for attribute linking to the textarea id. |
+| `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes an id that the textarea references via aria-describedby. |

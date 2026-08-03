@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/counters
 title: "Counters"
 description: "A dynamic list of Counter Submodels. Add and remove rows; each row is an independent Submodel embedded via h.submodel, with per-instance routing via a wrapper Message."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

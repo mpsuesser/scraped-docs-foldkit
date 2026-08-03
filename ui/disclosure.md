@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/disclosure
 title: "Disclosure"
 description: "An accessible show/hide foundation for toggleable content sections."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Disclosure
+## Disclosure
 
 ## Overview
 
@@ -19,8 +19,6 @@ Check out how Disclosure is wired up in a [real Foldkit app](https://github.com/
 ## Examples
 
 Provide a `toView` callback that receives the `button` and `panel` attribute bundles. Spread them onto your own elements; Disclosure manages the ARIA linking and toggle behavior.
-
-Frequently asked
 
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
@@ -62,11 +60,11 @@ ToggledFaq: ({ isOpen }) => [evo(model, { isFaqOpen: () => isOpen }), []]
 // Render the panel unconditionally and pass it through animatePanel: the
 // panel stays mounted while collapsed, so the height transition animates the
 // open and close. The toggle text below names the button. When the toggle is
-// icon-only, give it a name with `ariaLabel`, or point `ariaLabelledBy` at a
+// icon-only, give it a name with \`ariaLabel\`, or point \`ariaLabelledBy\` at a
 // visible label element (target the toggle id with
-// `Disclosure.buttonId('faq-1')` for a native `<label for>`). Either
+// \`Disclosure.buttonId('faq-1')\` for a native \`<label for>\`). Either
 // attribute is only emitted when provided, so the toggle never carries a
-// dangling `aria-labelledby`.
+// dangling \`aria-labelledby\`.
 const view = (model, h: HtmlBuilder<Message>) =>
   Disclosure.view(
     {
@@ -104,31 +102,17 @@ The example renders the panel unconditionally and passes it through `animatePane
 
 Use the `data-open` attribute to style the button and panel differently when open.
 
-Attribute
-
-Condition
-
-`data-open`
-
-Present on both button and panel when the disclosure is open.
-
-`data-disabled`
-
-Present on the button when isDisabled is true.
+| Attribute | Condition |
+| --- | --- |
+| `data-open` | Present on both button and panel when the disclosure is open. |
+| `data-disabled` | Present on the button when isDisabled is true. |
 
 ## Keyboard Interaction
 
-Key
-
-Description
-
-`Enter`
-
-Toggles the disclosure.
-
-`Space`
-
-Toggles the disclosure.
+| Key | Description |
+| --- | --- |
+| `Enter` | Toggles the disclosure. |
+| `Space` | Toggles the disclosure. |
 
 ## Accessibility
 
@@ -144,154 +128,22 @@ Two ViewConfig fields cover the cases a `<label for>` does not. Pass `ariaLabel`
 
 Configuration object passed to `Disclosure.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the disclosure instance. Used to derive the button and panel ids for ARIA linking.
-
-`isOpen`
-
-`boolean`
-
-—
-
-The current open state, read from your Model.
-
-`aria-expanded`
-
-, the
-
-`data-open`
-
-marker, and
-
-`animatePanel`
-
-derive from it.
-
-`onToggle`
-
-`(isOpen: boolean) => Message`
-
-—
-
-Maps the new open state to a Message when the user toggles the disclosure. Your update handler just stores the value.
-
-`toView`
-
-`(attributes: DisclosureAttributes) => Html`
-
-—
-
-Callback that receives the
-
-`button`
-
-and
-
-`panel`
-
-attribute bundles and returns the composed layout. The consumer reads
-
-`isOpen`
-
-from their own Model when they need to render conditionally on it.
-
-`isDisabled`
-
-`boolean`
-
-`false`
-
-When true, the button is not clickable, gets
-
-`aria-disabled`
-
-and a
-
-`data-disabled`
-
-attribute.
-
-`ariaLabel`
-
-`string`
-
-—
-
-Accessible name for the toggle button. Use for an icon-only trigger with no visible label. Applied as aria-label, and takes precedence over ariaLabelledBy.
-
-`ariaLabelledBy`
-
-`string`
-
-—
-
-Id of an external element that labels the toggle button, applied as aria-labelledby. Pair with a visible label element.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the disclosure instance. Used to derive the button and panel ids for ARIA linking. |
+| `isOpen` | `boolean` | — | The current open state, read from your Model. `aria-expanded`, the `data-open` marker, and `animatePanel` derive from it. |
+| `onToggle` | `(isOpen: boolean) => Message` | — | Maps the new open state to a Message when the user toggles the disclosure. Your update handler just stores the value. |
+| `toView` | `(attributes: DisclosureAttributes) => Html` | — | Callback that receives the `button` and `panel` attribute bundles and returns the composed layout. The consumer reads `isOpen` from their own Model when they need to render conditionally on it. |
+| `isDisabled` | `boolean` | `false` | When true, the button is not clickable, gets `aria-disabled` and a `data-disabled` attribute. |
+| `ariaLabel` | `string` | — | Accessible name for the toggle button. Use for an icon-only trigger with no visible label. Applied as aria-label, and takes precedence over ariaLabelledBy. |
+| `ariaLabelledBy` | `string` | — | Id of an external element that labels the toggle button, applied as aria-labelledby. Pair with a visible label element. |
 
 ### DisclosureAttributes
 
 Attribute bundles delivered to the `toView` callback each render.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`button`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the toggle button element. Includes
-
-`aria-expanded`
-
-,
-
-`aria-controls`
-
-,
-
-`tabindex`
-
-, and the click + Enter/Space keyboard handlers.
-
-`panel`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the panel element. Includes the panel id (
-
-`${id}-panel`
-
-) and a
-
-`data-open`
-
-attribute when open.
-
-`animatePanel`
-
-`(content: Html) => Html`
-
-—
-
-Wraps panel content in a CSS-grid container that animates height as the disclosure opens and closes. Render the panel unconditionally (rather than gating on isOpen) and pass it here; the panel stays mounted while collapsed so the height transition has something to animate. The collapsed content is marked aria-hidden.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `button` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the toggle button element. Includes `aria-expanded`, `aria-controls`, `tabindex`, and the click + Enter/Space keyboard handlers. |
+| `panel` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the panel element. Includes the panel id (`${id}-panel`) and a `data-open` attribute when open. |
+| `animatePanel` | `(content: Html) => Html` | — | Wraps panel content in a CSS-grid container that animates height as the disclosure opens and closes. Render the panel unconditionally (rather than gating on isOpen) and pass it here; the panel stays mounted while collapsed so the height transition has something to animate. The collapsed content is marked aria-hidden. |

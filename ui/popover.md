@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/popover
 title: "Popover"
 description: "Floating content panels anchored to trigger elements."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Popover
+## Popover
 
 ## Overview
 
@@ -23,8 +23,6 @@ Check out how Popover is wired up in a [real Foldkit app](https://github.com/fol
 ### Basic
 
 Pass `anchor` to position the panel relative to the button. The panel can hold any content: links, forms, or informational text.
-
-Product menu
 
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
@@ -59,7 +57,7 @@ const GotPopoverMessage = m('GotPopoverMessage', {
 })
 
 // Inside your update function's M.tagsExhaustive({...}), delegate to
-// Popover.update. The OutMessages `Opened` and `Closed` mark the
+// Popover.update. The OutMessages \`Opened\` and \`Closed\` mark the
 // visibility transitions. Fire analytics, coordinate with other UI,
 // or clear ephemeral state on close.
 GotPopoverMessage: ({ message }) => {
@@ -76,7 +74,7 @@ GotPopoverMessage: ({ message }) => {
     onSome: M.type<Popover.OutMessage>().pipe(
       M.tagsExhaustive({
         Opened: () => [
-          // The child has emitted `Opened`. The body commits the
+          // The child has emitted \`Opened\`. The body commits the
           // child's next state as usual. In this arm the parent can
           // also update its own state or dispatch its own Commands,
           // for example lazy-load panel content, log analytics, or
@@ -85,7 +83,7 @@ GotPopoverMessage: ({ message }) => {
           mappedCommands,
         ],
         Closed: () => [
-          // The child has emitted `Closed`. The body commits the
+          // The child has emitted \`Closed\`. The body commits the
           // child's next state as usual. In this arm the parent can
           // also update its own state or dispatch its own Commands,
           // for example persist a draft, clear ephemeral state, or
@@ -100,10 +98,10 @@ GotPopoverMessage: ({ message }) => {
 
 // Inside your view function, embed the popover via h.submodel. Give the
 // trigger an accessible name: target the trigger id with
-// `Popover.buttonId('info')` from a native `<label for>`, and pass
-// `ariaLabelledBy` so the trigger is named by the label. The attribute is
+// \`Popover.buttonId('info')\` from a native \`<label for>\`, and pass
+// \`ariaLabelledBy\` so the trigger is named by the label. The attribute is
 // only emitted when provided, so the trigger never carries a dangling
-// `aria-labelledby`.
+// \`aria-labelledby\`.
 const view = (h: HtmlBuilder<Message>) => {
   const labelId = 'info-label'
 
@@ -158,13 +156,9 @@ const view = (h: HtmlBuilder<Message>) => {
 
 Pass `isAnimated: true` at init for animation coordination.
 
-Product menu
-
 ### Nested
 
 Use a separate Popover Model for each level. For a parent panel that opens onto another Popover trigger, pass `contentFocus: true` at init and `focusSelector` in the view so focus lands on the nested trigger.
-
-Account
 
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
@@ -238,8 +232,8 @@ GotAccountDetailsPopoverMessage: ({ message }) => {
 }
 
 // Inside your view function, render the child Popover inside the parent
-// panel. `focusSelector` points at the child trigger, which Popover derives
-// from the child id as `${id}-button`.
+// panel. \`focusSelector\` points at the child trigger, which Popover derives
+// from the child id as \`${id}-button\`.
 const view = (h: HtmlBuilder<Message>) => {
   const detailsPopover = h.submodel({
     slotId: 'account-details-popover',
@@ -325,45 +319,22 @@ Popover is headless. The `toView` callback receives attribute bundles for the bu
 
 When `isAnimated` is true, enter/leave animations flow through the [Animation](https://foldkit.dev/ui/animation) module. Style with CSS transitions or CSS keyframe animations. Animation advances once every animation on the element has settled.
 
-Attribute
-
-Condition
-
-`data-open`
-
-Present on button and panel when open.
-
-`data-disabled`
-
-Present on the button when disabled.
-
-`data-closed`
-
-Present during close animation.
-
-`data-placement`
-
-Present on the panel, set to the side it currently sits on: top, right, bottom, or left. Fixed to the first resolved side when isPlacementLocked is true.
+| Attribute | Condition |
+| --- | --- |
+| `data-open` | Present on button and panel when open. |
+| `data-disabled` | Present on the button when disabled. |
+| `data-closed` | Present during close animation. |
+| `data-placement` | Present on the panel, set to the side it currently sits on: top, right, bottom, or left. Fixed to the first resolved side when isPlacementLocked is true. |
 
 ## Keyboard Interaction
 
 By default, the panel receives `tabindex="0"` so it can receive focus. Tab navigates naturally through the panel content. Escape closes and returns focus to the button.
 
-Key
-
-Description
-
-`Enter / Space`
-
-Toggles the popover.
-
-`Escape`
-
-Closes the popover and returns focus to the button.
-
-`Tab`
-
-Navigates within the panel. By default, closes the popover when focus leaves.
+| Key | Description |
+| --- | --- |
+| `Enter / Space` | Toggles the popover. |
+| `Escape` | Closes the popover and returns focus to the button. |
+| `Tab` | Navigates within the panel. By default, closes the popover when focus leaves. |
 
 ## Accessibility
 
@@ -379,234 +350,44 @@ Two ViewConfig fields cover the cases a `<label for>` does not. Pass `ariaLabel`
 
 Configuration object passed to `Popover.init()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the popover instance.
-
-`isAnimated`
-
-`boolean`
-
-`false`
-
-Enables animation coordination.
-
-`isModal`
-
-`boolean`
-
-`false`
-
-Locks page scroll and marks other elements inert when open.
-
-`contentFocus`
-
-`boolean`
-
-`false`
-
-Hands focus ownership to the consumer. When true, the panel is not focusable and does not close on blur; the consumer must focus a descendant on open and decide on its own blur rules.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the popover instance. |
+| `isAnimated` | `boolean` | `false` | Enables animation coordination. |
+| `isModal` | `boolean` | `false` | Locks page scroll and marks other elements inert when open. |
+| `contentFocus` | `boolean` | `false` | Hands focus ownership to the consumer. When true, the panel is not focusable and does not close on blur; the consumer must focus a descendant on open and decide on its own blur rules. |
 
 ### ViewConfig
 
 Configuration object passed to `Popover.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`model`
-
-`Popover.Model`
-
-—
-
-The popover state from your parent Model.
-
-`toParentMessage`
-
-`(childMessage: Popover.Message) => ParentMessage`
-
-—
-
-Wraps Popover Messages in your parent Message type for Submodel delegation.
-
-`anchor`
-
-`AnchorConfig`
-
-—
-
-Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. Required. Portaled to the document body by default; pass portal: false to keep the panel inside its wrapper.
-
-`toView`
-
-`(render: RenderInfo) => Html`
-
-—
-
-Callback that receives the button, panel, and backdrop attribute bundles plus a derived
-
-`isVisible`
-
-flag, and returns the composed layout.
-
-`isDisabled`
-
-`boolean`
-
-`false`
-
-Disables the trigger button.
-
-`focusSelector`
-
-`string`
-
-—
-
-CSS selector for the element to focus after the panel is positioned. Defaults to the panel itself.
-
-`ariaLabel`
-
-`string`
-
-—
-
-Accessible name for the trigger button. Use for an icon-only trigger with no visible label. Applied as aria-label, and takes precedence over ariaLabelledBy.
-
-`ariaLabelledBy`
-
-`string`
-
-—
-
-Id of an external element that labels the trigger button, applied as aria-labelledby. Pair with a visible label element.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `model` | `Popover.Model` | — | The popover state from your parent Model. |
+| `toParentMessage` | `(childMessage: Popover.Message) => ParentMessage` | — | Wraps Popover Messages in your parent Message type for Submodel delegation. |
+| `anchor` | `AnchorConfig` | — | Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. Required. Portaled to the document body by default; pass portal: false to keep the panel inside its wrapper. |
+| `toView` | `(render: RenderInfo) => Html` | — | Callback that receives the button, panel, and backdrop attribute bundles plus a derived `isVisible` flag, and returns the composed layout. |
+| `isDisabled` | `boolean` | `false` | Disables the trigger button. |
+| `focusSelector` | `string` | — | CSS selector for the element to focus after the panel is positioned. Defaults to the panel itself. |
+| `ariaLabel` | `string` | — | Accessible name for the trigger button. Use for an icon-only trigger with no visible label. Applied as aria-label, and takes precedence over ariaLabelledBy. |
+| `ariaLabelledBy` | `string` | — | Id of an external element that labels the trigger button, applied as aria-labelledby. Pair with a visible label element. |
 
 ### RenderInfo
 
 Payload delivered to the `toView` callback each render.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`button`
-
-`ReadonlyArray<ChildAttribute>`
-
-—
-
-Spread onto the trigger button. Includes the button id,
-
-`aria-expanded`
-
-,
-
-`aria-controls`
-
-, and pointer/keyboard handlers.
-
-`panel`
-
-`ReadonlyArray<ChildAttribute>`
-
-—
-
-Spread onto the floating panel. Includes the anchor Mount that positions the panel via Floating UI, ARIA linkage to the button, and panel keydown/blur handlers.
-
-`backdrop`
-
-`ReadonlyArray<ChildAttribute>`
-
-—
-
-Spread onto the modal backdrop element. Includes the portal Mount that moves the backdrop to
-
-`document.body`
-
-. The backdrop's click handler dispatches
-
-`RequestedClose`
-
-.
-
-`isVisible`
-
-`boolean`
-
-—
-
-Derived from
-
-`isOpen`
-
-and the Animation
-
-`transitionState`
-
-. Render the panel and backdrop only while this is true.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `button` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the trigger button. Includes the button id, `aria-expanded`, `aria-controls`, and pointer/keyboard handlers. |
+| `panel` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the floating panel. Includes the anchor Mount that positions the panel via Floating UI, ARIA linkage to the button, and panel keydown/blur handlers. |
+| `backdrop` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the modal backdrop element. Includes the portal Mount that moves the backdrop to `document.body`. The backdrop's click handler dispatches `RequestedClose`. |
+| `isVisible` | `boolean` | — | Derived from `isOpen` and the Animation `transitionState`. Render the panel and backdrop only while this is true. |
 
 ### OutMessage
 
 Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`Opened`
-
-`{}`
-
-—
-
-Emitted once the popover has transitioned to open. Fires after
-
-`update`
-
-has processed
-
-`RequestedOpen`
-
-and
-
-`isOpen`
-
-reflects the new state.
-
-`Closed`
-
-`{}`
-
-—
-
-Emitted once the popover has transitioned to closed. Programmatic
-
-`Popover.close`
-
-on an already-closed model is a no-op that does not re-emit.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `Opened` | `{}` | — | Emitted once the popover has transitioned to open. Fires after `update` has processed `RequestedOpen` and `isOpen` reflects the new state. |
+| `Closed` | `{}` | — | Emitted once the popover has transitioned to closed. Programmatic `Popover.close` on an already-closed model is a no-op that does not re-emit. |

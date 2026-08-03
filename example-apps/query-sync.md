@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/query-sync
 title: "Query Sync"
 description: "Filterable dinosaur table where every control syncs to URL query parameters. Schema transforms enforce valid states. Invalid params gracefully fall back."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

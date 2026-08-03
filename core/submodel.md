@@ -2,11 +2,11 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Compose applications from independent, encapsulated modules."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Submodel
+## Submodel
 
 ## Overview
 
@@ -245,11 +245,11 @@ import {
 import type { Model } from './model'
 
 // The Submodel exports a view defined with Submodel.defineView<Model, Message>.
-// The view takes the child's Model and the child's typed builder `h`, which
+// The view takes the child's Model and the child's typed builder \`h\`, which
 // the runtime supplies, and produces Html. The <Model, Message> type arguments
 // brand the view with its Message type so the parent can lift each emitted
 // Message into its wrapper Message when it embeds the Submodel, and they type
-// `h`: its handlers accept exactly the Messages this Submodel dispatches.
+// \`h\`: its handlers accept exactly the Messages this Submodel dispatches.
 export const view = Submodel.defineView<Model, Message>((model, h) =>
   h.div(
     [h.Class('flex flex-col gap-4')],
@@ -347,11 +347,11 @@ import type { Html } from 'foldkit/html'
 import { ClosedMenu, type Message, OpenedMenu, SelectedItem } from './message'
 import type { Model } from './model'
 
-// The third type parameter to defineView is `ViewInputs`: per-render
+// The third type parameter to defineView is \`ViewInputs\`: per-render
 // data the parent passes alongside the model. Here, the parent supplies
 // the trigger content and the items; the child supplies the open/closed
 // state and the selection behavior. With ViewInputs present, the builder
-// `h` moves to third position.
+// \`h\` moves to third position.
 export type ViewInputs = Readonly<{
   buttonLabel: Html
   items: ReadonlyArray<string>
@@ -400,8 +400,8 @@ import * as CommandMenu from './page/commandMenu'
 
 const MENU_ITEMS: ReadonlyArray<string> = ['Open', 'Rename', 'Archive']
 
-// The parent passes `viewInputs` alongside model/view/toParentMessage.
-// `buttonLabel` and `items` are configuration the parent owns; the child
+// The parent passes \`viewInputs\` alongside model/view/toParentMessage.
+// \`buttonLabel\` and \`items\` are configuration the parent owns; the child
 // slots them into its open/closed widget. The child has no idea what the
 // items mean. Only that they exist.
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
@@ -459,8 +459,8 @@ import { GotApplicantMessage, type Message } from './message'
 import type { Model } from './model'
 
 // View: iterate the array of children and embed each as its own
-// `h.submodel`. The `id` is the stable per-instance identifier. The
-// wrapper Message carries `entryId` so update can route back.
+// \`h.submodel\`. The \`id\` is the stable per-instance identifier. The
+// wrapper Message carries \`entryId\` so update can route back.
 export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
   h.div(
     [h.Class('flex flex-col gap-4')],
@@ -475,9 +475,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
     ),
   )
 
-// Update: route the wrapper Message by `entryId` to the right slice.
+// Update: route the wrapper Message by \`entryId\` to the right slice.
 // Find the matching applicant, delegate to the child's update, and
-// re-wrap any Commands the child returned with the same `entryId`.
+// re-wrap any Commands the child returned with the same \`entryId\`.
 GotApplicantMessage: ({ entryId, message }) =>
   Option.match(
     Array.findFirst(model.applicants, applicant => applicant.id === entryId),
@@ -536,8 +536,8 @@ import type { Message } from './message'
 import type { Model } from './model'
 
 // The child declares the parent state it needs via the third type
-// parameter on `Submodel.defineView`. The view receives it as
-// `viewInputs` alongside `model`, before the builder `h`.
+// parameter on \`Submodel.defineView\`. The view receives it as
+// \`viewInputs\` alongside \`model\`, before the builder \`h\`.
 type ViewInputs = Readonly<{
   currentUser: User
 }>
@@ -547,8 +547,8 @@ export const view = Submodel.defineView<Model, Message, ViewInputs>(
     h.div(
       [],
       [
-        h.h2([], [`Settings for ${currentUser.name}`]),
-        // ...rest of the Settings UI driven by `model`
+        h.h2([], [\`Settings for ${currentUser.name}\`]),
+        // ...rest of the Settings UI driven by \`model\`
       ],
     ),
 )
@@ -590,7 +590,7 @@ type Context = Readonly<{
 
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 
-// The child's update grows a third `context` argument carrying the
+// The child's update grows a third \`context\` argument carrying the
 // parent state it needs.
 export const update = (
   model: Model,
@@ -614,7 +614,7 @@ GotSettingsMessage: ({ message }) => {
   const [nextSettings, commands] = Settings.update(model.settings, message, {
     currentUser: model.currentUser,
   })
-  // ...usual wrapping of `commands`
+  // ...usual wrapping of \`commands\`
 }
 ```
 
@@ -780,46 +780,17 @@ A handler’s dispatcher is chosen by **where the element is built**, not by the
 
 Inside a Submodel there are two frames, with opposite defaults:
 
-Where you build the element
-
-Dispatches through
-
-To change it
-
-The child’s own view body
-
-the
-
-**child’s**
-
-boundary
-
-have the parent supply the element through a
-
-`viewInputs`
-
-slot callback
-
-A slot callback the parent passed in
-
-`viewInputs`
-
-the
-
-**parent’s**
-
-boundary
-
-[`childAttributes`](#child-attributes)
-
-binds it back to the child
+| Where you build the element | Dispatches through | To change it |
+| --- | --- | --- |
+| The child’s own view body | the **child’s** boundary | have the parent supply the element through a `viewInputs` slot callback |
+| A slot callback the parent passed in `viewInputs` | the **parent’s** boundary | [`childAttributes`](#child-attributes) binds it back to the child |
 
 Both defaults are usually what you want. The child’s view body is full of the child’s own Messages, and a parent’s slot callback is full of the parent’s.
 
 The case that bites is a **shared view helper** rendered inside a Submodel: a copy button, an analytics hook, a toast trigger. It builds an app-level Message, so its `h` parameter is typed `HtmlBuilder<AppMessage>`, and the only builder in scope inside the child’s view body is the child’s own. Passing the child’s builder to the helper is a type error at the call site. The fix is structural. Let the parent build it and pass it down:
 
 ```
-// view/docs.ts (inside the parent's view, with its builder `h` in scope)
+// view/docs.ts (inside the parent's view, with its builder \`h\` in scope)
 h.submodel({
   slotId: 'coming-from-react',
   model: model.comingFromReact,
@@ -1031,53 +1002,13 @@ Embeds a child Submodel under the current boundary. Creates a runtime boundary h
 
 The configuration record passed to `h.submodel`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`slotId`
-
-`string`
-
-—
-
-DOM-slot identity for this embed site under the current boundary. Must be distinct from every other h.submodel slotId under the same parent boundary. For lists, use a per-item id (row.id); for fixed slots, name by position.
-
-`model`
-
-`View extends SubmodelView<infer Model, ...> ? Model : never`
-
-—
-
-The child Submodel’s slice of the parent Model. Type is inferred from the branded view.
-
-`view`
-
-`SubmodelView<Model, Message, ViewInputs?>`
-
-—
-
-The child’s exported view, branded via Submodel.defineView so the embed site can infer the child’s Message type.
-
-`viewInputs`
-
-`ViewInputs | undefined`
-
-—
-
-Optional per-render data threaded into the view’s second argument. Top-level functions are auto-wrapped to execute in the parent’s boundary; nested functions throw at view-build time.
-
-`toParentMessage`
-
-`(message: ChildMessage) => ParentMessage`
-
-—
-
-Lifts each child Message into the parent’s wrapper Message type, typically a closure over the Got*Message constructor.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `slotId` | `string` | — | DOM-slot identity for this embed site under the current boundary. Must be distinct from every other h.submodel slotId under the same parent boundary. For lists, use a per-item id (row.id); for fixed slots, name by position. |
+| `model` | `View extends SubmodelView<infer Model, ...> ? Model : never` | — | The child Submodel’s slice of the parent Model. Type is inferred from the branded view. |
+| `view` | `SubmodelView<Model, Message, ViewInputs?>` | — | The child’s exported view, branded via Submodel.defineView so the embed site can infer the child’s Message type. |
+| `viewInputs` | `ViewInputs \| undefined` | — | Optional per-render data threaded into the view’s second argument. Top-level functions are auto-wrapped to execute in the parent’s boundary; nested functions throw at view-build time. |
+| `toParentMessage` | `(message: ChildMessage) => ParentMessage` | — | Lifts each child Message into the parent’s wrapper Message type, typically a closure over the Got\*Message constructor. |
 
 ### Submodel.defineView
 

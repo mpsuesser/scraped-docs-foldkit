@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ai/skills
 title: "Skills"
 description: "Agent skills for generating, scaffolding, and auditing Foldkit programs."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 # Skills

@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/date-picker
 title: "Date Picker"
 description: "Accessible date picker that wraps Calendar in a Popover. Focus choreography, click-outside dismissal, and hidden form input for native form submission."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Date Picker
+## Date Picker
 
 ## Overview
 
@@ -24,8 +24,6 @@ Check out how DatePicker is wired up in a [real Foldkit app](https://github.com/
 
 A date picker constrained to a one-year window around today via `minDate` and `maxDate`. Click the trigger to open, pick a date, click the heading to drill into a months grid (and again to drill into a years grid), or navigate with the full WAI-ARIA grid keyboard pattern. Press Enter to commit, Escape to dismiss.
 
-Due date
-
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
@@ -40,14 +38,14 @@ import { DatePicker } from '@foldkit/ui'
 
 // Add a field to your Model for the DatePicker Submodel, plus a field the
 // parent owns for the selected date. The picker no longer stores the
-// selection; the parent holds it and passes it back in as `maybeSelectedDate`.
+// selection; the parent holds it and passes it back in as \`maybeSelectedDate\`.
 const Model = S.Struct({
   datePickerDemo: DatePicker.Model,
   maybeSelectedDate: S.Option(Calendar.CalendarDate),
   // ...your other fields
 })
 
-// Fetch `today` once at the app boundary via flags so init stays pure:
+// Fetch \`today\` once at the app boundary via flags so init stays pure:
 const Flags = S.Struct({
   today: Calendar.CalendarDate,
   // ...your other flags
@@ -82,10 +80,10 @@ const GotDatePickerMessage = m('GotDatePickerMessage', {
 
 // Inside your update function's M.tagsExhaustive({...}), delegate
 // navigation, focus, and popover messages to DatePicker.update. The
-// OutMessage's `SelectedDate` carries the committed date. The popover
+// OutMessage's \`SelectedDate\` carries the committed date. The popover
 // has already closed by the time it fires; lift the date into your
-// domain state and pass it back as `maybeSelectedDate`. `ClearedDate`
-// fires when the user clears the selection. `ChangedViewMonth` fires when
+// domain state and pass it back as \`maybeSelectedDate\`. \`ClearedDate\`
+// fires when the user clears the selection. \`ChangedViewMonth\` fires when
 // calendar navigation shifts the visible month without selecting a date.
 GotDatePickerMessage: ({ message }) => {
   const [nextDatePicker, commands, maybeOutMessage] = DatePicker.update(
@@ -104,10 +102,10 @@ GotDatePickerMessage: ({ message }) => {
     onSome: M.type<DatePicker.OutMessage>().pipe(
       M.tagsExhaustive({
         SelectedDate: ({ date }) => [
-          // The child has emitted `SelectedDate`. The body commits
+          // The child has emitted \`SelectedDate\`. The body commits
           // the child's next state as usual. This is where the parent
           // lifts the committed date into its own field, which is then
-          // passed back to the picker as `maybeSelectedDate`, so the
+          // passed back to the picker as \`maybeSelectedDate\`, so the
           // parent stays the single source of truth for the selection.
           evo(model, {
             datePickerDemo: () => nextDatePicker,
@@ -124,7 +122,7 @@ GotDatePickerMessage: ({ message }) => {
           mappedCommands,
         ],
         ChangedViewMonth: () => [
-          // The child has emitted `ChangedViewMonth`. The body commits
+          // The child has emitted \`ChangedViewMonth\`. The body commits
           // the child's next state as usual. In this arm the parent
           // can also update its own state or dispatch its own
           // Commands, for example prefetch month data, fire analytics,
@@ -138,16 +136,16 @@ GotDatePickerMessage: ({ message }) => {
 }
 
 // Inside your view function, embed the DatePicker via h.submodel. The
-// `toCalendarView` callback receives a discriminated `CalendarAttributes`
-// whose variant matches the calendar's current `viewMode`. Pattern-match
-// on `_tag` to render the day grid, the months grid, or the years grid.
+// \`toCalendarView\` callback receives a discriminated \`CalendarAttributes\`
+// whose variant matches the calendar's current \`viewMode\`. Pattern-match
+// on \`_tag\` to render the day grid, the months grid, or the years grid.
 //
 // The trigger is a form field, so give it an accessible name. Pass
-// `ariaLabelledBy` with the id of a visible label element, and render that
+// \`ariaLabelledBy\` with the id of a visible label element, and render that
 // label targeting the trigger id with
-// `DatePicker.triggerId('date-picker-demo')` for a native `<label for>`. The
+// \`DatePicker.triggerId('date-picker-demo')\` for a native \`<label for>\`. The
 // attribute is only emitted when provided, so the trigger never carries a
-// dangling `aria-labelledby`.
+// dangling \`aria-labelledby\`.
 const view = (model: Model, h: HtmlBuilder<Message>) => {
   const labelId = 'date-picker-label'
 
@@ -172,7 +170,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) => {
             Option.match(maybeDate, {
               onNone: () => h.span([], ['Pick a date']),
               onSome: date =>
-                h.span([], [`${date.year}-${date.month}-${date.day}`]),
+                h.span([], [\`${date.year}-${date.month}-${date.day}\`]),
             }),
           toCalendarView: attributes =>
             M.value(attributes).pipe(
@@ -382,77 +380,30 @@ const view = (model: Model, h: HtmlBuilder<Message>) => {
 
 DatePicker is headless. You control the trigger button via `triggerContent` and `triggerClassName`, the popover panel via `panelClassName`, and the calendar grid via the `toCalendarView` callback. Data attributes on day cells let you style state variants with CSS selectors like `group-data-[selected]:` and `group-data-[disabled]:`.
 
-Attribute
-
-Condition
-
-`data-today`
-
-Present on the cell representing "today". The day cell in Days mode, the current month cell in Months mode, the current year cell in Years mode.
-
-`data-selected`
-
-Present on the calendar's currently-centered cell. The selected date in Days mode, the centered month (viewMonth) in Months mode, the centered year (viewYear) in Years mode.
-
-`data-focused`
-
-Present on the cell at the keyboard cursor position while the grid has DOM focus.
-
-`data-outside-month`
-
-(Days mode only.) Present on cells that fall outside the currently-viewed month (leading/trailing grid rows).
-
-`data-disabled`
-
-Present on cells disabled by min/max, disabledDaysOfWeek, or disabledDates.
-
-`data-open`
-
-Present on the trigger button and wrapper while the popover is open.
-
-`data-placement`
-
-Present on the calendar panel, set to the side it currently sits on: top, right, bottom, or left. Fixed to the first resolved side when isPlacementLocked is true.
+| Attribute | Condition |
+| --- | --- |
+| `data-today` | Present on the cell representing "today". The day cell in Days mode, the current month cell in Months mode, the current year cell in Years mode. |
+| `data-selected` | Present on the calendar's currently-centered cell. The selected date in Days mode, the centered month (viewMonth) in Months mode, the centered year (viewYear) in Years mode. |
+| `data-focused` | Present on the cell at the keyboard cursor position while the grid has DOM focus. |
+| `data-outside-month` | (Days mode only.) Present on cells that fall outside the currently-viewed month (leading/trailing grid rows). |
+| `data-disabled` | Present on cells disabled by min/max, disabledDaysOfWeek, or disabledDates. |
+| `data-open` | Present on the trigger button and wrapper while the popover is open. |
+| `data-placement` | Present on the calendar panel, set to the side it currently sits on: top, right, bottom, or left. Fixed to the first resolved side when isPlacementLocked is true. |
 
 ## Keyboard Interaction
 
 The trigger button opens the popover on Enter, Space, or ArrowDown. Inside the popover, the calendar grid handles the full WAI-ARIA grid keyboard pattern. Escape closes the popover from both the trigger and the grid.
 
-Key
-
-Description
-
-`Enter / Space / ArrowDown`
-
-Open the popover when the trigger button is focused.
-
-`Escape`
-
-Close the popover from the trigger button or from inside the calendar grid.
-
-`ArrowLeft / ArrowRight`
-
-Move the focus cursor by one cell. Days: ±1 day. Months: ±1 month (wraps across years). Years: ±1 year (wraps across pages).
-
-`ArrowUp / ArrowDown`
-
-Move the focus cursor by one row. Days: ±1 week (7 days). Months: ±1 row (3 months). Years: ±1 row (3 years).
-
-`Home / End`
-
-(Days mode only.) Move focus to the start / end of the current week (based on locale.firstDayOfWeek).
-
-`PageUp / PageDown`
-
-Days: ±1 month. Months: ±1 year. Years: ±1 window (12 years).
-
-`Shift + PageUp / Shift + PageDown`
-
-(Days mode only.) Move focus by one year.
-
-`Enter / Space`
-
-Commit the focus cursor. Days: select the date and close the popover. Months: jump the calendar to that month and drill back to Days. Years: jump to that year and drill back to Months.
+| Key | Description |
+| --- | --- |
+| `Enter / Space / ArrowDown` | Open the popover when the trigger button is focused. |
+| `Escape` | Close the popover from the trigger button or from inside the calendar grid. |
+| `ArrowLeft / ArrowRight` | Move the focus cursor by one cell. Days: ±1 day. Months: ±1 month (wraps across years). Years: ±1 year (wraps across pages). |
+| `ArrowUp / ArrowDown` | Move the focus cursor by one row. Days: ±1 week (7 days). Months: ±1 row (3 months). Years: ±1 row (3 years). |
+| `Home / End` | (Days mode only.) Move focus to the start / end of the current week (based on locale.firstDayOfWeek). |
+| `PageUp / PageDown` | Days: ±1 month. Months: ±1 year. Years: ±1 window (12 years). |
+| `Shift + PageUp / Shift + PageDown` | (Days mode only.) Move focus by one year. |
+| `Enter / Space` | Commit the focus cursor. Days: select the date and close the popover. Months: jump the calendar to that month and drill back to Days. Years: jump to that year and drill back to Months. |
 
 ## Accessibility
 
@@ -468,241 +419,47 @@ Two ViewConfig fields cover the cases a `<label for>` does not. Pass `ariaLabel`
 
 Configuration object passed to `DatePicker.init()`. Calendar constraints (min/max, disabled dates) are forwarded to the embedded Calendar submodel.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the date picker instance.
-
-`today`
-
-`CalendarDate`
-
-—
-
-The current calendar date. Typically fetched at the app boundary via Calendar.today.local and threaded through flags.
-
-`initialViewDate`
-
-`CalendarDate`
-
-—
-
-Seeds the month the calendar opens onto. When set, the view starts on the month containing this date. The parent owns the selection itself; pass its current value here to open onto that month.
-
-`isAnimated`
-
-`boolean`
-
-`false`
-
-Enables animation coordination on the popover panel (enter/leave animations).
-
-`locale`
-
-`LocaleConfig`
-
-`defaultEnglishLocale`
-
-Month and day names plus the first day of the week. Import from foldkit/calendar.
-
-`minDate`
-
-`CalendarDate`
-
-—
-
-Earliest selectable date. Dates before minDate are marked disabled and skipped by keyboard navigation.
-
-`maxDate`
-
-`CalendarDate`
-
-—
-
-Latest selectable date. Dates after maxDate are marked disabled and skipped by keyboard navigation.
-
-`disabledDaysOfWeek`
-
-`ReadonlyArray<DayOfWeek>`
-
-`[]`
-
-Days of the week to disable (e.g. ["Saturday", "Sunday"] for weekday-only selection).
-
-`disabledDates`
-
-`ReadonlyArray<CalendarDate>`
-
-`[]`
-
-Explicit list of disabled dates (e.g. holidays). Pre-compute for complex rules.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the date picker instance. |
+| `today` | `CalendarDate` | — | The current calendar date. Typically fetched at the app boundary via Calendar.today.local and threaded through flags. |
+| `initialViewDate` | `CalendarDate` | — | Seeds the month the calendar opens onto. When set, the view starts on the month containing this date. The parent owns the selection itself; pass its current value here to open onto that month. |
+| `isAnimated` | `boolean` | `false` | Enables animation coordination on the popover panel (enter/leave animations). |
+| `locale` | `LocaleConfig` | `defaultEnglishLocale` | Month and day names plus the first day of the week. Import from foldkit/calendar. |
+| `minDate` | `CalendarDate` | — | Earliest selectable date. Dates before minDate are marked disabled and skipped by keyboard navigation. |
+| `maxDate` | `CalendarDate` | — | Latest selectable date. Dates after maxDate are marked disabled and skipped by keyboard navigation. |
+| `disabledDaysOfWeek` | `ReadonlyArray<DayOfWeek>` | `[]` | Days of the week to disable (e.g. \["Saturday", "Sunday"\] for weekday-only selection). |
+| `disabledDates` | `ReadonlyArray<CalendarDate>` | `[]` | Explicit list of disabled dates (e.g. holidays). Pre-compute for complex rules. |
 
 ### Model
 
 The DatePicker Model. Stored on your parent Model and threaded through `DatePicker.update()` and `DatePicker.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-The date picker instance ID.
-
-`calendar`
-
-`Calendar.Model`
-
-—
-
-The embedded Calendar submodel. Forwards navigation, focus, locale, and disabled-cell state. The picker delegates Calendar messages and resets the calendar to Days mode every time the popover opens or closes.
-
-`popover`
-
-`Popover.Model`
-
-—
-
-The embedded Popover submodel. Tracks open/close state, animation phase, and focus choreography (opening focuses the calendar grid, closing returns focus to the trigger).
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | The date picker instance ID. |
+| `calendar` | `Calendar.Model` | — | The embedded Calendar submodel. Forwards navigation, focus, locale, and disabled-cell state. The picker delegates Calendar messages and resets the calendar to Days mode every time the popover opens or closes. |
+| `popover` | `Popover.Model` | — | The embedded Popover submodel. Tracks open/close state, animation phase, and focus choreography (opening focuses the calendar grid, closing returns focus to the trigger). |
 
 ### ViewConfig
 
 Configuration object passed to `DatePicker.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`model`
-
-`DatePicker.Model`
-
-—
-
-The date picker state from your parent Model.
-
-`maybeSelectedDate`
-
-`Option<CalendarDate>`
-
-—
-
-The parent-owned selected date. Passed through to the calendar (selected-day marker), the trigger content, and the hidden form input. The picker does not store the selection itself; fold the SelectedDate and ClearedDate OutMessages into this field and pass it back on every render.
-
-`toParentMessage`
-
-`(message: DatePicker.Message) => ParentMessage`
-
-—
-
-Wraps DatePicker Messages in your parent Message type for Submodel delegation.
-
-`anchor`
-
-`AnchorConfig`
-
-—
-
-Popover positioning config (placement, gap, offset, padding, isPlacementLocked, and portal). Controls where the calendar panel floats relative to the trigger. Portaled to the document body by default; pass portal: false to keep the panel inside its wrapper.
-
-`triggerContent`
-
-`(maybeDate: Option<CalendarDate>) => Html`
-
-—
-
-Renders the trigger button face. Receives the current selection so you can show the formatted date or a placeholder.
-
-`toCalendarView`
-
-`(attributes: CalendarAttributes) => Html`
-
-—
-
-Renders the calendar grid layout inside the popover panel. Same callback shape as Calendar.view toView. Lay out the attribute groups (for example grid, header, weeks, or cells) however you like.
-
-`isDisabled`
-
-`boolean`
-
-`false`
-
-Disables the trigger button, preventing the popover from opening.
-
-`name`
-
-`string`
-
-—
-
-When provided, renders a hidden
-
-`<input>`
-
-with this name and the selected date encoded as an ISO string (YYYY-MM-DD) for native form submission.
-
-`triggerClassName / triggerAttributes`
-
-`string / ReadonlyArray<Attribute<Message>>`
-
-—
-
-Class name and additional attributes spread onto the trigger button.
-
-`ariaLabel`
-
-`string`
-
-—
-
-Accessible name for the trigger button. Use for an icon-only trigger with no visible label. Applied as aria-label, and takes precedence over ariaLabelledBy.
-
-`ariaLabelledBy`
-
-`string`
-
-—
-
-Id of an external element that labels the trigger button, applied as aria-labelledby. Pair with a visible label element.
-
-`panelClassName / panelAttributes`
-
-`string / ReadonlyArray<Attribute<Message>>`
-
-—
-
-Class name and additional attributes spread onto the popover panel.
-
-`backdropClassName / backdropAttributes`
-
-`string / ReadonlyArray<Attribute<Message>>`
-
-—
-
-Class name and additional attributes spread onto the click-outside backdrop.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `model` | `DatePicker.Model` | — | The date picker state from your parent Model. |
+| `maybeSelectedDate` | `Option<CalendarDate>` | — | The parent-owned selected date. Passed through to the calendar (selected-day marker), the trigger content, and the hidden form input. The picker does not store the selection itself; fold the SelectedDate and ClearedDate OutMessages into this field and pass it back on every render. |
+| `toParentMessage` | `(message: DatePicker.Message) => ParentMessage` | — | Wraps DatePicker Messages in your parent Message type for Submodel delegation. |
+| `anchor` | `AnchorConfig` | — | Popover positioning config (placement, gap, offset, padding, isPlacementLocked, and portal). Controls where the calendar panel floats relative to the trigger. Portaled to the document body by default; pass portal: false to keep the panel inside its wrapper. |
+| `triggerContent` | `(maybeDate: Option<CalendarDate>) => Html` | — | Renders the trigger button face. Receives the current selection so you can show the formatted date or a placeholder. |
+| `toCalendarView` | `(attributes: CalendarAttributes) => Html` | — | Renders the calendar grid layout inside the popover panel. Same callback shape as Calendar.view toView. Lay out the attribute groups (for example grid, header, weeks, or cells) however you like. |
+| `isDisabled` | `boolean` | `false` | Disables the trigger button, preventing the popover from opening. |
+| `name` | `string` | — | When provided, renders a hidden `<input>` with this name and the selected date encoded as an ISO string (YYYY-MM-DD) for native form submission. |
+| `triggerClassName / triggerAttributes` | `string / ReadonlyArray<Attribute<Message>>` | — | Class name and additional attributes spread onto the trigger button. |
+| `ariaLabel` | `string` | — | Accessible name for the trigger button. Use for an icon-only trigger with no visible label. Applied as aria-label, and takes precedence over ariaLabelledBy. |
+| `ariaLabelledBy` | `string` | — | Id of an external element that labels the trigger button, applied as aria-labelledby. Pair with a visible label element. |
+| `panelClassName / panelAttributes` | `string / ReadonlyArray<Attribute<Message>>` | — | Class name and additional attributes spread onto the popover panel. |
+| `backdropClassName / backdropAttributes` | `string / ReadonlyArray<Attribute<Message>>` | — | Class name and additional attributes spread onto the click-outside backdrop. |
 
 ### CalendarAttributes
 
@@ -712,37 +469,11 @@ The discriminated union passed to `toCalendarView`. Pattern-match on `_tag` (`'D
 
 Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`SelectedDate`
-
-`{ date: CalendarDate }`
-
-—
-
-Emitted when the user commits a date (click / Enter / Space). Pattern-match the third tuple element of DatePicker.update in your GotDatePickerMessage handler to lift the date into domain state.
-
-`ClearedDate`
-
-`{}`
-
-—
-
-Emitted when the user clears the selected date (via Cleared or DatePicker.clear). The popover stays open. Fold it into the parent-owned selected-date field by setting it to Option.none().
-
-`ChangedViewMonth`
-
-`{ year: number; month: number }`
-
-—
-
-Emitted when navigation changes the visible month inside the calendar grid.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `SelectedDate` | `{ date: CalendarDate }` | — | Emitted when the user commits a date (click / Enter / Space). Pattern-match the third tuple element of DatePicker.update in your GotDatePickerMessage handler to lift the date into domain state. |
+| `ClearedDate` | `{}` | — | Emitted when the user clears the selected date (via Cleared or DatePicker.clear). The popover stays open. Fold it into the parent-owned selected-date field by setting it to Option.none(). |
+| `ChangedViewMonth` | `{ year: number; month: number }` | — | Emitted when navigation changes the visible month inside the calendar grid. |
 
 ### Programmatic Helpers
 
@@ -750,82 +481,14 @@ Helpers you call from your own update handlers to drive the date picker imperati
 
 The four `reflect*` helpers are how you implement cross-field date validation. Constraints are set at init time and updated via these helpers. They do not live on ViewConfig, because the update function needs them for keyboard-navigation disabled-skipping and commit-time validation. For an end date that must be on or after a start date, call `reflectMinDate(endDatePicker, maybeStartDate)` in the handler that processes the start date change, where `endDatePicker` is the end date picker's own `DatePicker.Model` and `maybeStartDate` is the parent-owned start-date field.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`selectDate`
-
-`(model: Model, date: CalendarDate) => [Model, Commands, Option<OutMessage>]`
-
-—
-
-Commits the given date and closes the popover, emitting SelectedDate. Use for a programmatic selection equivalent to a user pick. To move the embedded calendar onto a date without selecting it (opening onto an externally-sourced value), use focusDate.
-
-`focusDate`
-
-`(model: Model, date: CalendarDate) => Model`
-
-—
-
-Moves the embedded calendar view and cursor to a date without changing the selection (which the parent owns). Use it to navigate the picker onto a known date, for example after the parent sets its value externally (a URL, a saved draft) so opening the picker shows that month. Returns the model directly: no Command, no OutMessage.
-
-`clear`
-
-`(model: Model) => [Model, Commands, Option<OutMessage>]`
-
-—
-
-Clears the selected date, emitting ClearedDate so the parent resets its own field. Does not close the popover.
-
-`open`
-
-`(model: Model) => [Model, Commands]`
-
-—
-
-Programmatically opens the popover. Use from domain-event handlers when the date picker should open in response to something other than a trigger click.
-
-`close`
-
-`(model: Model) => [Model, Commands]`
-
-—
-
-Programmatically closes the popover.
-
-`reflectMinDate`
-
-`(model: Model, maybeMinDate: Option<CalendarDate>) => Model`
-
-—
-
-Updates the minimum selectable date. Pass Option.none() to remove the minimum. Use for cross-field validation, e.g. an end date picker whose minimum tracks a start date picker's selection. Does not reconcile the current selection if it falls below the new minimum.
-
-`reflectMaxDate`
-
-`(model: Model, maybeMaxDate: Option<CalendarDate>) => Model`
-
-—
-
-Updates the maximum selectable date. Pass Option.none() to remove the maximum. Does not reconcile the current selection.
-
-`reflectDisabledDates`
-
-`(model: Model, disabledDates: ReadonlyArray<CalendarDate>) => Model`
-
-—
-
-Replaces the list of individually-disabled dates (e.g. holidays). Pass an empty array to clear.
-
-`reflectDisabledDaysOfWeek`
-
-`(model: Model, disabledDaysOfWeek: ReadonlyArray<DayOfWeek>) => Model`
-
-—
-
-Replaces the list of disabled days of the week (e.g. ["Saturday", "Sunday"]). Pass an empty array to clear.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `selectDate` | `(model: Model, date: CalendarDate) => [Model, Commands, Option<OutMessage>]` | — | Commits the given date and closes the popover, emitting SelectedDate. Use for a programmatic selection equivalent to a user pick. To move the embedded calendar onto a date without selecting it (opening onto an externally-sourced value), use focusDate. |
+| `focusDate` | `(model: Model, date: CalendarDate) => Model` | — | Moves the embedded calendar view and cursor to a date without changing the selection (which the parent owns). Use it to navigate the picker onto a known date, for example after the parent sets its value externally (a URL, a saved draft) so opening the picker shows that month. Returns the model directly: no Command, no OutMessage. |
+| `clear` | `(model: Model) => [Model, Commands, Option<OutMessage>]` | — | Clears the selected date, emitting ClearedDate so the parent resets its own field. Does not close the popover. |
+| `open` | `(model: Model) => [Model, Commands]` | — | Programmatically opens the popover. Use from domain-event handlers when the date picker should open in response to something other than a trigger click. |
+| `close` | `(model: Model) => [Model, Commands]` | — | Programmatically closes the popover. |
+| `reflectMinDate` | `(model: Model, maybeMinDate: Option<CalendarDate>) => Model` | — | Updates the minimum selectable date. Pass Option.none() to remove the minimum. Use for cross-field validation, e.g. an end date picker whose minimum tracks a start date picker's selection. Does not reconcile the current selection if it falls below the new minimum. |
+| `reflectMaxDate` | `(model: Model, maybeMaxDate: Option<CalendarDate>) => Model` | — | Updates the maximum selectable date. Pass Option.none() to remove the maximum. Does not reconcile the current selection. |
+| `reflectDisabledDates` | `(model: Model, disabledDates: ReadonlyArray<CalendarDate>) => Model` | — | Replaces the list of individually-disabled dates (e.g. holidays). Pass an empty array to clear. |
+| `reflectDisabledDaysOfWeek` | `(model: Model, disabledDaysOfWeek: ReadonlyArray<DayOfWeek>) => Model` | — | Replaces the list of disabled days of the week (e.g. \["Saturday", "Sunday"\]). Pass an empty array to clear. |

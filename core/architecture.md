@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/architecture
 title: "Architecture"
 description: "How Foldkit implements The Elm Architecture (TEA) with Effect-TS: Model, update, view, Commands, and Subscriptions."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 # Architecture

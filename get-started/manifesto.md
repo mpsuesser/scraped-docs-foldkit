@@ -2,8 +2,8 @@
 url: https://foldkit.dev/get-started/manifesto
 title: "Manifesto"
 description: "Why Foldkit exists and the principles behind its design."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 # Manifesto

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/weather
 title: "Weather"
 description: "Look up weather by zip code. Demonstrates HTTP requests and loading states."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

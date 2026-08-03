@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/checkbox
 title: "Checkbox"
 description: "Accessible checkbox with indeterminate state support."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Checkbox
+## Checkbox
 
 ## Overview
 
@@ -21,8 +21,6 @@ Check out how Checkbox is wired up in a [real Foldkit app](https://github.com/fo
 ### Basic
 
 The checkbox element is typically a `<button>`. Spread `attributes.checkbox` onto it for role, ARIA state, and keyboard/click handlers. The label click handler also toggles the checkbox.
-
-Accept terms and conditions
 
 You agree to our Terms of Service and Privacy Policy.
 
@@ -104,12 +102,6 @@ const view = (model, h: HtmlBuilder<Message>) =>
 ### Indeterminate
 
 Pass `isIndeterminate: true` to show a mixed state. This is typically computed from child checkbox states: when some but not all children are checked, the parent shows the indeterminate mark. Toggling the parent sets all children to the same state.
-
-All notifications
-
-Email notifications
-
-Push notifications
 
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
@@ -204,31 +196,17 @@ const view = (model, h: HtmlBuilder<Message>) => {
 
 Checkbox is headless. Your `toView` callback controls all markup and styling. Use the data attributes below to style checked, indeterminate, and disabled states.
 
-Attribute
-
-Condition
-
-`data-checked`
-
-Present when checked and not indeterminate.
-
-`data-indeterminate`
-
-Present when isIndeterminate is true.
-
-`data-disabled`
-
-Present when isDisabled is true.
+| Attribute | Condition |
+| --- | --- |
+| `data-checked` | Present when checked and not indeterminate. |
+| `data-indeterminate` | Present when isIndeterminate is true. |
+| `data-disabled` | Present when isDisabled is true. |
 
 ## Keyboard Interaction
 
-Key
-
-Description
-
-`Space`
-
-Toggles the checkbox.
+| Key | Description |
+| --- | --- |
+| `Space` | Toggles the checkbox. |
 
 ## Accessibility
 
@@ -242,134 +220,24 @@ The `label` attribute group includes an id (accessible via `Checkbox.labelId(id)
 
 Configuration object passed to `Checkbox.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the checkbox instance. Used to link the label and description via ARIA.
-
-`isChecked`
-
-`boolean`
-
-—
-
-The current checked state, read from your Model.
-
-`aria-checked`
-
-and the
-
-`data-checked`
-
-marker derive from it.
-
-`onToggle`
-
-`(isChecked: boolean) => Message`
-
-—
-
-Maps the new checked state to a Message when the user toggles the checkbox. Your update handler just stores the value.
-
-`toView`
-
-`(attributes: CheckboxAttributes) => Html`
-
-—
-
-Callback that receives attribute groups for the checkbox, label, description, and hidden input elements.
-
-`isDisabled`
-
-`boolean`
-
-`false`
-
-Whether the checkbox is disabled.
-
-`isIndeterminate`
-
-`boolean`
-
-`false`
-
-Whether to show the indeterminate (mixed) state. Useful for "select all" checkboxes where some but not all children are checked.
-
-`name`
-
-`string`
-
-—
-
-Form field name. When provided, a hidden input is included for native form submission.
-
-`value`
-
-`string`
-
-`'on'`
-
-Value sent in the form when checked.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the checkbox instance. Used to link the label and description via ARIA. |
+| `isChecked` | `boolean` | — | The current checked state, read from your Model. `aria-checked` and the `data-checked` marker derive from it. |
+| `onToggle` | `(isChecked: boolean) => Message` | — | Maps the new checked state to a Message when the user toggles the checkbox. Your update handler just stores the value. |
+| `toView` | `(attributes: CheckboxAttributes) => Html` | — | Callback that receives attribute groups for the checkbox, label, description, and hidden input elements. |
+| `isDisabled` | `boolean` | `false` | Whether the checkbox is disabled. |
+| `isIndeterminate` | `boolean` | `false` | Whether to show the indeterminate (mixed) state. Useful for "select all" checkboxes where some but not all children are checked. |
+| `name` | `string` | — | Form field name. When provided, a hidden input is included for native form submission. |
+| `value` | `string` | `'on'` | Value sent in the form when checked. |
 
 ### CheckboxAttributes
 
 Attribute groups provided to the `toView` callback.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`checkbox`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the checkbox element (typically a
-
-`<button>`
-
-). Includes role, aria-checked, tabindex, and click/keyboard handlers.
-
-`label`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the label element. Includes an id for aria-labelledby and a click handler that toggles the checkbox.
-
-`description`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto a description element. Includes an id referenced by aria-describedby on the checkbox.
-
-`hiddenInput`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto a hidden
-
-`<input>`
-
-for form submission. Only needed when the name prop is set.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `checkbox` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the checkbox element (typically a `<button>`). Includes role, aria-checked, tabindex, and click/keyboard handlers. |
+| `label` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the label element. Includes an id for aria-labelledby and a click handler that toggles the checkbox. |
+| `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes an id referenced by aria-describedby on the checkbox. |
+| `hiddenInput` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a hidden `<input>` for form submission. Only needed when the name prop is set. |

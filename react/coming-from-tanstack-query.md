@@ -2,11 +2,11 @@
 url: https://foldkit.dev/react/coming-from-tanstack-query
 title: "Coming from TanStack Query"
 description: "Coming from TanStack Query? Foldkit has no useQuery. AsyncData ships the six query states, with stale-while-revalidate built in, and caching, background refetch, deduplication, and invalidation stay ordinary Model state and a pure update function. Maps query status flags onto the six states and includes the latest-request-wins pattern for response races."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Coming from TanStack Query
+## Coming from TanStack Query
 
 TanStack Query is excellent at what it does. If you are coming from it, you are used to caching, background refetching, deduplication, and retries arriving as configuration on a hook. Foldkit has no `useQuery`, and it does not need one. This page shows where each piece of that behavior lives instead.
 
@@ -18,119 +18,20 @@ TanStack Query bundles both halves into the hook, with the policy arriving as co
 
 Here is how the TanStack Query model maps onto Foldkit:
 
-TanStack Query
-
-Foldkit
-
-`useQuery`
-
-An
-
-[AsyncData](https://foldkit.dev/core/async-data)
-
-field in the Model plus a fetch Command
-
-`data`
-
-/
-
-`error`
-
-/
-
-`status`
-
-/
-
-`fetchStatus`
-
-The six
-
-`AsyncData`
-
-states, mapped below
-
-Query cache (keyed by query key)
-
-Model state: one
-
-`AsyncData`
-
-field, or an
-
-`S.HashMap`
-
-of them keyed by id
-
-`placeholderData: keepPreviousData`
-
-/ stale data on screen
-
-`Refreshing`
-
-and
-
-`Stale`
-
-: states that hold the previous data
-
-`staleTime`
-
-/ background refetch
-
-A Subscription gated on a Model condition, applying
-
-`AsyncData.revalidate`
-
-`staleTime: Infinity`
-
-`AsyncData.loadIfMissing`
-
-: fetch on first visit, then keep the cache without revalidating
-
-Request deduplication
-
-`AsyncData.revalidateOrLoad`
-
-yields
-
-`None`
-
-while a request is in flight
-
-Out-of-order response handling
-
-The request context threaded through the result Message, judged against the Model in
-
-`update`
-
-`invalidateQueries`
-
-`AsyncData.revalidateOrLoad`
-
-plus the fetch Command, returned from
-
-`update`
-
-`useMutation`
-
-A Message and a Command, the same as any other effect
-
-Retries
-
-Effect’s
-
-`retry`
-
-/
-
-`Schedule`
-
-TanStack Query Devtools
-
-[Foldkit DevTools](https://foldkit.dev/core/devtools)
-
-: inspect the Model and step through every Message
+| TanStack Query | Foldkit |
+| --- | --- |
+| `useQuery` | An [AsyncData](https://foldkit.dev/core/async-data) field in the Model plus a fetch Command |
+| `data` / `error` / `status` / `fetchStatus` | The six `AsyncData` states, mapped below |
+| Query cache (keyed by query key) | Model state: one `AsyncData` field, or an `S.HashMap` of them keyed by id |
+| `placeholderData: keepPreviousData` / stale data on screen | `Refreshing` and `Stale`: states that hold the previous data |
+| `staleTime` / background refetch | A Subscription gated on a Model condition, applying `AsyncData.revalidate` |
+| `staleTime: Infinity` | `AsyncData.loadIfMissing`: fetch on first visit, then keep the cache without revalidating |
+| Request deduplication | `AsyncData.revalidateOrLoad` yields `None` while a request is in flight |
+| Out-of-order response handling | The request context threaded through the result Message, judged against the Model in `update` |
+| `invalidateQueries` | `AsyncData.revalidateOrLoad` plus the fetch Command, returned from `update` |
+| `useMutation` | A Message and a Command, the same as any other effect |
+| Retries | Effect’s `retry` / `Schedule` |
+| TanStack Query Devtools | [Foldkit DevTools](https://foldkit.dev/core/devtools): inspect the Model and step through every Message |
 
 ## Async State Is Model State
 
@@ -196,43 +97,14 @@ The [API Cache example](https://foldkit.dev/example-apps/api-cache) builds the r
 
 If you know TanStack Query’s status flags, you already know the six states. Each one is a combination of flags and data presence on the query object, promoted to a variant:
 
-TanStack Query
-
-AsyncData
-
-Disabled or not yet started (
-
-`status: 'pending'`
-
-,
-
-`fetchStatus: 'idle'`
-
-)
-
-`Idle`
-
-`isLoading`
-
-(first fetch, no data yet)
-
-`Loading`
-
-`isRefetching && data !== undefined`
-
-`Refreshing({ data })`
-
-`isError && data === undefined`
-
-`Failure({ error })`
-
-`isError && data !== undefined`
-
-`Stale({ error, data })`
-
-`isSuccess && !isFetching`
-
-`Success({ data })`
+| TanStack Query | AsyncData |
+| --- | --- |
+| Disabled or not yet started (`status: 'pending'`, `fetchStatus: 'idle'`) | `Idle` |
+| `isLoading` (first fetch, no data yet) | `Loading` |
+| `isRefetching && data !== undefined` | `Refreshing({ data })` |
+| `isError && data === undefined` | `Failure({ error })` |
+| `isError && data !== undefined` | `Stale({ error, data })` |
+| `isSuccess && !isFetching` | `Success({ data })` |
 
 The difference is who tracks the combinations. In TanStack Query, “failed but still holding data” is a derived condition you check with `isError && data !== undefined`, and nothing reminds you to. Here it is a variant, `Stale`, and `AsyncData.match` does not compile until you say what it renders. When a view does not care which data-holding state it is in, `matchData` collapses the six states into three channels: data, failure, empty.
 
@@ -344,8 +216,6 @@ Judging at receipt is the correctness layer, and it is never optional. There is 
 ### Where is useQuery?
 
 There isn’t one, and you don’t assemble an equivalent hook. A query is an [AsyncData](https://foldkit.dev/core/async-data) field in the [Model](https://foldkit.dev/core/model) plus a [Command](https://foldkit.dev/core/commands) returned from `update`. The runtime runs the effect and feeds the result back as a Message, and `AsyncData.settle` folds it into the field. The “query” is spread across those pieces on purpose, so each one stays visible.
-
-### How do I cache responses?
 
 Keep the data in the Model. For a single resource that is one `AsyncData` field; for many resources, an `S.HashMap` of them keyed by id. A cache hit is a field where `AsyncData.hasData` is true, rendered without firing a Command. See the [API Cache example](https://foldkit.dev/example-apps/api-cache).
 

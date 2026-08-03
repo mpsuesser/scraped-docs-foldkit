@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/selection-submodels
 title: "Selection Submodels"
 description: "How Foldkit UI components expose create<Item>() factories that pair view and update behind one type parameter so Item types cannot drift between the rendered list and the selection handler."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Selection Submodels
+## Selection Submodels
 
 ## Overview
 
@@ -31,13 +31,13 @@ import { Listbox } from '@foldkit/ui'
 const Plan = S.Literals(['Free', 'Pro', 'Enterprise'])
 type Plan = typeof Plan.Type
 
-// Declare a typed Listbox once at module scope. `view` and `update` are
-// bound to `Plan`: `items` is typed as `ReadonlyArray<Plan>` and the
-// OutMessage carries `value: Plan`.
+// Declare a typed Listbox once at module scope. \`view\` and \`update\` are
+// bound to \`Plan\`: \`items\` is typed as \`ReadonlyArray<Plan>\` and the
+// OutMessage carries \`value: Plan\`.
 const PlanListbox = Listbox.create<Plan>()
 
 // Add a field to your Model for the Listbox Submodel, plus a field for
-// the selected value your app actually cares about. Using the `Plan`
+// the selected value your app actually cares about. Using the \`Plan\`
 // Schema keeps the field literal-typed end to end:
 const Model = S.Struct({
   maybePlan: S.Option(Plan),
@@ -62,8 +62,8 @@ const GotListboxMessage = m('GotListboxMessage', {
 
 // Inside your update function's M.tagsExhaustive({...}), delegate keyboard
 // navigation, typeahead, and open/close to PlanListbox.update. The
-// third tuple element is `Option<OutMessage>`; when the user commits a
-// selection it carries `Selected({ value })` where `value: Plan`:
+// third tuple element is \`Option<OutMessage>\`; when the user commits a
+// selection it carries \`Selected({ value })\` where \`value: Plan\`:
 GotListboxMessage: ({ message }) => {
   const [nextListbox, commands, maybeOutMessage] = PlanListbox.update(
     model.listbox,
@@ -92,9 +92,9 @@ GotListboxMessage: ({ message }) => {
 const plans: ReadonlyArray<Plan> = ['Free', 'Pro', 'Enterprise']
 
 // Inside your view function, embed the Listbox via h.submodel using
-// `PlanListbox.view`. Associate a visible label with the trigger via a native
-// `<label for>`: target the trigger id with `Listbox.buttonId('plan')`. The
-// `for` association gives the trigger both its accessible name and
+// \`PlanListbox.view\`. Associate a visible label with the trigger via a native
+// \`<label for>\`: target the trigger id with \`Listbox.buttonId('plan')\`. The
+// \`for\` association gives the trigger both its accessible name and
 // click-to-focus, so ariaLabelledBy is not needed here.
 const view = (model: Model, h: HtmlBuilder<Message>) =>
   h.div(
@@ -106,7 +106,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
         model: model.listbox,
         view: PlanListbox.view,
         viewInputs: {
-          // `items` must be ReadonlyArray<Plan>. The factory's <Plan> parameter constrains the shape.
+          // \`items\` must be ReadonlyArray<Plan>. The factory's <Plan> parameter constrains the shape.
           items: plans,
           // The parent owns the selection and passes it in. Single-select
           // takes an Option: None when nothing is selected yet.
@@ -136,13 +136,13 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
   )
 ```
 
-## The `create<Item>()` Factory
+## The create<Item>() Factory
 
 A call to `Listbox.create<Plan>()` returns an object whose entry points are all bound to `Plan`: `view` accepts `items: ReadonlyArray<Plan>`, `update` returns an OutMessage carrying the picked `Plan`, and the imperative helpers the Submodel exposes (`selectItem`, `open`, and `close` for Listbox and Combobox) accept and emit `Plan` too. Declare the factory once at module scope and use the same bundle at every site that needs it.
 
 There is no inbound reflect helper for the selection: the parent owns it outright and passes it in as `maybeSelectedValue` (`selectedValues` for multi-select), so there is nothing on the Listbox or Combobox to reflect onto. When an external value (a URL parameter, restored storage, a server push) changes the selection, the parent writes its own field. The `reflect*` family lives on the components with configuration the parent feeds in: `reflectMinDate`, `reflectMaxDate`, `reflectDisabledDates`, and `reflectDisabledDaysOfWeek` on Calendar and DatePicker, and `reflectRange` on Slider. See [Reflecting External State](https://foldkit.dev/core/submodel#reflecting-external-state) for the concept.
 
-## Naming What `create` Returns
+## Naming What create Returns
 
 Each component exports a `Bundle` type for what its factory returns, taking the same type parameters as the factory itself. `Listbox.Bundle<Plan>` is what `Listbox.create<Plan>()` produces, `Menu.Bundle<Action>` is what `Menu.create<Action>()` produces, and the multi-select variants export their own under `Listbox.Multi.Bundle` and `Combobox.Multi.Bundle`.
 

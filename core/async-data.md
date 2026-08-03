@@ -2,11 +2,11 @@
 url: https://foldkit.dev/core/async-data
 title: "Async Data"
 description: "A six-state value type for asynchronously loaded data in the Model: Idle, Loading, Refreshing, Failure, Stale, and Success, with stale-while-revalidate and keep-stale-on-failure built in."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Async Data
+## Async Data
 
 `foldkit/asyncData` is a shipped Foldkit module: a plain value type in the spirit of `Option` and `Result` from Effect, built for data that arrives asynchronously. It provides a value type, not an application pattern. This page introduces the type, the mental model, and the combinators you reach for most. The [API Reference](https://foldkit.dev/api-reference/async-data) has the exhaustive catalog.
 
@@ -22,47 +22,14 @@ Throughout this page, the running example is a Notes app: a `Note` belongs to an
 
 The type has one axis for data presence and one for request status, and the six variants are the meaningful combinations.
 
-Variant
-
-Payload
-
-Meaning
-
-`Idle`
-
-none
-
-Nothing requested yet.
-
-`Loading`
-
-none
-
-First request in flight, no prior data.
-
-`Refreshing`
-
-`{ data }`
-
-Reloading while holding the previous good data.
-
-`Failure`
-
-`{ error }`
-
-Request failed; showing the failure.
-
-`Stale`
-
-`{ error, data }`
-
-Last refresh failed; still holding the previous good data.
-
-`Success`
-
-`{ data }`
-
-Request succeeded, data present.
+| Variant | Payload | Meaning |
+| --- | --- | --- |
+| `Idle` | none | Nothing requested yet. |
+| `Loading` | none | First request in flight, no prior data. |
+| `Refreshing` | `{ data }` | Reloading while holding the previous good data. |
+| `Failure` | `{ error }` | Request failed; showing the failure. |
+| `Stale` | `{ error, data }` | Last refresh failed; still holding the previous good data. |
+| `Success` | `{ data }` | Request succeeded, data present. |
 
 The public type is value-first `AsyncData<A, E>`, matching `Result<A, E>` and `Exit<A, E>`.
 
@@ -127,7 +94,7 @@ The error Schema is simplified to `string` here; a real app usually gives each f
 
 A single field embeds `.schema` directly. A keyed cache embeds it as the value Schema of an `S.HashMap`, which is how `noteById` holds one independent `AsyncData` per `NoteId`. The Model type of a field is `typeof NotesAsyncData.schema.Type`, structurally equal to `AsyncData.AsyncData<ReadonlyArray<Note>, string>`.
 
-To construct a value, use the namespace constructors (generic in `A`/`E`) or the factory-returned ones (tightened to the Model’s `A`/`E`). They build identical runtime values.
+To construct a value, use the namespace constructors (generic in `A` / `E`) or the factory-returned ones (tightened to the Model’s `A` / `E`). They build identical runtime values.
 
 ```
 const idle = AsyncData.Idle() // { _tag: 'Idle' }
@@ -324,7 +291,7 @@ const screenData = AsyncData.all({
 })
 ```
 
-The precedence, most to least dominant, is `Failure > Loading > Idle > Stale > Refreshing > Success`. Reading it is a two-tier rule. If any input is a no-data state, the result is the highest-ranked such state with no combination, and the leftmost `Failure`’s error wins. Otherwise every input has data, so the data is combined and the result tag is the highest-ranked data state present: any `Stale` makes the whole result `Stale`, else any `Refreshing` makes it `Refreshing`, else it is `Success`. That is the payoff: the whole screen shows combined stale data while any part revalidates, and carries it forward even after a failed refresh.
+The precedence, most to least dominant, is `Failure > Loading > Idle > Stale > Refreshing > Success`. Reading it is a two-tier rule. If any input is a no-data state, the result is the highest-ranked such state with no combination, and the leftmost `Failure` ’s error wins. Otherwise every input has data, so the data is combined and the result tag is the highest-ranked data state present: any `Stale` makes the whole result `Stale`, else any `Refreshing` makes it `Refreshing`, else it is `Success`. That is the payoff: the whole screen shows combined stale data while any part revalidates, and carries it forward even after a failed refresh.
 
 All-or-nothing on data
 

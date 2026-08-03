@@ -2,17 +2,17 @@
 url: https://foldkit.dev/example-apps/typing-terminal
 title: "Typing Terminal"
 description: "A production real-time multiplayer typing speed game. Full-stack Effect app with an RPC backend, streaming room subscriptions, and a Foldkit frontend that share schemas across the wire."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Typing Terminal
+## Typing Terminal
 
-A production real-time multiplayer typing speed game. Build a room, share the code, and race friends to type the same passage. It runs at [typingterminal.com](https://typingterminal.com).
+A production real-time multiplayer typing speed game. Build a room, share the code, and race friends to type the same passage. It runs at [typingterminal.com](https://typingterminal.com/).
 
 The other entries in this section are single-process apps that show one feature at a time. Typing Terminal is the full picture: a Foldkit client, an Effect-based RPC server, and a shared schema package that both ends import directly.
 
-[Race your friends →](https://typingterminal.com)
+[Race your friends →](https://typingterminal.com/)
 
 [View source on GitHub →](https://github.com/foldkit/foldkit/tree/main/packages/typing-game)
 

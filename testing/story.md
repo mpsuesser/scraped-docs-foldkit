@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/story
 title: "Story"
 description: "Test the state machine with Story. Send Messages, resolve Commands inline, and assert on the Model. Pure, deterministic, fast."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 # Story

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/subscription-organization
 title: "Subscription Organization"
 description: "Canonical layout for subscription wiring across nested submodels."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 # Subscription Organization

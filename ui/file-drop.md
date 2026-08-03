@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/file-drop
 title: "File Drop"
 description: "Headless file drop zone that accepts drag-and-drop plus click-to-browse via a hidden native file input."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# FileDrop
+## FileDrop
 
 ## Overview
 
@@ -21,10 +21,6 @@ Check out how FileDrop is wired up in a [real Foldkit app](https://github.com/fo
 ## Examples
 
 A multi-file drop zone. Drag files on or click to browse. The component exposes `data-drag-over` on the root while a drag hovers, so you can style the highlighted state with `data-[drag-over]:*` utilities.
-
-Drop files or click to browse
-
-Any file type. This demo just lists them.
 
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
@@ -90,10 +86,10 @@ GotFileDropMessage: ({ message }) => {
   ]
 }
 
-// Render the drop zone. The `toView` callback receives attribute groups.
-// Spread `root` onto a <label> so clicking opens the picker, and spread
-// `input` onto a hidden <input type="file"> nested inside. Style the
-// drag-over state via `data-drag-over`.
+// Render the drop zone. The \`toView\` callback receives attribute groups.
+// Spread \`root\` onto a <label> so clicking opens the picker, and spread
+// \`input\` onto a hidden <input type="file"> nested inside. Style the
+// drag-over state via \`data-drag-over\`.
 const view = (model: Model, h: HtmlBuilder<Message>) =>
   h.submodel({
     slotId: 'uploader',
@@ -125,17 +121,10 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
 
 FileDrop is headless. Your `toView` callback composes a `<label>` with the `root` attributes and an `<input>` with the `input` attributes. Wrap the input inside the label so native click-to-browse works. Use `data-[drag-over]:*` and `data-[disabled]:*` utilities to style state variants.
 
-Attribute
-
-Condition
-
-`data-drag-over`
-
-Present on the root while a drag is hovering over the zone.
-
-`data-disabled`
-
-Present on the root when isDisabled is true.
+| Attribute | Condition |
+| --- | --- |
+| `data-drag-over` | Present on the root while a drag is hovering over the zone. |
+| `data-disabled` | Present on the root when isDisabled is true. |
 
 ## Accessibility
 
@@ -147,146 +136,37 @@ The hidden `<input type="file">` stays in the DOM but visually hidden via the `s
 
 Configuration object passed to `FileDrop.init()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the file-drop instance. Assigned to the hidden
-
-`<input type="file">`
-
-for label association.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the file-drop instance. Assigned to the hidden `<input type="file">` for label association. |
 
 ### ViewConfig
 
 Configuration object passed to `FileDrop.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`model`
-
-`FileDrop.Model`
-
-—
-
-The file-drop state from your parent Model.
-
-`toParentMessage`
-
-`(childMessage: FileDrop.Message) => ParentMessage`
-
-—
-
-Wraps FileDrop Messages in your parent Message type for Submodel delegation.
-
-`toView`
-
-`(attributes: FileDropAttributes) => Html`
-
-—
-
-Callback that receives attribute groups for the root drop-zone element and the hidden file input.
-
-`accept`
-
-`ReadonlyArray<string>`
-
-—
-
-List of accepted MIME types or file extensions (e.g. ["application/pdf", ".doc"]). Joined with commas and forwarded to the hidden input's accept attribute. Omit or pass an empty array to accept any file type.
-
-`multiple`
-
-`boolean`
-
-`false`
-
-When true, the hidden input accepts multiple files per selection. Drag-and-drop always accepts multiple files.
-
-`isDisabled`
-
-`boolean`
-
-`false`
-
-Strips drag handlers from the root and disables the input. Styling can react via data-disabled on the root.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `model` | `FileDrop.Model` | — | The file-drop state from your parent Model. |
+| `toParentMessage` | `(childMessage: FileDrop.Message) => ParentMessage` | — | Wraps FileDrop Messages in your parent Message type for Submodel delegation. |
+| `toView` | `(attributes: FileDropAttributes) => Html` | — | Callback that receives attribute groups for the root drop-zone element and the hidden file input. |
+| `accept` | `ReadonlyArray<string>` | — | List of accepted MIME types or file extensions (e.g. \["application/pdf", ".doc"\]). Joined with commas and forwarded to the hidden input's accept attribute. Omit or pass an empty array to accept any file type. |
+| `multiple` | `boolean` | `false` | When true, the hidden input accepts multiple files per selection. Drag-and-drop always accepts multiple files. |
+| `isDisabled` | `boolean` | `false` | Strips drag handlers from the root and disables the input. Styling can react via data-disabled on the root. |
 
 ### FileDropAttributes
 
 Attribute groups provided to the `toView` callback.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`root`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the outer drop-zone element (typically a
-
-`<label>`
-
-). Includes drag handlers (dragenter/dragleave/dragover/drop) and data attributes (data-drag-over, data-disabled).
-
-`input`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto a hidden
-
-`<input type="file">`
-
-nested inside the root. Includes the id, type, multiple, accept, sr-only class, and the file-change handler.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `root` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the outer drop-zone element (typically a `<label>`). Includes drag handlers (dragenter/dragleave/dragover/drop) and data attributes (data-drag-over, data-disabled). |
+| `input` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a hidden `<input type="file">` nested inside the root. Includes the id, type, multiple, accept, sr-only class, and the file-change handler. |
 
 ### OutMessage
 
 The third element of the update tuple (`[Model, Commands, Option<OutMessage>]`). Pattern-match in your parent update handler to process arriving files.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`ReceivedFiles`
-
-`{ files: NonEmptyReadonlyArray<File> }`
-
-—
-
-Emitted when the user drops files on the zone or selects them via the hidden input. The files list is guaranteed non-empty. Pattern-match on the OutMessage in your parent update to process the files (validate, upload, store in Model).
-
-`RejectedNonFiles`
-
-`{}`
-
-—
-
-Emitted when a drop or input-change event fires without any files, typically a drag of non-file data (text, URLs, images from another page). Consumers can ignore this or surface a hint to the user.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `ReceivedFiles` | `{ files: NonEmptyReadonlyArray<File> }` | — | Emitted when the user drops files on the zone or selects them via the hidden input. The files list is guaranteed non-empty. Pattern-match on the OutMessage in your parent update to process the files (validate, upload, store in Model). |
+| `RejectedNonFiles` | `{}` | — | Emitted when a drop or input-change event fires without any files, typically a drag of non-file data (text, URLs, images from another page). Consumers can ignore this or surface a hint to the user. |

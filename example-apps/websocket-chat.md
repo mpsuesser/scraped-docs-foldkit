@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/websocket-chat
 title: "WebSocket Chat"
 description: "Managed resources with WebSocket integration. Connection lifecycle, reconnection, and message streaming."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

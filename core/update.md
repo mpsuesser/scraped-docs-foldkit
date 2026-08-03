@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/update
 title: "Update"
 description: "Pure functions that transform the Model and return Commands in response to Messages. Foldkit's update replaces useReducer and useEffect with a single, exhaustive pattern match."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 # Update

@@ -2,11 +2,11 @@
 url: https://foldkit.dev/core/commands
 title: "Commands"
 description: "Model side effects as values returned from update. Commands replace useEffect with explicit, testable Effect-TS operations."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Commands
+## Commands
 
 ## Overview
 
@@ -185,7 +185,7 @@ const FetchWeather = Command.define('FetchWeather', {
     Effect.gen(function* () {
       const client = yield* HttpClient.HttpClient
       const response = yield* client.execute(
-        HttpClientRequest.get(`/api/weather?zip=${zipCode}`),
+        HttpClientRequest.get(\`/api/weather?zip=${zipCode}\`),
       )
       const weather = yield* S.decodeUnknownEffect(WeatherSchema)(
         yield* response.json,

@@ -2,11 +2,11 @@
 url: https://foldkit.dev/react/foldkit-vs-react-effect-atom
 title: "Foldkit vs React + Effect Atom"
 description: "Two Effect-native ways to build a frontend, compared. Effect Atom distributes state across reactive cells wired into React; Foldkit centralizes it into one Model changed by one update function. Covers state, async data, side effects, testing with Story and Scene, debugging, scaling, and AI-assisted development."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Foldkit vs React + Effect Atom
+## Foldkit vs React + Effect Atom
 
 ## Overview
 
@@ -18,15 +18,13 @@ Related page
 
 This page assumes you are sold on Effect. If you are coming from plain React, the [Foldkit vs React](https://foldkit.dev/react/foldkit-vs-react-side-by-side) comparison makes the broader case for this style of architecture.
 
-## What They Share
-
 The common ground is Effect itself, and that is most of what they share. Both can express asynchronous work and side effects as Effect values: in Effect Atom you hand an Effect to `Atom.make` or `runtime.fn`; in Foldkit you return a Command that wraps one. Both put errors in the type signature, both use Schema for validation at the boundary, and both lean on Layers and structured concurrency. Above that foundation they diverge completely. Effect Atom is the state layer and defers rendering, the component model, and routing to its host framework; Foldkit owns the whole stack, from its runtime and Snabbdom-based virtual DOM up through routing and its UI library.
 
 ## Many Atoms vs One Model
 
 An atom is a reactive container for one value. You create it with `Atom.make`, read it with `useAtomValue`, write it with `useAtomSet`, and derive new atoms from existing ones with `get`. The registry tracks dependencies between atoms and re-renders the components that read a changed atom.
 
-State is therefore distributed by design, and that distribution is the point: a feature owns its atoms, adding one touches no shared file, and independent features evolve without coordinating through a common update. Ten features mean a spread of atoms, each an independent piece of state, each writable from any component that imports it. There is no single value that is “the state of the app,” and no single place that enumerates how it can change. This is the atomic model working as intended, the same as [Jotai](https://jotai.org).
+State is therefore distributed by design, and that distribution is the point: a feature owns its atoms, adding one touches no shared file, and independent features evolve without coordinating through a common update. Ten features mean a spread of atoms, each an independent piece of state, each writable from any component that imports it. There is no single value that is “the state of the app,” and no single place that enumerates how it can change. This is the atomic model working as intended, the same as [Jotai](https://jotai.org/).
 
 Foldkit centralizes by design. The [Model](https://foldkit.dev/core/model) is one value. The [Message](https://foldkit.dev/core/messages) union is the closed set of facts that can change it. The [update](https://foldkit.dev/core/update) function is the only place those transitions are defined. Those three facts are framework constraints, not conventions you maintain by discipline. The properties Foldkit claims downstream (a complete index of state transitions, [a single replayable timeline](https://foldkit.dev/core/devtools), [tests with nothing to mock](https://foldkit.dev/testing)) follow from that one constraint.
 
@@ -499,59 +497,13 @@ The natural worry is familiarity: React is far more represented in the training 
 
 Architecture aside, a few practical factors weigh on the choice.
 
-React + Effect Atom
-
-Foldkit
-
-Ecosystem
-
-The entire React ecosystem: components, tooling, and the hiring pool
-
-Young but growing; batteries-included
-
-[Foldkit UI](https://foldkit.dev/ui/overview)
-
-;
-
-[Mount](https://foldkit.dev/core/mount)
-
-and
-
-[CustomElement](https://foldkit.dev/core/custom-element)
-
-for third-party interop
-
-Incremental adoption
-
-Add one atom to an existing React app
-
-Owns the whole app, though
-
-[Embedding](https://foldkit.dev/core/embedding)
-
-mounts it inside one
-
-Data fetching
-
-Batteries included: Result, SWR, Suspense, HTTP/RPC
-
-[AsyncData](https://foldkit.dev/core/async-data)
-
-for the six states; the fetch, cache, and refetch are yours to model with a Command and the Model
-
-Fine-grained reactivity
-
-Only the components reading a changed atom re-render
-
-Top-down render with a virtual DOM diff and
-
-[view memoization](https://foldkit.dev/core/view-memoization)
-
-View familiarity
-
-JSX and the patterns every React dev knows
-
-A typed function-call DSL reminiscent of Elm
+|  | React + Effect Atom | Foldkit |
+| --- | --- | --- |
+| Ecosystem | The entire React ecosystem: components, tooling, and the hiring pool | Young but growing; batteries-included [Foldkit UI](https://foldkit.dev/ui/overview); [Mount](https://foldkit.dev/core/mount) and [CustomElement](https://foldkit.dev/core/custom-element) for third-party interop |
+| Incremental adoption | Add one atom to an existing React app | Owns the whole app, though [Embedding](https://foldkit.dev/core/embedding) mounts it inside one |
+| Data fetching | Batteries included: Result, SWR, Suspense, HTTP/RPC | [AsyncData](https://foldkit.dev/core/async-data) for the six states; the fetch, cache, and refetch are yours to model with a Command and the Model |
+| Fine-grained reactivity | Only the components reading a changed atom re-render | Top-down render with a virtual DOM diff and [view memoization](https://foldkit.dev/core/view-memoization) |
+| View familiarity | JSX and the patterns every React dev knows | A typed function-call DSL reminiscent of Elm |
 
 ## Conclusion
 

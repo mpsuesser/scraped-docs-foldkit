@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/combobox
 title: "Combobox"
 description: "Accessible autocomplete input with filtering and selection."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Combobox
+## Combobox
 
 ## Overview
 
@@ -28,8 +28,6 @@ Check out how Combobox is wired up in a [real Foldkit app](https://github.com/fo
 
 Pass `itemToValue` and `itemToDisplayText` to control how items map to values and what text appears in the input on selection. Filter the `items` array yourself based on `model.inputValue`.
 
-City
-
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
@@ -49,7 +47,7 @@ type City = typeof City.Type
 const CityCombobox = Combobox.create<City>()
 
 // Add a field to your Model for the Combobox Submodel, plus a field for
-// the selected value your app actually cares about. Using the `City`
+// the selected value your app actually cares about. Using the \`City\`
 // Schema keeps the field literal-typed end to end:
 const Model = S.Struct({
   maybeCity: S.Option(City),
@@ -73,8 +71,8 @@ const GotComboboxMessage = m('GotComboboxMessage', {
 })
 
 // Delegate keyboard navigation, typeahead, and open/close to
-// CityCombobox.update. The OutMessage's `Selected` carries the activated
-// item; fold it into the selection you own. `ClearedSelection` only fires
+// CityCombobox.update. The OutMessage's \`Selected\` carries the activated
+// item; fold it into the selection you own. \`ClearedSelection\` only fires
 // for nullable comboboxes, so this combobox keeps its selection there and
 // the fold stays exhaustive:
 GotComboboxMessage: ({ message }) => {
@@ -125,10 +123,10 @@ const filteredCities =
       )
 
 // Inside your view function, embed the Combobox via h.submodel. Give the
-// input an accessible name: target the input id with `Combobox.inputId('city')`
-// from a native `<label for>`, and pass `ariaLabelledBy` so the input is named
+// input an accessible name: target the input id with \`Combobox.inputId('city')\`
+// from a native \`<label for>\`, and pass \`ariaLabelledBy\` so the input is named
 // by the label. The attribute is only emitted when provided, so the input
-// never carries a dangling `aria-labelledby`.
+// never carries a dangling \`aria-labelledby\`.
 const view = (model: Model, h: HtmlBuilder<Message>) => {
   const labelId = 'city-label'
 
@@ -180,13 +178,9 @@ const view = (model: Model, h: HtmlBuilder<Message>) => {
 
 Pass `nullable: true` at init to allow clearing the selection by clicking the selected item again, or by emptying the input and closing. Both paths reach the parent as OutMessages (`Selected` toggles, `ClearedSelection` clears), so the parent decides what an empty selection looks like.
 
-City
-
 ### Select on Focus
 
 Pass `selectInputOnFocus: true` at init to highlight the input text when the combobox receives focus. Typing immediately replaces the current value, making it easy to start a new search.
-
-City
 
 ### Locked Placement
 
@@ -194,13 +188,9 @@ Set `anchor.isPlacementLocked` to `true` when a panel should keep the side chose
 
 To make the behavior reproducible at any scroll position, this demo keeps the panel inside a constrained container. In normal use, you can leave the portal enabled.
 
-City
-
 ### Multi-Select
 
 Use `Combobox.Multi` for multi-selection. The dropdown stays open on selection and items toggle on/off. The parent stores the selected values and folds each `Selected` OutMessage by toggling the value in its array.
-
-Cities
 
 No selection
 
@@ -223,7 +213,7 @@ type City = typeof City.Type
 const CitiesCombobox = Combobox.Multi.create<City>()
 
 // Add a field to your Model for the Combobox.Multi Submodel, plus a field
-// for the selected values your app actually cares about. Using the `City`
+// for the selected values your app actually cares about. Using the \`City\`
 // Schema keeps the field literal-typed end to end:
 const Model = S.Struct({
   selectedCities: S.Array(City),
@@ -247,9 +237,9 @@ const GotComboboxMultiMessage = m('GotComboboxMultiMessage', {
 })
 
 // Delegate keyboard navigation, typeahead, and open/close to
-// CitiesCombobox.update. Each `Selected` carries the activated item; the
+// CitiesCombobox.update. Each \`Selected\` carries the activated item; the
 // parent owns the selection, so it toggles the value's membership.
-// `ClearedSelection` only fires for nullable comboboxes, so this combobox
+// \`ClearedSelection\` only fires for nullable comboboxes, so this combobox
 // keeps its selection there and the fold stays exhaustive:
 GotComboboxMultiMessage: ({ message }) => {
   const [nextCombobox, commands, maybeOutMessage] = CitiesCombobox.update(
@@ -305,10 +295,10 @@ const filteredCities =
 
 // Inside your view function, embed the Combobox.Multi via h.submodel. As with
 // the single-select Combobox, give the input an accessible name: target the
-// input id with `Combobox.Multi.inputId('cities-multi')` from a native
-// `<label for>`, and pass `ariaLabelledBy` so the input is named by the label.
+// input id with \`Combobox.Multi.inputId('cities-multi')\` from a native
+// \`<label for>\`, and pass \`ariaLabelledBy\` so the input is named by the label.
 // The attribute is only emitted when provided, so the input never carries a
-// dangling `aria-labelledby`.
+// dangling \`aria-labelledby\`.
 const view = (model: Model, h: HtmlBuilder<Message>) => {
   const labelId = 'cities-multi-label'
 
@@ -365,57 +355,25 @@ Combobox is headless. The `itemToConfig` callback controls all item markup. Styl
 
 The items panel is portaled to the document body and positioned relative to the input wrapper with Floating UI. Ancestor stacking contexts and overflow clipping no longer apply, so a clipped container or a sibling overlay wrapper cannot hide the open panel. The panel still stacks at the document level: give it a z-index above elevated content like sticky headers or toasts, as the demos on this page do with `z-10`. Pass `anchor: { portal: false }` to keep the panel inside the wrapper instead.
 
-Attribute
-
-Condition
-
-`data-active`
-
-Present on the item currently highlighted by keyboard or pointer.
-
-`data-selected`
-
-Present on the selected item(s).
-
-`data-disabled`
-
-Present on disabled items.
-
-`data-closed`
-
-Present during close animation when isAnimated is true.
-
-`data-placement`
-
-Present on the items panel, set to the side it currently sits on: top, right, bottom, or left. Fixed to the first resolved side when isPlacementLocked is true.
+| Attribute | Condition |
+| --- | --- |
+| `data-active` | Present on the item currently highlighted by keyboard or pointer. |
+| `data-selected` | Present on the selected item(s). |
+| `data-disabled` | Present on disabled items. |
+| `data-closed` | Present during close animation when isAnimated is true. |
+| `data-placement` | Present on the items panel, set to the side it currently sits on: top, right, bottom, or left. Fixed to the first resolved side when isPlacementLocked is true. |
 
 ## Keyboard Interaction
 
 Focus stays on the input while arrow keys navigate items via `aria-activedescendant`.
 
-Key
-
-Description
-
-`Arrow Down`
-
-Opens the dropdown or moves to the next item.
-
-`Arrow Up`
-
-Moves to the previous item.
-
-`Enter`
-
-Selects the active item.
-
-`Escape`
-
-Closes the dropdown.
-
-`Type a character`
-
-Filters the items list. You control filtering in your view by passing filtered items.
+| Key | Description |
+| --- | --- |
+| `Arrow Down` | Opens the dropdown or moves to the next item. |
+| `Arrow Up` | Moves to the previous item. |
+| `Enter` | Selects the active item. |
+| `Escape` | Closes the dropdown. |
+| `Type a character` | Filters the items list. You control filtering in your view by passing filtered items. |
 
 ## Accessibility
 
@@ -431,230 +389,43 @@ Two ViewConfig fields cover the cases a `<label for>` does not. Pass `ariaLabel`
 
 Configuration object passed to `Combobox.init()` or `Combobox.Multi.init()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the combobox instance.
-
-`isAnimated`
-
-`boolean`
-
-`false`
-
-Enables animation coordination.
-
-`isModal`
-
-`boolean`
-
-`false`
-
-Locks page scroll and marks other elements inert when open.
-
-`nullable`
-
-`boolean`
-
-`false`
-
-Allows clearing the selection by clicking the selected item again, or by emptying the input and closing (which emits ClearedSelection).
-
-`immediate`
-
-`boolean`
-
-`false`
-
-Emits Selected on every keyboard activation while open, so arrow keys commit as they move instead of waiting for Enter. Combining immediate with nullable is discouraged: a nullable toggle fold would deselect as the arrows pass back over the selected item.
-
-`selectInputOnFocus`
-
-`boolean`
-
-`false`
-
-Highlights the input text when the combobox receives focus, so typing replaces the current value.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the combobox instance. |
+| `isAnimated` | `boolean` | `false` | Enables animation coordination. |
+| `isModal` | `boolean` | `false` | Locks page scroll and marks other elements inert when open. |
+| `nullable` | `boolean` | `false` | Allows clearing the selection by clicking the selected item again, or by emptying the input and closing (which emits ClearedSelection). |
+| `immediate` | `boolean` | `false` | Emits Selected on every keyboard activation while open, so arrow keys commit as they move instead of waiting for Enter. Combining immediate with nullable is discouraged: a nullable toggle fold would deselect as the arrows pass back over the selected item. |
+| `selectInputOnFocus` | `boolean` | `false` | Highlights the input text when the combobox receives focus, so typing replaces the current value. |
 
 ### ViewConfig
 
 Configuration object passed to `CityCombobox.view`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`model`
-
-`Combobox.Model`
-
-—
-
-The combobox state from your parent Model.
-
-`toParentMessage`
-
-`(childMessage: Combobox.Message) => ParentMessage`
-
-—
-
-Wraps Combobox Messages in your parent Message type for Submodel delegation.
-
-`items`
-
-`ReadonlyArray<Item>`
-
-—
-
-The filtered list of items to display. You control the filtering logic based on model.inputValue.
-
-`maybeSelectedValue`
-
-`Option<Item>`
-
-—
-
-The selection the parent owns. None when nothing is selected yet. Multi-select takes selectedValues:
-
-`ReadonlyArray<Item>`
-
-instead. Drives the isSelected context and aria-selected.
-
-`restingInputValue`
-
-`string`
-
-—
-
-The text the input returns to when the combobox closes: the selected display text for single-select, an empty string for multi-select.
-
-`itemToConfig`
-
-`(item, context) => ItemConfig`
-
-—
-
-Maps each item to its className and content. The context provides isActive, isSelected, and isDisabled.
-
-`itemToValue`
-
-`(item: Item, index: number) => Item`
-
-—
-
-Extracts the value from an item. Required.
-
-`itemToDisplayText`
-
-`(item: Item, index: number) => string`
-
-—
-
-Text shown in the input when an item is selected. Required.
-
-`inputAttributes`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Additional attributes for the text input.
-
-`itemsAttributes`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Additional attributes for the dropdown items container.
-
-`backdropAttributes`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Additional attributes for the backdrop overlay.
-
-`buttonContent`
-
-`Html`
-
-—
-
-Content for the dropdown toggle button (typically a chevron icon).
-
-`buttonAttributes`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Additional attributes for the toggle button.
-
-`anchor`
-
-`AnchorConfig`
-
-—
-
-Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. The items panel is always anchored to the input wrapper; when omitted, the panel uses bottom-start placement. Portaled to the document body by default; pass portal: false to keep the panel inside the wrapper.
-
-`ariaLabel`
-
-`string`
-
-—
-
-Accessible name for the input. Use when there is no visible label. Applied as aria-label, and takes precedence over ariaLabelledBy.
-
-`ariaLabelledBy`
-
-`string`
-
-—
-
-Id of an external element that labels the input, applied as aria-labelledby. Pair with a visible label element.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `model` | `Combobox.Model` | — | The combobox state from your parent Model. |
+| `toParentMessage` | `(childMessage: Combobox.Message) => ParentMessage` | — | Wraps Combobox Messages in your parent Message type for Submodel delegation. |
+| `items` | `ReadonlyArray<Item>` | — | The filtered list of items to display. You control the filtering logic based on model.inputValue. |
+| `maybeSelectedValue` | `Option<Item>` | — | The selection the parent owns. None when nothing is selected yet. Multi-select takes selectedValues: `ReadonlyArray<Item>` instead. Drives the isSelected context and aria-selected. |
+| `restingInputValue` | `string` | — | The text the input returns to when the combobox closes: the selected display text for single-select, an empty string for multi-select. |
+| `itemToConfig` | `(item, context) => ItemConfig` | — | Maps each item to its className and content. The context provides isActive, isSelected, and isDisabled. |
+| `itemToValue` | `(item: Item, index: number) => Item` | — | Extracts the value from an item. Required. |
+| `itemToDisplayText` | `(item: Item, index: number) => string` | — | Text shown in the input when an item is selected. Required. |
+| `inputAttributes` | `ReadonlyArray<Attribute<Message>>` | — | Additional attributes for the text input. |
+| `itemsAttributes` | `ReadonlyArray<Attribute<Message>>` | — | Additional attributes for the dropdown items container. |
+| `backdropAttributes` | `ReadonlyArray<Attribute<Message>>` | — | Additional attributes for the backdrop overlay. |
+| `buttonContent` | `Html` | — | Content for the dropdown toggle button (typically a chevron icon). |
+| `buttonAttributes` | `ReadonlyArray<Attribute<Message>>` | — | Additional attributes for the toggle button. |
+| `anchor` | `AnchorConfig` | — | Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. The items panel is always anchored to the input wrapper; when omitted, the panel uses bottom-start placement. Portaled to the document body by default; pass portal: false to keep the panel inside the wrapper. |
+| `ariaLabel` | `string` | — | Accessible name for the input. Use when there is no visible label. Applied as aria-label, and takes precedence over ariaLabelledBy. |
+| `ariaLabelledBy` | `string` | — | Id of an external element that labels the input, applied as aria-labelledby. Pair with a visible label element. |
 
 ### OutMessage
 
 Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler. The same shape applies to the update returned by `Combobox.Multi.create()`, as in `CitiesCombobox.update`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`Selected`
-
-`{ value: Item }`
-
-—
-
-Emitted when an item is activated. Carries the neutral fact that the item was activated; the parent owns the selection and decides what it means. Single-select stores the value; multi-select toggles the value in and out of its array. Pattern-match the third tuple element of CityCombobox.update in your GotComboboxMessage handler to fold the value into the selection you own.
-
-`ClearedSelection`
-
-`{}`
-
-—
-
-Emitted when a nullable combobox closes with an empty input, meaning the user cleared it. The parent clears the selection it owns.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `Selected` | `{ value: Item }` | — | Emitted when an item is activated. Carries the neutral fact that the item was activated; the parent owns the selection and decides what it means. Single-select stores the value; multi-select toggles the value in and out of its array. Pattern-match the third tuple element of CityCombobox.update in your GotComboboxMessage handler to fold the value into the selection you own. |
+| `ClearedSelection` | `{}` | — | Emitted when a nullable combobox closes with an empty input, meaning the user cleared it. The parent clears the selection it owns. |

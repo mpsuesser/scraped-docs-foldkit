@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/informing-submodels
 title: "Informing Submodels"
 description: "Relay a change a Submodel does not own (a URL, a server push, an auth change) through a helper it exposes, so it can update its own state in response."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 # Informing Submodels

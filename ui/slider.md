@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/slider
 title: "Slider"
 description: "Accessible slider for numeric range input. Pointer drag, keyboard navigation, ARIA slider semantics."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Slider
+## Slider
 
 ## Overview
 
@@ -20,11 +20,7 @@ Check out how Slider is wired up in a [real Foldkit app](https://github.com/fold
 
 Slider is headless. Your `toView` callback controls all markup and styling. The component hands back attribute groups for the root, track, filled track, thumb, label, and an optional hidden input for form submission.
 
-Rating
-
 3 of 10
-
-Volume
 
 50%
 
@@ -70,7 +66,7 @@ const GotSliderMessage = m('GotSliderMessage', {
 })
 
 // Inside your update function's M.tagsExhaustive({...}), delegate to
-// Slider.update. The OutMessage's `ChangedValue` carries the new
+// Slider.update. The OutMessage's \`ChangedValue\` carries the new
 // number. Lift it to domain state, validate, or persist on each commit.
 GotSliderMessage: ({ message }) => {
   const [nextSlider, commands, maybeOutMessage] = Slider.update(
@@ -89,7 +85,7 @@ GotSliderMessage: ({ message }) => {
     onSome: M.type<Slider.OutMessage>().pipe(
       M.tagsExhaustive({
         ChangedValue: ({ value }) => [
-          // The child has emitted `ChangedValue`. Store the new value
+          // The child has emitted \`ChangedValue\`. Store the new value
           // in the field you own. This arm is also where the parent
           // can validate, persist, or trigger a downstream Command.
           evo(model, {
@@ -120,7 +116,7 @@ const subscriptions = Subscription.aggregate<Model, Message>()(
 )
 
 // Inside your view function, render the slider. You control every element's
-// markup and classes through the `toView` callback. The `attributes` groups
+// markup and classes through the \`toView\` callback. The \`attributes\` groups
 // provide ARIA, pointer, and keyboard wiring:
 const view = (model: Model, h: HtmlBuilder<Message>) =>
   h.submodel({
@@ -129,7 +125,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
     view: Slider.view,
     viewInputs: {
       value: model.ratingValue,
-      formatValue: value => `${String(value)} of 10`,
+      formatValue: value => \`${String(value)} of 10\`,
       toView: attributes =>
         h.div(
           [h.Class('flex flex-col gap-2 w-full max-w-sm')],
@@ -143,7 +139,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
                 ),
                 h.span(
                   [h.Class('tabular-nums text-gray-600')],
-                  [`${String(model.ratingValue)} / 10`],
+                  [\`${String(model.ratingValue)} / 10\`],
                 ),
               ],
             ),
@@ -188,55 +184,23 @@ Pointer drag needs document-level `pointermove` / `pointerup` tracking (the curs
 
 Slider exposes `data-dragging` while the user is actively dragging, `data-disabled` when disabled, and `data-orientation` on the root. The `filledTrack` attribute group carries an inline width so the filled portion always matches the current value.
 
-Attribute
-
-Condition
-
-`data-dragging`
-
-Present on the root, track, filled track, and thumb while the user is actively dragging.
-
-`data-disabled`
-
-Present on all groups when isDisabled is true.
-
-`data-orientation`
-
-Present on the root. Always "horizontal" in v1; vertical is planned.
+| Attribute | Condition |
+| --- | --- |
+| `data-dragging` | Present on the root, track, filled track, and thumb while the user is actively dragging. |
+| `data-disabled` | Present on all groups when isDisabled is true. |
+| `data-orientation` | Present on the root. Always "horizontal" in v1; vertical is planned. |
 
 ## Keyboard Interaction
 
-Key
-
-Description
-
-`ArrowRight / ArrowUp`
-
-Increases the value by one step.
-
-`ArrowLeft / ArrowDown`
-
-Decreases the value by one step.
-
-`PageUp`
-
-Increases the value by ten steps.
-
-`PageDown`
-
-Decreases the value by ten steps.
-
-`Home`
-
-Jumps to the minimum value.
-
-`End`
-
-Jumps to the maximum value.
-
-`Escape`
-
-During a pointer drag, cancels the drag and restores the pre-drag value.
+| Key | Description |
+| --- | --- |
+| `ArrowRight / ArrowUp` | Increases the value by one step. |
+| `ArrowLeft / ArrowDown` | Decreases the value by one step. |
+| `PageUp` | Increases the value by ten steps. |
+| `PageDown` | Decreases the value by ten steps. |
+| `Home` | Jumps to the minimum value. |
+| `End` | Jumps to the maximum value. |
+| `Escape` | During a pointer drag, cancels the drag and restores the pre-drag value. |
 
 ## Accessibility
 
@@ -248,222 +212,47 @@ The thumb receives `role="slider"`, `aria-valuemin`, `aria-valuemax`, `aria-valu
 
 Configuration object passed to `Slider.init()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the slider instance.
-
-`min`
-
-`number`
-
-—
-
-Minimum value.
-
-`max`
-
-`number`
-
-—
-
-Maximum value.
-
-`step`
-
-`number`
-
-—
-
-Increment between allowed values. Fractional steps are rounded to the step’s decimal precision to avoid floating-point drift.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the slider instance. |
+| `min` | `number` | — | Minimum value. |
+| `max` | `number` | — | Maximum value. |
+| `step` | `number` | — | Increment between allowed values. Fractional steps are rounded to the step’s decimal precision to avoid floating-point drift. |
 
 ### ViewConfig
 
 Configuration object passed to `Slider.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`model`
-
-`Slider.Model`
-
-—
-
-The slider state from your parent Model.
-
-`toParentMessage`
-
-`(childMessage: Slider.Message) => ParentMessage`
-
-—
-
-Wraps Slider Messages in your parent Message type for Submodel delegation.
-
-`value`
-
-`number`
-
-—
-
-The current value, read from your parent Model. The thumb position, aria-valuenow, and filled track derive from it. Fold the ChangedValue OutMessage into this field in your update.
-
-`toView`
-
-`(attributes: SliderAttributes) => Html`
-
-—
-
-Callback that receives attribute groups for the root, track, filled track, thumb, label, and hidden input elements.
-
-`ariaLabel`
-
-`string`
-
-—
-
-Accessible name for screen readers when there is no visible label.
-
-`ariaLabelledBy`
-
-`string`
-
-—
-
-ID of an external element whose text serves as the slider’s accessible name.
-
-`formatValue`
-
-`(value: number) => string`
-
-—
-
-Produces the aria-valuetext announced to screen readers. Use it when the numeric value needs a natural-language form (e.g. "3 of 10" or "50 percent").
-
-`isDisabled`
-
-`boolean`
-
-`false`
-
-Whether the slider is disabled. Removes pointer and keyboard interactivity while preserving focusability.
-
-`name`
-
-`string`
-
-—
-
-Form field name. When provided, a hidden input carrying the current numeric value is included for native form submission.
-
-`getTrackRoot`
-
-`(() => Document | ShadowRoot) | undefined`
-
-—
-
-Optional accessor returning the DOM root that contains the slider track. Defaults to
-
-`document`
-
-. Override when rendering inside a Shadow DOM so the drag subscription can find the track element to measure cursor position.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `model` | `Slider.Model` | — | The slider state from your parent Model. |
+| `toParentMessage` | `(childMessage: Slider.Message) => ParentMessage` | — | Wraps Slider Messages in your parent Message type for Submodel delegation. |
+| `value` | `number` | — | The current value, read from your parent Model. The thumb position, aria-valuenow, and filled track derive from it. Fold the ChangedValue OutMessage into this field in your update. |
+| `toView` | `(attributes: SliderAttributes) => Html` | — | Callback that receives attribute groups for the root, track, filled track, thumb, label, and hidden input elements. |
+| `ariaLabel` | `string` | — | Accessible name for screen readers when there is no visible label. |
+| `ariaLabelledBy` | `string` | — | ID of an external element whose text serves as the slider’s accessible name. |
+| `formatValue` | `(value: number) => string` | — | Produces the aria-valuetext announced to screen readers. Use it when the numeric value needs a natural-language form (e.g. "3 of 10" or "50 percent"). |
+| `isDisabled` | `boolean` | `false` | Whether the slider is disabled. Removes pointer and keyboard interactivity while preserving focusability. |
+| `name` | `string` | — | Form field name. When provided, a hidden input carrying the current numeric value is included for native form submission. |
+| `getTrackRoot` | `(() => Document \| ShadowRoot) \| undefined` | — | Optional accessor returning the DOM root that contains the slider track. Defaults to `document`. Override when rendering inside a Shadow DOM so the drag subscription can find the track element to measure cursor position. |
 
 ### SliderAttributes
 
 Attribute groups provided to the `toView` callback.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`root`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the outer wrapper. Carries data-slider-id, data-orientation, and state data attributes.
-
-`track`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the track element (the bar). Carries data-slider-track-id (used by the drag subscription to measure cursor position), positioning styles, and the pointerdown handler for click-to-jump.
-
-`filledTrack`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto an element nested inside the track. Its inline width reflects the current value as a percentage of the range.
-
-`thumb`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the draggable handle. Carries role="slider", tabindex, aria-value*, the pointerdown handler, the keyboard handler, and positioning.
-
-`label`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the visible label element. Carries the id the thumb’s aria-labelledby points to by default.
-
-`hiddenInput`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto a hidden
-
-`<input>`
-
-for form submission. Only populated when the name prop is set.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `root` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the outer wrapper. Carries data-slider-id, data-orientation, and state data attributes. |
+| `track` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the track element (the bar). Carries data-slider-track-id (used by the drag subscription to measure cursor position), positioning styles, and the pointerdown handler for click-to-jump. |
+| `filledTrack` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto an element nested inside the track. Its inline width reflects the current value as a percentage of the range. |
+| `thumb` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the draggable handle. Carries role="slider", tabindex, aria-value\*, the pointerdown handler, the keyboard handler, and positioning. |
+| `label` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the visible label element. Carries the id the thumb’s aria-labelledby points to by default. |
+| `hiddenInput` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a hidden `<input>` for form submission. Only populated when the name prop is set. |
 
 ### OutMessage
 
 Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Parents pattern-match on the OutMessage in their own update handler.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`ChangedValue`
-
-`{ value: number }`
-
-—
-
-Emitted whenever the slider value changes via drag, click-to-jump, or keyboard navigation. Pattern-match the third tuple element of Slider.update in your GotSliderMessage handler to react: persist the value, validate, or trigger a downstream Command.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `ChangedValue` | `{ value: number }` | — | Emitted whenever the slider value changes via drag, click-to-jump, or keyboard navigation. Pattern-match the third tuple element of Slider.update in your GotSliderMessage handler to react: persist the value, validate, or trigger a downstream Command. |

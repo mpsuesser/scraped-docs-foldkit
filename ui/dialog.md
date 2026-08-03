@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/dialog
 title: "Dialog"
 description: "A modal dialog backed by the native dialog element with focus trapping and scroll locking."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Dialog
+## Dialog
 
 ## Overview
 
@@ -80,7 +80,7 @@ GotDialogMessage: ({ message }) => {
 }
 
 // In your view, open from a trigger with the fact, and dismiss from a Cancel
-// button by spreading the `closeButton` bundle, no parent message needed:
+// button by spreading the \`closeButton\` bundle, no parent message needed:
 const view = (h: HtmlBuilder<Message>) =>
   h.div(
     [],
@@ -183,7 +183,7 @@ GotDialogMessage: ({ message }) => {
 }
 
 // Inside your view function, use data-[closed] for enter/leave transitions and
-// spread the `closeButton` bundle onto your dismiss buttons:
+// spread the \`closeButton\` bundle onto your dismiss buttons:
 const view = (model: Model, h: HtmlBuilder<Message>) =>
   h.submodel({
     slotId: model.dialog.id,
@@ -271,8 +271,8 @@ import { m } from 'foldkit/message'
 import { Combobox, Dialog } from '@foldkit/ui'
 
 // One Model field for the dialog, one for the overlay it contains, plus
-// the parent-owned selection (`City` and `CityCombobox` are the
-// `S.Literals` Schema and typed factory from the Combobox example):
+// the parent-owned selection (\`City\` and \`CityCombobox\` are the
+// \`S.Literals\` Schema and typed factory from the Combobox example):
 const Model = S.Struct({
   dialog: Dialog.Model,
   combobox: Combobox.Model,
@@ -297,7 +297,7 @@ const GotComboboxMessage = m('GotComboboxMessage', {
   message: Combobox.Message,
 })
 
-// Render the overlay inside the dialog panel. The key is `portal: false` on
+// Render the overlay inside the dialog panel. The key is \`portal: false\` on
 // the overlay's anchor. By default the panel portals to the document body,
 // where the dialog's high stacking order hides it. With portal: false the
 // panel stays inside the dialog and renders above the panel content.
@@ -422,7 +422,7 @@ ConfirmedDeleteProject: () => {
 
 // Each dialog is its own submodel; the framework stacks them by z-index, traps
 // focus in the topmost, and Escape closes the topmost before the one beneath
-// it. Cancel dismisses the confirmation by spreading the `closeButton` bundle; Delete
+// it. Cancel dismisses the confirmation by spreading the \`closeButton\` bundle; Delete
 // dispatches a fact that runs the work and closes through Dialog.close.
 const view = (h: HtmlBuilder<Message>) => {
   const confirmDialog = h.submodel({
@@ -495,43 +495,20 @@ Dialog is headless. The `toView` callback receives attribute bundles for the dia
 
 When `isAnimated` is true, enter/leave animations flow through the [Animation](https://foldkit.dev/ui/animation) module. Style with CSS transitions or CSS keyframe animations. Animation advances once every animation on the element has settled.
 
-Attribute
-
-Condition
-
-`data-open`
-
-Present on the dialog when visible.
-
-`data-closed`
-
-Present during close animation.
-
-`data-transition`
-
-Present during any animation phase.
-
-`data-enter`
-
-Present during the enter animation.
-
-`data-leave`
-
-Present during the leave animation.
+| Attribute | Condition |
+| --- | --- |
+| `data-open` | Present on the dialog when visible. |
+| `data-closed` | Present during close animation. |
+| `data-transition` | Present during any animation phase. |
+| `data-enter` | Present during the enter animation. |
+| `data-leave` | Present during the leave animation. |
 
 ## Keyboard Interaction
 
-Key
-
-Description
-
-`Escape`
-
-Closes the dialog.
-
-`Tab`
-
-Cycles focus within the dialog.
+| Key | Description |
+| --- | --- |
+| `Escape` | Closes the dialog. |
+| `Tab` | Cycles focus within the dialog. |
 
 ## Accessibility
 
@@ -545,270 +522,43 @@ The ids are framework-managed (the `-dialog-title`, `-dialog-description`, and `
 
 Configuration object passed to `Dialog.init()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the dialog instance.
-
-`isOpen`
-
-`boolean`
-
-`false`
-
-Initial open/closed state.
-
-`isAnimated`
-
-`boolean`
-
-`false`
-
-Enables animation coordination for open/close animations.
-
-`focusSelector`
-
-`string`
-
-—
-
-CSS selector for the element that receives focus when the dialog opens. A selector-based override of the
-
-`initialFocus`
-
-marker, for an element whose id you do not own or a descendant selector. Takes precedence over
-
-`initialFocus`
-
-; with neither set, focus falls to the first focusable element.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the dialog instance. |
+| `isOpen` | `boolean` | `false` | Initial open/closed state. |
+| `isAnimated` | `boolean` | `false` | Enables animation coordination for open/close animations. |
+| `focusSelector` | `string` | — | CSS selector for the element that receives focus when the dialog opens. A selector-based override of the `initialFocus` marker, for an element whose id you do not own or a descendant selector. Takes precedence over `initialFocus`; with neither set, focus falls to the first focusable element. |
 
 ### ViewConfig
 
 Configuration object passed to `Dialog.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`model`
-
-`Dialog.Model`
-
-—
-
-The dialog state from your parent Model.
-
-`toParentMessage`
-
-`(childMessage: Dialog.Message) => ParentMessage`
-
-—
-
-Wraps Dialog Messages in your parent Message type for Submodel delegation.
-
-`toView`
-
-`(render: RenderInfo) => Html`
-
-—
-
-Callback that receives the dialog, backdrop, panel, and closeButton attribute bundles plus a derived
-
-`isVisible`
-
-flag, and returns the composed layout. The consumer MUST render an
-
-`h.dialog(...)`
-
-element so the framework can open and close it.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `model` | `Dialog.Model` | — | The dialog state from your parent Model. |
+| `toParentMessage` | `(childMessage: Dialog.Message) => ParentMessage` | — | Wraps Dialog Messages in your parent Message type for Submodel delegation. |
+| `toView` | `(render: RenderInfo) => Html` | — | Callback that receives the dialog, backdrop, panel, and closeButton attribute bundles plus a derived `isVisible` flag, and returns the composed layout. The consumer MUST render an `h.dialog(...)` element so the framework can open and close it. |
 
 ### RenderInfo
 
 Payload delivered to the `toView` callback each render.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`dialog`
-
-`ReadonlyArray<ChildAttribute>`
-
-—
-
-Spread onto an
-
-`h.dialog(...)`
-
-element. Carries the id, ARIA labelling,
-
-`open`
-
-prop, positioning style, and the Escape handler that wires to
-
-`RequestedClose`
-
-.
-
-`backdrop`
-
-`ReadonlyArray<ChildAttribute>`
-
-—
-
-Spread onto the backdrop element. Includes the Animation data attributes and the outside-click handler that dispatches
-
-`RequestedClose`
-
-(suppressed while a leave animation is in progress).
-
-`panel`
-
-`ReadonlyArray<ChildAttribute>`
-
-—
-
-Spread onto the panel element. Includes the panel id (
-
-`${id}-panel`
-
-) and the Animation data attributes.
-
-`title`
-
-`ReadonlyArray<ChildAttribute>`
-
-—
-
-Spread onto your accessible-name heading (
-
-`h.h2([...title], [...])`
-
-). Carries the framework-managed id the dialog’s
-
-`aria-labelledby`
-
-points at, so labelling wires up without hand-rolling the id.
-
-`description`
-
-`ReadonlyArray<ChildAttribute>`
-
-—
-
-Spread onto your description element (
-
-`h.p([...description], [...])`
-
-). Carries the framework-managed id the dialog’s
-
-`aria-describedby`
-
-points at, so the association wires up without hand-rolling the id.
-
-`initialFocus`
-
-`ReadonlyArray<ChildAttribute>`
-
-—
-
-Spread onto the element that should receive focus when the dialog opens (
-
-`h.input([...initialFocus])`
-
-). A configured
-
-`focusSelector`
-
-takes precedence; to focus an element whose id you do not own, use
-
-`focusSelector`
-
-.
-
-`closeButton`
-
-`ReadonlyArray<ChildAttribute>`
-
-—
-
-Spread onto an in-panel close control such as a Cancel button. Carries the click handler that closes the dialog, so a plain dismiss needs no parent message.
-
-`isVisible`
-
-`boolean`
-
-—
-
-Derived from
-
-`isOpen`
-
-and the Animation
-
-`transitionState`
-
-. Render the backdrop and panel only while this is true.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `dialog` | `ReadonlyArray<ChildAttribute>` | — | Spread onto an `h.dialog(...)` element. Carries the id, ARIA labelling, `open` prop, positioning style, and the Escape handler that wires to `RequestedClose`. |
+| `backdrop` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the backdrop element. Includes the Animation data attributes and the outside-click handler that dispatches `RequestedClose` (suppressed while a leave animation is in progress). |
+| `panel` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the panel element. Includes the panel id (`${id}-panel`) and the Animation data attributes. |
+| `title` | `ReadonlyArray<ChildAttribute>` | — | Spread onto your accessible-name heading (`h.h2([...title], [...])`). Carries the framework-managed id the dialog’s `aria-labelledby` points at, so labelling wires up without hand-rolling the id. |
+| `description` | `ReadonlyArray<ChildAttribute>` | — | Spread onto your description element (`h.p([...description], [...])`). Carries the framework-managed id the dialog’s `aria-describedby` points at, so the association wires up without hand-rolling the id. |
+| `initialFocus` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the element that should receive focus when the dialog opens (`h.input([...initialFocus])`). A configured `focusSelector` takes precedence; to focus an element whose id you do not own, use `focusSelector`. |
+| `closeButton` | `ReadonlyArray<ChildAttribute>` | — | Spread onto an in-panel close control such as a Cancel button. Carries the click handler that closes the dialog, so a plain dismiss needs no parent message. |
+| `isVisible` | `boolean` | — | Derived from `isOpen` and the Animation `transitionState`. Render the backdrop and panel only while this is true. |
 
 ### OutMessage
 
 Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`Opened`
-
-`{}`
-
-—
-
-Emitted once the dialog has transitioned to open. Fires after
-
-`update`
-
-has processed
-
-`RequestedOpen`
-
-and
-
-`isOpen`
-
-reflects the new state.
-
-`Closed`
-
-`{}`
-
-—
-
-Emitted once the dialog has transitioned to closed. Programmatic
-
-`Dialog.close`
-
-on an already-closed model is a no-op that does not re-emit, as is calling close while a leave animation is already in progress.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `Opened` | `{}` | — | Emitted once the dialog has transitioned to open. Fires after `update` has processed `RequestedOpen` and `isOpen` reflects the new state. |
+| `Closed` | `{}` | — | Emitted once the dialog has transitioned to closed. Programmatic `Dialog.close` on an already-closed model is a no-op that does not re-emit, as is calling close while a leave animation is already in progress. |

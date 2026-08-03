@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/tooltip
 title: "Tooltip"
 description: "Non-interactive floating label that appears on hover or focus and hides on leave, blur, or Escape."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Tooltip
+## Tooltip
 
 ## Overview
 
@@ -21,8 +21,6 @@ Check out how Tooltip is wired up in a [real Foldkit app](https://github.com/fol
 ## Examples
 
 Hover or tab into the trigger to reveal the tooltip. Hover waits for `showDelay` (default 500ms); keyboard focus shows it immediately.
-
-Tooltip trigger
 
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
@@ -57,7 +55,7 @@ const GotTooltipMessage = m('GotTooltipMessage', {
 })
 
 // Inside your update function's M.tagsExhaustive({...}), delegate to
-// Tooltip.update. The OutMessages `Shown` and `Hidden` mark the
+// Tooltip.update. The OutMessages \`Shown\` and \`Hidden\` mark the
 // visibility transitions. Fire analytics or coordinate with the rest
 // of your UI from the parent.
 GotTooltipMessage: ({ message }) => {
@@ -74,7 +72,7 @@ GotTooltipMessage: ({ message }) => {
     onSome: M.type<Tooltip.OutMessage>().pipe(
       M.tagsExhaustive({
         Shown: () => [
-          // The child has emitted `Shown`. The body commits the
+          // The child has emitted \`Shown\`. The body commits the
           // child's next state as usual. In this arm the parent can
           // also update its own state or dispatch its own Commands,
           // for example log analytics, prefetch content, or trigger
@@ -83,7 +81,7 @@ GotTooltipMessage: ({ message }) => {
           mappedCommands,
         ],
         Hidden: () => [
-          // The child has emitted `Hidden`. The body commits the
+          // The child has emitted \`Hidden\`. The body commits the
           // child's next state as usual. In this arm the parent can
           // also update its own state or dispatch its own Commands,
           // for example clear ephemeral state, fire analytics, or
@@ -98,9 +96,9 @@ GotTooltipMessage: ({ message }) => {
 
 // Inside your view function, embed the tooltip via h.submodel. The tooltip
 // describes the trigger but does not name it, so give an icon-only trigger
-// an accessible name with `ariaLabel`. (Point `ariaLabelledBy` at a visible
+// an accessible name with \`ariaLabel\`. (Point \`ariaLabelledBy\` at a visible
 // label element instead when one exists.) The attribute is only emitted when
-// provided, so the trigger never carries a dangling `aria-labelledby`.
+// provided, so the trigger never carries a dangling \`aria-labelledby\`.
 const view = (h: HtmlBuilder<Message>) =>
   h.submodel({
     slotId: 'save-button',
@@ -118,7 +116,7 @@ const view = (h: HtmlBuilder<Message>) =>
                 ...trigger,
                 h.Class('rounded-lg border px-3 py-2 cursor-pointer'),
               ],
-              // Icon-only content; `ariaLabel` above supplies the name.
+              // Icon-only content; \`ariaLabel\` above supplies the name.
               [h.span([h.AriaHidden(true)], ['💾'])],
             ),
             ...(isVisible
@@ -145,31 +143,17 @@ const view = (h: HtmlBuilder<Message>) =>
 
 Tooltip is headless. The `toView` callback receives attribute bundles for the trigger and panel, and the consumer composes the markup. The panel is rendered with `pointer-events: none` so it never captures hover or clicks, which keeps the open/close logic tied to the trigger.
 
-Attribute
-
-Condition
-
-`data-open`
-
-Present on trigger and panel when the tooltip is visible.
-
-`data-disabled`
-
-Present on the trigger when disabled.
-
-`data-placement`
-
-Present on the panel, set to the side it currently sits on: top, right, bottom, or left. Fixed to the first resolved side when isPlacementLocked is true.
+| Attribute | Condition |
+| --- | --- |
+| `data-open` | Present on trigger and panel when the tooltip is visible. |
+| `data-disabled` | Present on the trigger when disabled. |
+| `data-placement` | Present on the panel, set to the side it currently sits on: top, right, bottom, or left. Fixed to the first resolved side when isPlacementLocked is true. |
 
 ## Keyboard Interaction
 
-Key
-
-Description
-
-`Escape`
-
-Hides the tooltip while visible. It will not reopen until the user disengages by moving the pointer away or blurring the trigger.
+| Key | Description |
+| --- | --- |
+| `Escape` | Hides the tooltip while visible. It will not reopen until the user disengages by moving the pointer away or blurring the trigger. |
 
 ## Accessibility
 
@@ -185,206 +169,48 @@ Two ViewConfig fields cover the cases a `<label for>` does not. Pass `ariaLabel`
 
 Configuration object passed to `Tooltip.init()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the tooltip instance.
-
-`showDelay`
-
-`Duration.Input`
-
-`Duration.millis(500)`
-
-How long the pointer must hover before the tooltip appears. Accepts any Effect Duration input. A bare number is interpreted as milliseconds. Keyboard focus shows the tooltip immediately regardless of this value.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the tooltip instance. |
+| `showDelay` | `Duration.Input` | `Duration.millis(500)` | How long the pointer must hover before the tooltip appears. Accepts any Effect Duration input. A bare number is interpreted as milliseconds. Keyboard focus shows the tooltip immediately regardless of this value. |
 
 ### ViewConfig
 
 Configuration object passed to `Tooltip.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`model`
-
-`Tooltip.Model`
-
-—
-
-The tooltip state from your parent Model.
-
-`toParentMessage`
-
-`(childMessage: Tooltip.Message) => ParentMessage`
-
-—
-
-Wraps Tooltip Messages in your parent Message type for Submodel delegation.
-
-`anchor`
-
-`AnchorConfig`
-
-—
-
-Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. Required. Portaled to the document body by default; pass portal: false to keep the panel inside its wrapper.
-
-`toView`
-
-`(render: RenderInfo) => Html`
-
-—
-
-Callback that receives the
-
-`trigger`
-
-and
-
-`panel`
-
-attribute bundles plus a derived
-
-`isVisible`
-
-flag, and returns the composed layout.
-
-`isDisabled`
-
-`boolean`
-
-`false`
-
-Disables the trigger. Hover, focus, and keyboard events are ignored and the tooltip will not open.
-
-`ariaLabel`
-
-`string`
-
-—
-
-Accessible name for the trigger button. Use for an icon-only trigger with no visible label. Applied as aria-label, and takes precedence over ariaLabelledBy.
-
-`ariaLabelledBy`
-
-`string`
-
-—
-
-Id of an external element that labels the trigger button, applied as aria-labelledby. Pair with a visible label element.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `model` | `Tooltip.Model` | — | The tooltip state from your parent Model. |
+| `toParentMessage` | `(childMessage: Tooltip.Message) => ParentMessage` | — | Wraps Tooltip Messages in your parent Message type for Submodel delegation. |
+| `anchor` | `AnchorConfig` | — | Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. Required. Portaled to the document body by default; pass portal: false to keep the panel inside its wrapper. |
+| `toView` | `(render: RenderInfo) => Html` | — | Callback that receives the `trigger` and `panel` attribute bundles plus a derived `isVisible` flag, and returns the composed layout. |
+| `isDisabled` | `boolean` | `false` | Disables the trigger. Hover, focus, and keyboard events are ignored and the tooltip will not open. |
+| `ariaLabel` | `string` | — | Accessible name for the trigger button. Use for an icon-only trigger with no visible label. Applied as aria-label, and takes precedence over ariaLabelledBy. |
+| `ariaLabelledBy` | `string` | — | Id of an external element that labels the trigger button, applied as aria-labelledby. Pair with a visible label element. |
 
 ### RenderInfo
 
 Payload delivered to the `toView` callback each render.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`trigger`
-
-`ReadonlyArray<ChildAttribute>`
-
-—
-
-Spread onto the trigger element. Carries
-
-`type="button"`
-
-, the hover/focus/keyboard handlers, and
-
-`aria-describedby`
-
-linking to the panel.
-
-`panel`
-
-`ReadonlyArray<ChildAttribute>`
-
-—
-
-Spread onto the panel element. Carries
-
-`role="tooltip"`
-
-, the anchor Mount that positions the panel via Floating UI, and a
-
-`data-open`
-
-attribute when visible.
-
-`isVisible`
-
-`boolean`
-
-—
-
-Whether the tooltip is currently visible. The consumer decides whether to render the panel conditionally on this.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `trigger` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the trigger element. Carries `type="button"`, the hover/focus/keyboard handlers, and `aria-describedby` linking to the panel. |
+| `panel` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the panel element. Carries `role="tooltip"`, the anchor Mount that positions the panel via Floating UI, and a `data-open` attribute when visible. |
+| `isVisible` | `boolean` | — | Whether the tooltip is currently visible. The consumer decides whether to render the panel conditionally on this. |
 
 ### Programmatic Helpers
 
 Helper functions for driving the tooltip from parent update handlers, returning `[Model, Commands]`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`reflectShowDelay`
-
-`(model: Model, showDelay: Duration.Input) => Model`
-
-—
-
-Reflects an externally-sourced hover show-delay onto the Model (a user preference, a restored setting) without emitting an OutMessage. Accepts any Effect Duration input; a bare number is milliseconds. The new delay applies on the next hover. Dual: pass just the delay for a point-free setter in an evo callback.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `reflectShowDelay` | `(model: Model, showDelay: Duration.Input) => Model` | — | Reflects an externally-sourced hover show-delay onto the Model (a user preference, a restored setting) without emitting an OutMessage. Accepts any Effect Duration input; a bare number is milliseconds. The new delay applies on the next hover. Dual: pass just the delay for a point-free setter in an evo callback. |
 
 ### OutMessage
 
 Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fire only on visibility transitions, so consumers don’t see spurious events for Messages that only update internal hover/focus/delay state.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`Shown`
-
-`{}`
-
-—
-
-Emitted once the tooltip transitions to visible (isOpen becomes true). Pattern-match the third tuple element of Tooltip.update to react. Useful for analytics, instrumentation, or coordinating with other transient UI.
-
-`Hidden`
-
-`{}`
-
-—
-
-Emitted once the tooltip transitions to hidden (isOpen becomes false).
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `Shown` | `{}` | — | Emitted once the tooltip transitions to visible (isOpen becomes true). Pattern-match the third tuple element of Tooltip.update to react. Useful for analytics, instrumentation, or coordinating with other transient UI. |
+| `Hidden` | `{}` | — | Emitted once the tooltip transitions to hidden (isOpen becomes false). |

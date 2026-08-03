@@ -2,17 +2,17 @@
 url: https://foldkit.dev/react/foldkit-vs-react-side-by-side
 title: "Foldkit vs React: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and React. Covers state management, side effects, testing, performance, and architectural tradeoffs."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Foldkit vs React: Side by Side
+## Foldkit vs React: Side by Side
 
 ## Overview
 
-We built the same [pixel art editor](https://foldkit.dev/example-apps/pixel-art) ([try it live](https://pixel.foldkit.dev)) in both Foldkit and React. Same features, same styling, same algorithms. The goal: put the two approaches side by side and see where they differ. This is a non-trivial app: grid state with undo/redo stacks, three tools with mirror modes, flood fill, localStorage persistence, PNG export, keyboard shortcuts, accessible UI components, and performance-critical grid rendering. It’s the kind of app where architectural decisions compound over time.
+We built the same [pixel art editor](https://foldkit.dev/example-apps/pixel-art) ([try it live](https://pixel.foldkit.dev/)) in both Foldkit and React. Same features, same styling, same algorithms. The goal: put the two approaches side by side and see where they differ. This is a non-trivial app: grid state with undo/redo stacks, three tools with mirror modes, flood fill, localStorage persistence, PNG export, keyboard shortcuts, accessible UI components, and performance-critical grid rendering. It’s the kind of app where architectural decisions compound over time.
 
-The React version uses `useReducer`, [Headless UI](https://headlessui.com), and the best practices we’d use in production: TypeScript, Tailwind, memoization, custom hooks. We gave React every advantage. The result is a clean, well-structured React app written by people who know what they’re doing.
+The React version uses `useReducer`, [Headless UI](https://headlessui.com/), and the best practices we’d use in production: TypeScript, Tailwind, memoization, custom hooks. We gave React every advantage. The result is a clean, well-structured React app written by people who know what they’re doing.
 
 React is a good library with an unmatched ecosystem. This page isn’t a hit-piece. It’s an argument that Foldkit gives you structural guarantees React cannot provide by construction (guarantees about where state lives, how it changes, and what your tests can see) and that those guarantees matter once a codebase has to survive real feature work, real bugs, and real onboarding.
 
@@ -614,69 +614,14 @@ Nothing to mock
 
 Foldkit’s update is a pure function. Side effects are return values, not imperative calls. That means you can test state transitions and side effects together in a unit test with zero mocking, zero DOM, and zero async. In React, testing a side effect means rendering the full component tree in jsdom, mocking browser APIs, firing synthetic events, and polling for async results.
 
-Foldkit
-
-React
-
-State testing
-
-Inspect Model at any point in story
-
-Assert on final state after dispatch
-
-Effect testing
-
-Resolve Commands in same pipeline
-
-Separate tests with mocking + DOM
-
-Test reads as
-
-Chronological user story
-
-State threading with intermediate variables
-
-Catches removed effects
-
-Yes: unresolved Command fails the story
-
-No: reducer tests can’t see effects
-
-Infrastructure
-
-`story()`
-
-from
-
-`foldkit/test`
-
-(no test libraries)
-
-`@testing-library/react`
-
-,
-
-`jsdom`
-
-,
-
-`@testing-library/jest-dom`
-
-, setup file
-
-Async
-
-Never: everything is synchronous
-
-Required for
-
-`useEffect`
-
-(
-
-`vi.waitFor`
-
-)
+|  | Foldkit | React |
+| --- | --- | --- |
+| State testing | Inspect Model at any point in story | Assert on final state after dispatch |
+| Effect testing | Resolve Commands in same pipeline | Separate tests with mocking + DOM |
+| Test reads as | Chronological user story | State threading with intermediate variables |
+| Catches removed effects | Yes: unresolved Command fails the story | No: reducer tests can’t see effects |
+| Infrastructure | `story()` from `foldkit/test` (no test libraries) | `@testing-library/react`, `jsdom`, `@testing-library/jest-dom`, setup file |
+| Async | Never: everything is synchronous | Required for `useEffect` (`vi.waitFor`) |
 
 ## Interaction Testing Without a DOM
 
@@ -750,73 +695,15 @@ The React test also is not testing the real failure case. It mocks `HTMLCanvasEl
 
 Finally, the React test is coupled to the export implementation. Swap `getContext` for a different library and the test breaks at the mock, even though user-facing behavior is unchanged. The Scene test does not care how export is implemented. It only cares that a `FailedExportPng` Message arrives. It tests behavior, not mechanics.
 
-Foldkit Scene
-
-React Testing Library
-
-DOM
-
-Virtual (no jsdom)
-
-jsdom (full browser simulation)
-
-Events
-
-Direct handler invocation
-
-Synthetic event simulation
-
-Mocking
-
-None
-
-Browser APIs (canvas, localStorage, …)
-
-Side effects
-
-Commands resolved inline
-
-Fire imperatively, assert on DOM after
-
-Timing
-
-Synchronous
-
-May require
-
-`act()`
-
-or
-
-`waitFor()`
-
-Queries
-
-`role()`
-
-,
-
-`text()`
-
-,
-
-`label()`
-
-`screen.getByRole()`
-
-,
-
-`screen.getByText()`
-
-Cleanup
-
-None
-
-`cleanup()`
-
-in
-
-`afterEach`
+|  | Foldkit Scene | React Testing Library |
+| --- | --- | --- |
+| DOM | Virtual (no jsdom) | jsdom (full browser simulation) |
+| Events | Direct handler invocation | Synthetic event simulation |
+| Mocking | None | Browser APIs (canvas, localStorage, …) |
+| Side effects | Commands resolved inline | Fire imperatively, assert on DOM after |
+| Timing | Synchronous | May require `act()` or `waitFor()` |
+| Queries | `role()`, `text()`, `label()` | `screen.getByRole()`, `screen.getByText()` |
+| Cleanup | None | `cleanup()` in `afterEach` |
 
 ## Streams vs Hooks
 
@@ -902,41 +789,12 @@ const useMouseRelease = (
 
 Foldkit ships [accessible UI components](https://foldkit.dev/ui/overview) (Dialog, RadioGroup, Switch, Listbox). The stateful ones (Dialog, Listbox) work like everything else in Foldkit: each has a Model, Messages, and an update function. You initialize them in your Model, delegate their Messages in your update, and compose their views. Their Models hold interaction state only. The selection stays with you: the parent Model owns it, passes it into the Listbox view as `maybeSelectedValue`, and folds the `Selected` OutMessage back into its own state. RadioGroup and Switch are controlled render helpers: your Model owns the value directly. Either way the state is yours. React uses Headless UI, which provides the same accessible patterns through a component API. But the state is theirs.
 
-Foldkit
-
-React + Headless UI
-
-State
-
-Yours: in the Model, visible, serializable
-
-Theirs: internal, invisible, not serializable
-
-Events
-
-Messages delegated through your update
-
-Callbacks (
-
-`onChange`
-
-,
-
-`onClose`
-
-)
-
-Accessibility
-
-Built-in (aria, focus, keyboard)
-
-Built-in (aria, focus, keyboard)
-
-Debugging
-
-Full state visible in DevTools
-
-Component internals scattered across hooks
+|  | Foldkit | React + Headless UI |
+| --- | --- | --- |
+| State | Yours: in the Model, visible, serializable | Theirs: internal, invisible, not serializable |
+| Events | Messages delegated through your update | Callbacks (`onChange`, `onClose`) |
+| Accessibility | Built-in (aria, focus, keyboard) | Built-in (aria, focus, keyboard) |
+| Debugging | Full state visible in DevTools | Component internals scattered across hooks |
 
 ## Rendering Performance
 
@@ -1115,7 +973,7 @@ const CellView = memo(function CellView({
 })
 ```
 
-A React cell is a `memo`-wrapped component with two `useCallback` wrappers inside, one per handler. Multiply by 1024 cells. Every handler needs `x`, `y`, and `dispatch` in its dependency array so it doesn’t capture stale coordinates. Miss any and the cell misbehaves silently. Write them but forget `memo` on the component and every cell re-renders on every stroke. The pattern works, and with React Compiler enabled these wrappers are generated instead of written by hand. What no compiler changes is what sits at the boundary: the React cell hands its child closures that must be proven stable, by you or by a build tool. The Foldkit cell hands the runtime two Message values. There is nothing to stabilize because there is nothing that can go stale: `PressedCell({ x, y })` is data, compared by value, the same on every render.
+A React cell is a `memo` -wrapped component with two `useCallback` wrappers inside, one per handler. Multiply by 1024 cells. Every handler needs `x`, `y`, and `dispatch` in its dependency array so it doesn’t capture stale coordinates. Miss any and the cell misbehaves silently. Write them but forget `memo` on the component and every cell re-renders on every stroke. The pattern works, and with React Compiler enabled these wrappers are generated instead of written by hand. What no compiler changes is what sits at the boundary: the React cell hands its child closures that must be proven stable, by you or by a build tool. The Foldkit cell hands the runtime two Message values. There is nothing to stabilize because there is nothing that can go stale: `PressedCell({ x, y })` is data, compared by value, the same on every render.
 
 ## Guarantees React Cannot Provide
 
@@ -1136,8 +994,6 @@ A Command is a plain value. It has a name. It appears in [DevTools](https://fold
 ### Time-travel that covers UI internals
 
 React DevTools shows you the current component tree. [Foldkit DevTools](https://foldkit.dev/core/devtools) shows you the complete history: every Model snapshot, every Message, every Command. And because Submodels live in the Model, that history covers UI component internals too: the Dialog’s transition phase, the Listbox’s active item and search query. You can scrub backwards through a session and see every interior state the UI passed through. In React, Headless UI’s internals never leave component hooks. They aren’t available as a replayable sequence because they aren’t available as values at all.
-
-### Tests share the runtime’s pipeline
 
 The test suite runs the same pipeline the runtime runs. `story` calls the same update function. `scene` dispatches through the same view. Commands resolve through the same surface. There are no test doubles because there is nothing structurally in the way that would require them: update is pure, Commands are values, Submodels are data. Remove a Command from the update function and every test that depended on it fails. React’s test stack has to simulate a browser to reach production code paths that would otherwise be unreachable from a unit test. Foldkit tests reach them directly, because there is only one kind of code path.
 

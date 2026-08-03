@@ -2,11 +2,11 @@
 url: https://foldkit.dev/testing/scene
 title: "Scene"
 description: "Test features through the rendered view with Scene. Click buttons, type into inputs, and assert on the HTML using accessible locators."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Scene
+## Scene
 
 ## Testing Through the View
 
@@ -44,65 +44,17 @@ displayValue('alice@example.com')
 selector('.fallback-class')
 ```
 
-Locator
-
-Finds
-
-Example
-
-`role(role, options?)`
-
-Elements by ARIA role (explicit or implicit). Options narrow by accessible name and ARIA state.
-
-`role('button', { name: 'Save' })`
-
-`label(text)`
-
-Form controls by their aria-label or associated <label> text.
-
-`label('Email')`
-
-`placeholder(text)`
-
-Inputs by their placeholder attribute.
-
-`placeholder('Search...')`
-
-`text(text)`
-
-Elements by visible text content.
-
-`text('Welcome back')`
-
-`altText(text)`
-
-Images and similar elements by their alt attribute.
-
-`altText('Profile photo')`
-
-`title(text)`
-
-Elements by their title attribute (tooltip text).
-
-`title('Delete')`
-
-`testId(id)`
-
-Elements by data-testid: the escape hatch for tests.
-
-`testId('cart-item-3')`
-
-`displayValue(value)`
-
-Form controls by their current value.
-
-`displayValue('US')`
-
-`selector(css)`
-
-Elements by CSS selector. Use when no accessible query fits.
-
-`selector('.chart-legend')`
+| Locator | Finds | Example |
+| --- | --- | --- |
+| `role(role, options?)` | Elements by ARIA role (explicit or implicit). Options narrow by accessible name and ARIA state. | `role('button', { name: 'Save' })` |
+| `label(text)` | Form controls by their aria-label or associated <label> text. | `label('Email')` |
+| `placeholder(text)` | Inputs by their placeholder attribute. | `placeholder('Search...')` |
+| `text(text)` | Elements by visible text content. | `text('Welcome back')` |
+| `altText(text)` | Images and similar elements by their alt attribute. | `altText('Profile photo')` |
+| `title(text)` | Elements by their title attribute (tooltip text). | `title('Delete')` |
+| `testId(id)` | Elements by data-testid: the escape hatch for tests. | `testId('cart-item-3')` |
+| `displayValue(value)` | Form controls by their current value. | `displayValue('US')` |
+| `selector(css)` | Elements by CSS selector. Use when no accessible query fits. | `selector('.chart-legend')` |
 
 ### The role Locator
 
@@ -128,53 +80,15 @@ role('checkbox', { checked: true })
 role('button', { pressed: true, disabled: false })
 ```
 
-Option
-
-Type
-
-Matches
-
-`name`
-
-`string | RegExp`
-
-Accessible name (aria-label, aria-labelledby, label[for], or text content). Strings match exactly; regular expressions match against the full name.
-
-`level`
-
-`number`
-
-Heading level (for role: "heading")
-
-`checked`
-
-`boolean | 'mixed'`
-
-aria-checked or the checked attribute
-
-`selected`
-
-`boolean`
-
-aria-selected
-
-`pressed`
-
-`boolean | 'mixed'`
-
-aria-pressed
-
-`expanded`
-
-`boolean`
-
-aria-expanded
-
-`disabled`
-
-`boolean`
-
-aria-disabled or the disabled attribute
+| Option | Type | Matches |
+| --- | --- | --- |
+| `name` | `string \| RegExp` | Accessible name (aria-label, aria-labelledby, label\[for\], or text content). Strings match exactly; regular expressions match against the full name. |
+| `level` | `number` | Heading level (for role: "heading") |
+| `checked` | `boolean \| 'mixed'` | aria-checked or the checked attribute |
+| `selected` | `boolean` | aria-selected |
+| `pressed` | `boolean \| 'mixed'` | aria-pressed |
+| `expanded` | `boolean` | aria-expanded |
+| `disabled` | `boolean` | aria-disabled or the disabled attribute |
 
 ### Scoping
 
@@ -223,25 +137,12 @@ pipe(
 )
 ```
 
-Filter option
-
-Keeps matches where
-
-`has`
-
-The element contains a descendant matching the given Locator
-
-`hasNot`
-
-The element does not contain a descendant matching the Locator
-
-`hasText`
-
-The element’s text content includes the given substring
-
-`hasNotText`
-
-The element’s text content does not include the substring
+| Filter option | Keeps matches where |
+| --- | --- |
+| `has` | The element contains a descendant matching the given Locator |
+| `hasNot` | The element does not contain a descendant matching the Locator |
+| `hasText` | The element’s text content includes the given substring |
+| `hasNotText` | The element’s text content does not include the substring |
 
 ## Interactions
 
@@ -277,91 +178,19 @@ submit(role('form'))
 keydown(label('Search'), 'Enter')
 ```
 
-Step
-
-Invokes
-
-`click(target)`
-
-`OnClick`
-
-(bubbles to ancestors)
-
-`doubleClick(target)`
-
-`OnDoubleClick`
-
-(bubbles to ancestors)
-
-`pointerDown(target, options?)`
-
-`OnPointerDown`
-
-with optional
-
-`{ pointerType, button, screenX, screenY }`
-
-(bubbles to ancestors)
-
-`pointerUp(target, options?)`
-
-`OnPointerUp`
-
-with optional
-
-`{ pointerType, screenX, screenY }`
-
-(bubbles to ancestors)
-
-`hover(target)`
-
-`OnMouseEnter`
-
-(falls back to
-
-`OnMouseOver`
-
-)
-
-`focus(target)`
-
-`OnFocus`
-
-`blur(target)`
-
-`OnBlur`
-
-`type(target, text)`
-
-`OnInput`
-
-with the given text
-
-`change(target, value)`
-
-`OnChange`
-
-with the given value, for
-
-`<select>`
-
-and similar
-
-`keydown(target, key, modifiers?)`
-
-`OnKeyDown`
-
-or
-
-`OnKeyDownPreventDefault`
-
-with optional
-
-`{ shiftKey, ctrlKey, altKey, metaKey }`
-
-`submit(target)`
-
-`OnSubmit`
+| Step | Invokes |
+| --- | --- |
+| `click(target)` | `OnClick` (bubbles to ancestors) |
+| `doubleClick(target)` | `OnDoubleClick` (bubbles to ancestors) |
+| `pointerDown(target, options?)` | `OnPointerDown` with optional `{ pointerType, button, screenX, screenY }` (bubbles to ancestors) |
+| `pointerUp(target, options?)` | `OnPointerUp` with optional `{ pointerType, screenX, screenY }` (bubbles to ancestors) |
+| `hover(target)` | `OnMouseEnter` (falls back to `OnMouseOver`) |
+| `focus(target)` | `OnFocus` |
+| `blur(target)` | `OnBlur` |
+| `type(target, text)` | `OnInput` with the given text |
+| `change(target, value)` | `OnChange` with the given value, for `<select>` and similar |
+| `keydown(target, key, modifiers?)` | `OnKeyDown` or `OnKeyDownPreventDefault` with optional `{ shiftKey, ctrlKey, altKey, metaKey }` |
+| `submit(target)` | `OnSubmit` |
 
 `tap(fn)` runs a function for side effects (like ad-hoc assertions on raw VNodes or accumulated Commands) without breaking the step chain.
 
@@ -390,87 +219,31 @@ expectAll(all.role('row')).toHaveCount(3)
 expectAll(all.role('alert')).toBeEmpty()
 ```
 
-Matcher
-
-Asserts that the element
-
-`.toExist()`
-
-Is present in the tree
-
-`.toBeAbsent()`
-
-Is not present in the tree
-
-`.toBeVisible()`
-
-Is not hidden via the hidden attribute, aria-hidden, display: none, or visibility: hidden
-
-`.toBeEmpty()`
-
-Has no text content or child elements
-
-`.toHaveText(value)`
-
-Has text content equal to the given string or matching the given regex
-
-`.toContainText(value)`
-
-Has text content including the given substring or matching the regex
-
-`.toHaveAccessibleName(name)`
-
-Has the given accessible name (resolves aria-labelledby, aria-label, label[for], text content)
-
-`.toHaveAccessibleDescription(description)`
-
-Has the given accessible description (resolves aria-describedby)
-
-`.toBeDisabled()`
-
-Has aria-disabled or the disabled attribute
-
-`.toBeEnabled()`
-
-Is not disabled
-
-`.toBeChecked()`
-
-Has aria-checked="true" or the checked attribute
-
-`.toHaveValue(value)`
-
-Has the given current form-control value
-
-`.toHaveAttr(name, value)`
-
-Has the given attribute set to the given value
-
-`.toHaveId(id)`
-
-Has the given id
-
-`.toHaveClass(name)`
-
-Has the given CSS class
-
-`.toHaveStyle(name, value)`
-
-Has the given inline style property
+| Matcher | Asserts that the element |
+| --- | --- |
+| `.toExist()` | Is present in the tree |
+| `.toBeAbsent()` | Is not present in the tree |
+| `.toBeVisible()` | Is not hidden via the hidden attribute, aria-hidden, display: none, or visibility: hidden |
+| `.toBeEmpty()` | Has no text content or child elements |
+| `.toHaveText(value)` | Has text content equal to the given string or matching the given regex |
+| `.toContainText(value)` | Has text content including the given substring or matching the regex |
+| `.toHaveAccessibleName(name)` | Has the given accessible name (resolves aria-labelledby, aria-label, label\[for\], text content) |
+| `.toHaveAccessibleDescription(description)` | Has the given accessible description (resolves aria-describedby) |
+| `.toBeDisabled()` | Has aria-disabled or the disabled attribute |
+| `.toBeEnabled()` | Is not disabled |
+| `.toBeChecked()` | Has aria-checked="true" or the checked attribute |
+| `.toHaveValue(value)` | Has the given current form-control value |
+| `.toHaveAttr(name, value)` | Has the given attribute set to the given value |
+| `.toHaveId(id)` | Has the given id |
+| `.toHaveClass(name)` | Has the given CSS class |
+| `.toHaveStyle(name, value)` | Has the given inline style property |
 
 For `LocatorAll` (from `all.*`), use `expectAll(locatorAll)` for count-based assertions:
 
-Matcher
-
-Asserts that
-
-`.toHaveCount(n)`
-
-The locator matches exactly n elements
-
-`.toBeEmpty()`
-
-The locator matches zero elements
+| Matcher | Asserts that |
+| --- | --- |
+| `.toHaveCount(n)` | The locator matches exactly n elements |
+| `.toBeEmpty()` | The locator matches zero elements |
 
 ## Commands
 
@@ -521,37 +294,13 @@ Command.resolve(
 )
 ```
 
-Step
-
-Effect
-
-`Command.resolve(Def, ResultMessage)`
-
-Resolves the first pending Command with the given name by feeding
-
-`ResultMessage`
-
-through update. For a child Submodel Command, pass the child’s raw result Message; resolve replays the Command’s own
-
-`mapMessages`
-
-wrapping automatically.
-
-`Command.resolveAll([Def, ResultMessage], ...)`
-
-Resolves a batch of pending Commands, walking cascades. Each entry resolves exactly one matching dispatch in declaration order; compose with Array.makeBy for N identical responses.
-
-`Command.expectExact(A, B)`
-
-The pending Commands are exactly A and B (order-independent).
-
-`Command.expectHas(A)`
-
-A is among the pending Commands (subset check).
-
-`Command.expectNone()`
-
-There are no pending Commands.
+| Step | Effect |
+| --- | --- |
+| `Command.resolve(Def, ResultMessage)` | Resolves the first pending Command with the given name by feeding `ResultMessage` through update. For a child Submodel Command, pass the child’s raw result Message; resolve replays the Command’s own `mapMessages` wrapping automatically. |
+| `Command.resolveAll([Def, ResultMessage], ...)` | Resolves a batch of pending Commands, walking cascades. Each entry resolves exactly one matching dispatch in declaration order; compose with Array.makeBy for N identical responses. |
+| `Command.expectExact(A, B)` | The pending Commands are exactly A and B (order-independent). |
+| `Command.expectHas(A)` | A is among the pending Commands (subset check). |
+| `Command.expectNone()` | There are no pending Commands. |
 
 Prefer `Command.expectExact` as the default. It catches bugs where an interaction produces unexpected Commands. Use `Command.expectHas` when you only care about a subset of the pending Commands.
 
@@ -606,37 +355,14 @@ Mount.expectEnded(Popover.AnchorPopover)
 Mount.resolve(Popover.AnchorPopover, Popover.CompletedAnchorPopover())
 ```
 
-Step
-
-Effect
-
-`Mount.resolve(Def, ResultMessage)`
-
-Resolves the first pending mount with the given name by feeding
-
-`ResultMessage`
-
-through update. For a mount inside a child Submodel, resolve replays the boundary lift automatically, so you pass the child’s raw result Message.
-
-`Mount.resolveAll([Def, ResultMessage], ...)`
-
-Resolves a batch of pending mounts in order.
-
-`Mount.expectExact(A, B)`
-
-The pending mounts are exactly A and B (order-independent, by name).
-
-`Mount.expectHas(A)`
-
-A is among the pending mounts (subset check).
-
-`Mount.expectNone()`
-
-There are no pending mounts.
-
-`Mount.expectEnded(A)`
-
-A has disappeared from the rendered tree. Required for every Mount that fires and then unmounts during the scene, regardless of whether it was resolved first; otherwise the scene throws at the end.
+| Step | Effect |
+| --- | --- |
+| `Mount.resolve(Def, ResultMessage)` | Resolves the first pending mount with the given name by feeding `ResultMessage` through update. For a mount inside a child Submodel, resolve replays the boundary lift automatically, so you pass the child’s raw result Message. |
+| `Mount.resolveAll([Def, ResultMessage], ...)` | Resolves a batch of pending mounts in order. |
+| `Mount.expectExact(A, B)` | The pending mounts are exactly A and B (order-independent, by name). |
+| `Mount.expectHas(A)` | A is among the pending mounts (subset check). |
+| `Mount.expectNone()` | There are no pending mounts. |
+| `Mount.expectEnded(A)` | A has disappeared from the rendered tree. Required for every Mount that fires and then unmounts during the scene, regardless of whether it was resolved first; otherwise the scene throws at the end. |
 
 UI components export their Mount definitions (`Popover.AnchorPopover`, `Listbox.AnchorListbox`, and so on) so consumer tests can name them in `Mount.resolve`.
 
@@ -693,33 +419,11 @@ click(role('button', { name: 'Open feed' }))
 ManagedResource.failAcquire(resources.feedSocket, new Error('offline'))
 ```
 
-Step
-
-Effect
-
-`ManagedResource.acquire(entry, ...args)`
-
-Feeds
-
-`onAcquired(...args)`
-
-through update. The Model must request the resource.
-
-`ManagedResource.failAcquire(entry, error)`
-
-Feeds
-
-`onAcquireError(error)`
-
-through update. The Model must request the resource.
-
-`ManagedResource.release(entry)`
-
-Feeds
-
-`onReleased()`
-
-through update. The Model must no longer request the resource.
+| Step | Effect |
+| --- | --- |
+| `ManagedResource.acquire(entry, ...args)` | Feeds `onAcquired(...args)` through update. The Model must request the resource. |
+| `ManagedResource.failAcquire(entry, error)` | Feeds `onAcquireError(error)` through update. The Model must request the resource. |
+| `ManagedResource.release(entry)` | Feeds `onReleased()` through update. The Model must no longer request the resource. |
 
 ## Custom Elements
 

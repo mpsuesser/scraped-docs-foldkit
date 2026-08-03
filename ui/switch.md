@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/switch
 title: "Switch"
 description: "Accessible toggle switch for boolean settings."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Switch
+## Switch
 
 ## Overview
 
@@ -19,8 +19,6 @@ Check out how Switch is wired up in a [real Foldkit app](https://github.com/fold
 ## Examples
 
 The switch renders as a `<button>` with `role="switch"`. The typical visual is a track with a sliding knob, styled with the `data-checked` attribute for the on state.
-
-Enable notifications
 
 Get notified when something important happens.
 
@@ -89,7 +87,7 @@ const view = (model, h: HtmlBuilder<Message>) =>
               [
                 h.span([
                   h.Class(
-                    `inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${model.notificationsEnabled ? 'translate-x-6' : 'translate-x-1'}`,
+                    \`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${model.notificationsEnabled ? 'translate-x-6' : 'translate-x-1'}\`,
                   ),
                 ]),
               ],
@@ -118,27 +116,16 @@ const view = (model, h: HtmlBuilder<Message>) =>
 
 Switch is headless. Your `toView` callback controls all markup and styling. Use `data-[checked]` to change the track color and translate the knob.
 
-Attribute
-
-Condition
-
-`data-checked`
-
-Present when the switch is on.
-
-`data-disabled`
-
-Present when isDisabled is true.
+| Attribute | Condition |
+| --- | --- |
+| `data-checked` | Present when the switch is on. |
+| `data-disabled` | Present when isDisabled is true. |
 
 ## Keyboard Interaction
 
-Key
-
-Description
-
-`Space`
-
-Toggles the switch.
+| Key | Description |
+| --- | --- |
+| `Space` | Toggles the switch. |
 
 ## Accessibility
 
@@ -150,122 +137,23 @@ The switch button receives `role="switch"` and `aria-checked`. The label is link
 
 Configuration object passed to `Switch.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the switch instance. Used to link the label and description via ARIA.
-
-`isChecked`
-
-`boolean`
-
-—
-
-The current on/off state, read from your Model.
-
-`aria-checked`
-
-and the
-
-`data-checked`
-
-marker derive from it.
-
-`onToggle`
-
-`(isChecked: boolean) => Message`
-
-—
-
-Maps the new on/off state to a Message when the user toggles the switch. Your update handler just stores the value.
-
-`toView`
-
-`(attributes: SwitchAttributes) => Html`
-
-—
-
-Callback that receives attribute groups for the button, label, description, and hidden input elements.
-
-`isDisabled`
-
-`boolean`
-
-`false`
-
-Whether the switch is disabled.
-
-`name`
-
-`string`
-
-—
-
-Form field name. When provided, a hidden input is included for native form submission.
-
-`value`
-
-`string`
-
-`'on'`
-
-Value sent in the form when checked.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the switch instance. Used to link the label and description via ARIA. |
+| `isChecked` | `boolean` | — | The current on/off state, read from your Model. `aria-checked` and the `data-checked` marker derive from it. |
+| `onToggle` | `(isChecked: boolean) => Message` | — | Maps the new on/off state to a Message when the user toggles the switch. Your update handler just stores the value. |
+| `toView` | `(attributes: SwitchAttributes) => Html` | — | Callback that receives attribute groups for the button, label, description, and hidden input elements. |
+| `isDisabled` | `boolean` | `false` | Whether the switch is disabled. |
+| `name` | `string` | — | Form field name. When provided, a hidden input is included for native form submission. |
+| `value` | `string` | `'on'` | Value sent in the form when checked. |
 
 ### SwitchAttributes
 
 Attribute groups provided to the `toView` callback.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`button`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the switch button element. Includes role, aria-checked, tabindex, and click/keyboard handlers.
-
-`label`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the label element. Includes an id for aria-labelledby and a click handler that toggles the switch.
-
-`description`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto a description element. Includes an id referenced by aria-describedby on the switch.
-
-`hiddenInput`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto a hidden
-
-`<input>`
-
-for form submission. Only needed when the name prop is set.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `button` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the switch button element. Includes role, aria-checked, tabindex, and click/keyboard handlers. |
+| `label` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the label element. Includes an id for aria-labelledby and a click handler that toggles the switch. |
+| `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes an id referenced by aria-describedby on the switch. |
+| `hiddenInput` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a hidden `<input>` for form submission. Only needed when the name prop is set. |

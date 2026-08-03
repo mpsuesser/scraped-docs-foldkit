@@ -2,11 +2,11 @@
 url: https://foldkit.dev/faq/why-no-jsx
 title: "Why no JSX?"
 description: "Why Foldkit uses a typed function-call DSL instead of JSX, with side-by-side comparisons of buttons, inputs, and conditional rendering."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Why no JSX?
+## Why no JSX?
 
 Foldkit is plain TypeScript. There is no JSX, no transform, no compiler step. The view is built with a typed function-call DSL. Developers coming from JSX often ask why Foldkit doesn’t use it, and whether it could. This is the answer to both.
 
@@ -171,7 +171,7 @@ const greetingView = (status: Status) =>
         M.tagsExhaustive({
           Idle: () => ih.empty,
           Loading: () => ih.p([], ['Loading…']),
-          Failed: ({ error }) => ih.p([], [`Sorry: ${error}`]),
+          Failed: ({ error }) => ih.p([], [\`Sorry: ${error}\`]),
           Loaded: ({ greeting }) => ih.p([], [greeting]),
         }),
       ),

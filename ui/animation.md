@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/animation
 title: "Animation"
 description: "Coordinates CSS enter/leave animations via a state machine and data attributes. Works with both CSS transitions and keyframe animations."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Animation
+## Animation
 
 ## Overview
 
@@ -18,7 +18,7 @@ Concretely, Animation uses the [OutMessage](https://foldkit.dev/core/submodel#su
 
 CSS animations only play when an element enters the DOM with one state and changes to another. If an element mounts with its final styles, the browser has no "before" state and nothing animates. Reliably coordinating enter and leave phases takes three pieces of machinery that are easy to get wrong.
 
-First, enter animations need a closed state that sticks for one frame before being removed, so the browser commits it to the DOM and then sees a change. Animation handles this with a double-`requestAnimationFrame` sequence: one frame to apply `data-closed`, another to remove it and trigger the CSS animation.
+First, enter animations need a closed state that sticks for one frame before being removed, so the browser commits it to the DOM and then sees a change. Animation handles this with a double- `requestAnimationFrame` sequence: one frame to apply `data-closed`, another to remove it and trigger the CSS animation.
 
 Second, `transitionend` and `animationend` don't automatically flow into your update function. You could subscribe to them yourself, but that means wiring a subscription per element, filtering by selector, and managing its lifecycle alongside the state machine. Without that coordinator, there's no reliable way to know when a leave animation has finished, and therefore no way to reliably unmount content after it does. Animation emits `TransitionedOut` as the bridge: your update provides `defaultLeaveCommand`, it waits for the element’s animations to settle, and Animation tells you when the leave is complete.
 
@@ -213,25 +213,12 @@ Leave animations must be finite. `animation-iteration-count: infinite` never fir
 
 The `animateSize` option uses CSS grid (`grid-template-rows: 0fr` → `1fr`) for smooth height animation without JavaScript measurement.
 
-Attribute
-
-Condition
-
-`data-closed`
-
-Present at the start of enter and during leave. Target this for your hidden state styles.
-
-`data-enter`
-
-Present during the enter animation.
-
-`data-leave`
-
-Present during the leave animation.
-
-`data-transition`
-
-Present during any animation phase.
+| Attribute | Condition |
+| --- | --- |
+| `data-closed` | Present at the start of enter and during leave. Target this for your hidden state styles. |
+| `data-enter` | Present during the enter animation. |
+| `data-leave` | Present during the leave animation. |
+| `data-transition` | Present during any animation phase. |
 
 ## API Reference
 
@@ -239,114 +226,29 @@ Present during any animation phase.
 
 Configuration object passed to `Animation.init()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the animation instance.
-
-`isShowing`
-
-`boolean`
-
-`false`
-
-Initial visibility state.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the animation instance. |
+| `isShowing` | `boolean` | `false` | Initial visibility state. |
 
 ### ViewConfig
 
 Configuration object passed to `Animation.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`model`
-
-`Animation.Model`
-
-—
-
-The animation state from your parent Model.
-
-`content`
-
-`Html`
-
-—
-
-The content to animate in and out.
-
-`animateSize`
-
-`boolean`
-
-`false`
-
-Animates height collapse/expand using CSS grid. When true, the element stays in the DOM with grid-template-rows transitioning between 0fr and 1fr.
-
-`className`
-
-`string`
-
-—
-
-CSS class for the animation wrapper.
-
-`attributes`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Additional attributes for the wrapper.
-
-`element`
-
-`TagName`
-
-`'div'`
-
-The HTML element for the wrapper.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `model` | `Animation.Model` | — | The animation state from your parent Model. |
+| `content` | `Html` | — | The content to animate in and out. |
+| `animateSize` | `boolean` | `false` | Animates height collapse/expand using CSS grid. When true, the element stays in the DOM with grid-template-rows transitioning between 0fr and 1fr. |
+| `className` | `string` | — | CSS class for the animation wrapper. |
+| `attributes` | `ReadonlyArray<Attribute<Message>>` | — | Additional attributes for the wrapper. |
+| `element` | `TagName` | `'div'` | The HTML element for the wrapper. |
 
 ### OutMessages
 
 OutMessages emitted from `Animation.update()`. Handle these in your parent update function.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`StartedLeaveAnimating`
-
-`OutMessage`
-
-—
-
-Emitted when the leave animation begins. Your update function should provide Animation.defaultLeaveCommand(model) to detect animation settlement.
-
-`TransitionedOut`
-
-`OutMessage`
-
-—
-
-Emitted when the leave animation finishes. Use this to unmount content or update your Model.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `StartedLeaveAnimating` | `OutMessage` | — | Emitted when the leave animation begins. Your update function should provide Animation.defaultLeaveCommand(model) to detect animation settlement. |
+| `TransitionedOut` | `OutMessage` | — | Emitted when the leave animation finishes. Use this to unmount content or update your Model. |

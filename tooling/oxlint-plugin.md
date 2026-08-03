@@ -2,8 +2,8 @@
 url: https://foldkit.dev/tooling/oxlint-plugin
 title: "Oxlint Plugin"
 description: "Use the Foldkit oxlint plugin to enforce Foldkit-specific naming and message conventions, with examples for each custom rule."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 # Oxlint Plugin

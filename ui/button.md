@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/button
 title: "Button"
 description: "A thin wrapper around the native button with accessibility attributes and styling hooks."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Button
+## Button
 
 ## Overview
 
@@ -82,33 +82,18 @@ Button is headless. It provides no default styles. Your `toView` callback receiv
 
 Use the following data attributes to style different states:
 
-Attribute
-
-Condition
-
-`data-disabled`
-
-Present when
-
-`isDisabled`
-
-is true.
+| Attribute | Condition |
+| --- | --- |
+| `data-disabled` | Present when `isDisabled` is true. |
 
 ## Keyboard Interaction
 
 Button uses the native `<button>` element, so keyboard interaction is handled by the browser.
 
-Key
-
-Description
-
-`Enter`
-
-Activates the button.
-
-`Space`
-
-Activates the button.
+| Key | Description |
+| --- | --- |
+| `Enter` | Activates the button. |
+| `Space` | Activates the button. |
 
 ## Accessibility
 
@@ -122,82 +107,18 @@ Button sets `aria-disabled="true"` when disabled instead of the native `disabled
 
 Configuration object passed to `Button.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`toView`
-
-`(attributes: ButtonAttributes) => Html`
-
-—
-
-Callback that receives attribute groups and returns the button markup.
-
-`onClick`
-
-`Message`
-
-—
-
-Message to dispatch when the button is clicked.
-
-`isDisabled`
-
-`boolean`
-
-`false`
-
-Whether the button is disabled. Uses
-
-`aria-disabled`
-
-instead of the
-
-`disabled`
-
-attribute to preserve focusability.
-
-`type`
-
-`'button' | 'submit' | 'reset'`
-
-`'button'`
-
-The HTML button type attribute.
-
-`isAutofocus`
-
-`boolean`
-
-`false`
-
-Whether the button receives focus when the page loads.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `toView` | `(attributes: ButtonAttributes) => Html` | — | Callback that receives attribute groups and returns the button markup. |
+| `onClick` | `Message` | — | Message to dispatch when the button is clicked. |
+| `isDisabled` | `boolean` | `false` | Whether the button is disabled. Uses `aria-disabled` instead of the `disabled` attribute to preserve focusability. |
+| `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | The HTML button type attribute. |
+| `isAutofocus` | `boolean` | `false` | Whether the button receives focus when the page loads. |
 
 ### ButtonAttributes
 
 Attribute groups provided to the `toView` callback.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`button`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the
-
-`<button>`
-
-element. Includes type, tabindex, ARIA attributes, and event handlers.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `button` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the `<button>` element. Includes type, tabindex, ARIA attributes, and event handlers. |

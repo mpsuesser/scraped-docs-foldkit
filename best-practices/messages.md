@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/messages
 title: "Messages"
 description: "Name messages as past-tense events, not imperative commands."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 # Messages

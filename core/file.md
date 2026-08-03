@@ -2,11 +2,11 @@
 url: https://foldkit.dev/core/file
 title: "File"
 description: "Read and select files from the browser using an opaque File type and event attributes for inputs and drop zones."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# File
+## File
 
 ## Overview
 
@@ -23,7 +23,7 @@ import { Effect } from 'effect'
 import { Command, File } from 'foldkit'
 
 const describeFile = (file: File.File): string =>
-  `${File.name(file)} (${File.mimeType(file)}, ${File.size(file)} bytes)`
+  \`${File.name(file)} (${File.mimeType(file)}, ${File.size(file)} bytes)\`
 
 const ReadAvatarPreview = Command.define('ReadAvatarPreview', {
   args: { file: File.File },
@@ -136,10 +136,10 @@ GotFileDropMessage: ({ message }) => {
   ]
 }
 
-// Render the drop zone. The `toView` callback receives attribute groups.
-// Spread `root` onto a <label> so clicking opens the picker, and spread
-// `input` onto a hidden <input type="file"> nested inside. Style the
-// drag-over state via `data-drag-over`.
+// Render the drop zone. The \`toView\` callback receives attribute groups.
+// Spread \`root\` onto a <label> so clicking opens the picker, and spread
+// \`input\` onto a hidden <input type="file"> nested inside. Style the
+// drag-over state via \`data-drag-over\`.
 const view = (model: Model, h: HtmlBuilder<Message>) =>
   h.submodel({
     slotId: 'uploader',

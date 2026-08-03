@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/select
 title: "Select"
 description: "A thin wrapper around the native select with ARIA linking and styling hooks."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
-# Select
+## Select
 
 ## Overview
 
@@ -21,16 +21,6 @@ Check out how Select is wired up in a [real Foldkit app](https://github.com/fold
 ### Basic
 
 Pass an `onChange` handler that receives the selected option’s value as a string. You provide the `<option>` elements inside the `<select>` in your `toView` callback.
-
-Country
-
-United States
-
-Canada
-
-United Kingdom
-
-Australia
 
 Where you currently reside.
 
@@ -82,16 +72,6 @@ const view = (h: HtmlBuilder<Message>) =>
 
 Set `isDisabled: true` to disable the select.
 
-Country
-
-United States
-
-Canada
-
-United Kingdom
-
-Australia
-
 This select is disabled.
 
 ```
@@ -142,37 +122,20 @@ const view = (h: HtmlBuilder<Message>) =>
 
 Select is headless. Your `toView` callback controls all markup and styling. The native `<select>` dropdown appearance varies by browser and OS. Use `appearance-none` in CSS and add a custom chevron icon for a consistent look.
 
-Attribute
-
-Condition
-
-`data-disabled`
-
-Present when isDisabled is true.
-
-`data-invalid`
-
-Present when isInvalid is true.
+| Attribute | Condition |
+| --- | --- |
+| `data-disabled` | Present when isDisabled is true. |
+| `data-invalid` | Present when isInvalid is true. |
 
 ## Keyboard Interaction
 
 Select uses the native `<select>` element, so keyboard interaction is handled by the browser.
 
-Key
-
-Description
-
-`Space`
-
-Opens the native dropdown.
-
-`Enter`
-
-Opens the native dropdown.
-
-`Arrow Up/Down`
-
-Navigates between options.
+| Key | Description |
+| --- | --- |
+| `Space` | Opens the native dropdown. |
+| `Enter` | Opens the native dropdown. |
+| `Arrow Up/Down` | Navigates between options. |
 
 ## Accessibility
 
@@ -184,118 +147,23 @@ Select provides the same ARIA wiring as Input. The `label` group links via `for`
 
 Configuration object passed to `Select.view()`.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`id`
-
-`string`
-
-—
-
-Unique ID for the select element. Used to link the label and description via ARIA attributes.
-
-`toView`
-
-`(attributes: SelectAttributes) => Html`
-
-—
-
-Callback that receives attribute groups for the select, label, and description elements.
-
-`onChange`
-
-`(value: string) => Message`
-
-—
-
-Function that maps the selected value to a Message when the selection changes.
-
-`value`
-
-`string`
-
-—
-
-The currently selected value.
-
-`isDisabled`
-
-`boolean`
-
-`false`
-
-Whether the select is disabled. Sets both the native disabled attribute and aria-disabled.
-
-`isInvalid`
-
-`boolean`
-
-`false`
-
-Whether the select is in an invalid state. Sets aria-invalid and adds a data-invalid attribute for styling.
-
-`isAutofocus`
-
-`boolean`
-
-`false`
-
-Whether the select receives focus when the page loads.
-
-`name`
-
-`string`
-
-—
-
-The form field name for native form submission.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | — | Unique ID for the select element. Used to link the label and description via ARIA attributes. |
+| `toView` | `(attributes: SelectAttributes) => Html` | — | Callback that receives attribute groups for the select, label, and description elements. |
+| `onChange` | `(value: string) => Message` | — | Function that maps the selected value to a Message when the selection changes. |
+| `value` | `string` | — | The currently selected value. |
+| `isDisabled` | `boolean` | `false` | Whether the select is disabled. Sets both the native disabled attribute and aria-disabled. |
+| `isInvalid` | `boolean` | `false` | Whether the select is in an invalid state. Sets aria-invalid and adds a data-invalid attribute for styling. |
+| `isAutofocus` | `boolean` | `false` | Whether the select receives focus when the page loads. |
+| `name` | `string` | — | The form field name for native form submission. |
 
 ### SelectAttributes
 
 Attribute groups provided to the `toView` callback.
 
-Name
-
-Type
-
-Default
-
-Description
-
-`select`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the
-
-`<select>`
-
-element. Includes id, value, ARIA attributes, and event handlers.
-
-`label`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto the
-
-`<label>`
-
-element. Includes a for attribute linking to the select id.
-
-`description`
-
-`ReadonlyArray<Attribute<Message>>`
-
-—
-
-Spread onto a description element. Includes an id that the select references via aria-describedby.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `select` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the `<select>` element. Includes id, value, ARIA attributes, and event handlers. |
+| `label` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the `<label>` element. Includes a for attribute linking to the select id. |
+| `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes an id that the select references via aria-describedby. |

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/embedding
 title: "Embedding"
 description: "Run a Foldkit app inside a host application with a typed lifecycle handle and Ports."
-access_date: 2026-08-03T19:40:01.169Z
-current_date: 2026-08-03T19:40:01.169Z
+access_date: 2026-08-03T19:45:20.723Z
+current_date: 2026-08-03T19:45:20.723Z
 ---
 
 # Embedding
