@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/map
 title: "Map"
 description: "Interactive MapLibre GL map with locations, search, and \"find my location\". Demonstrates OnMount integration with a third-party DOM library, plus a Subscription bridging map move and marker click events back to the Model."
-access_date: 2026-08-03T18:55:49.002Z
-current_date: 2026-08-03T18:55:49.002Z
+access_date: 2026-08-03T19:01:53.147Z
+current_date: 2026-08-03T19:01:53.147Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

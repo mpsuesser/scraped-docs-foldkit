@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/api-cache
 title: "API Cache"
 description: "Query caching without a query client. Demonstrates stale-while-revalidate, request deduplication, invalidation, and interval refetching."
-access_date: 2026-08-03T18:55:49.002Z
-current_date: 2026-08-03T18:55:49.002Z
+access_date: 2026-08-03T19:01:53.147Z
+current_date: 2026-08-03T19:01:53.147Z
 ---
 
 ## API Cache

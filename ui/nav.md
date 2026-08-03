@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/nav
 title: "Nav"
 description: "URL-driven navigation between routes with aria-current page semantics."
-access_date: 2026-08-03T18:55:49.002Z
-current_date: 2026-08-03T18:55:49.002Z
+access_date: 2026-08-03T19:01:53.147Z
+current_date: 2026-08-03T19:01:53.147Z
 ---
 
 # Nav

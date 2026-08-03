@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/routing-and-navigation
 title: "Routing and Navigation"
 description: "Type-safe routing with bidirectional parser combinators in Foldkit. URLs parse into typed routes and build back. No string matching, built on Effect-TS."
-access_date: 2026-08-03T18:55:49.002Z
-current_date: 2026-08-03T18:55:49.002Z
+access_date: 2026-08-03T19:01:53.147Z
+current_date: 2026-08-03T19:01:53.147Z
 ---
 
 # Routing & Navigation

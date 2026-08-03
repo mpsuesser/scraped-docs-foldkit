@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/crash-view
 title: "Crash View"
 description: "A fallback UI and crash reporting for unrecoverable runtime errors."
-access_date: 2026-08-03T18:55:49.002Z
-current_date: 2026-08-03T18:55:49.002Z
+access_date: 2026-08-03T19:01:53.147Z
+current_date: 2026-08-03T19:01:53.147Z
 ---
 
 # Crash View

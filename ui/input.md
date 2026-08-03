@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/input
 title: "Input"
 description: "A thin wrapper around the native input with ARIA linking and styling hooks."
-access_date: 2026-08-03T18:55:49.002Z
-current_date: 2026-08-03T18:55:49.002Z
+access_date: 2026-08-03T19:01:53.147Z
+current_date: 2026-08-03T19:01:53.147Z
 ---
 
 # Input

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/managed-resources
 title: "Managed Resources"
 description: "Resources that activate and release based on Model state."
-access_date: 2026-08-03T18:55:49.002Z
-current_date: 2026-08-03T18:55:49.002Z
+access_date: 2026-08-03T19:01:53.147Z
+current_date: 2026-08-03T19:01:53.147Z
 ---
 
 # Managed Resources
