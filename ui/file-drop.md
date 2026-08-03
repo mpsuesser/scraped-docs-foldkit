@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/file-drop
 title: "File Drop"
 description: "Headless file drop zone that accepts drag-and-drop plus click-to-browse via a hidden native file input."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # FileDrop

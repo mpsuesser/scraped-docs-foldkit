@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ai/overview
 title: "AI"
 description: "Why Foldkit’s architecture makes AI-assisted development uniquely effective."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # AI

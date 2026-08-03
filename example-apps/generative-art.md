@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/generative-art
 title: "Generative Art"
 description: "Move the mouse to stir a Perlin-noise flow field, click to bloom prismatic particle bursts. Demonstrates Canvas.view with hundreds of evolving Path strokes per frame, Effect Random for spawning, and tunable simulation knobs wired through Messages."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

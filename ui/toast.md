@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/toast
 title: "Toast"
 description: "Stack of transient notifications anchored to a corner of the viewport with per-entry enter/leave animations and auto-dismiss."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # Toast

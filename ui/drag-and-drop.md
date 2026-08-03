@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/drag-and-drop
 title: "Drag and Drop"
 description: "Accessible drag and drop with keyboard support, auto-scrolling, and screen reader announcements."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # Drag and Drop

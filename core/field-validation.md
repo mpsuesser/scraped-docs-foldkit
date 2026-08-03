@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/field-validation
 title: "Field Validation"
 description: "Per-field form validation in Foldkit using a four-state discriminated union. Built-in validation rules, Effect-TS powered, no impossible states."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # Field Validation

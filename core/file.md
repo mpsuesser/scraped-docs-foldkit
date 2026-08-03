@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/file
 title: "File"
 description: "Read and select files from the browser using an opaque File type and event attributes for inputs and drop zones."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # File

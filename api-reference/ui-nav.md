@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-nav
 title: "Ui/Nav"
 description: "API documentation for the Ui/Nav module."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # Ui/Nav

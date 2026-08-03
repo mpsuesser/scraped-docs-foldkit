@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/overview
 title: "Foldkit UI"
 description: "Headless, accessible UI components for Foldkit: dialog, menu, tabs, listbox, and more. Built for The Elm Architecture with Effect-TS."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # Foldkit UI

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/personal-blog
 title: "Personal Blog"
 description: "Blog whose prose lives in markdown files. The @foldkit/markdown Vite plugin compiles each file into a typed document at build time, the app restyles the fold with per-node view overrides, and directive islands place a live Counter Submodel and a Note callout between paragraphs."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/kanban
 title: "Kanban"
 description: "Drag-and-drop kanban board with cross-column reordering, keyboard navigation, fractional indexing, and screen reader announcements."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

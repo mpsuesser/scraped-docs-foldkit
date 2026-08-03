@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/command
 title: "Command"
 description: "API documentation for the Command module."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # Command

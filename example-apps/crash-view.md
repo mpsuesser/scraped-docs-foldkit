@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/crash-view
 title: "Crash View"
 description: "Custom crash fallback UI. Demonstrates crash.view and crash.report with a crash button and reload."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)

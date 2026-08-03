@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ai/mcp
 title: "DevTools MCP"
 description: "Expose a running Foldkit app to AI agents over the Model Context Protocol."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # DevTools MCP Server

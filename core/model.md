@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/model
 title: "Model"
 description: "Define your entire application state as a single Effect-TS Schema. Learn how Foldkit's Model replaces useState, Redux, and Zustand."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # Model

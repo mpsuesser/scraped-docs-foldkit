@@ -2,8 +2,8 @@
 url: https://foldkit.dev/roadmap
 title: "Roadmap"
 description: "Where Foldkit is headed: the blocks of work that gate a production-ready 1.0, the directions under exploration after it, and the stances that will not change."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # Roadmap

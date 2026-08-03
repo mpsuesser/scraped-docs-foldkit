@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/devtools
 title: "DevTools"
 description: "A built-in overlay for inspecting Messages and Model state."
-access_date: 2026-08-03T19:01:53.147Z
-current_date: 2026-08-03T19:01:53.147Z
+access_date: 2026-08-03T19:09:41.518Z
+current_date: 2026-08-03T19:09:41.518Z
 ---
 
 # DevTools
