@@ -2,8 +2,8 @@
 url: https://foldkit.dev/get-started/getting-started
 title: "Getting Started"
 description: "Set up your first Foldkit application in minutes. Install, scaffold with create-foldkit-app, and build a TypeScript frontend with Effect-TS."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-04T20:48:57.152Z
+current_date: 2026-08-04T20:48:57.152Z
 ---
 
 # Getting Started
@@ -18,12 +18,12 @@ If you’d like to learn about Foldkit’s architecture before starting a projec
 
 `create-foldkit-app` requires Node.js 22.22.2 or newer.
 
-Foldkit is built on the Effect v4 beta and pins its peer dependencies to an exact version: `effect@4.0.0-beta.102` and `@effect/platform-browser@4.0.0-beta.102`. Stable Effect v3 does not satisfy the pin, so adding Foldkit to a project that already uses Effect v3 will produce peer dependency conflicts, and upgrading Foldkit can require upgrading the Effect beta in lockstep. Projects scaffolded with `create-foldkit-app` get the correct versions automatically.
+Foldkit is built on the Effect v4 beta and pins its peer dependencies to an exact version: `effect@4.0.0-beta.103` and `@effect/platform-browser@4.0.0-beta.103`. Stable Effect v3 does not satisfy the pin, so adding Foldkit to a project that already uses Effect v3 will produce peer dependency conflicts, and upgrading Foldkit can require upgrading the Effect beta in lockstep. Projects scaffolded with `create-foldkit-app` get the correct versions automatically.
 
 To add Foldkit to an existing project instead of scaffolding a new one, install it together with its pinned peer dependencies:
 
 ```sh
-npm install foldkit effect@4.0.0-beta.102 @effect/platform-browser@4.0.0-beta.102
+npm install foldkit effect@4.0.0-beta.103 @effect/platform-browser@4.0.0-beta.103
 ```
 
 ## Quick Start
