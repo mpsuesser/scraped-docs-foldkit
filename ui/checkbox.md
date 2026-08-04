@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/checkbox
 title: "Checkbox"
 description: "Accessible checkbox with indeterminate state support."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-04T23:13:41.872Z
+current_date: 2026-08-04T23:13:41.872Z
 ---
 
 ## Checkbox
@@ -194,25 +194,36 @@ const view = (model, h: HtmlBuilder<Message>) => {
 
 ## Styling
 
-Checkbox is headless. Your `toView` callback controls all markup and styling. Use the data attributes below to style checked, indeterminate, and disabled states.
+Checkbox is headless. Your `toView` callback controls all markup and styling. Use the data attributes below to style checked, indeterminate, disabled, and read-only states.
 
 | Attribute | Condition |
 | --- | --- |
 | `data-checked` | Present when checked and not indeterminate. |
 | `data-indeterminate` | Present when isIndeterminate is true. |
 | `data-disabled` | Present when isDisabled is true. |
+| `data-readonly` | Present when isReadOnly is true. |
 
 ## Keyboard Interaction
 
 | Key | Description |
 | --- | --- |
-| `Space` | Toggles the checkbox. |
+| `Space` | Toggles the Checkbox when `isDisabled` and `isReadOnly` are both `false`. |
 
 ## Accessibility
 
 The checkbox element receives `role="checkbox"` and `aria-checked` which is set to `"true"`, `"false"`, or `"mixed"` depending on the checked and indeterminate state. The label is linked via `aria-labelledby` and the description via `aria-describedby`.
 
 The `label` attribute group includes an id (accessible via `Checkbox.labelId(id)`) and the `description` group includes an id (accessible via `Checkbox.descriptionId(id)`), so a consumer can reference either element without re-declaring the naming convention.
+
+`isReadOnly` and `isDisabled` both stop the Checkbox from reacting to clicks and Space. They differ in the semantics exposed to assistive technology, so they are not interchangeable.
+
+`aria-disabled="true"`, which `isDisabled` emits, communicates that the Checkbox is unavailable. `aria-readonly="true"`, which `isReadOnly` emits, communicates that its value cannot be changed but remains relevant to the user. Both states keep `tabindex="0"`, following Foldkit's convention that unavailable controls remain discoverable by keyboard and assistive technology.
+
+Assistive technology support for `aria-readonly` on checkboxes varies. Pair it with a visible read-only treatment or explanatory text when users must distinguish it from disabled, and test the browser and assistive technology combinations your app supports.
+
+Use `isReadOnly` when the checked state is still information the user needs, such as a decision that was already made, and `isDisabled` when the Checkbox is unavailable.
+
+The two flags are independent. Setting both emits both sets of attributes, and either one on its own removes the click and Space handlers.
 
 ## API Reference
 
@@ -227,6 +238,7 @@ Configuration object passed to `Checkbox.view()`.
 | `onToggle` | `(isChecked: boolean) => Message` | — | Maps the new checked state to a Message when the user toggles the checkbox. Your update handler just stores the value. |
 | `toView` | `(attributes: CheckboxAttributes) => Html` | — | Callback that receives attribute groups for the checkbox, label, description, and hidden input elements. |
 | `isDisabled` | `boolean` | `false` | Whether the checkbox is disabled. |
+| `isReadOnly` | `boolean` | `false` | Whether the checkbox is readable but not toggleable. Carries `aria-readonly` rather than `aria-disabled`. Independent of `isDisabled`. |
 | `isIndeterminate` | `boolean` | `false` | Whether to show the indeterminate (mixed) state. Useful for "select all" checkboxes where some but not all children are checked. |
 | `name` | `string` | — | Form field name. When provided, a hidden input is included for native form submission. |
 | `value` | `string` | `'on'` | Value sent in the form when checked. |

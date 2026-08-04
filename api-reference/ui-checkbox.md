@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-checkbox
 title: "Ui/Checkbox"
 description: "API documentation for the Ui/Checkbox module."
-access_date: 2026-08-04T21:50:05.228Z
-current_date: 2026-08-04T21:50:05.228Z
+access_date: 2026-08-04T23:13:41.872Z
+current_date: 2026-08-04T23:13:41.872Z
 ---
 
 # Ui/Checkbox
@@ -14,7 +14,7 @@ current_date: 2026-08-04T21:50:05.228Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/d50f8a53f640cddf3b0d5c90015ed6ca9e2c66b5/packages/ui/src/checkbox/index.ts#L52)
+[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/ui/src/checkbox/index.ts#L57)
 
 ```
 /** Generates the description element ID from the checkbox's base ID. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/d50f8a53f640cddf3b0d5c90015ed6ca9e2c66b5/packages/ui/src/checkbox/index.ts#L49)
+[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/ui/src/checkbox/index.ts#L54)
 
 ```
 /** Generates the label element ID from the checkbox's base ID. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/d50f8a53f640cddf3b0d5c90015ed6ca9e2c66b5/packages/ui/src/checkbox/index.ts#L76)
+[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/ui/src/checkbox/index.ts#L81)
 
 ```
 /**
@@ -75,7 +75,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d50f8a53f640cddf3b0d5c90015ed6ca9e2c66b5/packages/ui/src/checkbox/index.ts#L20)
+[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/ui/src/checkbox/index.ts#L20)
 
 ```
 /**
@@ -106,7 +106,7 @@ type CheckboxAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d50f8a53f640cddf3b0d5c90015ed6ca9e2c66b5/packages/ui/src/checkbox/index.ts#L37)
+[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/ui/src/checkbox/index.ts#L41)
 
 ```
 /**
@@ -120,12 +120,17 @@ type
  *    `update` by storing the value.
  *  - `toView`: receives the CheckboxAttributes and lays out the
  *    checkbox.
+ *  - `isReadOnly`: prevents toggling while exposing read-only semantics with
+ *    `aria-readonly="true"` and `data-readonly`. The checkbox remains
+ *    focusable. Independent of `isDisabled`: setting both emits both
+ *    attribute sets, and either one removes the interaction handlers.
  */
 type ViewConfig = Readonly<{
   id: string
   isChecked: boolean
   isDisabled: boolean
   isIndeterminate: boolean
+  isReadOnly: boolean
   name: string
   onToggle: (isChecked: boolean) => Message
   toView: (attributes: CheckboxAttributes<Message>) => Html
