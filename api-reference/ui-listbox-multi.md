@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-listbox-multi
 title: "Ui/Listbox/Multi"
 description: "API documentation for the Ui/Listbox/Multi module."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-04T03:55:42.119Z
+current_date: 2026-08-04T03:55:42.119Z
 ---
 
 # Ui/Listbox/Multi
@@ -14,7 +14,7 @@ current_date: 2026-08-03T19:45:20.723Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7790ab1a71e346cfe02b0290e24666d900054b3b/packages/ui/src/listbox/multi.ts#L118)
+[source](https://github.com/foldkit/foldkit/blob/f314f3fb4452439d3c0143188dbcebf8f11e2c00/packages/ui/src/listbox/multi.ts#L118)
 
 ```
 /**
@@ -33,7 +33,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7790ab1a71e346cfe02b0290e24666d900054b3b/packages/ui/src/listbox/multi.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/f314f3fb4452439d3c0143188dbcebf8f11e2c00/packages/ui/src/listbox/multi.ts#L35)
 
 ```
 /** Creates an initial multi-select listbox model from a config. Defaults to closed with no active item. */
@@ -62,7 +62,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7790ab1a71e346cfe02b0290e24666d900054b3b/packages/ui/src/listbox/multi.ts#L76)
+[source](https://github.com/foldkit/foldkit/blob/f314f3fb4452439d3c0143188dbcebf8f11e2c00/packages/ui/src/listbox/multi.ts#L76)
 
 ```
 /**
@@ -85,7 +85,7 @@ type Bundle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7790ab1a71e346cfe02b0290e24666d900054b3b/packages/ui/src/listbox/multi.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/f314f3fb4452439d3c0143188dbcebf8f11e2c00/packages/ui/src/listbox/multi.ts#L32)
 
 ```
 /** Configuration for creating a multi-select listbox model with `init`. `isAnimated` enables CSS transition coordination (default `false`). `isModal` locks page scroll and inerts other elements when open (default `false`). */
@@ -96,7 +96,7 @@ type InitConfig = BaseInitConfig
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7790ab1a71e346cfe02b0290e24666d900054b3b/packages/ui/src/listbox/multi.ts#L64)
+[source](https://github.com/foldkit/foldkit/blob/f314f3fb4452439d3c0143188dbcebf8f11e2c00/packages/ui/src/listbox/multi.ts#L64)
 
 ```
 /** Per-render view inputs passed to the view via `h.submodel`'s `viewInputs` field. */
@@ -109,7 +109,7 @@ type ViewInputs = BaseViewInputs<Item, Value>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7790ab1a71e346cfe02b0290e24666d900054b3b/packages/ui/src/listbox/multi.ts#L23)
+[source](https://github.com/foldkit/foldkit/blob/f314f3fb4452439d3c0143188dbcebf8f11e2c00/packages/ui/src/listbox/multi.ts#L23)
 
 ```
 /** Schema for the multi-select listbox's private interaction state (open/closed status, active item, activation trigger, typeahead search). The selection is owned by the parent and passed in via `ViewInputs.selectedValues`. */

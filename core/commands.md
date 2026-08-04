@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/commands
 title: "Commands"
 description: "Model side effects as values returned from update. Commands replace useEffect with explicit, testable Effect-TS operations."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-04T03:55:42.119Z
+current_date: 2026-08-04T03:55:42.119Z
 ---
 
 ## Commands
@@ -104,6 +104,7 @@ import { Effect, Match as M, Schema as S } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
 import { Command, Http } from 'foldkit'
 import { m } from 'foldkit/message'
+import { evo } from 'foldkit/struct'
 
 const ClickedFetchCount = m('ClickedFetchCount')
 const SucceededFetchCount = m('SucceededFetchCount', {
@@ -147,7 +148,10 @@ const update = (
     >(),
     M.tagsExhaustive({
       ClickedFetchCount: () => [model, [FetchCount()]],
-      SucceededFetchCount: ({ count }) => [{ count }, []],
+      SucceededFetchCount: ({ count }) => [
+        evo(model, { count: () => count }),
+        [],
+      ],
       FailedFetchCount: () => [model, []],
     }),
   )
