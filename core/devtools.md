@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/devtools
 title: "DevTools"
 description: "A built-in overlay for inspecting Messages and Model state."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-05T16:54:29.606Z
+current_date: 2026-08-05T16:54:29.606Z
 ---
 
 # DevTools
@@ -20,12 +20,12 @@ AI agent integration
 
 Foldkit also exposes DevTools to AI agents over the Model Context Protocol. See the [DevTools MCP](https://foldkit.dev/ai/mcp) page for setup.
 
-DevTools are enabled by default in development. Recording and the MCP bridge live in the core runtime, so a `devTools` object on `makeApplication` is enough for the MCP integration. The in-browser overlay ships separately in `@foldkit/devtools`: install it and pass its `overlay` to mount the panel.
+DevTools are enabled by default in development. Recording and the MCP bridge live in the core runtime. The in-browser overlay ships separately in `@foldkit/devtools`, and `@foldkit/vite-plugin` mounts it automatically during development when the package is installed as a development dependency. Production builds omit it without any application-level environment check.
+
+A `devTools` object on `makeApplication` is needed only for configuration or MCP dispatch. To include the overlay in production, list `@foldkit/devtools` in regular `dependencies` and set `show: 'Always'`. No overlay import is needed.
 
 ```
 import { Runtime } from 'foldkit'
-
-import { overlay } from '@foldkit/devtools'
 
 const application = Runtime.makeApplication({
   Model,
@@ -34,7 +34,6 @@ const application = Runtime.makeApplication({
   view,
   container: document.getElementById('root'),
   devTools: {
-    overlay,
     position: 'BottomLeft',
   },
 })
@@ -65,8 +64,6 @@ You can also pass `{ development, production }` to select a different mode per e
 ```
 import { Runtime } from 'foldkit'
 
-import { overlay } from '@foldkit/devtools'
-
 const application = Runtime.makeApplication({
   Model,
   init,
@@ -74,7 +71,6 @@ const application = Runtime.makeApplication({
   view,
   container: document.getElementById('root'),
   devTools: {
-    overlay,
     show: 'Always',
     mode: { development: 'TimeTravel', production: 'Inspect' },
     banner: 'Welcome to our app! Browse the state tree to see how it works.',
@@ -101,8 +97,6 @@ When `excludeFromHistory` is set, DevTools also switches to a per-entry snapshot
 ```
 import { Runtime } from 'foldkit'
 
-import { overlay } from '@foldkit/devtools'
-
 const application = Runtime.makeApplication({
   Model,
   init,
@@ -111,7 +105,6 @@ const application = Runtime.makeApplication({
   subscriptions,
   container: document.getElementById('root'),
   devTools: {
-    overlay,
     excludeFromHistory: ['TickedFrame', 'MovedPointer'],
   },
 })
@@ -126,8 +119,6 @@ Maximum number of recorded Messages retained in history before the oldest is evi
 ```
 import { Runtime } from 'foldkit'
 
-import { overlay } from '@foldkit/devtools'
-
 const application = Runtime.makeApplication({
   Model,
   init,
@@ -135,7 +126,6 @@ const application = Runtime.makeApplication({
   view,
   container: document.getElementById('root'),
   devTools: {
-    overlay,
     maxEntries: 250,
   },
 })
@@ -150,8 +140,6 @@ Number of recorded Messages between full Model snapshots. Defaults to `31`. Time
 ```
 import { Runtime } from 'foldkit'
 
-import { overlay } from '@foldkit/devtools'
-
 const application = Runtime.makeApplication({
   Model,
   init,
@@ -159,7 +147,6 @@ const application = Runtime.makeApplication({
   view,
   container: document.getElementById('root'),
   devTools: {
-    overlay,
     keyframeInterval: 1,
   },
 })

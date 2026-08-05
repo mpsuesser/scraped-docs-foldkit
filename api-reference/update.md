@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/update
 title: "Update"
 description: "API documentation for the Update module."
-access_date: 2026-08-05T01:22:40.949Z
-current_date: 2026-08-05T01:22:40.949Z
+access_date: 2026-08-05T16:54:29.606Z
+current_date: 2026-08-05T16:54:29.606Z
 ---
 
 # Update
@@ -14,7 +14,7 @@ current_date: 2026-08-05T01:22:40.949Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/update/update.ts#L135)
+[source](https://github.com/foldkit/foldkit/blob/c9b3dd3e2e02eeb8a02bd48956c4d2611fd82016/packages/foldkit/src/update/update.ts#L135)
 
 ```
 /**
@@ -44,7 +44,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/update/update.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/c9b3dd3e2e02eeb8a02bd48956c4d2611fd82016/packages/foldkit/src/update/update.ts#L16)
 
 ```
 /**
@@ -66,7 +66,7 @@ type Commands = ReadonlyArray<Command<Message, never, R>>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/update/update.ts#L112)
+[source](https://github.com/foldkit/foldkit/blob/c9b3dd3e2e02eeb8a02bd48956c4d2611fd82016/packages/foldkit/src/update/update.ts#L112)
 
 ```
 /**
@@ -94,7 +94,7 @@ type Refreshable = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/update/update.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/c9b3dd3e2e02eeb8a02bd48956c4d2611fd82016/packages/foldkit/src/update/update.ts#L30)
 
 ```
 /**
@@ -116,7 +116,7 @@ type Return = readonly [Model, Commands<Message, R>]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/update/update.ts#L40)
+[source](https://github.com/foldkit/foldkit/blob/c9b3dd3e2e02eeb8a02bd48956c4d2611fd82016/packages/foldkit/src/update/update.ts#L40)
 
 ```
 /**
@@ -133,7 +133,7 @@ type ReturnWithOutMessage = readonly [Model, Commands<Message, R>, Option.Option
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/update/update.ts#L50)
+[source](https://github.com/foldkit/foldkit/blob/c9b3dd3e2e02eeb8a02bd48956c4d2611fd82016/packages/foldkit/src/update/update.ts#L50)
 
 ```
 /**
@@ -150,7 +150,7 @@ type Step = (model: Model) => Return<Model, Message, R>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/update/update.ts#L79)
+[source](https://github.com/foldkit/foldkit/blob/c9b3dd3e2e02eeb8a02bd48956c4d2611fd82016/packages/foldkit/src/update/update.ts#L79)
 
 ```
 /**

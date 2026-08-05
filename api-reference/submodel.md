@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/submodel
 title: "Submodel"
 description: "API documentation for the Submodel module."
-access_date: 2026-08-05T01:22:40.949Z
-current_date: 2026-08-05T01:22:40.949Z
+access_date: 2026-08-05T16:54:29.606Z
+current_date: 2026-08-05T16:54:29.606Z
 ---
 
 # Submodel
@@ -14,7 +14,7 @@ current_date: 2026-08-05T01:22:40.949Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/html/submodel.ts#L88)
+[source](https://github.com/foldkit/foldkit/blob/c9b3dd3e2e02eeb8a02bd48956c4d2611fd82016/packages/foldkit/src/html/submodel.ts#L88)
 
 ```
 /**
@@ -53,7 +53,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/html/submodel.ts#L173)
+[source](https://github.com/foldkit/foldkit/blob/c9b3dd3e2e02eeb8a02bd48956c4d2611fd82016/packages/foldkit/src/html/submodel.ts#L173)
 
 ```
 /**
@@ -120,7 +120,7 @@ type Config = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/submodel/submodel.ts#L21)
+[source](https://github.com/foldkit/foldkit/blob/c9b3dd3e2e02eeb8a02bd48956c4d2611fd82016/packages/foldkit/src/submodel/submodel.ts#L21)
 
 ```
 /**
@@ -151,7 +151,7 @@ type Reflect = (model: Model, value: Value) => Model
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/submodel/submodel.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/c9b3dd3e2e02eeb8a02bd48956c4d2611fd82016/packages/foldkit/src/submodel/submodel.ts#L29)
 
 ```
 /**
@@ -166,7 +166,7 @@ type Reflect2 = (model: Model, a: A, b: B) => Model
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/html/submodel.ts#L53)
+[source](https://github.com/foldkit/foldkit/blob/c9b3dd3e2e02eeb8a02bd48956c4d2611fd82016/packages/foldkit/src/html/submodel.ts#L53)
 
 ```
 /**
