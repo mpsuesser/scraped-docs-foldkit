@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-switch
 title: "Ui/Switch"
 description: "API documentation for the Ui/Switch module."
-access_date: 2026-08-04T23:13:41.872Z
-current_date: 2026-08-04T23:13:41.872Z
+access_date: 2026-08-05T01:22:40.949Z
+current_date: 2026-08-05T01:22:40.949Z
 ---
 
 # Ui/Switch
@@ -14,7 +14,7 @@ current_date: 2026-08-04T23:13:41.872Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/ui/src/switch/index.ts#L63)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/ui/src/switch/index.ts#L63)
 
 ```
 /**
@@ -53,7 +53,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/ui/src/switch/index.ts#L11)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/ui/src/switch/index.ts#L11)
 
 ```
 /**
@@ -75,7 +75,7 @@ type SwitchAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/ui/src/switch/index.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/ui/src/switch/index.ts#L28)
 
 ```
 /**

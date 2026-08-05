@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/async-data
 title: "AsyncData"
 description: "API documentation for the AsyncData module."
-access_date: 2026-08-04T23:13:41.872Z
-current_date: 2026-08-04T23:13:41.872Z
+access_date: 2026-08-05T01:22:40.949Z
+current_date: 2026-08-05T01:22:40.949Z
 ---
 
 # AsyncData
@@ -14,7 +14,7 @@ current_date: 2026-08-04T23:13:41.872Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L165)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L165)
 
 ```
 /**
@@ -32,7 +32,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L117)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L117)
 
 ```
 /** Bare-value alias for `Failure({ error })`, mirroring `Result.fail`. */
@@ -43,7 +43,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L518)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L518)
 
 ```
 /**
@@ -63,7 +63,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L480)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L480)
 
 ```
 /**
@@ -78,7 +78,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L490)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L490)
 
 ```
 /**
@@ -93,7 +93,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L552)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L552)
 
 ```
 /**
@@ -107,7 +107,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L557)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L557)
 
 ```
 /**
@@ -121,7 +121,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L577)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L577)
 
 ```
 /**
@@ -135,7 +135,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L537)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L537)
 
 ```
 /** Returns `true` only for the `Failure` state, not `Stale`. Refinement. */
@@ -146,7 +146,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L523)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L523)
 
 ```
 /** Returns `true` only for the `Idle` state. Refinement. */
@@ -157,7 +157,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L528)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L528)
 
 ```
 /**
@@ -171,7 +171,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L563)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L563)
 
 ```
 /**
@@ -186,7 +186,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L532)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L532)
 
 ```
 /** Returns `true` only for the `Refreshing` state. Refinement. */
@@ -197,7 +197,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L542)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L542)
 
 ```
 /**
@@ -211,7 +211,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L547)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L547)
 
 ```
 /**
@@ -225,7 +225,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L644)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L644)
 
 ```
 /**
@@ -243,7 +243,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L630)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L630)
 
 ```
 /**
@@ -260,7 +260,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L610)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L610)
 
 ```
 /**
@@ -278,7 +278,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L113)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L113)
 
 ```
 /** Bare-value alias for `Success({ data })`, mirroring `Result.succeed`. */
@@ -291,7 +291,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L55)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L55)
 
 ```
 /**
@@ -324,7 +324,7 @@ type AsyncData = Idle | Loading | Refreshing<A> | Failure<E> | Stale<A, E> | Suc
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L124)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L124)
 
 ```
 /**
@@ -355,7 +355,7 @@ type AsyncDataEncoded = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L136)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L136)
 
 ```
 /**
@@ -388,7 +388,7 @@ type AsyncDataSchema = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L25)
 
 ```
 /** The `Failure` state: request failed, showing the failure. */
@@ -402,7 +402,7 @@ type Failure = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L16)
 
 ```
 /** The `Idle` state: nothing requested yet. */
@@ -415,7 +415,7 @@ type Idle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L19)
 
 ```
 /** The `Loading` state: first request in flight, no prior data. */
@@ -428,7 +428,7 @@ type Loading = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L22)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L22)
 
 ```
 /** The `Refreshing` state: reloading while holding the previous good data. */
@@ -442,7 +442,7 @@ type Refreshing = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L29)
 
 ```
 /**
@@ -460,7 +460,7 @@ type Stale = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L32)
 
 ```
 /** The `Success` state: request succeeded, data present. */
@@ -476,7 +476,7 @@ type Success = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L25)
 
 ```
 /**
@@ -493,7 +493,7 @@ const Failure: (payload: Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L16)
 
 ```
 /**
@@ -507,7 +507,7 @@ const Idle: CallableTaggedStruct<"Idle", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L19)
 
 ```
 /**
@@ -521,7 +521,7 @@ const Loading: CallableTaggedStruct<"Loading", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L22)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L22)
 
 ```
 /**
@@ -538,7 +538,7 @@ const Refreshing: (payload: Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L29)
 
 ```
 /**
@@ -556,7 +556,7 @@ const Stale: (payload: Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L32)
 
 ```
 /**
@@ -573,7 +573,7 @@ const Success: (payload: Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L757)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L757)
 
 ```
 /**
@@ -616,7 +616,7 @@ const all: (inputs: Inputs) => [Inputs] extends [ReadonlyArray<AsyncData<any, an
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L450)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L450)
 
 ```
 /**
@@ -633,7 +633,7 @@ const flatMap: (f: (data: A) => AsyncData<B, E2>) => (self: AsyncData<A, E>) => 
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L501)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L501)
 
 ```
 /**
@@ -649,7 +649,7 @@ const getOrElse: (onEmpty: LazyArg<B>) => (self: AsyncData<A, E>) => B | A
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L363)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L363)
 
 ```
 /**
@@ -665,7 +665,7 @@ const map: (f: (data: A) => B) => (self: AsyncData<A, E>) => AsyncData<B, E>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L407)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L407)
 
 ```
 /**
@@ -683,7 +683,7 @@ const mapBoth: (handlers: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L385)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L385)
 
 ```
 /**
@@ -698,7 +698,7 @@ const mapError: (f: (error: E) => E2) => (self: AsyncData<A, E>) => AsyncData<A,
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L218)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L218)
 
 ```
 /**
@@ -724,7 +724,7 @@ const match: (handlers: Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L279)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L279)
 
 ```
 /**
@@ -747,7 +747,7 @@ const matchData: (handlers: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L318)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L318)
 
 ```
 /**
@@ -768,7 +768,7 @@ const matchDataSplitEmpty: (handlers: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L588)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L588)
 
 ```
 /**
@@ -784,7 +784,7 @@ const orElse: (that: LazyArg<AsyncData<A, E>>) => (self: AsyncData<A, E>) => Asy
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L834)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L834)
 
 ```
 /**
@@ -805,7 +805,7 @@ const settle: (result: Result<A, E>) => (self: AsyncData<A, E>) => AsyncData<A, 
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c4822d9ea91727f767b8b52f61a81fcc8ae6a260/packages/foldkit/src/asyncData/asyncData.ts#L662)
+[source](https://github.com/foldkit/foldkit/blob/aa1c805330dd128d1e1b7fff3308820befb4325c/packages/foldkit/src/asyncData/asyncData.ts#L662)
 
 ```
 /**
