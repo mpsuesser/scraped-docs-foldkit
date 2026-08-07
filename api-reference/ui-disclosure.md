@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-disclosure
 title: "Ui/Disclosure"
 description: "API documentation for the Ui/Disclosure module."
-access_date: 2026-08-07T14:21:01.165Z
-current_date: 2026-08-07T14:21:01.165Z
+access_date: 2026-08-07T15:31:08.863Z
+current_date: 2026-08-07T15:31:08.863Z
 ---
 
 # Ui/Disclosure
@@ -14,7 +14,7 @@ current_date: 2026-08-07T14:21:01.165Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/disclosure/index.ts#L10)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/disclosure/index.ts#L10)
 
 ```
 /**
@@ -30,7 +30,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/disclosure/index.ts#L77)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/disclosure/index.ts#L83)
 
 ```
 /**
@@ -71,7 +71,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/disclosure/index.ts#L20)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/disclosure/index.ts#L26)
 
 ```
 /**
@@ -79,6 +79,12 @@ type
  *  callback. The consumer composes the button + panel layout themselves using
  *  these bundles. The `button` bundle carries the click and Enter/Space
  *  handlers that dispatch the configured `onToggle` Message.
+ * 
+ *  The `button` bundle sets `type="button"` so that rendering the trigger as a
+ *  `button` element inside a `form` element toggles without also submitting the
+ *  form. Setting it is harmless on the other elements a trigger might use, such
+ *  as a `div` or a `span`, because the builder assigns a DOM property rather
+ *  than an HTML attribute. Spread a later `h.Type` to override it.
  */
 type DisclosureAttributes = Readonly<{
   animatePanel: (content: Html) => Html
@@ -91,7 +97,7 @@ type DisclosureAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/disclosure/index.ts#L43)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/disclosure/index.ts#L49)
 
 ```
 /**

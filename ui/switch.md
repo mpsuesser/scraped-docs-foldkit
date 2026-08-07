@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/switch
 title: "Switch"
 description: "Accessible toggle switch for boolean settings."
-access_date: 2026-08-07T02:46:48.844Z
-current_date: 2026-08-07T02:46:48.844Z
+access_date: 2026-08-07T15:31:08.863Z
+current_date: 2026-08-07T15:31:08.863Z
 ---
 
 ## Switch
@@ -167,7 +167,7 @@ Attribute groups provided to the `toView` callback.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `button` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the switch button element. Includes role, aria-checked, tabindex, and click/keyboard handlers. |
+| `button` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the switch button element. Includes role, aria-checked, tabindex, click/keyboard handlers, and `type="button"` so a switch inside a form does not submit it. |
 | `label` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the label element. Includes an id for aria-labelledby and a click handler that toggles the switch. |
 | `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes an id referenced by aria-describedby on the switch. |
 | `hiddenInput` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a hidden `<input>` for form submission. Only needed when the name prop is set. |

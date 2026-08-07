@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/textarea
 title: "Textarea"
 description: "A thin wrapper around the native textarea with ARIA linking and styling hooks."
-access_date: 2026-08-07T14:21:01.165Z
-current_date: 2026-08-07T14:21:01.165Z
+access_date: 2026-08-07T15:31:08.863Z
+current_date: 2026-08-07T15:31:08.863Z
 ---
 
 ## Textarea
@@ -64,7 +64,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
 
 ### Disabled
 
-Set `isDisabled: true` to disable the textarea. Like Input, this sets both the native `disabled` attribute and `aria-disabled`.
+Set `isDisabled: true` to disable the textarea. Like Input, this sets the native `disabled` attribute.
 
 This textarea is disabled.
 
@@ -151,7 +151,7 @@ Configuration object passed to `Textarea.view()`.
 | `toView` | `(attributes: TextareaAttributes) => Html` | — | Callback that receives attribute groups for the textarea, label, and description elements. |
 | `onInput` | `(value: string) => Message` | — | Function that maps the current textarea value to a Message on each input event. |
 | `value` | `string` | — | The current value of the textarea. |
-| `isDisabled` | `boolean` | `false` | Whether the textarea is disabled. Sets both the native disabled attribute and aria-disabled. |
+| `isDisabled` | `boolean` | `false` | Whether the textarea is disabled. Sets the native disabled attribute. |
 | `isReadOnly` | `boolean` | `false` | Whether the textarea is readable but not editable. Sets the native readonly attribute and adds a data-readonly attribute for styling. Independent of `isDisabled`. |
 | `isInvalid` | `boolean` | `false` | Whether the textarea is in an invalid state. Sets aria-invalid and adds a data-invalid attribute for styling. |
 | `isAutofocus` | `boolean` | `false` | Whether the textarea receives focus when the page loads. |

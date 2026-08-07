@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/radio-group
 title: "Radio Group"
 description: "Accessible radio button group with keyboard navigation."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-07T15:31:08.863Z
+current_date: 2026-08-07T15:31:08.863Z
 ---
 
 ## Radio Group
@@ -220,6 +220,6 @@ Each entry in `RenderInfo.options`. Carries the value, derived state flags, and 
 | `isSelected` | `boolean` | — | Whether this option is currently selected. |
 | `isActive` | `boolean` | — | Whether this option owns the roving tabindex (the one in the tab order). |
 | `isDisabled` | `boolean` | — | Whether this option is disabled (either individually via `isOptionDisabled` or because `isDisabled` is set on the whole group). |
-| `option` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the option element. Includes `role="radio"`, `aria-checked`, `aria-labelledby`, `aria-describedby`, `tabindex`, and click/keyboard handlers. |
+| `option` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the option element. Includes `role="radio"`, `aria-checked`, `aria-labelledby`, `aria-describedby`, `tabindex`, click/keyboard handlers, and `type="button"` so an option inside a form does not submit it. |
 | `label` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the label element. Includes an id for `aria-labelledby`. |
 | `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes an id for `aria-describedby`. |

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/disclosure
 title: "Disclosure"
 description: "An accessible show/hide foundation for toggleable content sections."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-07T15:31:08.863Z
+current_date: 2026-08-07T15:31:08.863Z
 ---
 
 ## Disclosure
@@ -144,6 +144,6 @@ Attribute bundles delivered to the `toView` callback each render.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `button` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the toggle button element. Includes `aria-expanded`, `aria-controls`, `tabindex`, and the click + Enter/Space keyboard handlers. |
+| `button` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the toggle button element. Includes `aria-expanded`, `aria-controls`, `tabindex`, the click + Enter/Space keyboard handlers, and `type="button"` so a trigger inside a form does not submit it. |
 | `panel` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the panel element. Includes the panel id (`${id}-panel`) and a `data-open` attribute when open. |
 | `animatePanel` | `(content: Html) => Html` | — | Wraps panel content in a CSS-grid container that animates height as the disclosure opens and closes. Render the panel unconditionally (rather than gating on isOpen) and pass it here; the panel stays mounted while collapsed so the height transition has something to animate. The collapsed content is marked aria-hidden. |

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/checkbox
 title: "Checkbox"
 description: "Accessible checkbox with indeterminate state support."
-access_date: 2026-08-04T23:13:41.872Z
-current_date: 2026-08-04T23:13:41.872Z
+access_date: 2026-08-07T15:31:08.863Z
+current_date: 2026-08-07T15:31:08.863Z
 ---
 
 ## Checkbox
@@ -249,7 +249,7 @@ Attribute groups provided to the `toView` callback.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `checkbox` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the checkbox element (typically a `<button>`). Includes role, aria-checked, tabindex, and click/keyboard handlers. |
+| `checkbox` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the checkbox element (typically a `<button>`). Includes role, aria-checked, tabindex, click/keyboard handlers, and `type="button"` so a control inside a form does not submit it. |
 | `label` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the label element. Includes an id for aria-labelledby and a click handler that toggles the checkbox. |
 | `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes an id referenced by aria-describedby on the checkbox. |
 | `hiddenInput` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a hidden `<input>` for form submission. Only needed when the name prop is set. |

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-switch
 title: "Ui/Switch"
 description: "API documentation for the Ui/Switch module."
-access_date: 2026-08-07T14:21:01.165Z
-current_date: 2026-08-07T14:21:01.165Z
+access_date: 2026-08-07T15:31:08.863Z
+current_date: 2026-08-07T15:31:08.863Z
 ---
 
 # Ui/Switch
@@ -14,7 +14,7 @@ current_date: 2026-08-07T14:21:01.165Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/switch/index.ts#L47)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/switch/index.ts#L53)
 
 ```
 /** Returns the description element id, derived from the switch's base id. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/switch/index.ts#L44)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/switch/index.ts#L50)
 
 ```
 /** Returns the label element id, derived from the switch's base id. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/switch/index.ts#L71)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/switch/index.ts#L77)
 
 ```
 /**
@@ -75,7 +75,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/switch/index.ts#L11)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/switch/index.ts#L17)
 
 ```
 /**
@@ -84,6 +84,12 @@ type
  *  spreads into its own element attribute arrays. The `button` and `label`
  *  bundles carry the click and Space handlers that dispatch the configured
  *  `onToggle` Message.
+ * 
+ *  The `button` bundle sets `type="button"` so that rendering the switch as a
+ *  `button` element inside a `form` element toggles without also submitting the
+ *  form. Setting it is harmless on the other elements a switch might use, such
+ *  as a `div` or a `span`, because the builder assigns a DOM property rather
+ *  than an HTML attribute. Spread a later `h.Type` to override it.
  */
 type SwitchAttributes = Readonly<{
   button: ReadonlyArray<Attribute<Message>>
@@ -97,7 +103,7 @@ type SwitchAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/switch/index.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/switch/index.ts#L38)
 
 ```
 /**

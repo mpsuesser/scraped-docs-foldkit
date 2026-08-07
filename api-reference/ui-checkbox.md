@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-checkbox
 title: "Ui/Checkbox"
 description: "API documentation for the Ui/Checkbox module."
-access_date: 2026-08-07T14:21:01.165Z
-current_date: 2026-08-07T14:21:01.165Z
+access_date: 2026-08-07T15:31:08.863Z
+current_date: 2026-08-07T15:31:08.863Z
 ---
 
 # Ui/Checkbox
@@ -14,7 +14,7 @@ current_date: 2026-08-07T14:21:01.165Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/checkbox/index.ts#L57)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/checkbox/index.ts#L63)
 
 ```
 /** Returns the description element id, derived from the checkbox's base id. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/checkbox/index.ts#L54)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/checkbox/index.ts#L60)
 
 ```
 /** Returns the label element id, derived from the checkbox's base id. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/checkbox/index.ts#L81)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/checkbox/index.ts#L87)
 
 ```
 /**
@@ -75,7 +75,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/checkbox/index.ts#L20)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/checkbox/index.ts#L26)
 
 ```
 /**
@@ -93,6 +93,12 @@ type
  * 
  *  The `checkbox` and `label` bundles carry the click and Space handlers that
  *  dispatch the configured `onToggle` Message.
+ * 
+ *  The `checkbox` bundle sets `type="button"` so that rendering the control as a
+ *  `button` element inside a `form` element toggles without also submitting the
+ *  form. Setting it is harmless on the other elements a control might use, such
+ *  as a `div` or a `span`, because the builder assigns a DOM property rather
+ *  than an HTML attribute. Spread a later `h.Type` to override it.
  */
 type CheckboxAttributes = Readonly<{
   checkbox: ReadonlyArray<Attribute<Message>>
@@ -106,7 +112,7 @@ type CheckboxAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/checkbox/index.ts#L41)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/checkbox/index.ts#L47)
 
 ```
 /**

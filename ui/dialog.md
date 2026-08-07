@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/dialog
 title: "Dialog"
 description: "A modal dialog backed by the native dialog element with focus trapping and scroll locking."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-07T15:31:08.863Z
+current_date: 2026-08-07T15:31:08.863Z
 ---
 
 ## Dialog
@@ -551,7 +551,7 @@ Payload delivered to the `toView` callback each render.
 | `title` | `ReadonlyArray<ChildAttribute>` | — | Spread onto your accessible-name heading (`h.h2([...title], [...])`). Carries the framework-managed id the dialog’s `aria-labelledby` points at, so labelling wires up without hand-rolling the id. |
 | `description` | `ReadonlyArray<ChildAttribute>` | — | Spread onto your description element (`h.p([...description], [...])`). Carries the framework-managed id the dialog’s `aria-describedby` points at, so the association wires up without hand-rolling the id. |
 | `initialFocus` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the element that should receive focus when the dialog opens (`h.input([...initialFocus])`). A configured `focusSelector` takes precedence; to focus an element whose id you do not own, use `focusSelector`. |
-| `closeButton` | `ReadonlyArray<ChildAttribute>` | — | Spread onto an in-panel close control such as a Cancel button. Carries the click handler that closes the dialog, so a plain dismiss needs no parent message. |
+| `closeButton` | `ReadonlyArray<ChildAttribute>` | — | Spread onto an in-panel close control such as a Cancel button. Carries the click handler that closes the dialog, so a plain dismiss needs no parent message, and `type="button"` so a close control inside a form does not submit it. |
 | `isVisible` | `boolean` | — | Derived from `isOpen` and the Animation `transitionState`. Render the backdrop and panel only while this is true. |
 
 ### OutMessage

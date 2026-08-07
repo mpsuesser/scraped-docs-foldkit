@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-radio-group
 title: "Ui/RadioGroup"
 description: "API documentation for the Ui/RadioGroup module."
-access_date: 2026-08-07T14:21:01.165Z
-current_date: 2026-08-07T14:21:01.165Z
+access_date: 2026-08-07T15:31:08.863Z
+current_date: 2026-08-07T15:31:08.863Z
 ---
 
 # Ui/RadioGroup
@@ -14,7 +14,7 @@ current_date: 2026-08-07T14:21:01.165Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/radioGroup/index.ts#L114)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/radioGroup/index.ts#L120)
 
 ```
 /**
@@ -55,7 +55,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/radioGroup/index.ts#L36)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/radioGroup/index.ts#L42)
 
 ```
 /**
@@ -64,6 +64,12 @@ type
  *  that role in their layout. Generic over `Value extends string` so
  *  `option.value` carries the consumer's union type, and over `Message`
  *  so the attribute bundles dispatch the parent's own Message.
+ * 
+ *  The `option` bundle sets `type="button"` so that rendering the option as a
+ *  `button` element inside a `form` element selects without also submitting the
+ *  form. Setting it is harmless on the other elements an option might use, such
+ *  as a `div` or a `span`, because the builder assigns a DOM property rather
+ *  than an HTML attribute. Spread a later `h.Type` to override it.
  */
 type OptionInfo = Readonly<{
   description: ReadonlyArray<Attribute<Message>>
@@ -81,7 +87,7 @@ type OptionInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/radioGroup/index.ts#L59)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/radioGroup/index.ts#L65)
 
 ```
 /**
@@ -110,7 +116,7 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/radioGroup/index.ts#L77)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/radioGroup/index.ts#L83)
 
 ```
 /**
@@ -146,7 +152,7 @@ type ViewConfig = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/cfe987ac9cba286c769efbabbf97030b45a4439a/packages/ui/src/radioGroup/index.ts#L18)
+[source](https://github.com/foldkit/foldkit/blob/b86a18681e6b60cd0669cc2a28c02e913d2b4600/packages/ui/src/radioGroup/index.ts#L18)
 
 ```
 /** Controls the radio group layout direction and which arrow keys navigate between options. */

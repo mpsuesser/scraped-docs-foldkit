@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/input
 title: "Input"
 description: "A thin wrapper around the native input with ARIA linking and styling hooks."
-access_date: 2026-08-07T14:21:01.165Z
-current_date: 2026-08-07T14:21:01.165Z
+access_date: 2026-08-07T15:31:08.863Z
+current_date: 2026-08-07T15:31:08.863Z
 ---
 
 ## Input
@@ -63,7 +63,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
 
 ### Disabled
 
-Set `isDisabled: true` to disable the input. Unlike Button, Input uses the native `disabled` attribute in addition to `aria-disabled`, so the browser prevents interaction entirely.
+Set `isDisabled: true` to disable the input. Unlike Button, Input uses the native `disabled` attribute, so the browser prevents interaction entirely.
 
 This input is disabled.
 
@@ -149,7 +149,7 @@ Configuration object passed to `Input.view()`.
 | `toView` | `(attributes: InputAttributes) => Html` | — | Callback that receives attribute groups for the input, label, and description elements. |
 | `onInput` | `((value: string) => Message) \| undefined` | — | Optional function that maps the current input value to a Message on each input event. Omit for a read-only display. |
 | `value` | `string` | — | The current value of the input. |
-| `isDisabled` | `boolean` | `false` | Whether the input is disabled. Sets both the native disabled attribute and aria-disabled. |
+| `isDisabled` | `boolean` | `false` | Whether the input is disabled. Sets the native disabled attribute. |
 | `isReadOnly` | `boolean` | `false` | Whether the input is readable but not editable. Sets the native readonly attribute and adds a data-readonly attribute for styling. Independent of `isDisabled`. |
 | `isInvalid` | `boolean` | `false` | Whether the input is in an invalid state. Sets aria-invalid and adds a data-invalid attribute for styling. |
 | `isAutofocus` | `boolean` | `false` | Whether the input receives focus when the page loads. |
