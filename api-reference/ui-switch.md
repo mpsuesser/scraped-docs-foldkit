@@ -2,19 +2,41 @@
 url: https://foldkit.dev/api-reference/ui-switch
 title: "Ui/Switch"
 description: "API documentation for the Ui/Switch module."
-access_date: 2026-08-05T20:26:10.582Z
-current_date: 2026-08-05T20:26:10.582Z
+access_date: 2026-08-07T02:46:48.844Z
+current_date: 2026-08-07T02:46:48.844Z
 ---
 
 # Ui/Switch
 
 ## Functions
 
+### descriptionId
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/switch/index.ts#L47)
+
+```
+/** Generates the description element ID from the switch's base ID. */
+(id: string): string
+```
+
+### labelId
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/switch/index.ts#L44)
+
+```
+/** Generates the label element ID from the switch's base ID. */
+(id: string): string
+```
+
 ### view
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/88b047b3f387f48deb1848a7ee12f80ebf73f2d1/packages/ui/src/switch/index.ts#L63)
+[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/switch/index.ts#L71)
 
 ```
 /**
@@ -53,7 +75,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/88b047b3f387f48deb1848a7ee12f80ebf73f2d1/packages/ui/src/switch/index.ts#L11)
+[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/switch/index.ts#L11)
 
 ```
 /**
@@ -75,7 +97,7 @@ type SwitchAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/88b047b3f387f48deb1848a7ee12f80ebf73f2d1/packages/ui/src/switch/index.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/switch/index.ts#L32)
 
 ```
 /**
@@ -89,11 +111,16 @@ type
  *    `update` by storing the value.
  *  - `toView`: receives the SwitchAttributes and lays out the
  *    switch.
+ *  - `isReadOnly`: prevents toggling while exposing read-only semantics with
+ *    `aria-readonly="true"` and `data-readonly`. The switch remains
+ *    focusable. Independent of `isDisabled`: setting both emits both
+ *    attribute sets, and either one removes the interaction handlers.
  */
 type ViewConfig = Readonly<{
   id: string
   isChecked: boolean
   isDisabled: boolean
+  isReadOnly: boolean
   name: string
   onToggle: (isChecked: boolean) => Message
   toView: (attributes: SwitchAttributes<Message>) => Html

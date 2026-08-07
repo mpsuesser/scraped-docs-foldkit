@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/story
 title: "Story"
 description: "Test the state machine with Story. Send Messages, resolve Commands inline, and assert on the Model. Pure, deterministic, fast."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-07T02:46:48.844Z
+current_date: 2026-08-07T02:46:48.844Z
 ---
 
 # Story
@@ -16,7 +16,7 @@ The Elm Architecture makes testing straightforward. The update function is pure.
 
 ## The API
 
-Import the steps you need from `foldkit/story`. The top-level steps are `story`, `given`, `message`, `model`, `expectOutMessage`, and `expectNoOutMessage`. Command resolution and assertions live under the `Command` namespace: `Command.resolve`, `Command.resolveAll`, `Command.expectHas`, `Command.expectExact`, and `Command.expectNone`.
+Import the steps you need from `foldkit/story`. The top-level steps are `story`, `given`, `message`, `model`, `expectOutMessage`, and `expectNoOutMessage`. Command resolution and assertions live under the `Command` namespace: `Command.resolve`, `Command.resolveAll`, `Command.resolveAllExact`, `Command.expectHas`, `Command.expectExact`, and `Command.expectNone`.
 
 A test file usually needs only one of the two testing modules, so named imports keep the call sites short. When a single file tests both a story and a scene, import the namespaces instead (`import { Scene, Story } from 'foldkit'`) so `Story.given` and `Scene.given` stay distinguishable.
 
@@ -48,6 +48,14 @@ Command.resolve(
 // Resolve many Commands at once. Each entry resolves exactly one matching
 // dispatch in declaration order.
 Command.resolveAll(
+  [FocusInput, CompletedFocusInput()],
+  [ScrollToTop, CompletedScrollToTop()],
+)
+
+// Resolve and assert a batch. Every listed resolver must match in this call,
+// and no actual Command may remain unresolved.
+message(ClickedSubmit())
+Command.resolveAllExact(
   [FocusInput, CompletedFocusInput()],
   [ScrollToTop, CompletedScrollToTop()],
 )
@@ -122,7 +130,7 @@ The test reads as a story. Start from a Model with count 5. Send `ClickedResetAf
 
 ## Multi-Step Flows
 
-Real apps have multi-step user stories. `Command.resolve` and `Command.resolveAll` let you resolve Commands inline at any point in the story. This keeps the resolution next to the step that produced the Command, so the test reads chronologically:
+Real apps have multi-step user stories. `Command.resolve`, `Command.resolveAll`, and `Command.resolveAllExact` let you resolve Commands inline at any point in the story. This keeps the resolution next to the step that produced the Command, so the test reads chronologically:
 
 ```
 import { Command, given, message, model, story } from 'foldkit/story'
@@ -163,11 +171,15 @@ test('weather search: success then failure', () => {
 })
 ```
 
-Every `message` is a user action: “the user submitted the form.” Every `Command.resolve` or `Command.resolveAll` is world-building: “the weather API succeeded.” Every `model` is a scene check: “the weather is showing.”
+Every `message` is a user action: “the user submitted the form.” Every Command resolver is world-building: “the weather API succeeded.” Every `model` is a scene check: “the weather is showing.”
 
 Resolvers are a queue
 
 Each entry in `resolveAll` resolves exactly one matching dispatch in declaration order. `[FetchCount, m1], [FetchCount, m2], [FetchCount, m3]` reads as three responses to three dispatches. For N identical responses, compose with `Array.makeBy(n, () => [Def, message])`. Resolvers carry across calls: unused entries can match later dispatches, and a new entry replaces any leftover resolvers sharing its Definition or Instance shape (latest wins).
+
+Exact resolution
+
+Use `resolveAllExact` when the resolver list is also a claim about which Commands were dispatched. It walks cascades like `resolveAll`, but every listed entry must match one dispatch within that call and no actual Command may remain unresolved. Repeated entries sharing a Definition consume repeated dispatches in declaration order. Supplied resolvers never carry forward.
 
 Unresolved Commands
 

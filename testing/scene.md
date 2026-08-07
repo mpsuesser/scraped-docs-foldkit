@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/scene
 title: "Scene"
 description: "Test features through the rendered view with Scene. Click buttons, type into inputs, and assert on the HTML using accessible locators."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-07T02:46:48.844Z
+current_date: 2026-08-07T02:46:48.844Z
 ---
 
 ## Scene
@@ -153,6 +153,7 @@ import {
   blur,
   change,
   click,
+  contextMenu,
   doubleClick,
   focus,
   hover,
@@ -167,6 +168,7 @@ import {
 
 click(role('button', { name: 'Log out' }))
 doubleClick(role('button', { name: 'Expand' }))
+contextMenu(role('row', { name: 'Quarterly report' }))
 pointerDown(role('button', { name: 'Toggle' }))
 pointerUp(role('button', { name: 'Toggle' }))
 hover(role('menuitem', { name: 'File' }))
@@ -182,6 +184,7 @@ keydown(label('Search'), 'Enter')
 | --- | --- |
 | `click(target)` | `OnClick` (bubbles to ancestors) |
 | `doubleClick(target)` | `OnDoubleClick` (bubbles to ancestors) |
+| `contextMenu(target)` | `OnContextMenu` (bubbles to ancestors) |
 | `pointerDown(target, options?)` | `OnPointerDown` with optional `{ pointerType, button, screenX, screenY }` (bubbles to ancestors) |
 | `pointerUp(target, options?)` | `OnPointerUp` with optional `{ pointerType, screenX, screenY }` (bubbles to ancestors) |
 | `hover(target)` | `OnMouseEnter` (falls back to `OnMouseOver`) |
@@ -197,6 +200,8 @@ keydown(label('Search'), 'Enter')
 ## Assertions
 
 `expect(locator)` creates an inline assertion step against a single element. Every matcher has a `.not` variant that inverts the assertion.
+
+Property, state, and accessibility matchers require the Locator to match an element, including their `.not` variants. Use `.toBeAbsent()` or `.not.toExist()` when the intended assertion is that no element matches.
 
 ```
 import { all, expect, expectAll, label, role } from 'foldkit/scene'
@@ -227,7 +232,7 @@ expectAll(all.role('alert')).toBeEmpty()
 | `.toBeEmpty()` | Has no text content or child elements |
 | `.toHaveText(value)` | Has text content equal to the given string or matching the given regex |
 | `.toContainText(value)` | Has text content including the given substring or matching the regex |
-| `.toHaveAccessibleName(name)` | Has the given accessible name (resolves aria-labelledby, aria-label, label\[for\], text content) |
+| `.toHaveAccessibleName(name)` | Has the given accessible name (resolves aria-labelledby, aria-label, label\[for\], native host-language sources, accessible text content, and title) |
 | `.toHaveAccessibleDescription(description)` | Has the given accessible description (resolves aria-describedby) |
 | `.toBeDisabled()` | Has aria-disabled or the disabled attribute |
 | `.toBeEnabled()` | Is not disabled |
@@ -237,6 +242,8 @@ expectAll(all.role('alert')).toBeEmpty()
 | `.toHaveId(id)` | Has the given id |
 | `.toHaveClass(name)` | Has the given CSS class |
 | `.toHaveStyle(name, value)` | Has the given inline style property |
+
+Accessible-name and accessible-description matching excludes hidden descendant content. A hidden node directly referenced by `aria-labelledby` or `aria-describedby` contributes its full subtree text.
 
 For `LocatorAll` (from `all.*`), use `expectAll(locatorAll)` for count-based assertions:
 
@@ -254,6 +261,7 @@ Command tracking has a few semantics worth knowing:
 - Pending Commands accumulate in the order `update` returns them, across as many steps as the test takes.
 - Resolving a Command feeds its result Message through `update`; new Commands produced by that update join the pending list.
 - `Command.resolveAll` walks cascades within the batch. If resolving Command A produces Command B and B’s resolver is in the same call, B resolves without a separate step.
+- `Command.resolveAllExact` walks the same cascades while requiring every listed resolver to match within that call and every actual Command to be resolved.
 - Interactions throw if there are unresolved Commands when they try to dispatch a Message.
 - `scene` throws at the end if any Command remains unresolved.
 
@@ -273,6 +281,13 @@ Command.expectExact(FetchWeather({ zipCode: '90210' }))
 click(role('button', { name: 'Sign In' }))
 Command.expectExact(RequestAuthentication, TrackSignInAttempt)
 Command.resolveAll(
+  [RequestAuthentication, SucceededRequestAuthentication({ session })],
+  [TrackSignInAttempt, CompletedTrackSignInAttempt()],
+)
+
+// Resolve the batch while asserting every listed Command was dispatched.
+click(role('button', { name: 'Sign In' }))
+Command.resolveAllExact(
   [RequestAuthentication, SucceededRequestAuthentication({ session })],
   [TrackSignInAttempt, CompletedTrackSignInAttempt()],
 )
@@ -297,7 +312,8 @@ Command.resolve(
 | Step | Effect |
 | --- | --- |
 | `Command.resolve(Def, ResultMessage)` | Resolves the first pending Command with the given name by feeding `ResultMessage` through update. For a child Submodel Command, pass the child’s raw result Message; resolve replays the Command’s own `mapMessages` wrapping automatically. |
-| `Command.resolveAll([Def, ResultMessage], ...)` | Resolves a batch of pending Commands, walking cascades. Each entry resolves exactly one matching dispatch in declaration order; compose with Array.makeBy for N identical responses. |
+| `Command.resolveAll([Def, ResultMessage], ...)` | Resolves a batch of pending Commands, walking cascades. Each entry resolves exactly one matching dispatch in declaration order and unmatched entries carry forward; compose with Array.makeBy for N identical responses. |
+| `Command.resolveAllExact([Def, ResultMessage], ...)` | Resolves a batch and throws unless every listed resolver matches within the call and no actual Commands remain unresolved. Repeated Definition entries consume repeated dispatches in declaration order. |
 | `Command.expectExact(A, B)` | The pending Commands are exactly A and B (order-independent). |
 | `Command.expectHas(A)` | A is among the pending Commands (subset check). |
 | `Command.expectNone()` | There are no pending Commands. |
