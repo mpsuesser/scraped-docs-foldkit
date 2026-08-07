@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/input
 title: "Input"
 description: "A thin wrapper around the native input with ARIA linking and styling hooks."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-07T14:21:01.165Z
+current_date: 2026-08-07T14:21:01.165Z
 ---
 
 ## Input
@@ -107,11 +107,12 @@ const view = (h: HtmlBuilder<Message>) =>
 
 ## Styling
 
-Input is headless. Your `toView` callback controls all markup and styling. Use the data attributes below to style different states. For validation, set `isInvalid: true` and style with `data-[invalid]` in your CSS.
+Input is headless. Your `toView` callback controls all markup and styling. Use the data attributes below to style disabled, read-only, and invalid states. For validation, set `isInvalid: true` and style with `data-[invalid]` in your CSS.
 
 | Attribute | Condition |
 | --- | --- |
 | `data-disabled` | Present when isDisabled is true. |
+| `data-readonly` | Present when isReadOnly is true. |
 | `data-invalid` | Present when isInvalid is true. |
 
 ## Keyboard Interaction
@@ -122,11 +123,19 @@ Input uses the native `<input>` element, so all keyboard interaction is handled 
 | --- | --- |
 | `Tab` | Moves focus to or away from the input. |
 
+A read-only input still takes focus and allows selection and copying. Typing does not change the value.
+
 ## Accessibility
 
 The three attribute groups wire up ARIA relationships automatically. The `label` group includes `for` pointing to the input `id`. The `description` group includes an `id` that the input references via `aria-describedby`. You can access this description ID directly with `Input.descriptionId(id)` if you need to reference it outside the `toView` callback.
 
 When `isInvalid` is true, `aria-invalid="true"` is set on the input element so screen readers announce the error state.
+
+`isReadOnly` sets the native `readonly` attribute, so the browser exposes the read-only state to assistive technology without any extra ARIA. The value stays focusable, selectable, and copyable, and the field is still submitted with its form.
+
+`isDisabled` sets the native `disabled` attribute instead. A disabled input is not focusable and is left out of form submission. Use `isReadOnly` when the value still matters to the user and only editing is blocked, and `isDisabled` when the field is unavailable.
+
+The two flags are independent. Setting both emits both attribute sets, and either one on its own removes the input handler. Browsers give `disabled` precedence when both are present.
 
 ## API Reference
 
@@ -141,6 +150,7 @@ Configuration object passed to `Input.view()`.
 | `onInput` | `((value: string) => Message) \| undefined` | — | Optional function that maps the current input value to a Message on each input event. Omit for a read-only display. |
 | `value` | `string` | — | The current value of the input. |
 | `isDisabled` | `boolean` | `false` | Whether the input is disabled. Sets both the native disabled attribute and aria-disabled. |
+| `isReadOnly` | `boolean` | `false` | Whether the input is readable but not editable. Sets the native readonly attribute and adds a data-readonly attribute for styling. Independent of `isDisabled`. |
 | `isInvalid` | `boolean` | `false` | Whether the input is in an invalid state. Sets aria-invalid and adds a data-invalid attribute for styling. |
 | `isAutofocus` | `boolean` | `false` | Whether the input receives focus when the page loads. |
 | `name` | `string` | — | The form field name for native form submission. |

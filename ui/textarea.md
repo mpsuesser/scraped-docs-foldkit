@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/textarea
 title: "Textarea"
 description: "A thin wrapper around the native textarea with ARIA linking and styling hooks."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-07T14:21:01.165Z
+current_date: 2026-08-07T14:21:01.165Z
 ---
 
 ## Textarea
@@ -109,11 +109,12 @@ const view = (h: HtmlBuilder<Message>) =>
 
 ## Styling
 
-Textarea is headless. Your `toView` callback controls all markup and styling. Use the data attributes below to style different states.
+Textarea is headless. Your `toView` callback controls all markup and styling. Use the data attributes below to style disabled, read-only, and invalid states.
 
 | Attribute | Condition |
 | --- | --- |
 | `data-disabled` | Present when isDisabled is true. |
+| `data-readonly` | Present when isReadOnly is true. |
 | `data-invalid` | Present when isInvalid is true. |
 
 ## Keyboard Interaction
@@ -124,11 +125,19 @@ Textarea uses the native `<textarea>` element, so all keyboard interaction is ha
 | --- | --- |
 | `Tab` | Moves focus to or away from the textarea. |
 
+A read-only textarea still takes focus and allows selection and copying. Typing does not change the value.
+
 ## Accessibility
 
 Textarea provides the same ARIA wiring as Input. The `label` group links via `for`, and the `description` group is referenced by `aria-describedby` on the textarea. You can access the description ID directly with `Textarea.descriptionId(id)`.
 
 When `isInvalid` is true, `aria-invalid="true"` is set on the textarea element.
+
+`isReadOnly` sets the native `readonly` attribute, so the browser exposes the read-only state to assistive technology without any extra ARIA. The value stays focusable, selectable, and copyable, and the field is still submitted with its form.
+
+`isDisabled` sets the native `disabled` attribute instead. A disabled textarea is not focusable and is left out of form submission. Use `isReadOnly` when the value still matters to the user and only editing is blocked, and `isDisabled` when the field is unavailable.
+
+The two flags are independent. Setting both emits both attribute sets, and either one on its own removes the input handler. Browsers give `disabled` precedence when both are present.
 
 ## API Reference
 
@@ -143,6 +152,7 @@ Configuration object passed to `Textarea.view()`.
 | `onInput` | `(value: string) => Message` | — | Function that maps the current textarea value to a Message on each input event. |
 | `value` | `string` | — | The current value of the textarea. |
 | `isDisabled` | `boolean` | `false` | Whether the textarea is disabled. Sets both the native disabled attribute and aria-disabled. |
+| `isReadOnly` | `boolean` | `false` | Whether the textarea is readable but not editable. Sets the native readonly attribute and adds a data-readonly attribute for styling. Independent of `isDisabled`. |
 | `isInvalid` | `boolean` | `false` | Whether the textarea is in an invalid state. Sets aria-invalid and adds a data-invalid attribute for styling. |
 | `isAutofocus` | `boolean` | `false` | Whether the textarea receives focus when the page loads. |
 | `name` | `string` | — | The form field name for native form submission. |
