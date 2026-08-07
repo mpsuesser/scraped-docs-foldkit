@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-switch
 title: "Ui/Switch"
 description: "API documentation for the Ui/Switch module."
-access_date: 2026-08-07T02:46:48.844Z
-current_date: 2026-08-07T02:46:48.844Z
+access_date: 2026-08-07T13:54:51.385Z
+current_date: 2026-08-07T13:54:51.385Z
 ---
 
 # Ui/Switch
@@ -14,10 +14,10 @@ current_date: 2026-08-07T02:46:48.844Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/switch/index.ts#L47)
+[source](https://github.com/foldkit/foldkit/blob/b94bf96a2f96d984390df790a8ab63c1618f4776/packages/ui/src/switch/index.ts#L47)
 
 ```
-/** Generates the description element ID from the switch's base ID. */
+/** Returns the description element id, derived from the switch's base id. */
 (id: string): string
 ```
 
@@ -25,10 +25,10 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/switch/index.ts#L44)
+[source](https://github.com/foldkit/foldkit/blob/b94bf96a2f96d984390df790a8ab63c1618f4776/packages/ui/src/switch/index.ts#L44)
 
 ```
-/** Generates the label element ID from the switch's base ID. */
+/** Returns the label element id, derived from the switch's base id. */
 (id: string): string
 ```
 
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/switch/index.ts#L71)
+[source](https://github.com/foldkit/foldkit/blob/b94bf96a2f96d984390df790a8ab63c1618f4776/packages/ui/src/switch/index.ts#L71)
 
 ```
 /**
@@ -75,7 +75,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/switch/index.ts#L11)
+[source](https://github.com/foldkit/foldkit/blob/b94bf96a2f96d984390df790a8ab63c1618f4776/packages/ui/src/switch/index.ts#L11)
 
 ```
 /**
@@ -97,7 +97,7 @@ type SwitchAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/switch/index.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/b94bf96a2f96d984390df790a8ab63c1618f4776/packages/ui/src/switch/index.ts#L32)
 
 ```
 /**

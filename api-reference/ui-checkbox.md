@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-checkbox
 title: "Ui/Checkbox"
 description: "API documentation for the Ui/Checkbox module."
-access_date: 2026-08-07T02:46:48.844Z
-current_date: 2026-08-07T02:46:48.844Z
+access_date: 2026-08-07T13:54:51.385Z
+current_date: 2026-08-07T13:54:51.385Z
 ---
 
 # Ui/Checkbox
@@ -14,10 +14,10 @@ current_date: 2026-08-07T02:46:48.844Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/checkbox/index.ts#L57)
+[source](https://github.com/foldkit/foldkit/blob/b94bf96a2f96d984390df790a8ab63c1618f4776/packages/ui/src/checkbox/index.ts#L57)
 
 ```
-/** Generates the description element ID from the checkbox's base ID. */
+/** Returns the description element id, derived from the checkbox's base id. */
 (id: string): string
 ```
 
@@ -25,10 +25,10 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/checkbox/index.ts#L54)
+[source](https://github.com/foldkit/foldkit/blob/b94bf96a2f96d984390df790a8ab63c1618f4776/packages/ui/src/checkbox/index.ts#L54)
 
 ```
-/** Generates the label element ID from the checkbox's base ID. */
+/** Returns the label element id, derived from the checkbox's base id. */
 (id: string): string
 ```
 
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/checkbox/index.ts#L81)
+[source](https://github.com/foldkit/foldkit/blob/b94bf96a2f96d984390df790a8ab63c1618f4776/packages/ui/src/checkbox/index.ts#L81)
 
 ```
 /**
@@ -75,7 +75,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/checkbox/index.ts#L20)
+[source](https://github.com/foldkit/foldkit/blob/b94bf96a2f96d984390df790a8ab63c1618f4776/packages/ui/src/checkbox/index.ts#L20)
 
 ```
 /**
@@ -106,7 +106,7 @@ type CheckboxAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/5926900b5d5136e2f6ba527737386fc6b4619da7/packages/ui/src/checkbox/index.ts#L41)
+[source](https://github.com/foldkit/foldkit/blob/b94bf96a2f96d984390df790a8ab63c1618f4776/packages/ui/src/checkbox/index.ts#L41)
 
 ```
 /**
