@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/http
 title: "Http"
 description: "API documentation for the Http module."
-access_date: 2026-08-07T15:54:22.903Z
-current_date: 2026-08-07T15:54:22.903Z
+access_date: 2026-08-07T17:24:33.589Z
+current_date: 2026-08-07T17:24:33.589Z
 ---
 
 # Http
@@ -14,7 +14,7 @@ current_date: 2026-08-07T15:54:22.903Z
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/40ccffe57f29bc329cd37443055b46a8f33a7ce2/packages/foldkit/src/http/http.ts#L46)
+[source](https://github.com/foldkit/foldkit/blob/1995dedf6b1fb51cd51dca135cbc2e9540b690fb/packages/foldkit/src/http/http.ts#L46)
 
 ```
 /**
