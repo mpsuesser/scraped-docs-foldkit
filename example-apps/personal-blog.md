@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/personal-blog
 title: "Personal Blog"
 description: "Blog whose prose lives in markdown files. The @foldkit/markdown Vite plugin compiles each file into a typed document at build time, the app restyles the fold with per-node view overrides, and directive islands place a live Counter Submodel and a Note callout between paragraphs."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-08T21:58:00.646Z
+current_date: 2026-08-08T21:58:00.646Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -29,7 +29,7 @@ Routing
 ```
 import { clsx } from 'clsx'
 import { Effect, Match as M, Option, Schema as S } from 'effect'
-import { Command, Runtime } from 'foldkit'
+import { Command, Runtime, Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { UrlRequest, load, pushUrl } from 'foldkit/navigation'
@@ -98,6 +98,13 @@ const LoadExternal = Command.define('LoadExternal', {
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 const withUpdateReturn = M.withReturnType<UpdateReturn>()
 
+const foldCounter = Update.foldChild({
+  update: Counter.update,
+  read: (model: Model) => Option.some(model.counter),
+  write: (model, nextCounter) => evo(model, { counter: () => nextCounter }),
+  toParentMessage: message => GotCounterMessage({ message }),
+})
+
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     withUpdateReturn,
@@ -119,18 +126,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         return [evo(model, { route: () => nextRoute }), []]
       },
 
-      GotCounterMessage: ({ message }) => {
-        const [nextCounter, counterCommands] = Counter.update(
-          model.counter,
-          message,
-        )
-        return [
-          evo(model, { counter: () => nextCounter }),
-          Command.mapMessages(counterCommands, childMessage =>
-            GotCounterMessage({ message: childMessage }),
-          ),
-        ]
-      },
+      GotCounterMessage: ({ message }) => foldCounter(model, message),
     }),
     M.tag('CompletedNavigateInternal', 'CompletedLoadExternal', () => [
       model,

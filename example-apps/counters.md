@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/counters
 title: "Counters"
 description: "A dynamic list of Counter Submodels. Add and remove rows; each row is an independent Submodel embedded via h.submodel, with per-instance routing via a wrapper Message."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-08T21:58:00.646Z
+current_date: 2026-08-08T21:58:00.646Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -21,8 +21,8 @@ Submodels
 /
 
 ```
-import { Array, Match as M, Option, Schema as S } from 'effect'
-import { Command, Runtime } from 'foldkit'
+import { Array, Match as M, Option, Schema as S, pipe } from 'effect'
+import { Command, Runtime, Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -64,6 +64,23 @@ export type Message = typeof Message.Type
 
 // UPDATE
 
+const foldCounter = (id: string) =>
+  Update.foldChild({
+    update: Counter.update,
+    read: (model: Model) =>
+      pipe(
+        Array.findFirst(model.rows, row => row.id === id),
+        Option.map(row => row.counter),
+      ),
+    write: (model, nextCounter) =>
+      evo(model, {
+        rows: Array.map(row =>
+          row.id === id ? evo(row, { counter: () => nextCounter }) : row,
+        ),
+      }),
+    toParentMessage: message => GotCounterMessage({ id, message }),
+  })
+
 export const update = (
   model: Model,
   message: Message,
@@ -89,31 +106,7 @@ export const update = (
         }),
         [],
       ],
-      GotCounterMessage: ({ id, message }) =>
-        Option.match(
-          Array.findFirst(model.rows, row => row.id === id),
-          {
-            onNone: () => [model, []],
-            onSome: row => {
-              const [nextCounter, commands] = Counter.update(
-                row.counter,
-                message,
-              )
-              return [
-                evo(model, {
-                  rows: Array.map(existingRow =>
-                    existingRow.id === id
-                      ? evo(existingRow, { counter: () => nextCounter })
-                      : existingRow,
-                  ),
-                }),
-                Command.mapMessages(commands, childMessage =>
-                  GotCounterMessage({ id, message: childMessage }),
-                ),
-              ]
-            },
-          },
-        ),
+      GotCounterMessage: ({ id, message }) => foldCounter(id)(model, message),
     }),
   )
 

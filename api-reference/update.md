@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/update
 title: "Update"
 description: "API documentation for the Update module."
-access_date: 2026-08-08T17:48:57.462Z
-current_date: 2026-08-08T17:48:57.462Z
+access_date: 2026-08-08T21:58:00.646Z
+current_date: 2026-08-08T21:58:00.646Z
 ---
 
 # Update
@@ -14,7 +14,7 @@ current_date: 2026-08-08T17:48:57.462Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/update/update.ts#L135)
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L135)
 
 ```
 /**
@@ -40,11 +40,101 @@ function
 
 ## Types
 
+### ChildFold
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L163)
+
+```
+/**
+ * The four capabilities that fold one child Submodel's update into the
+ *  parent, for a child without an OutMessage channel.
+ * 
+ *  - `update`: the child update function to run.
+ *  - `read`: the getter half of the lens onto the child: reads the child
+ *    Model from the parent Model. Returns an `Option` because a child
+ *    may not be mounted (for example a page behind a route or a keyed
+ *    collection miss); a single always-present field wraps in
+ *    `Option.some`.
+ *  - `write`: the setter half of the lens: writes the updated child
+ *    Model back into the parent Model.
+ *  - `toParentMessage`: lifts a child Message into the parent's Message,
+ *    the same contract `h.submodel` takes for the view half. Always the
+ *    child's `Got*` wrapper: `message => GotSearchMessage({ message })`.
+ */
+type ChildFold = Readonly<{
+  read: (model: ParentModel) => Option.Option<ChildModel>
+  toParentMessage: (message: ChildMessage) => ParentMessage
+  update: (childModel: ChildModel, input: Input) => Return<ChildModel, ChildMessage, R>
+  write: (model: ParentModel, nextChildModel: ChildModel) => ParentModel
+}>
+```
+
+### ChildFoldWithOutMessage
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L189)
+
+```
+/**
+ * ChildFold for a child whose update returns
+ *  ReturnWithOutMessage, adding the fifth capability:
+ * 
+ *  - `foldOutMessage`: folds the child's OutMessage into the parent as a
+ *    Step. The Step receives the parent Model with the child
+ *    already written back, and its Commands follow the child's in the
+ *    returned batch. Match on the OutMessage tag inside
+ *    (`M.tagsExhaustive`), and build a multi-step fold with
+ *    combine.
+ */
+type ChildFoldWithOutMessage = Readonly<{
+  foldOutMessage: (outMessage: ChildOutMessage) => Step<ParentModel, ParentMessage, R>
+  read: (model: ParentModel) => Option.Option<ChildModel>
+  toParentMessage: (message: ChildMessage) => ParentMessage
+  update: (childModel: ChildModel, input: Input) => ReturnWithOutMessage<ChildModel, ChildMessage, ChildOutMessage, R>
+  write: (model: ParentModel, nextChildModel: ChildModel) => ParentModel
+}>
+```
+
+### ChildFoldWithParentOutMessage
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L223)
+
+```
+/**
+ * ChildFoldWithOutMessage for a parent that is itself a
+ *  Submodel, so the fold's result carries the parent's own OutMessage
+ *  channel as a third tuple element. Adds:
+ * 
+ *  - `toParentOutMessage`: lifts the child's OutMessage into the
+ *    parent's own OutMessage; `None` passes nothing upward. When the
+ *    child returns no OutMessage the fold's third element is `None`.
+ *  - `foldOutMessage` stays available for a parent that also updates
+ *    its own state from the child's OutMessage, and is optional here.
+ * 
+ *  A parent Submodel embedding a child with no OutMessage channel needs
+ *  no config at all: spread the plain fold into its return,
+ *  `[...foldStartDate(model, message), Option.none()]`.
+ */
+type ChildFoldWithParentOutMessage = Readonly<{
+  foldOutMessage: (outMessage: ChildOutMessage) => Step<ParentModel, ParentMessage, R>
+  read: (model: ParentModel) => Option.Option<ChildModel>
+  toParentMessage: (message: ChildMessage) => ParentMessage
+  toParentOutMessage: (outMessage: ChildOutMessage) => Option.Option<ParentOutMessage>
+  update: (childModel: ChildModel, input: Input) => ReturnWithOutMessage<ChildModel, ChildMessage, ChildOutMessage, R>
+  write: (model: ParentModel, nextChildModel: ChildModel) => ParentModel
+}>
+```
+
 ### Commands
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/update/update.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L16)
 
 ```
 /**
@@ -62,11 +152,43 @@ type
 type Commands = ReadonlyArray<Command<Message, never, R>>
 ```
 
+### Fold
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L276)
+
+```
+/**
+ * The dual function foldChild returns. Data-first runs the
+ *  fold now (`fold(model, input)` returns a Return); data-last
+ *  builds a composable Step (`fold(input)`, for
+ *  combine).
+ */
+type Fold = (model: ParentModel, input: Input) => Return<ParentModel, ParentMessage, R>
+```
+
+### FoldWithOutMessage
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L285)
+
+```
+/**
+ * Fold for a ChildFoldWithParentOutMessage: the
+ *  data-first form returns a ReturnWithOutMessage and the
+ *  data-last form builds a StepWithOutMessage, so the fold slots
+ *  directly into a parent that is itself a Submodel.
+ */
+type FoldWithOutMessage = (model: ParentModel, input: Input) => ReturnWithOutMessage<ParentModel, ParentMessage, ParentOutMessage, R>
+```
+
 ### Refreshable
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/update/update.ts#L112)
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L112)
 
 ```
 /**
@@ -94,7 +216,7 @@ type Refreshable = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/update/update.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L30)
 
 ```
 /**
@@ -116,7 +238,7 @@ type Return = readonly [Model, Commands<Message, R>]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/update/update.ts#L40)
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L40)
 
 ```
 /**
@@ -133,7 +255,7 @@ type ReturnWithOutMessage = readonly [Model, Commands<Message, R>, Option.Option
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/update/update.ts#L50)
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L50)
 
 ```
 /**
@@ -144,13 +266,28 @@ type
 type Step = (model: Model) => Return<Model, Message, R>
 ```
 
+### StepWithOutMessage
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L268)
+
+```
+/**
+ * Step for an update that also surfaces an OutMessage to its
+ *  parent: maps a Model to a ReturnWithOutMessage over the same
+ *  Model.
+ */
+type StepWithOutMessage = (model: Model) => ReturnWithOutMessage<Model, Message, OutMessage, R>
+```
+
 ## Constants
 
 ### combine
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/update/update.ts#L79)
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L79)
 
 ```
 /**
@@ -181,4 +318,64 @@ const
  *  ```
  */
 const combine: (steps: readonly Array<Step<Model, Message, R>>) => Step<Model, Message, R>
+```
+
+### foldChild
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/foldkit/src/update/update.ts#L349)
+
+```
+/**
+ * Folds a child Submodel's update into the parent: the update half of
+ *  embedding a child, complementing `h.submodel` on the view half. Give
+ *  it the facts that vary per child (a ChildFold, or a
+ *  ChildFoldWithOutMessage when the child's update returns
+ *  OutMessages) and it returns a dual Fold:
+ * 
+ *  ```ts
+ *  const foldSearch = Update.foldChild({
+ *    update: Search.update,
+ *    read: (model: Model) => Option.some(model.search),
+ *    write: (model, nextSearch) => evo(model, { search: () => nextSearch }),
+ *    toParentMessage: message => GotSearchMessage({ message }),
+ *  })
+ * 
+ *  // in the parent update
+ *  GotSearchMessage: ({ message }) => foldSearch(model, message),
+ *  ```
+ * 
+ *  The fold runs `update` against the child Model `read` returns, writes
+ *  the child back, and lifts the child's Commands through
+ *  `toParentMessage`. When `read` returns `None` the fold returns
+ *  `[model, []]`: a Message for an unmounted child is a no-op. When the
+ *  child's update returns an OutMessage, `foldOutMessage` runs against
+ *  the Model with the child already written back, and its Commands
+ *  follow the child's in the returned batch.
+ * 
+ *  A parent that is itself a Submodel passes a
+ *  ChildFoldWithParentOutMessage and receives a
+ *  FoldWithOutMessage, whose results carry the parent's own
+ *  OutMessage channel as a third element.
+ * 
+ *  `update` closes over per-dispatch context, and the data-last form
+ *  composes with combine, here to put a navigation Command ahead
+ *  of the child's:
+ * 
+ *  ```ts
+ *  const joinRoom = (roomId: string, player: Player): UpdateStep =>
+ *    Update.combine([
+ *      model => [model, [NavigateToRoom({ roomId })]],
+ *      Update.foldChild({
+ *        update: (room: Room.Model, player: Player) =>
+ *          Room.join(room, player, { roomId }),
+ *        read: readRoom,
+ *        write: writeRoom,
+ *        toParentMessage: toGotRoomMessage,
+ *      })(player),
+ *    ])
+ *  ```
+ */
+const foldChild: (childFold: ChildFoldWithParentOutMessage<ParentModel, ParentMessage, ChildModel, Input, ChildMessage, ChildOutMessage, ParentOutMessage, R>) => FoldWithOutMessage<ParentModel, ParentMessage, Input, ParentOutMessage, R>
 ```
