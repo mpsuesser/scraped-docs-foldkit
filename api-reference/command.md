@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/command
 title: "Command"
 description: "API documentation for the Command module."
-access_date: 2026-08-07T20:55:54.427Z
-current_date: 2026-08-07T20:55:54.427Z
+access_date: 2026-08-08T17:48:57.462Z
+current_date: 2026-08-08T17:48:57.462Z
 ---
 
 # Command
@@ -14,7 +14,7 @@ current_date: 2026-08-07T20:55:54.427Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/e528df4cc3ccd2d5719a4a86039ed9f920c6e724/packages/foldkit/src/command/index.ts#L220)
+[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/command/index.ts#L220)
 
 ## Types
 
@@ -22,7 +22,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/e528df4cc3ccd2d5719a4a86039ed9f920c6e724/packages/foldkit/src/command/index.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/command/index.ts#L12)
 
 ```
 /**
@@ -50,7 +50,7 @@ type Command = [T] extends [Schema.Top]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/e528df4cc3ccd2d5719a4a86039ed9f920c6e724/packages/foldkit/src/command/index.ts#L76)
+[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/command/index.ts#L76)
 
 ```
 /** A Command definition created with `Command.define`. Union over the no-args and with-args shapes; consumers that only need name/identity can accept this. */
@@ -61,7 +61,7 @@ type CommandDefinition = CommandDefinitionNoArgs<Name, Effect.Effect<ResultMessa
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/e528df4cc3ccd2d5719a4a86039ed9f920c6e724/packages/foldkit/src/command/index.ts#L92)
+[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/command/index.ts#L92)
 
 ```
 /**
@@ -87,7 +87,7 @@ type InterruptOption = true | Readonly<{
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/e528df4cc3ccd2d5719a4a86039ed9f920c6e724/packages/foldkit/src/command/index.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/command/index.ts#L51)
 
 ```
 /** A Command definition for a Command with no declared args. Call as `Definition()` to produce a Command instance. */
@@ -101,7 +101,7 @@ interface CommandDefinitionNoArgs {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/e528df4cc3ccd2d5719a4a86039ed9f920c6e724/packages/foldkit/src/command/index.ts#L61)
+[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/command/index.ts#L61)
 
 ```
 /** A Command definition for a Command with declared args. Call as `Definition(args)` to produce a Command instance. */
@@ -117,7 +117,7 @@ interface CommandDefinitionWithArgs {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/e528df4cc3ccd2d5719a4a86039ed9f920c6e724/packages/foldkit/src/command/brand.ts#L3)
+[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/command/brand.ts#L3)
 
 ```
 /** Type-level brand for CommandDefinition values. */
@@ -128,7 +128,7 @@ const CommandDefinitionTypeId: unique symbol
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/e528df4cc3ccd2d5719a4a86039ed9f920c6e724/packages/foldkit/src/command/index.ts#L400)
+[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/command/index.ts#L400)
 
 ```
 /**
@@ -142,22 +142,14 @@ const
  *  see the child's raw Message instead of the wrapped one. Lift result Messages
  *  with mapMessage / mapMessages, which record the lift.
  */
-const mapEffect: (f: (effect: Effect<A, E1, R1>) => Effect<B, E2, R2>) => (command: Readonly<{
-  args: Record<string, unknown>
-  effect: Effect.Effect<A, E1, R1>
-  name: string
-}>) => Readonly<{
-  args: Record<string, unknown>
-  effect: Effect.Effect<B, E2, R2>
-  name: string
-}>
+const mapEffect: (f: (effect: Effect<A, E1, R1>) => Effect<B, E2, R2>) => (command: Command<A, E1, R1>) => Command<B, E2, R2>
 ```
 
 ### mapMessage
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/e528df4cc3ccd2d5719a4a86039ed9f920c6e724/packages/foldkit/src/command/index.ts#L459)
+[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/command/index.ts#L445)
 
 ```
 /**
@@ -178,23 +170,19 @@ const
  *  it to the originating Submodel. When you need to transform the
  *  Effect itself (not just the result Message), reach for
  *  mapEffect instead.
+ * 
+ *  Typed against Command in argument and result positions, so a
+ *  generic combinator over a type-parameter Message unifies with
+ *  `Command.Command<Message>` directly.
  */
-const mapMessage: (command: Readonly<{
-  args: Record<string, unknown>
-  effect: Effect.Effect<FromMessage, E, R>
-  name: string
-}>, f: (message: FromMessage) => ToMessage) => Readonly<{
-  args: Record<string, unknown>
-  effect: Effect.Effect<ToMessage, E, R>
-  name: string
-}>
+const mapMessage: (command: Command<FromMessage, E, R>, f: (message: FromMessage) => ToMessage) => Command<ToMessage, E, R>
 ```
 
 ### mapMessages
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/e528df4cc3ccd2d5719a4a86039ed9f920c6e724/packages/foldkit/src/command/index.ts#L538)
+[source](https://github.com/foldkit/foldkit/blob/35621da96807ca864eaac32c94c1469df609e6ee/packages/foldkit/src/command/index.ts#L512)
 
 ```
 /**
@@ -222,14 +210,10 @@ const
  *  Preserves each Command's `name` and `args` so traces still attribute the
  *  Command to the originating Submodel. When you need to transform the Effect
  *  itself (not just the result Message), reach for mapEffect instead.
+ * 
+ *  Typed against Command in argument and result positions, so a
+ *  generic combinator over a type-parameter Message unifies with
+ *  `Command.Command<Message>` directly.
  */
-const mapMessages: (commands: readonly Array<Readonly<{
-  args: Record<string, unknown>
-  effect: Effect.Effect<FromMessage, E, R>
-  name: string
-}>>, f: (message: FromMessage) => ToMessage) => readonly Array<Readonly<{
-  args: Record<string, unknown>
-  effect: Effect.Effect<ToMessage, E, R>
-  name: string
-}>>
+const mapMessages: (commands: readonly Array<Command<FromMessage, E, R>>, f: (message: FromMessage) => ToMessage) => readonly Array<Command<ToMessage, E, R>>
 ```
