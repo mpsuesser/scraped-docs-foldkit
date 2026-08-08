@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-tabs
 title: "Ui/Tabs"
 description: "API documentation for the Ui/Tabs module."
-access_date: 2026-08-08T21:58:00.646Z
-current_date: 2026-08-08T21:58:00.646Z
+access_date: 2026-08-08T23:46:45.261Z
+current_date: 2026-08-08T23:46:45.261Z
 ---
 
 # Ui/Tabs
@@ -14,7 +14,7 @@ current_date: 2026-08-08T21:58:00.646Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L391)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L391)
 
 ```
 /**
@@ -44,7 +44,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L101)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L101)
 
 ```
 /**
@@ -61,7 +61,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L29)
 
 ```
 /** Controls whether tabs activate on focus (`Automatic`) or require an explicit selection (`Manual`). */
@@ -72,7 +72,7 @@ type ActivationMode = Literals<readonly ["Automatic", "Manual"]>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L361)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L361)
 
 ```
 /**
@@ -91,7 +91,7 @@ type Bundle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L93)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L93)
 
 ```
 /** Configuration for creating a tabs model with `init`. */
@@ -105,7 +105,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L83)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L83)
 
 ```
 /**
@@ -120,7 +120,7 @@ type OutMessage = Selected<Value>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L177)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L177)
 
 ```
 /**
@@ -145,7 +145,7 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L71)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L71)
 
 ```
 /** Sent to the parent when a tab is committed via click or keyboard. Carries both the tab's value (typed as `Value` via `Tabs.create<Value>()`) and its index. Generic at the type level; the schema stores `value: string` and the factory's fenced cast types it as `Value`. */
@@ -160,7 +160,7 @@ type Selected = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L158)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L158)
 
 ```
 /**
@@ -184,7 +184,7 @@ type TabInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L192)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L192)
 
 ```
 /**
@@ -214,7 +214,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L56)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L56)
 
 ```
 /** Sent when the focus-tab command completes. */
@@ -225,7 +225,7 @@ const CompletedFocusTab: CallableTaggedStruct<"CompletedFocusTab", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L114)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L114)
 
 ```
 /** Moves focus to the tab at the given index. */
@@ -241,7 +241,7 @@ const FocusTab: CommandDefinitionWithArgs<"FocusTab", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L54)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L54)
 
 ```
 /** Sent when a tab receives keyboard focus in `Manual` mode without being activated. */
@@ -254,7 +254,7 @@ const FocusedTab: CallableTaggedStruct<"FocusedTab", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L59)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L59)
 
 ```
 /** Union of all messages the tabs component can produce. */
@@ -265,7 +265,7 @@ const Message: S.Union<[typeof SelectedTab, typeof FocusedTab, typeof CompletedF
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L37)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L37)
 
 ```
 /**
@@ -286,7 +286,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L25)
 
 ```
 /** Controls the tab list layout direction and which arrow keys navigate between tabs. */
@@ -297,7 +297,7 @@ const Orientation: Literals<readonly ["Horizontal", "Vertical"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L83)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L83)
 
 ```
 /** Union of out-messages the tabs component can produce. Surfaced as the third element of `update`'s return tuple and pattern-matched by the parent. */
@@ -313,7 +313,7 @@ const OutMessage: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L71)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L71)
 
 ```
 /** Sent to the parent when a tab is committed via click or keyboard. Carries both the tab's value (typed as `Value` via `Tabs.create<Value>()`) and its index. Generic at the type level; the schema stores `value: string` and the factory's fenced cast types it as `Value`. */
@@ -327,7 +327,7 @@ const Selected: CallableTaggedStruct<"Selected", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ea9c4f39b10a4db2bad82ee3dff3cb0ea0fa6bd7/packages/ui/src/tabs/index.ts#L49)
+[source](https://github.com/foldkit/foldkit/blob/5f70ff676d000374867bd930fe25463d196b984f/packages/ui/src/tabs/index.ts#L49)
 
 ```
 /**
