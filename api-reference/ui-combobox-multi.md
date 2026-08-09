@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-combobox-multi
 title: "Ui/Combobox/Multi"
 description: "API documentation for the Ui/Combobox/Multi module."
-access_date: 2026-08-09T19:15:24.712Z
-current_date: 2026-08-09T19:15:24.712Z
+access_date: 2026-08-09T20:47:39.127Z
+current_date: 2026-08-09T20:47:39.127Z
 ---
 
 # Ui/Combobox/Multi
@@ -14,7 +14,7 @@ current_date: 2026-08-09T19:15:24.712Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/combobox/multi.ts#L137)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/combobox/multi.ts#L137)
 
 ```
 /**
@@ -29,7 +29,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/combobox/multi.ts#L38)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/combobox/multi.ts#L38)
 
 ```
 /** Creates an initial multi-select combobox model from a config. Defaults to closed with no active item and an empty input. */
@@ -58,7 +58,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/combobox/multi.ts#L100)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/combobox/multi.ts#L100)
 
 ```
 /**
@@ -81,7 +81,7 @@ type Bundle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/combobox/multi.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/combobox/multi.ts#L35)
 
 ```
 /** Configuration for creating a multi-select combobox model with `init`. `isAnimated` enables CSS transition coordination (default `false`). `isModal` locks page scroll and inerts other elements when open (default `false`). */
@@ -92,7 +92,7 @@ type InitConfig = BaseInitConfig
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/combobox/multi.ts#L91)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/combobox/multi.ts#L91)
 
 ```
 /** Per-render view inputs passed to the view via `h.submodel`'s `viewInputs` field. */
@@ -105,7 +105,7 @@ type ViewInputs = BaseViewInputs<Item>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/combobox/multi.ts#L26)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/combobox/multi.ts#L26)
 
 ```
 /** Schema for the multi-select combobox's private interaction state (open/closed status, active item, activation trigger, typed input value). The selection is owned by the parent and passed in via `ViewInputs.selectedValues`. */

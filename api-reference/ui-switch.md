@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-switch
 title: "Ui/Switch"
 description: "API documentation for the Ui/Switch module."
-access_date: 2026-08-09T19:15:24.712Z
-current_date: 2026-08-09T19:15:24.712Z
+access_date: 2026-08-09T20:47:39.127Z
+current_date: 2026-08-09T20:47:39.127Z
 ---
 
 # Ui/Switch
@@ -14,7 +14,7 @@ current_date: 2026-08-09T19:15:24.712Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/switch/index.ts#L53)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/switch/index.ts#L57)
 
 ```
 /** Returns the description element id, derived from the switch's base id. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/switch/index.ts#L50)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/switch/index.ts#L54)
 
 ```
 /** Returns the label element id, derived from the switch's base id. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/switch/index.ts#L77)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/switch/index.ts#L81)
 
 ```
 /**
@@ -75,7 +75,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/switch/index.ts#L17)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/switch/index.ts#L17)
 
 ```
 /**
@@ -103,7 +103,7 @@ type SwitchAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/switch/index.ts#L38)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/switch/index.ts#L42)
 
 ```
 /**
@@ -117,6 +117,10 @@ type
  *    `update` by storing the value.
  *  - `toView`: receives the SwitchAttributes and lays out the
  *    switch.
+ *  - `isDisabled`: marks the switch unavailable with `aria-disabled="true"`
+ *    and `data-disabled`, keeping it focusable. Use it when the control does
+ *    not apply; use `isReadOnly` when its state is still information the user
+ *    needs.
  *  - `isReadOnly`: prevents toggling while exposing read-only semantics with
  *    `aria-readonly="true"` and `data-readonly`. The switch remains
  *    focusable. Independent of `isDisabled`: setting both emits both

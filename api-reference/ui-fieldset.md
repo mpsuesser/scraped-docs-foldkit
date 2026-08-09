@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-fieldset
 title: "Ui/Fieldset"
 description: "API documentation for the Ui/Fieldset module."
-access_date: 2026-08-09T19:15:24.712Z
-current_date: 2026-08-09T19:15:24.712Z
+access_date: 2026-08-09T20:47:39.127Z
+current_date: 2026-08-09T20:47:39.127Z
 ---
 
 # Ui/Fieldset
@@ -14,7 +14,7 @@ current_date: 2026-08-09T19:15:24.712Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/fieldset/index.ts#L23)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fieldset/index.ts#L23)
 
 ```
 /** Returns the description element id, derived from the fieldset's base id. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/fieldset/index.ts#L20)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fieldset/index.ts#L20)
 
 ```
 /** Returns the legend element id, derived from the fieldset's base id. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/fieldset/index.ts#L26)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fieldset/index.ts#L26)
 
 ```
 /** Renders an accessible fieldset by building ARIA attribute groups and delegating layout to the consumer's `toView` callback. */
@@ -52,7 +52,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/fieldset/index.ts#L6)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fieldset/index.ts#L6)
 
 ```
 /** Attribute groups the fieldset component provides to the consumer's `toView` callback. */
@@ -67,7 +67,7 @@ type FieldsetAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/fieldset/index.ts#L13)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fieldset/index.ts#L13)
 
 ```
 /** Configuration for rendering a fieldset with `view`. */

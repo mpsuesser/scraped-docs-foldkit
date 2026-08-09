@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-checkbox
 title: "Ui/Checkbox"
 description: "API documentation for the Ui/Checkbox module."
-access_date: 2026-08-09T19:15:24.712Z
-current_date: 2026-08-09T19:15:24.712Z
+access_date: 2026-08-09T20:47:39.127Z
+current_date: 2026-08-09T20:47:39.127Z
 ---
 
 # Ui/Checkbox
@@ -14,7 +14,7 @@ current_date: 2026-08-09T19:15:24.712Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/checkbox/index.ts#L63)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/checkbox/index.ts#L67)
 
 ```
 /** Returns the description element id, derived from the checkbox's base id. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/checkbox/index.ts#L60)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/checkbox/index.ts#L64)
 
 ```
 /** Returns the label element id, derived from the checkbox's base id. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/checkbox/index.ts#L87)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/checkbox/index.ts#L91)
 
 ```
 /**
@@ -75,7 +75,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/checkbox/index.ts#L26)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/checkbox/index.ts#L26)
 
 ```
 /**
@@ -112,7 +112,7 @@ type CheckboxAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bea1da58f00cc4d43ce880c6e5faca862870ce2d/packages/ui/src/checkbox/index.ts#L47)
+[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/checkbox/index.ts#L51)
 
 ```
 /**
@@ -126,6 +126,10 @@ type
  *    `update` by storing the value.
  *  - `toView`: receives the CheckboxAttributes and lays out the
  *    checkbox.
+ *  - `isDisabled`: marks the checkbox unavailable with `aria-disabled="true"`
+ *    and `data-disabled`, keeping it focusable. Use it when the control does
+ *    not apply; use `isReadOnly` when its state is still information the user
+ *    needs.
  *  - `isReadOnly`: prevents toggling while exposing read-only semantics with
  *    `aria-readonly="true"` and `data-readonly`. The checkbox remains
  *    focusable. Independent of `isDisabled`: setting both emits both
