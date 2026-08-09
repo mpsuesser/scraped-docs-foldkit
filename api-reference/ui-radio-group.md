@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-radio-group
 title: "Ui/RadioGroup"
 description: "API documentation for the Ui/RadioGroup module."
-access_date: 2026-08-09T21:03:38.321Z
-current_date: 2026-08-09T21:03:38.321Z
+access_date: 2026-08-09T22:30:03.448Z
+current_date: 2026-08-09T22:30:03.448Z
 ---
 
 # Ui/RadioGroup
@@ -14,7 +14,7 @@ current_date: 2026-08-09T21:03:38.321Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/radioGroup/index.ts#L120)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/radioGroup/index.ts#L120)
 
 ```
 /**
@@ -55,7 +55,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/radioGroup/index.ts#L42)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/radioGroup/index.ts#L42)
 
 ```
 /**
@@ -87,7 +87,7 @@ type OptionInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/radioGroup/index.ts#L65)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/radioGroup/index.ts#L65)
 
 ```
 /**
@@ -116,7 +116,7 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/radioGroup/index.ts#L83)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/radioGroup/index.ts#L83)
 
 ```
 /**
@@ -152,7 +152,7 @@ type ViewConfig = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/radioGroup/index.ts#L18)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/radioGroup/index.ts#L18)
 
 ```
 /** Controls the radio group layout direction and which arrow keys navigate between options. */

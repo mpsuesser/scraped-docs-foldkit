@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-date-picker
 title: "Ui/DatePicker"
 description: "API documentation for the Ui/DatePicker module."
-access_date: 2026-08-09T21:03:38.321Z
-current_date: 2026-08-09T21:03:38.321Z
+access_date: 2026-08-09T22:30:03.448Z
+current_date: 2026-08-09T22:30:03.448Z
 ---
 
 # Ui/DatePicker
@@ -14,7 +14,7 @@ current_date: 2026-08-09T21:03:38.321Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L304)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L300)
 
 ```
 /** Programmatically clears the selected date. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L297)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L293)
 
 ```
 /** Programmatically closes the date picker. Use this in domain-event handlers. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L122)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L123)
 
 ```
 /**
@@ -54,7 +54,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L294)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L290)
 
 ```
 /**
@@ -68,7 +68,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L300)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L296)
 
 ```
 /** Programmatically selects a date, committing it and closing the popover. Emits a `SelectedDate` OutMessage just like a user-initiated selection. */
@@ -86,7 +86,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L395)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L391)
 
 ```
 /**
@@ -103,7 +103,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L235)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L231)
 
 ## Types
 
@@ -111,7 +111,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L104)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L105)
 
 ```
 /** Configuration for creating a date picker model with `init`. */
@@ -132,7 +132,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L407)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L403)
 
 ```
 /**
@@ -169,7 +169,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L77)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L78)
 
 ```
 /**
@@ -186,7 +186,7 @@ const ChangedViewMonth: CallableTaggedStruct<"ChangedViewMonth", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L45)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L46)
 
 ```
 /** Sent when the user clears the selected date. Does not close the popover. */
@@ -197,7 +197,7 @@ const Cleared: CallableTaggedStruct<"Cleared", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L91)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L92)
 
 ```
 /**
@@ -211,7 +211,7 @@ const ClearedDate: CallableTaggedStruct<"ClearedDate", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L52)
 
 ```
 /**
@@ -225,7 +225,7 @@ const Closed: CallableTaggedStruct<"Closed", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L33)
 
 ```
 /** Wraps a Calendar submodel message for delegation. */
@@ -272,7 +272,7 @@ const GotCalendarMessage: CallableTaggedStruct<"GotCalendarMessage", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L36)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L37)
 
 ```
 /** Wraps a Popover submodel message for delegation. */
@@ -294,7 +294,7 @@ const GotPopoverMessage: CallableTaggedStruct<"GotPopoverMessage", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L54)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L55)
 
 ```
 /** Union of all messages the date picker component can produce. */
@@ -305,7 +305,7 @@ const Message: S.Union<[typeof GotCalendarMessage, typeof GotPopoverMessage, typ
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L22)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L23)
 
 ```
 /**
@@ -377,7 +377,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L49)
 
 ```
 /**
@@ -391,7 +391,7 @@ const Opened: CallableTaggedStruct<"Opened", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L94)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L95)
 
 ```
 /** Union of out-messages the date picker can produce. */
@@ -415,7 +415,7 @@ const OutMessage: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L41)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L42)
 
 ```
 /**
@@ -435,7 +435,7 @@ const RequestedSelectDate: CallableTaggedStruct<"RequestedSelectDate", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L85)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L86)
 
 ```
 /**
@@ -456,7 +456,7 @@ const SelectedDate: CallableTaggedStruct<"SelectedDate", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L311)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L307)
 
 ```
 /**
@@ -473,7 +473,7 @@ const focusDate: Reflect<Model, CalendarDate>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L355)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L351)
 
 ```
 /**
@@ -488,7 +488,7 @@ const reflectDisabledDates: Reflect<Model, ReadonlyArray<CalendarDate>>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L370)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L366)
 
 ```
 /**
@@ -503,7 +503,7 @@ const reflectDisabledDaysOfWeek: Reflect<Model, ReadonlyArray<Calendar.DayOfWeek
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L341)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L337)
 
 ```
 /**
@@ -518,7 +518,7 @@ const reflectMaxDate: Reflect<Model, Option.Option<CalendarDate>>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L327)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L323)
 
 ```
 /**
@@ -538,7 +538,7 @@ const reflectMinDate: Reflect<Model, Option.Option<CalendarDate>>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/datePicker/index.ts#L442)
+[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/ui/src/datePicker/index.ts#L438)
 
 ```
 /**
