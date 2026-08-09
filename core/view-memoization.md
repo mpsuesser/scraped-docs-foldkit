@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view-memoization
 title: "View Memoization"
 description: "Optimize rendering performance with memoized views."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-09T01:27:19.771Z
+current_date: 2026-08-09T01:27:19.771Z
 ---
 
 # View Memoization
@@ -12,7 +12,7 @@ current_date: 2026-08-03T19:45:20.723Z
 
 In [The Elm Architecture](https://guide.elm-lang.org/architecture/), every model change triggers a full call to `view(model)`. The entire virtual DOM tree is rebuilt from scratch, then diffed against the previous tree to compute minimal DOM updates. For most apps this is fast enough, but when a view contains a large subtree that rarely changes, the cost of rebuilding and diffing that subtree on every render adds up.
 
-Foldkit provides two functions for skipping unnecessary view work: `createLazy` for single views and `createKeyedLazy` for lists. Both work by caching the VNode returned by a view function. When the function reference and all arguments are referentially equal (`===`) to the previous call, the cached VNode is returned without re-running the view function. The differ short-circuits when it sees the same VNode reference, so both VNode construction and subtree diffing are skipped.
+Foldkit provides two functions for skipping unnecessary view work: `createLazy` for a view rendered at one position, and `createKeyedLazy` for one view function rendered under many keys, whether those are list rows, entities addressed by id, or separate call sites. Both work by caching the VNode returned by a view function. When the function reference and all arguments are referentially equal (`===`) to the previous call, the cached VNode is returned without re-running the view function. The differ short-circuits when it sees the same VNode reference, so both VNode construction and subtree diffing are skipped.
 
 ## createLazy
 
@@ -133,7 +133,50 @@ When one item in the list changes, only that item is recomputed. All other items
 
 One slot per position
 
-A cached VNode can only be rendered at one position in the tree. The differ records each VNode object's real DOM element on the VNode itself, so rendering the same cached VNode at two positions causes patches to collide and can duplicate or misplace DOM nodes. If the same content needs to appear in multiple positions (for example, the same navigation in a desktop sidebar and a mobile menu), create a separate lazy slot for each position.
+A cached VNode can only be rendered at one position in the tree. The differ records each VNode object's real DOM element on the VNode itself, so rendering the same cached VNode at two positions causes patches to collide and can duplicate or misplace DOM nodes. If the same content needs to appear in multiple positions (for example, the same navigation in a desktop sidebar and a mobile menu), give each position its own key.
+
+## Keying by Entity Identity
+
+A keyed lazy is not only for lists. Any time one view function serves many things, the key is what separates them. A blog post page renders a different post per slug at the same position in the tree, so a single `createLazy` slot would thrash: every navigation overwrites the one cached VNode, and going back to the post you just left rebuilds it from scratch.
+
+The rule is the one that already governs [DOM identity](https://foldkit.dev/best-practices/keying#keying). The stable Model identifier that keys an entity’s DOM is the identifier that memoizes its view. A post the route addresses by `post.slug` memoizes under `post.slug`; a row keyed `todo.id` through `h.keyed` memoizes under `todo.id`. Reusing that single identifier keeps the memo and the DOM invalidating together, so a cached VNode never outlives the entity it was built for.
+
+```
+import { type HtmlBuilder, createKeyedLazy } from 'foldkit/html'
+
+// One view function serves every post. Turning the compiled markdown into a
+// rendered page is the expensive part, so it belongs behind the memo.
+const postView = (
+  post: Post,
+  copiedSnippets: CopiedSnippets,
+  h: HtmlBuilder<Message>,
+) =>
+  h.article(
+    [],
+    [
+      h.h1([], [post.frontmatter.title]),
+      docPage(post.document, post.slug).view(copiedSnippets, h),
+    ],
+  )
+
+// One slot per post, keyed by the same slug the route already uses to give
+// the post its DOM identity.
+const lazyPostView = createKeyedLazy()
+
+// Navigating between posts moves between slots instead of overwriting one.
+// Coming back to a post you already read returns its cached VNode.
+const view = (
+  post: Post,
+  copiedSnippets: CopiedSnippets,
+  h: HtmlBuilder<Message>,
+) => lazyPostView(post.slug, postView, [post, copiedSnippets, h])
+```
+
+The same key also separates call sites. When one view function renders in two places, each call site is a key rather than its own `createLazy`. That satisfies the one-slot-per-position rule above without a second memo to keep in sync.
+
+Keys are never evicted
+
+`createKeyedLazy` holds every key it has seen for the lifetime of the page. That is the right trade for a bounded set, such as an entity registry, a route table, or a fixed set of call sites. A key drawn from something unbounded, such as a search query or a paged cursor, grows the map without limit. If an app needs that shape, the fix is a variant that drops keys absent from the latest render pass, not a cap on this one.
 
 ## When to Use Lazy Views
 

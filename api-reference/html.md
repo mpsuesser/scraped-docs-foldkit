@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/html
 title: "Html"
 description: "API documentation for the Html module."
-access_date: 2026-08-09T00:29:34.628Z
-current_date: 2026-08-09T00:29:34.628Z
+access_date: 2026-08-09T01:27:19.771Z
+current_date: 2026-08-09T01:27:19.771Z
 ---
 
 # Html
@@ -14,7 +14,7 @@ current_date: 2026-08-09T00:29:34.628Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/96303a5d200d51895baa2a9660f4d6dc3f09fce5/packages/foldkit/src/html/childAttribute.ts#L61)
+[source](https://github.com/foldkit/foldkit/blob/4a351f0249675da22ed78946e56c87546fa30cb2/packages/foldkit/src/html/childAttribute.ts#L61)
 
 ```
 /**
@@ -55,18 +55,33 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/96303a5d200d51895baa2a9660f4d6dc3f09fce5/packages/foldkit/src/html/lazy.ts#L127)
+[source](https://github.com/foldkit/foldkit/blob/4a351f0249675da22ed78946e56c87546fa30cb2/packages/foldkit/src/html/lazy.ts#L142)
 
 ```
 /**
- * Creates a keyed memoization map for view functions rendered in a loop. Each
- *  key gets its own independent cache slot. On each render, only entries whose
- *  function reference, dispatch, or arguments have changed by reference are
- *  recomputed.
+ * Creates a keyed memoization map for one view function rendered under many
+ *  keys. Each key gets its own independent cache slot, compared exactly the way
+ *  `createLazy` compares its single slot: on each render, only the keys whose
+ *  function reference, dispatch, or arguments changed by reference are
+ *  recomputed. For example: a list rendering one row view per item, a detail
+ *  view rendering one entity per route, or one view function rendered at two
+ *  call sites.
+ * 
+ *  Key by the identifier that already gives the rendered thing its DOM
+ *  identity. A row keyed `todo.id` through `h.keyed` memoizes under `todo.id`;
+ *  a detail page keyed `post.slug` memoizes under `post.slug`. Reusing that one
+ *  identifier keeps the memo and the DOM invalidating together.
+ * 
+ *  Entries are never evicted, so keys are expected to be bounded, such as an
+ *  entity registry, a route table, or a fixed set of call sites. A key drawn
+ *  from something unbounded, such as a search query or a paged cursor, grows
+ *  the map for the lifetime of the page. If that becomes the shape an app
+ *  needs, the upgrade path is a variant that drops keys absent from the latest
+ *  render pass, not a cap on this one.
  * 
  *  Like `createLazy`, each key's cached VNode must be rendered at a single
- *  position in the tree. If the same item needs to appear in multiple
- *  positions, create one keyed lazy per position.
+ *  position in the tree. If the same content needs to appear in multiple
+ *  positions, give each position its own key.
  */
 (): (key: PropertyKey, fn: (args: Args) => VNode | null, args: Args) => VNode | null
 ```
@@ -75,7 +90,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/96303a5d200d51895baa2a9660f4d6dc3f09fce5/packages/foldkit/src/html/lazy.ts#L104)
+[source](https://github.com/foldkit/foldkit/blob/4a351f0249675da22ed78946e56c87546fa30cb2/packages/foldkit/src/html/lazy.ts#L104)
 
 ```
 /**
@@ -107,7 +122,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/96303a5d200d51895baa2a9660f4d6dc3f09fce5/packages/foldkit/src/html/index.ts#L446)
+[source](https://github.com/foldkit/foldkit/blob/4a351f0249675da22ed78946e56c87546fa30cb2/packages/foldkit/src/html/index.ts#L446)
 
 ```
 /**
@@ -1063,7 +1078,7 @@ type Attribute = Data.TaggedEnum<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/96303a5d200d51895baa2a9660f4d6dc3f09fce5/packages/foldkit/src/html/childAttribute.ts#L27)
+[source](https://github.com/foldkit/foldkit/blob/4a351f0249675da22ed78946e56c87546fa30cb2/packages/foldkit/src/html/childAttribute.ts#L27)
 
 ```
 /**
@@ -1098,7 +1113,7 @@ type ChildAttribute = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/96303a5d200d51895baa2a9660f4d6dc3f09fce5/packages/foldkit/src/html/index.ts#L163)
+[source](https://github.com/foldkit/foldkit/blob/4a351f0249675da22ed78946e56c87546fa30cb2/packages/foldkit/src/html/index.ts#L163)
 
 ```
 /**
@@ -1136,7 +1151,7 @@ type Document = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/96303a5d200d51895baa2a9660f4d6dc3f09fce5/packages/foldkit/src/html/index.ts#L134)
+[source](https://github.com/foldkit/foldkit/blob/4a351f0249675da22ed78946e56c87546fa30cb2/packages/foldkit/src/html/index.ts#L134)
 
 ```
 /**
@@ -1151,7 +1166,7 @@ type Html = VNode | null
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/96303a5d200d51895baa2a9660f4d6dc3f09fce5/packages/foldkit/src/html/index.ts#L4459)
+[source](https://github.com/foldkit/foldkit/blob/4a351f0249675da22ed78946e56c87546fa30cb2/packages/foldkit/src/html/index.ts#L4459)
 
 ```
 /**
@@ -1192,7 +1207,7 @@ type HtmlBuilder = MessageUniverse<Message> & HtmlElements<Message> & HtmlAttrib
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/96303a5d200d51895baa2a9660f4d6dc3f09fce5/packages/foldkit/src/html/index.ts#L117)
+[source](https://github.com/foldkit/foldkit/blob/4a351f0249675da22ed78946e56c87546fa30cb2/packages/foldkit/src/html/index.ts#L117)
 
 ```
 /** Modifier key state extracted from a `KeyboardEvent`. */
@@ -1208,7 +1223,7 @@ type KeyboardModifiers = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/96303a5d200d51895baa2a9660f4d6dc3f09fce5/packages/foldkit/src/html/index.ts#L173)
+[source](https://github.com/foldkit/foldkit/blob/4a351f0249675da22ed78946e56c87546fa30cb2/packages/foldkit/src/html/index.ts#L173)
 
 ```
 /** Union of all valid HTML, SVG, and MathML tag names. */
@@ -1221,7 +1236,7 @@ type TagName = "a" | "abbr" | "address" | "area" | "article" | "aside" | "audio"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/96303a5d200d51895baa2a9660f4d6dc3f09fce5/packages/foldkit/src/html/index.ts#L139)
+[source](https://github.com/foldkit/foldkit/blob/4a351f0249675da22ed78946e56c87546fa30cb2/packages/foldkit/src/html/index.ts#L139)
 
 ```
 /**
@@ -1235,7 +1250,7 @@ const TextDirection: Literals<readonly ["Ltr", "Rtl", "Auto"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/96303a5d200d51895baa2a9660f4d6dc3f09fce5/packages/foldkit/src/html/index.ts#L4542)
+[source](https://github.com/foldkit/foldkit/blob/4a351f0249675da22ed78946e56c87546fa30cb2/packages/foldkit/src/html/index.ts#L4542)
 
 ```
 /**
