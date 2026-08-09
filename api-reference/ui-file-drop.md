@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-file-drop
 title: "Ui/FileDrop"
 description: "API documentation for the Ui/FileDrop module."
-access_date: 2026-08-09T20:47:39.127Z
-current_date: 2026-08-09T20:47:39.127Z
+access_date: 2026-08-09T21:03:38.321Z
+current_date: 2026-08-09T21:03:38.321Z
 ---
 
 # Ui/FileDrop
@@ -14,7 +14,7 @@ current_date: 2026-08-09T20:47:39.127Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L81)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L81)
 
 ```
 /** Creates an initial file-drop model. Drag state starts cleared. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L96)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L96)
 
 ```
 /**
@@ -53,7 +53,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L127)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L127)
 
 ```
 /**
@@ -70,7 +70,7 @@ type FileDropAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L76)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L76)
 
 ```
 /** Configuration for creating a file-drop model with `init`. */
@@ -83,7 +83,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L139)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L139)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -101,7 +101,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L35)
 
 ```
 /**
@@ -119,7 +119,7 @@ const DroppedFiles: CallableTaggedStruct<"DroppedFiles", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L43)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L43)
 
 ```
 /**
@@ -136,7 +136,7 @@ const DroppedNonFiles: CallableTaggedStruct<"DroppedNonFiles", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L27)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L27)
 
 ```
 /**
@@ -150,7 +150,7 @@ const EnteredDragZone: CallableTaggedStruct<"EnteredDragZone", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L30)
 
 ```
 /**
@@ -164,7 +164,7 @@ const LeftDragZone: CallableTaggedStruct<"LeftDragZone", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L46)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L46)
 
 ```
 /** Union of all messages the file-drop component can produce. */
@@ -182,7 +182,7 @@ const Message: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L17)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L17)
 
 ```
 /**
@@ -203,7 +203,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L70)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L70)
 
 ```
 /**
@@ -222,7 +222,7 @@ const OutMessage: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L59)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L59)
 
 ```
 /**
@@ -239,7 +239,7 @@ const ReceivedFiles: CallableTaggedStruct<"ReceivedFiles", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L66)
 
 ```
 /**
@@ -254,7 +254,7 @@ const RejectedNonFiles: CallableTaggedStruct<"RejectedNonFiles", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/47e861ad5f2e9c856d147340a4a436fb5c597ebd/packages/ui/src/fileDrop/index.ts#L154)
+[source](https://github.com/foldkit/foldkit/blob/0262c9be1039984c9507a67da72bbc0f380ffcd8/packages/ui/src/fileDrop/index.ts#L154)
 
 ```
 /**

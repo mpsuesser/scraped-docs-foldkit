@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Compose applications from independent, encapsulated modules."
-access_date: 2026-08-08T21:58:00.646Z
-current_date: 2026-08-08T21:58:00.646Z
+access_date: 2026-08-09T21:03:38.321Z
+current_date: 2026-08-09T21:03:38.321Z
 ---
 
 ## Submodel
@@ -807,6 +807,33 @@ export const update = (
   M.value(message).pipe(
     M.tagsExhaustive({
       GotLoginMessage: ({ message }) => foldLogin(model, message),
+    }),
+  )
+```
+
+Sometimes the Step itself returns a Command the child defines, one whose result is a child Message. This happens when the Command needs context only the parent holds. In the example below, the magic link carries a redirect destination, and only the parent knows the current Route. The Login child cannot build `Login.SendMagicLink` itself, so it emits `RequestedMagicLink` as a fact and the parent returns the Command with the Route filled in. That Command's result Message still belongs to the Login Submodel, so it needs the same lift the fold applies to the child's own Commands. For that case `foldOutMessage` takes an optional second parameter, an `Update.FoldContext` carrying `liftCommand` and `liftCommands` already bound to the config's `toParentMessage`, so there is no `Command.mapMessage` call to write and no second copy of the wrapper to keep in sync:
+
+```
+import { Match as M } from 'effect'
+import { Update } from 'foldkit'
+
+const foldLoginOutMessage: (
+  outMessage: Login.OutMessage,
+  context: Update.FoldContext<Login.Message, Message>,
+) => Update.Step<Model, Message> = (outMessage, { liftCommand }) =>
+  M.value(outMessage).pipe(
+    M.withReturnType<Update.Step<Model, Message>>(),
+    M.tagsExhaustive({
+      RequestedMagicLink:
+        ({ email }) =>
+        model => [
+          model,
+          [
+            liftCommand(
+              Login.SendMagicLink({ email, redirectRoute: model.route }),
+            ),
+          ],
+        ],
     }),
   )
 ```
