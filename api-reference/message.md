@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/message
 title: "Message"
 description: "API documentation for the Message module."
-access_date: 2026-08-09T15:34:52.808Z
-current_date: 2026-08-09T15:34:52.808Z
+access_date: 2026-08-09T15:49:55.717Z
+current_date: 2026-08-09T15:49:55.717Z
 ---
 
 # Message
@@ -14,7 +14,7 @@ current_date: 2026-08-09T15:34:52.808Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/84050fcb1366b6d847362a644eeb6da9ed3ee212/packages/foldkit/src/schema/index.ts#L50)
+[source](https://github.com/foldkit/foldkit/blob/3fc75b1b3c8fd9f882c87184de3889d8145cc6e6/packages/foldkit/src/schema/index.ts#L50)
 
 ```
 /**
