@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/shopping-cart
 title: "Shopping Cart"
 description: "E-commerce app with product listing, cart management, and checkout flow."
-access_date: 2026-08-08T21:58:00.646Z
-current_date: 2026-08-08T21:58:00.646Z
+access_date: 2026-08-10T22:19:09.629Z
+current_date: 2026-08-10T22:19:09.629Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -129,9 +129,7 @@ const LoadExternal = Command.define('LoadExternal', {
 type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 const withUpdateReturn = M.withReturnType<UpdateReturn>()
 
-const foldProductsOutMessage: (
-  outMessage: Products.OutMessage,
-) => Update.Step<Model, Message> = M.type<Products.OutMessage>().pipe(
+const foldProductsOutMessage = M.type<Products.OutMessage>().pipe(
   M.withReturnType<Update.Step<Model, Message>>(),
   M.tagsExhaustive({
     AddedToCart:

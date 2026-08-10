@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Compose applications from independent, encapsulated modules."
-access_date: 2026-08-10T02:30:27.972Z
-current_date: 2026-08-10T02:30:27.972Z
+access_date: 2026-08-10T22:19:09.629Z
+current_date: 2026-08-10T22:19:09.629Z
 ---
 
 ## Submodel
@@ -778,16 +778,14 @@ export const update = (
 
 This is where the power of the boundary shows. When `SucceededLogin` arrives, the parent can do things the child has no knowledge of: transition to a completely different Model state, save the session, redirect the URL. The child stays focused on its domain; the parent handles cross-cutting concerns.
 
-With [Update.foldChild](#fold-child), the same handling moves into the fold's `foldOutMessage` field: a function from the OutMessage to an `Update.Step`. The Step receives the parent Model with the child already written back, and the batch the fold returns places the Step's Commands after the child's mapped Commands, the same order the hand-written version produces. Bind it as an annotated standalone const and match on the OutMessage tag inside it, even when the union has one variant:
+With [Update.foldChild](#fold-child), the same handling moves into the fold's `foldOutMessage` field: a function from the OutMessage to an `Update.Step`. The Step receives the parent Model with the child already written back, and the batch the fold returns places the Step's Commands after the child's mapped Commands, the same order the hand-written version produces. Bind it as a standalone const and match on the OutMessage tag inside it, even when the union has one variant. `M.type` names the OutMessage and `M.withReturnType` names the parent Step, so the const usually needs no separate type annotation. Add one when the parent Model is a union and the Step returns only one of its variants, since inference would otherwise take the narrower variant for the whole parent:
 
 ```
 import { Match as M, Option } from 'effect'
 import { Command, Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
-const foldLoginOutMessage: (
-  outMessage: Login.OutMessage,
-) => Update.Step<Model, Message> = M.type<Login.OutMessage>().pipe(
+const foldLoginOutMessage = M.type<Login.OutMessage>().pipe(
   M.withReturnType<Update.Step<Model, Message>>(),
   M.tagsExhaustive({
     SucceededLogin:
@@ -815,7 +813,7 @@ export const update = (
   )
 ```
 
-Sometimes the Step itself returns a Command the child defines, one whose result is a child Message. This happens when the Command needs context only the parent holds. In the example below, the magic link carries a redirect destination, and only the parent knows the current Route. The Login child cannot build `Login.SendMagicLink` itself, so it emits `RequestedMagicLink` as a fact and the parent returns the Command with the Route filled in. That Command's result Message still belongs to the Login Submodel, so it needs the same lift the fold applies to the child's own Commands. For that case `foldOutMessage` takes an optional second parameter, an `Update.FoldContext` carrying `liftCommand` and `liftCommands` already bound to the config's `toParentMessage`, so there is no `Command.mapMessage` call to write and no second copy of the wrapper to keep in sync:
+Sometimes the Step itself returns a Command the child defines, one whose result is a child Message. This happens when the Command needs context only the parent holds. In the example below, the magic link carries a redirect destination, and only the parent knows the current Route. The Login child cannot build `Login.SendMagicLink` itself, so it emits `RequestedMagicLink` as a fact and the parent returns the Command with the Route filled in. That Command's result Message still belongs to the Login Submodel, so it needs the same lift the fold applies to the child's own Commands. For that case `foldOutMessage` takes an optional second parameter, an `Update.FoldContext` carrying `liftCommand` and `liftCommands` already bound to the config's `toParentMessage`, so there is no `Command.mapMessage` call to write and no second copy of the wrapper to keep in sync. This form spells its parameters out through an explicit arrow, so it does take a type annotation:
 
 ```
 import { Match as M } from 'effect'

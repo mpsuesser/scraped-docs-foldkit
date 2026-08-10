@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/charting
 title: "Charting"
 description: "Live dashboard for public Foldkit telemetry from GitHub and npm. Demonstrates HTTP Commands, async state, an ECharts Mount adapter, and a Subscription that turns chart clicks back into Messages."
-access_date: 2026-08-10T18:30:27.283Z
-current_date: 2026-08-10T18:30:27.283Z
+access_date: 2026-08-10T22:19:09.629Z
+current_date: 2026-08-10T22:19:09.629Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -27,3 +27,26 @@ Third-Party Library
 [View source on GitHub](https://github.com/foldkit/foldkit/tree/main/examples/charting/src)
 
 /
+
+```
+import type { EChartsType } from 'echarts/core'
+import { Option } from 'effect'
+
+const chartsByHostId = new Map<string, EChartsType>()
+
+export const setChart = (hostId: string, chart: EChartsType): void => {
+  chartsByHostId.set(hostId, chart)
+}
+
+export const getChart = (hostId: string): Option.Option<EChartsType> =>
+  Option.fromNullishOr(chartsByHostId.get(hostId))
+
+export const removeChart = (hostId: string): void => {
+  const maybeChart = getChart(hostId)
+
+  if (Option.isSome(maybeChart)) {
+    maybeChart.value.dispose()
+    chartsByHostId.delete(hostId)
+  }
+}
+```

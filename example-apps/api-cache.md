@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/api-cache
 title: "API Cache"
 description: "Query caching without a query client. Demonstrates stale-while-revalidate, request deduplication, invalidation, and interval refetching."
-access_date: 2026-08-08T21:58:00.646Z
-current_date: 2026-08-08T21:58:00.646Z
+access_date: 2026-08-10T22:19:09.629Z
+current_date: 2026-08-10T22:19:09.629Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -185,9 +185,7 @@ const activateTab = (model: Model, tab: Tab): UpdateReturn => {
   )
 }
 
-const foldTabsOutMessage: (
-  outMessage: Tabs.OutMessage<Tab>,
-) => Update.Step<Model, Message> = M.type<Tabs.OutMessage<Tab>>().pipe(
+const foldTabsOutMessage = M.type<Tabs.OutMessage<Tab>>().pipe(
   M.withReturnType<Update.Step<Model, Message>>(),
   M.tagsExhaustive({
     Selected:
