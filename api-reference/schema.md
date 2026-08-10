@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/schema
 title: "Schema"
 description: "API documentation for the Schema module."
-access_date: 2026-08-10T15:05:45.218Z
-current_date: 2026-08-10T15:05:45.218Z
+access_date: 2026-08-10T18:30:27.283Z
+current_date: 2026-08-10T18:30:27.283Z
 ---
 
 # Schema
@@ -14,7 +14,7 @@ current_date: 2026-08-10T15:05:45.218Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b49c0b85d71d6dae0f470ca305fa00303ff30b9f/packages/foldkit/src/schema/index.ts#L95)
+[source](https://github.com/foldkit/foldkit/blob/14bb759c9ccc122a11ec694312d9ab163654b474/packages/foldkit/src/schema/index.ts#L95)
 
 ```
 /**
@@ -36,7 +36,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b49c0b85d71d6dae0f470ca305fa00303ff30b9f/packages/foldkit/src/schema/index.ts#L4)
+[source](https://github.com/foldkit/foldkit/blob/14bb759c9ccc122a11ec694312d9ab163654b474/packages/foldkit/src/schema/index.ts#L4)
 
 ```
 /** A `TaggedStruct` schema that can be called directly as a constructor: `Foo({ count: 1 })` instead of `Foo.make({ count: 1 })`. */
