@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Compose applications from independent, encapsulated modules."
-access_date: 2026-08-10T01:37:55.778Z
-current_date: 2026-08-10T01:37:55.778Z
+access_date: 2026-08-10T02:30:27.972Z
+current_date: 2026-08-10T02:30:27.972Z
 ---
 
 ## Submodel
@@ -539,6 +539,8 @@ GotApplicantMessage: ({ entryId, message }) =>
 ```
 
 The `slotId` on each `h.submodel` is the per-instance identifier the runtime uses for boundary identity. The same identifier travels with the wrapper Message as `entryId` so the parent’s update can find the matching slice and delegate to `Applicant.update`. See the [job-application example](https://foldkit.dev/example-apps/job-application) for a working version: per-entry education and work-history Submodels, each embedded with its own `entryId`.
+
+An array is the right default, and at the sizes most dynamic collections reach it is not worth thinking about. Both halves of the update are linear in the number of instances: finding the matching slice scans, and writing it back rebuilds the array. If a collection grows large enough for that to show up in a profile, hold the instances in a `HashMap` keyed by the identifier instead. `Update.foldChild` needs no other change, because `read` already returns an `Option` and `HashMap.get` returns one directly.
 
 ## Memoization Across Submodel Boundaries
 

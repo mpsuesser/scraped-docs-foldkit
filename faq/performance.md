@@ -2,8 +2,8 @@
 url: https://foldkit.dev/faq/performance
 title: "Performance"
 description: "How Foldkit performs and why: the rendering cost model, TodoMVC benchmark numbers against React, Elm, Svelte, Solid, and Lustre, what development mode costs that production does not, and the optimization toolkit."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-10T02:30:27.972Z
+current_date: 2026-08-10T02:30:27.972Z
 ---
 
 # Performance
@@ -22,6 +22,16 @@ Every state change in a Foldkit app flows through one pipeline, so the cost mode
 - Command results always arrive asynchronously, and a synchronous burst that holds the stack past a small budget defers its remaining Messages to a new task so the page keeps painting.
 
 The production hot path does no work proportional to Model size. No serialization, no deep comparison, no freezing, no snapshots. Change detection is reference equality, and `evo` preserves unchanged branches by reference, so the cost of a Message is the cost of your `update` logic, and the cost of a frame is the cost of the subtrees that actually changed.
+
+## What the abstractions cost
+
+The cost model above puts the cost of a Message on your `update` logic. What the update-side abstractions add on top of that is small, and worth spelling out, because they are the first thing people suspect when an app feels slow:
+
+- `Update.foldChild` adds a function call and an arity check over the wiring you would otherwise write by hand. Inside, it does exactly what the hand-written handler does: read the child out of the Model, run its update, write it back, and lift the child’s Commands through `toParentMessage`.
+- `evo` is Effect’s `Struct.evolve` at runtime; the wrapper adds key checking at the type level only. It walks the struct’s own enumerable keys once and applies a transform only where you provided one, copying everything else by reference. The cost is proportional to the Model’s top-level field count, the same as an object spread, and that reference preservation is what lets [createLazy](https://foldkit.dev/core/view-memoization) hit its `===` check.
+- `Match.tagsExhaustive` is the one whose cost scales with your app. The handler object and one closure per arm are allocated on every dispatch, and because the arms close over `model` they cannot be hoisted to module scope.
+
+Keep `Match.tagsExhaustive` anyway. Its signature requires a handler for every tag in the union, so adding a Message variant fails to compile in every update that does not handle it. That is a correctness guarantee bought with short-lived allocations a young-generation collector does not notice, and an `if`/`else` chain on `_tag` gives it up. If a profile ever puts a genuinely hot update at the top, that trade is available, but it is the last change to reach for rather than the first.
 
 ## Benchmarks
 
