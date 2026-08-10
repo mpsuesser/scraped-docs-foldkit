@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/subscription
 title: "Subscription"
 description: "API documentation for the Subscription module."
-access_date: 2026-08-09T22:30:03.448Z
-current_date: 2026-08-09T22:30:03.448Z
+access_date: 2026-08-10T01:37:55.778Z
+current_date: 2026-08-10T01:37:55.778Z
 ---
 
 # Subscription
@@ -14,7 +14,7 @@ current_date: 2026-08-09T22:30:03.448Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/subscription.ts#L194)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/subscription.ts#L194)
 
 ```
 /**
@@ -29,7 +29,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/animationFrame.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/animationFrame.ts#L66)
 
 ```
 /**
@@ -53,7 +53,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/fromEvent.ts#L170)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/fromEvent.ts#L170)
 
 ```
 /**
@@ -82,7 +82,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/fromEvent.ts#L104)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/fromEvent.ts#L104)
 
 ```
 /**
@@ -118,7 +118,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/subscription.ts#L266)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/subscription.ts#L543)
 
 ```
 /**
@@ -127,22 +127,40 @@ function
  * every entry. Per-entry dependency types, schemas, and `keepAliveEquivalence`
  * settings are preserved; each lifted entry's variant (with or without
  * `readDependencies`) matches its source entry's.
+ * 
+ * The optional `when` is the parent's own gate. The parent writes it here on
+ * its `lift` call and answers it from the parent Model, which is what makes
+ * it useful: it carries the half of a condition the child cannot see, such as
+ * the route a page Submodel sits behind. The child neither declares nor sees
+ * the gate, and keeps holding its own half in `modelToDependencies`. A gated
+ * entry runs only while its gate returns `true`, and a closed gate tears it
+ * down.
+ * 
+ * `when` takes either shape:
+ * 
+ * - One predicate gates every entry in the record, for the common case where
+ *   the whole child answers to one parent condition.
+ * - An EntryGates map gates entries by name, for a child whose
+ *   Subscriptions answer to different parent conditions. Entries the map
+ *   omits are lifted ungated. A child never has to organize its records
+ *   around its parent's gating.
+ * 
+ * Gating rewrites a gated entry's dependencies to GatedDependencies,
+ * so its `readDependencies` returns the last dependencies seen through an
+ * open gate. Ungated entries keep the child's dependencies untouched. Passing
+ * `ParentModel` and `ParentMessage` explicitly suppresses inference on the
+ * gate map, which leaves each named entry's dependencies as either shape; let
+ * both infer from an annotated `toChildModel` when you want the exact per
+ * entry types.
  */
-<Subscriptions extends Readonly<Record<string, Subscription<any, any, any, any>>>>(subscriptions: Subscriptions): (config: {
-  toChildModel: (parentModel: ParentModel) => ChildModelOf<Subscriptions>
-  toParentMessage: (message: ChildMessageOf<Subscriptions>) => ParentMessage
-}) => {
-  readonly [K in string | number | symbol]: Subscriptions[K] extends Subscription<any, any, Dependencies, Services>
-    ? Subscription<ParentModel, ParentMessage, Dependencies, Services>
-    : never
-}
+<Subscriptions extends Readonly<Record<string, Subscription<any, any, any, any>>>>(subscriptions: Subscriptions): (config: GatedLiftConfig<ParentModel, ParentMessage, Subscriptions>) => GatedLiftedSubscriptions<ParentModel, ParentMessage, Subscriptions>
 ```
 
 ### make
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/subscription.ts#L166)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/subscription.ts#L166)
 
 ```
 /**
@@ -163,7 +181,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/subscription.ts#L226)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/subscription.ts#L226)
 
 ```
 /**
@@ -185,7 +203,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/animationFrame.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/animationFrame.ts#L12)
 
 ```
 /**
@@ -207,7 +225,7 @@ type AnimationFrameConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/subscription.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/subscription.ts#L16)
 
 ```
 /**
@@ -227,7 +245,7 @@ type EntryWithoutKeepAlive = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/fromEvent.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/fromEvent.ts#L16)
 
 ```
 /**
@@ -255,7 +273,7 @@ type FromEventConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/fromEvent.ts#L41)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/fromEvent.ts#L41)
 
 ```
 /**
@@ -280,11 +298,33 @@ type FromEventFilterMapConfig = Readonly<{
 }>
 ```
 
+### GatedDependencies
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/subscription.ts#L269)
+
+```
+/**
+ * The dependencies of a Subscription lifted through a parent's `when` gate:
+ * the child entry's own dependencies under `maybeDependencies`, and `None`
+ * for as long as the parent holds the gate closed.
+ * 
+ * A closed gate is a real teardown rather than a paused Stream. The entry's
+ * Stream is torn down, and the child's `modelToDependencies` does not run
+ * again until the parent reopens the gate, so child state that changes behind
+ * a closed gate causes no restarts.
+ */
+type GatedDependencies = Readonly<{
+  maybeDependencies: Option.Option<Dependencies>
+}>
+```
+
 ### Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/subscription.ts#L64)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/subscription.ts#L64)
 
 ```
 /**
@@ -319,7 +359,7 @@ type Subscription = Entry<Model, Message, Dependencies, Services> & Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/e515c76a9afc26fe835210345a8327783dfa0613/packages/foldkit/src/subscription/subscription.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/dbacfa5c0e7afa4b49bc9d7740ba74fde0a11796/packages/foldkit/src/subscription/subscription.ts#L72)
 
 ```
 /** A record of named Subscriptions keyed by dependency field name. */

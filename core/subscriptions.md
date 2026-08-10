@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/subscriptions
 title: "Subscriptions"
 description: "Declarative streams that start and stop based on Model state, with built-in helpers like Subscription.animationFrame for requestAnimationFrame-driven motion. Foldkit Subscriptions replace useEffect cleanup patterns with automatic lifecycle management."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-10T01:37:55.778Z
+current_date: 2026-08-10T01:37:55.778Z
 ---
 
 # Subscriptions
@@ -305,6 +305,6 @@ Inside the `requestAnimationFrame` loop, `readDependencies()` returns the latest
 
 In most Subscriptions, use the dependencies passed as the first argument directly. The stream restarts whenever they change, so they’re always current. `readDependencies` is for the case where `keepAliveEquivalence` has excluded fast-changing fields from the restart decision, and you need to read those fields inside a long-lived callback. For a real-world example, see the [Drag and Drop](https://foldkit.dev/ui/drag-and-drop) component and the [Kanban example](https://foldkit.dev/example-apps/kanban).
 
-When a parent Submodel embeds children that emit Subscriptions, the parent owns the wrap into its own Message type. `Subscription.lift` handles this composition in one call. See [Subscription Organization](https://foldkit.dev/patterns/subscription-organization) for the full pattern.
+When a parent Submodel embeds children that emit Subscriptions, the parent owns the wrap into its own Message type. `Subscription.lift` handles this composition in one call, and its optional `when` lets the parent gate on a parent fact the child cannot see, such as the route a page sits behind. `when` is written by the parent and reads the parent Model, as one predicate for the whole record or as a map naming the entries to gate. See [Subscription Organization](https://foldkit.dev/patterns/subscription-organization) for the full pattern.
 
 You’ve now seen how state changes flow through update, how one-off side effects work as Commands, how view code reaches the live DOM with Mount, and how ongoing streams are managed with Subscriptions. But where do the first Model and Commands come from? That’s `init`.

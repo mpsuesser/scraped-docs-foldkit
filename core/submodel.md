@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Compose applications from independent, encapsulated modules."
-access_date: 2026-08-09T21:03:38.321Z
-current_date: 2026-08-09T21:03:38.321Z
+access_date: 2026-08-10T01:37:55.778Z
+current_date: 2026-08-10T01:37:55.778Z
 ---
 
 ## Submodel
@@ -256,6 +256,8 @@ export const update = (
 `read` returns an `Option` because a child may not be mounted (for example, a page behind a route or an entry in a keyed collection); a single always-present field wraps in `Option.some`. When `read` returns `None` the fold is a no-op, `[model, []]`: a Message for an unmounted child does nothing. `toParentMessage` is the same contract `h.submodel` takes on the view half, and the fold lifts the child's Commands through it with `Command.mapMessages`.
 
 `foldChild` returns a dual function. Called with the parent Model and a child Message (`foldSettings(model, message)`) it runs the fold now, which is the handler shape. Called with only the Message (`foldSettings(message)`) it returns an `Update.Step`, which composes with `Update.combine` like any other Step. A child update that needs per-dispatch context is closed over in the `update` field (`update: (child, message) => Room.update(child, message, { roomId })`), and deciding *whether* to run the fold (a route gate, for example) happens in the update branch before you call it.
+
+Some entry points take nothing but the child Model, such as `Dialog.close` or an `informRouteChanged` that derives everything from the child's own state. There is no input to pass, so fold those with `Update.foldChildStep`, which takes the same fields and returns the `Update.Step` itself instead of a dual function.
 
 ### Wiring the View with h.submodel
 
@@ -837,6 +839,8 @@ const foldLoginOutMessage: (
     }),
   )
 ```
+
+[Update.foldChildStep](#fold-child) takes the same `foldOutMessage`, fold context and all, so a no-argument entry point lifts a child Command exactly this way.
 
 A parent that is itself a Submodel adds `toParentOutMessage` to the config, lifting the child's OutMessage into the parent's own (`() => Option.none()` when the parent has nothing to pass upward). That fold returns `Update.ReturnWithOutMessage`, so the intermediate handler stays one line. The [Auth example](https://foldkit.dev/example-apps/auth) 's login page does exactly this: it folds its Login child and lifts `SucceededLogin` into its own OutMessage for the root to act on.
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/subscription-organization
 title: "Subscription Organization"
 description: "Canonical layout for subscription wiring across nested submodels."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-10T01:37:55.778Z
+current_date: 2026-08-10T01:37:55.778Z
 ---
 
 # Subscription Organization
@@ -78,7 +78,11 @@ lens and one
 
 `toParentMessage`
 
-constructor.
+constructor. An optional
+
+`when`
+
+gates the whole record on the parent Model.
 
 Embedding a child whose Subscriptions all share the same wrapper Message.
 
@@ -100,7 +104,7 @@ A Subscription file produces Messages in its own Message type, and only that one
 
 ### Uniform Interface
 
-Every Submodel that exposes Subscriptions exports one named value: a `subscriptions` record built via `Subscription.make`. A parent embeds it by combining it through `Subscription.aggregate` alongside its own Subscriptions.
+Every Submodel that exposes Subscriptions exports one named value: a `subscriptions` record built via `Subscription.make`. A parent embeds it by combining it through `Subscription.aggregate` alongside its own Subscriptions. One record stays right even when the parent [gates](#gating) some of its entries and not others, because a gate attaches per entry at the lift. A Submodel never organizes its exports around its parent's conditions.
 
 ## Putting It Together
 
@@ -231,3 +235,62 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
   localSubscriptions,
 )
 ```
+
+## Gating a Lifted Record
+
+A Submodel decides through its own `modelToDependencies` whether its Streams should run, but it can only read facts it holds. The route it sits behind is the common thing it cannot see: a page Submodel listening for key presses has no way to know the app is showing a different page.
+
+The parent owns that half of the condition, so the gate lives on the parent’s `lift` call. `when` receives the **parent** Model, never the child’s, and a gated entry runs only while it returns `true`:
+
+```
+// subscription.ts
+import { Subscription } from 'foldkit'
+
+import { GotSettingsMessage, type Message } from './message'
+import type { Model } from './model'
+import * as Settings from './settings'
+
+const settingsSubscriptions = Subscription.lift(Settings.subscriptions)<
+  Model,
+  Message
+>({
+  toChildModel: model => model.settings,
+  toParentMessage: message => GotSettingsMessage({ message }),
+  when: ({ route }) => route._tag === 'Settings',
+})
+
+export const subscriptions = Subscription.aggregate<Model, Message>()(
+  settingsSubscriptions,
+)
+```
+
+A closed gate is a teardown, not a pause. The entry’s Stream stops, and the child’s `modelToDependencies` does not run again until the parent reopens the gate, so child state that changes behind a closed gate causes no restarts.
+
+`when` takes either shape. One predicate gates every entry in the record, which is the common case where the whole child answers to one parent condition. A map keyed by entry name gates entries individually, for a child whose Subscriptions answer to different conditions: a page that holds both a WebSocket stream and a keyboard listener wants the socket to survive navigation and the keys to stop at it. Entries the map omits are lifted ungated.
+
+```
+// subscription.ts
+import { Subscription } from 'foldkit'
+
+import { GotRoomMessage, type Message } from './message'
+import type { Model } from './model'
+import * as Room from './room'
+
+// The Room page holds two Subscriptions: a WebSocket stream that should
+// outlive navigation, and a keyboard listener that should not. Naming one
+// entry gates it and leaves the other alone.
+const roomSubscriptions = Subscription.lift(Room.subscriptions)({
+  toChildModel: (model: Model) => model.room,
+  toParentMessage: (message: Room.Message): Message =>
+    GotRoomMessage({ message }),
+  when: { roomKeyboard: ({ route }) => route._tag === 'Room' },
+})
+
+export const subscriptions = Subscription.aggregate<Model, Message>()(
+  roomSubscriptions,
+)
+```
+
+Ownership splits cleanly. The parent writes `when` and answers it from parent state, and the child neither declares nor sees the gate: it keeps holding its own condition in `modelToDependencies`.
+
+Lifts chain, so a gate attaches at whichever level knows the condition. A record lifted through two levels can be gated at the outer one on a fact only the root holds, and the level in between passes it along without knowing a gate is there. Gates at different levels compose: the entry runs only while every gate above it is open.
