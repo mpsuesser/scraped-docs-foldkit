@@ -2,8 +2,8 @@
 url: https://foldkit.dev/elm/foldkit-vs-elm-side-by-side
 title: "Foldkit vs Elm: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and Elm. Same architecture, different host: ports vs Commands, decoders vs Schema, and what each side gives up."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-10T14:39:49.977Z
+current_date: 2026-08-10T14:39:49.977Z
 ---
 
 # Foldkit vs Elm: Side by Side
@@ -775,7 +775,7 @@ const rowView = (
 
 The Elm version hand-rolls its dialogs, radio groups, switches, and theme listbox: the markup, the ARIA attributes, the open/closed state in the Model, the Escape key in the keyboard decoder, the backdrop click. Elm makes that work pleasant, but it’s on you, and the hand-rolled versions in this app cover less ground than a production component library (no focus trapping, no arrow-key navigation in the radio groups). Community packages exist, and elm-ui takes a different road entirely, but there is no standard accessible component kit.
 
-Foldkit ships [UI components](https://foldkit.dev/ui/overview). The stateful ones (the dialogs and the theme listbox here) are themselves little Elm Architecture programs: each has a Model, Messages, and an update function, and you compose them as [Submodels](https://foldkit.dev/core/submodel). Their Models hold interaction state only: the selection stays in your Model, flows into the listbox view as `maybeSelectedValue`, and comes back as a `Selected` OutMessage your update folds. The rest (the radio groups and mirror switches here) are controlled render helpers: your Model owns the value, and the helper bundles the markup, ARIA, and keyboard wiring around it. Focus management, ARIA, keyboard navigation, and transitions come built in, and the state lives in your Model where DevTools and tests can see it. If you ever wrote nested TEA in Elm (the triple of init/update/view, the `Cmd.map`/`Html.map` plumbing), Submodels are exactly that pattern with the plumbing standardized.
+Foldkit ships [UI components](https://foldkit.dev/ui/overview). The stateful ones (the dialogs, the radio groups, and the theme listbox here) are themselves little Elm Architecture programs: each has a Model, Messages, and an update function, and you compose them as [Submodels](https://foldkit.dev/core/submodel). Their Models hold interaction state only: the selection stays in your Model, flows into the listbox view as `maybeSelectedValue`, and comes back as a `Selected` OutMessage your update folds. The rest (the mirror switches here) are controlled render helpers: your Model owns the value, and the helper bundles the markup, ARIA, and keyboard wiring around it. Focus management, ARIA, keyboard navigation, and transitions come built in, and the state lives in your Model where DevTools and tests can see it. If you ever wrote nested TEA in Elm (the triple of init/update/view, the `Cmd.map`/`Html.map` plumbing), Submodels are exactly that pattern with the plumbing standardized.
 
 Elm (this app)
 
@@ -785,7 +785,7 @@ Dialog, RadioGroup, Switch, Listbox
 
 Hand-rolled views + Model fields
 
-Shipped: Dialog and Listbox as Submodels, RadioGroup and Switch as controlled helpers
+Shipped: Dialog, Listbox, and RadioGroup as Submodels, Switch as a controlled helper
 
 Accessibility
 

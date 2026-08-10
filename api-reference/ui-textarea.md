@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-textarea
 title: "Ui/Textarea"
 description: "API documentation for the Ui/Textarea module."
-access_date: 2026-08-10T02:30:27.972Z
-current_date: 2026-08-10T02:30:27.972Z
+access_date: 2026-08-10T14:39:49.977Z
+current_date: 2026-08-10T14:39:49.977Z
 ---
 
 # Ui/Textarea
@@ -14,7 +14,7 @@ current_date: 2026-08-10T02:30:27.972Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/3db96663e6d3790ee2866baaf1a00c57fd1da381/packages/ui/src/textarea/index.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/7632ab7e37ad7c9e336559a8993e66cd0c5b28bf/packages/ui/src/textarea/index.ts#L29)
 
 ```
 /** Returns the description element id, derived from the textarea's base id. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/3db96663e6d3790ee2866baaf1a00c57fd1da381/packages/ui/src/textarea/index.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/7632ab7e37ad7c9e336559a8993e66cd0c5b28bf/packages/ui/src/textarea/index.ts#L32)
 
 ```
 /** Renders an accessible textarea by building ARIA attribute groups and delegating layout to the consumer's `toView` callback. */
@@ -41,7 +41,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/3db96663e6d3790ee2866baaf1a00c57fd1da381/packages/ui/src/textarea/index.ts#L7)
+[source](https://github.com/foldkit/foldkit/blob/7632ab7e37ad7c9e336559a8993e66cd0c5b28bf/packages/ui/src/textarea/index.ts#L7)
 
 ```
 /** Attribute groups the textarea component provides to the consumer's `toView` callback. */
@@ -56,7 +56,7 @@ type TextareaAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/3db96663e6d3790ee2866baaf1a00c57fd1da381/packages/ui/src/textarea/index.ts#L14)
+[source](https://github.com/foldkit/foldkit/blob/7632ab7e37ad7c9e336559a8993e66cd0c5b28bf/packages/ui/src/textarea/index.ts#L14)
 
 ```
 /** Configuration for rendering a textarea with `view`. */

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/overview
 title: "Foldkit UI"
 description: "Headless, accessible UI components for Foldkit: dialog, menu, tabs, listbox, and more. Built for The Elm Architecture with Effect-TS."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-10T14:39:49.977Z
+current_date: 2026-08-10T14:39:49.977Z
 ---
 
 # Foldkit UI
@@ -26,7 +26,7 @@ Foldkit UI components fall into two categories, distinguished by whether they ca
 
 Stateful [Submodels](https://foldkit.dev/core/submodel) (Menu, Listbox, Combobox, Calendar, Dialog, Popover, among others) manage their own Model, Message, update, and OutMessage. You embed them via h.submodel and handle their events by pattern-matching the OutMessage in your update.
 
-Stateless render helpers (Button, Input, Textarea, Select, Radio Group, Checkbox, Switch, Disclosure, Fieldset, Nav) are called directly with a ViewConfig and your builder, and return Html. They bundle ARIA and data attributes onto consumer-rendered DOM. No Model, no h.submodel wiring. The controlled helpers dispatch the Messages returned by their config callbacks, and the builder you pass is what determines the Message type those callbacks must return, so there is no type argument to write. The “Kind” column in the table below marks which is which.
+Stateless render helpers (Button, Input, Textarea, Select, Checkbox, Switch, Disclosure, Fieldset, Nav) are called directly with a ViewConfig and your builder, and return Html. They bundle ARIA and data attributes onto consumer-rendered DOM. No Model, no h.submodel wiring. The controlled helpers dispatch the Messages returned by their config callbacks, and the builder you pass is what determines the Message type those callbacks must return, so there is no type argument to write. The “Kind” column in the table below marks which is which.
 
 ## Components
 
@@ -68,9 +68,9 @@ Groups related form controls with a legend and description. Disabled state propa
 
 [Radio Group](https://foldkit.dev/ui/radio-group)
 
-Helper
+Submodel
 
-Controlled radio options with roving tabindex, keyboard navigation, and per-option label/description linking.
+Radio options with roving tabindex, keyboard navigation, read-only navigation, and per-option label/description linking.
 
 [Switch](https://foldkit.dev/ui/switch)
 

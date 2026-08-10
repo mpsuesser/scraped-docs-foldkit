@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/pixel-art
 title: "Pixel Art"
 description: "Pixel art editor showcasing undo/redo with immutable snapshots, time-travel history, UI components (RadioGroup, Switch, Listbox, Dialog, Button), createLazy view optimization, Subscriptions, Commands with error handling, and localStorage persistence via Flags."
-access_date: 2026-08-08T23:46:45.261Z
-current_date: 2026-08-08T23:46:45.261Z
+access_date: 2026-08-10T14:39:49.977Z
+current_date: 2026-08-10T14:39:49.977Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -30,7 +30,7 @@ import { KeyValueStore } from 'effect/unstable/persistence'
 import { Runtime } from 'foldkit'
 
 import { BrowserKeyValueStore } from '@effect/platform-browser'
-import { Dialog, Listbox } from '@foldkit/ui'
+import { Dialog, Listbox, RadioGroup } from '@foldkit/ui'
 
 import {
   DEFAULT_COLOR_INDEX,
@@ -44,6 +44,11 @@ import { Model, SavedCanvas, SavedCanvasJsonString } from './model'
 import { subscriptions } from './subscription'
 import { update } from './update'
 import { view } from './view'
+import {
+  GRID_SIZE_RADIO_GROUP_ID,
+  PALETTE_RADIO_GROUP_ID,
+  TOOL_RADIO_GROUP_ID,
+} from './view/toolbar'
 
 // FLAGS
 
@@ -97,6 +102,9 @@ export const init: Runtime.ApplicationInit<Model, Message, Flags> = flags => [
     gridSizeConfirmDialog: Dialog.init({ id: 'grid-size-confirm-dialog' }),
     maybePendingGridSize: Option.none(),
     themeListbox: Listbox.init({ id: 'theme-picker' }),
+    toolRadioGroup: RadioGroup.init({ id: TOOL_RADIO_GROUP_ID }),
+    gridSizeRadioGroup: RadioGroup.init({ id: GRID_SIZE_RADIO_GROUP_ID }),
+    paletteRadioGroup: RadioGroup.init({ id: PALETTE_RADIO_GROUP_ID }),
   },
   [],
 ]

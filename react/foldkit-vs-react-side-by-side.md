@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/foldkit-vs-react-side-by-side
 title: "Foldkit vs React: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and React. Covers state management, side effects, testing, performance, and architectural tradeoffs."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-10T14:39:49.977Z
+current_date: 2026-08-10T14:39:49.977Z
 ---
 
 ## Foldkit vs React: Side by Side
@@ -787,7 +787,7 @@ const useMouseRelease = (
 
 ## Your State or Theirs
 
-Foldkit ships [accessible UI components](https://foldkit.dev/ui/overview) (Dialog, RadioGroup, Switch, Listbox). The stateful ones (Dialog, Listbox) work like everything else in Foldkit: each has a Model, Messages, and an update function. You initialize them in your Model, delegate their Messages in your update, and compose their views. Their Models hold interaction state only. The selection stays with you: the parent Model owns it, passes it into the Listbox view as `maybeSelectedValue`, and folds the `Selected` OutMessage back into its own state. RadioGroup and Switch are controlled render helpers: your Model owns the value directly. Either way the state is yours. React uses Headless UI, which provides the same accessible patterns through a component API. But the state is theirs.
+Foldkit ships [accessible UI components](https://foldkit.dev/ui/overview) (Dialog, RadioGroup, Switch, Listbox). The stateful ones (Dialog, Listbox, RadioGroup) work like everything else in Foldkit: each has a Model, Messages, and an update function. You initialize them in your Model, delegate their Messages in your update, and compose their views. Their Models hold interaction state only. The selection stays with you: the parent Model owns it, passes it into the Listbox view as `maybeSelectedValue`, and folds the `Selected` OutMessage back into its own state. Switch is a controlled render helper: your Model owns the value directly. Either way the state is yours. React uses Headless UI, which provides the same accessible patterns through a component API. But the state is theirs.
 
 |  | Foldkit | React + Headless UI |
 | --- | --- | --- |

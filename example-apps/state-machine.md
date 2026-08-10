@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/state-machine
 title: "State Machine"
 description: "Checkout workflow powered by the experimental state machine module. Guards skip Shipping for digital orders, gate Place order behind a complete review, and parse promo codes into applied discounts."
-access_date: 2026-08-04T03:55:42.119Z
-current_date: 2026-08-04T03:55:42.119Z
+access_date: 2026-08-10T14:39:49.977Z
+current_date: 2026-08-10T14:39:49.977Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -37,12 +37,14 @@ import {
   flow,
   pipe,
 } from 'effect'
-import { Command, Runtime } from 'foldkit'
+import { Command, Runtime, Update } from 'foldkit'
 import { Machine } from 'foldkit/experimental'
 import { otherwise, to, when } from 'foldkit/experimental/machine'
 import { m } from 'foldkit/message'
 import { ts } from 'foldkit/schema'
 import { evo } from 'foldkit/struct'
+
+import { RadioGroup } from '@foldkit/ui'
 
 // MODEL
 
@@ -98,8 +100,24 @@ export const TransitionLogEntry = S.Struct({
 })
 export type TransitionLogEntry = typeof TransitionLogEntry.Type
 
+const EDITION_RADIO_GROUP_ID = 'edition'
+
+export const HARDCOVER_EDITION = 'Hardcover'
+export const EBOOK_EDITION = 'E-book'
+
+export const EDITIONS: ReadonlyArray<string> = [
+  HARDCOVER_EDITION,
+  EBOOK_EDITION,
+]
+
+export const editionName = (isShippingRequired: boolean): string =>
+  isShippingRequired ? HARDCOVER_EDITION : EBOOK_EDITION
+
+export const EditionRadioGroup = RadioGroup.create()
+
 export const Model = S.Struct({
   checkout: CheckoutState,
+  editionRadioGroup: RadioGroup.Model,
   transitionLog: S.Array(TransitionLogEntry),
   nextTransitionLogId: S.Number,
 })
@@ -118,6 +136,9 @@ export const ToggledPaymentMethod = m('ToggledPaymentMethod', {
 export const SelectedEdition = m('SelectedEdition', {
   isShippingRequired: S.Boolean,
 })
+export const GotEditionRadioGroupMessage = m('GotEditionRadioGroupMessage', {
+  message: RadioGroup.Message,
+})
 export const ToggledTermsAccepted = m('ToggledTermsAccepted', {
   isAccepted: S.Boolean,
 })
@@ -135,6 +156,7 @@ export const Message = S.Union([
   ClickedStartOver,
   ToggledPaymentMethod,
   SelectedEdition,
+  GotEditionRadioGroupMessage,
   ToggledTermsAccepted,
   UpdatedPromoCode,
   SubmittedPromoCode,
@@ -356,6 +378,7 @@ export const checkoutMachine = Machine.define({
 
 export const initialModel = Model.make({
   checkout: checkoutMachine.initial,
+  editionRadioGroup: RadioGroup.init({ id: EDITION_RADIO_GROUP_ID }),
   transitionLog: [],
   nextTransitionLogId: 0,
 })
@@ -383,33 +406,63 @@ const resultToTransitionSummary = (
     }),
   )
 
-export const update = (model: Model, message: Message): UpdateReturn => {
-  const result = checkoutMachine.step(model.checkout, message)
+const stepMachine =
+  (message: Message) =>
+  (model: Model): UpdateReturn => {
+    const result = checkoutMachine.step(model.checkout, message)
 
-  const { state: nextCheckout } = result
+    const { state: nextCheckout } = result
 
-  const transitionCommands = M.value(result).pipe(
-    M.tagsExhaustive({
-      Transitioned: ({ commands }) => commands,
-      Ignored: () => [],
-    }),
-  )
+    const transitionCommands = M.value(result).pipe(
+      M.tagsExhaustive({
+        Transitioned: ({ commands }) => commands,
+        Ignored: () => [],
+      }),
+    )
 
-  const transitionLogEntry: TransitionLogEntry = {
-    id: model.nextTransitionLogId,
-    summary: resultToTransitionSummary(result),
+    const transitionLogEntry: TransitionLogEntry = {
+      id: model.nextTransitionLogId,
+      summary: resultToTransitionSummary(result),
+    }
+
+    return [
+      evo(model, {
+        checkout: () => nextCheckout,
+        transitionLog: flow(
+          Array.prepend(transitionLogEntry),
+          Array.take(TRANSITION_LOG_LIMIT),
+        ),
+        nextTransitionLogId: Number.increment,
+      }),
+      transitionCommands,
+    ]
   }
 
-  return [
-    evo(model, {
-      checkout: () => nextCheckout,
-      transitionLog: flow(
-        Array.prepend(transitionLogEntry),
-        Array.take(TRANSITION_LOG_LIMIT),
+const foldEditionRadioGroupOutMessage = M.type<RadioGroup.OutMessage>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    Selected: ({ value }) =>
+      stepMachine(
+        SelectedEdition({ isShippingRequired: value === HARDCOVER_EDITION }),
       ),
-      nextTransitionLogId: Number.increment,
-    }),
-    transitionCommands,
-  ]
-}
+  }),
+)
+
+const foldEditionRadioGroup = Update.foldChild({
+  update: EditionRadioGroup.update,
+  read: (model: Model) => Option.some(model.editionRadioGroup),
+  write: (model, nextEditionRadioGroup) =>
+    evo(model, { editionRadioGroup: () => nextEditionRadioGroup }),
+  toParentMessage: message => GotEditionRadioGroupMessage({ message }),
+  foldOutMessage: foldEditionRadioGroupOutMessage,
+})
+
+export const update = (model: Model, message: Message): UpdateReturn =>
+  M.value(message).pipe(
+    M.withReturnType<UpdateReturn>(),
+    M.tag('GotEditionRadioGroupMessage', ({ message }) =>
+      foldEditionRadioGroup(model, message),
+    ),
+    M.orElse(() => stepMachine(message)(model)),
+  )
 ```
