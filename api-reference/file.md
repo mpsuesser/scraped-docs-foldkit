@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/file
 title: "File"
 description: "API documentation for the File module."
-access_date: 2026-08-11T03:02:29.236Z
-current_date: 2026-08-11T03:02:29.236Z
+access_date: 2026-08-11T13:49:05.518Z
+current_date: 2026-08-11T13:49:05.518Z
 ---
 
 # File
@@ -14,7 +14,7 @@ current_date: 2026-08-11T03:02:29.236Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/file/file.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/file/file.ts#L28)
 
 ```
 /** The file's MIME type (e.g. `"application/pdf"`), or empty string if the browser cannot determine one. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/file/file.ts#L22)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/file/file.ts#L22)
 
 ```
 /** The file's name including extension, as reported by the browser. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/file/reader.ts#L117)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/file/reader.ts#L117)
 
 ```
 /**
@@ -53,7 +53,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/file/reader.ts#L92)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/file/reader.ts#L92)
 
 ```
 /**
@@ -67,7 +67,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/file/reader.ts#L73)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/file/reader.ts#L73)
 
 ```
 /**
@@ -84,7 +84,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/file/select.ts#L68)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/file/select.ts#L68)
 
 ```
 /**
@@ -102,7 +102,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/file/select.ts#L87)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/file/select.ts#L87)
 
 ```
 /**
@@ -117,7 +117,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/file/file.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/file/file.ts#L25)
 
 ```
 /** The file's size in bytes. */
@@ -130,7 +130,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/file/file.ts#L9)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/file/file.ts#L9)
 
 ```
 /**
@@ -148,7 +148,7 @@ type File = globalThis.File
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/file/file.ts#L9)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/file/file.ts#L9)
 
 ```
 /**

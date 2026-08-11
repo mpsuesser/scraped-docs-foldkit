@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/subscription
 title: "Subscription"
 description: "API documentation for the Subscription module."
-access_date: 2026-08-11T03:02:29.236Z
-current_date: 2026-08-11T03:02:29.236Z
+access_date: 2026-08-11T13:49:05.518Z
+current_date: 2026-08-11T13:49:05.518Z
 ---
 
 # Subscription
@@ -14,7 +14,7 @@ current_date: 2026-08-11T03:02:29.236Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/subscription.ts#L194)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/subscription.ts#L194)
 
 ```
 /**
@@ -29,7 +29,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/animationFrame.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/animationFrame.ts#L66)
 
 ```
 /**
@@ -53,7 +53,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/fromEvent.ts#L170)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/fromEvent.ts#L170)
 
 ```
 /**
@@ -82,7 +82,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/fromEvent.ts#L104)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/fromEvent.ts#L104)
 
 ```
 /**
@@ -118,7 +118,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/subscription.ts#L543)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/subscription.ts#L543)
 
 ```
 /**
@@ -160,7 +160,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/subscription.ts#L166)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/subscription.ts#L166)
 
 ```
 /**
@@ -181,7 +181,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/subscription.ts#L226)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/subscription.ts#L226)
 
 ```
 /**
@@ -203,7 +203,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/animationFrame.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/animationFrame.ts#L12)
 
 ```
 /**
@@ -225,7 +225,7 @@ type AnimationFrameConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/subscription.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/subscription.ts#L16)
 
 ```
 /**
@@ -245,7 +245,7 @@ type EntryWithoutKeepAlive = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/fromEvent.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/fromEvent.ts#L16)
 
 ```
 /**
@@ -273,7 +273,7 @@ type FromEventConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/fromEvent.ts#L41)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/fromEvent.ts#L41)
 
 ```
 /**
@@ -302,7 +302,7 @@ type FromEventFilterMapConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/subscription.ts#L269)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/subscription.ts#L269)
 
 ```
 /**
@@ -324,7 +324,7 @@ type GatedDependencies = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/subscription.ts#L64)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/subscription.ts#L64)
 
 ```
 /**
@@ -359,7 +359,7 @@ type Subscription = Entry<Model, Message, Dependencies, Services> & Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6d495f0d10e1576968c413e1d1fd7287a670d8ea/packages/foldkit/src/subscription/subscription.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/subscription/subscription.ts#L72)
 
 ```
 /** A record of named Subscriptions keyed by dependency field name. */
