@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/date-picker
 title: "Date Picker"
 description: "Accessible date picker that wraps Calendar in a Popover. Focus choreography, click-outside dismissal, and hidden form input for native form submission."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-11T02:16:28.996Z
+current_date: 2026-08-11T02:16:28.996Z
 ---
 
 ## Date Picker
@@ -12,7 +12,7 @@ current_date: 2026-08-03T19:45:20.723Z
 
 An accessible date picker that wraps `Calendar` in a `Popover`. Consumers provide the trigger button face and the calendar grid layout. DatePicker handles focus choreography (opening focuses the grid, closing returns focus to the trigger), open/close state, and an optional hidden form input for native form submission.
 
-DatePicker uses the Submodel pattern: initialize with `DatePicker.init()`, store the Model in your parent, delegate Messages via `DatePicker.update()`, and render with `DatePicker.view()`. The update function returns `[Model, Commands, Option<OutMessage>]`. The [OutMessage](https://foldkit.dev/core/submodel#surfacing-facts) carries `SelectedDate({ date })` when the user commits a date, `ClearedDate` when the user clears it, and `ChangedViewMonth` when navigation shifts the visible month. The parent owns the selected date: store it in your Model, pass it back as `maybeSelectedDate`, and fold `SelectedDate` and `ClearedDate` into that field. Pattern-match the third tuple element of `DatePicker.update` in your `GotDatePickerMessage` handler to react. For programmatic control in update functions, use `DatePicker.open(model)` and `DatePicker.close(model)` which return `[Model, Commands]` directly.
+DatePicker uses the Submodel pattern: initialize with `DatePicker.init()`, store the Model in your parent, wire Messages through [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child), and render with `DatePicker.view()`. The update function returns `[Model, Commands, Option<OutMessage>]`. The [OutMessage](https://foldkit.dev/core/submodel#surfacing-facts) carries `SelectedDate({ date })` when the user commits a date, `ClearedDate` when the user clears it, and `ChangedViewMonth` when navigation shifts the visible month. The parent owns the selected date: store it in your Model, pass it back as `maybeSelectedDate`, and fold `SelectedDate` and `ClearedDate` into that field from the fold's `foldOutMessage`. For programmatic control in update functions, use `DatePicker.open(model)` and `DatePicker.close(model)` which return `[Model, Commands]` directly.
 
 The calendar heading inside the popover is a button: clicking it switches the day grid into a 3x4 months grid; clicking the year heading from there switches into a paged 3x4 years grid. Selecting a year drills back to the months grid for that year; selecting a month drills back to the days grid for that month. Re-opening the popover always shows the day grid.
 
@@ -29,7 +29,7 @@ A date picker constrained to a one-year window around today via `minDate` and `m
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
 import { Effect, Match as M, Option } from 'effect'
-import { Calendar, Command } from 'foldkit'
+import { Calendar, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -78,62 +78,50 @@ const GotDatePickerMessage = m('GotDatePickerMessage', {
   message: DatePicker.Message,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), delegate
-// navigation, focus, and popover messages to DatePicker.update. The
-// OutMessage's \`SelectedDate\` carries the committed date. The popover
-// has already closed by the time it fires; lift the date into your
-// domain state and pass it back as \`maybeSelectedDate\`. \`ClearedDate\`
-// fires when the user clears the selection. \`ChangedViewMonth\` fires when
-// calendar navigation shifts the visible month without selecting a date.
-GotDatePickerMessage: ({ message }) => {
-  const [nextDatePicker, commands, maybeOutMessage] = DatePicker.update(
-    model.datePickerDemo,
-    message,
-  )
-  const mappedCommands = Command.mapMessages(commands, message =>
-    GotDatePickerMessage({ message }),
-  )
-
-  return Option.match(maybeOutMessage, {
-    onNone: () => [
-      evo(model, { datePickerDemo: () => nextDatePicker }),
-      mappedCommands,
+// At module scope, fold the OutMessage into your own Model. \`SelectedDate\`
+// carries the committed date. The popover has already closed by the time it
+// fires; lift the date into your domain state and pass it back as
+// \`maybeSelectedDate\`. \`ClearedDate\` fires when the user clears the selection.
+// \`ChangedViewMonth\` fires when calendar navigation shifts the visible month
+// without selecting a date. Each arm returns an Update.Step over the parent
+// Model, which already has the next DatePicker Model written back:
+const foldDatePickerOutMessage = M.type<DatePicker.OutMessage>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    // The child has emitted \`SelectedDate\`. This is where the parent lifts
+    // the committed date into its own field, which is then passed back to
+    // the picker as \`maybeSelectedDate\`, so the parent stays the single
+    // source of truth for the selection.
+    SelectedDate:
+      ({ date }) =>
+      model => [evo(model, { maybeSelectedDate: () => Option.some(date) }), []],
+    // The user cleared the selection. Reset the parent's field.
+    ClearedDate: () => model => [
+      evo(model, { maybeSelectedDate: () => Option.none() }),
+      [],
     ],
-    onSome: M.type<DatePicker.OutMessage>().pipe(
-      M.tagsExhaustive({
-        SelectedDate: ({ date }) => [
-          // The child has emitted \`SelectedDate\`. The body commits
-          // the child's next state as usual. This is where the parent
-          // lifts the committed date into its own field, which is then
-          // passed back to the picker as \`maybeSelectedDate\`, so the
-          // parent stays the single source of truth for the selection.
-          evo(model, {
-            datePickerDemo: () => nextDatePicker,
-            maybeSelectedDate: () => Option.some(date),
-          }),
-          mappedCommands,
-        ],
-        ClearedDate: () => [
-          // The user cleared the selection. Reset the parent's field.
-          evo(model, {
-            datePickerDemo: () => nextDatePicker,
-            maybeSelectedDate: () => Option.none(),
-          }),
-          mappedCommands,
-        ],
-        ChangedViewMonth: () => [
-          // The child has emitted \`ChangedViewMonth\`. The body commits
-          // the child's next state as usual. In this arm the parent
-          // can also update its own state or dispatch its own
-          // Commands, for example prefetch month data, fire analytics,
-          // or trigger a downstream Command.
-          evo(model, { datePickerDemo: () => nextDatePicker }),
-          mappedCommands,
-        ],
-      }),
-    ),
-  })
-}
+    // The child has emitted \`ChangedViewMonth\`. In this arm the parent can
+    // update its own state or dispatch its own Commands, for example
+    // prefetch month data, fire analytics, or trigger a downstream Command.
+    ChangedViewMonth: () => model => [model, []],
+  }),
+)
+
+// Update.foldChild wires the child into the parent: it delegates navigation,
+// focus, and popover messages to DatePicker.update, writes the next DatePicker
+// Model back, maps the Submodel's Commands into your Message type, and hands
+// any OutMessage to foldOutMessage.
+const foldDatePicker = Update.foldChild({
+  update: DatePicker.update,
+  read: (model: Model) => Option.some(model.datePickerDemo),
+  write: (model, nextDatePickerDemo) =>
+    evo(model, { datePickerDemo: () => nextDatePickerDemo }),
+  toParentMessage: message => GotDatePickerMessage({ message }),
+  foldOutMessage: foldDatePickerOutMessage,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), call the fold:
+GotDatePickerMessage: ({ message }) => foldDatePicker(model, message)
 
 // Inside your view function, embed the DatePicker via h.submodel. The
 // \`toCalendarView\` callback receives a discriminated \`CalendarAttributes\`
@@ -467,11 +455,11 @@ The discriminated union passed to `toCalendarView`. Pattern-match on `_tag` (`'D
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler.
+Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `SelectedDate` | `{ date: CalendarDate }` | — | Emitted when the user commits a date (click / Enter / Space). Pattern-match the third tuple element of DatePicker.update in your GotDatePickerMessage handler to lift the date into domain state. |
+| `SelectedDate` | `{ date: CalendarDate }` | — | Emitted when the user commits a date (click / Enter / Space). Fold it in the `foldOutMessage` of your DatePicker fold to lift the date into domain state. |
 | `ClearedDate` | `{}` | — | Emitted when the user clears the selected date (via Cleared or DatePicker.clear). The popover stays open. Fold it into the parent-owned selected-date field by setting it to Option.none(). |
 | `ChangedViewMonth` | `{ year: number; month: number }` | — | Emitted when navigation changes the visible month inside the calendar grid. |
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/port
 title: "Port"
 description: "API documentation for the Port module."
-access_date: 2026-08-10T22:19:09.629Z
-current_date: 2026-08-10T22:19:09.629Z
+access_date: 2026-08-11T02:16:28.996Z
+current_date: 2026-08-11T02:16:28.996Z
 ---
 
 # Port
@@ -14,7 +14,7 @@ current_date: 2026-08-10T22:19:09.629Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/8f7312dbf0e42c629f8198c425ed1607b8a1d867/packages/foldkit/src/port/port.ts#L245)
+[source](https://github.com/foldkit/foldkit/blob/c7e01b2f8894f66ad1c3e876a3714c52c01febcf/packages/foldkit/src/port/port.ts#L245)
 
 ```
 /**
@@ -47,7 +47,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/8f7312dbf0e42c629f8198c425ed1607b8a1d867/packages/foldkit/src/port/port.ts#L68)
+[source](https://github.com/foldkit/foldkit/blob/c7e01b2f8894f66ad1c3e876a3714c52c01febcf/packages/foldkit/src/port/port.ts#L68)
 
 ```
 /**
@@ -62,7 +62,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/8f7312dbf0e42c629f8198c425ed1607b8a1d867/packages/foldkit/src/port/port.ts#L88)
+[source](https://github.com/foldkit/foldkit/blob/c7e01b2f8894f66ad1c3e876a3714c52c01febcf/packages/foldkit/src/port/port.ts#L88)
 
 ```
 /**
@@ -77,7 +77,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/8f7312dbf0e42c629f8198c425ed1607b8a1d867/packages/foldkit/src/port/port.ts#L177)
+[source](https://github.com/foldkit/foldkit/blob/c7e01b2f8894f66ad1c3e876a3714c52c01febcf/packages/foldkit/src/port/port.ts#L177)
 
 ```
 /**
@@ -96,7 +96,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/8f7312dbf0e42c629f8198c425ed1607b8a1d867/packages/foldkit/src/port/port.ts#L220)
+[source](https://github.com/foldkit/foldkit/blob/c7e01b2f8894f66ad1c3e876a3714c52c01febcf/packages/foldkit/src/port/port.ts#L220)
 
 ```
 /**
@@ -118,7 +118,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/8f7312dbf0e42c629f8198c425ed1607b8a1d867/packages/foldkit/src/port/port.ts#L50)
+[source](https://github.com/foldkit/foldkit/blob/c7e01b2f8894f66ad1c3e876a3714c52c01febcf/packages/foldkit/src/port/port.ts#L50)
 
 ```
 /**
@@ -138,7 +138,7 @@ type Ports = Readonly<{
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/8f7312dbf0e42c629f8198c425ed1607b8a1d867/packages/foldkit/src/port/port.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/c7e01b2f8894f66ad1c3e876a3714c52c01febcf/packages/foldkit/src/port/port.ts#L29)
 
 ```
 /**
@@ -157,7 +157,7 @@ interface Inbound {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/8f7312dbf0e42c629f8198c425ed1607b8a1d867/packages/foldkit/src/port/port.ts#L40)
+[source](https://github.com/foldkit/foldkit/blob/c7e01b2f8894f66ad1c3e876a3714c52c01febcf/packages/foldkit/src/port/port.ts#L40)
 
 ```
 /**
@@ -178,7 +178,7 @@ interface Outbound {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/8f7312dbf0e42c629f8198c425ed1607b8a1d867/packages/foldkit/src/port/port.ts#L7)
+[source](https://github.com/foldkit/foldkit/blob/c7e01b2f8894f66ad1c3e876a3714c52c01febcf/packages/foldkit/src/port/port.ts#L7)
 
 ```
 /** Type-level brand for inbound Port values. */
@@ -189,7 +189,7 @@ const InboundTypeId: unique symbol
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/8f7312dbf0e42c629f8198c425ed1607b8a1d867/packages/foldkit/src/port/port.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/c7e01b2f8894f66ad1c3e876a3714c52c01febcf/packages/foldkit/src/port/port.ts#L16)
 
 ```
 /** Type-level brand for outbound Port values. */

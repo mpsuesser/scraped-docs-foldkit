@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/menu
 title: "Menu"
 description: "Accessible dropdown menu with keyboard navigation."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-11T02:16:28.996Z
+current_date: 2026-08-11T02:16:28.996Z
 ---
 
 ## Menu
@@ -31,7 +31,7 @@ Pair `view` and `update` behind `Menu.create<Item>()` at module scope. The facto
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
 import { Effect, Match as M, Option } from 'effect'
-import { Command } from 'foldkit'
+import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -69,34 +69,32 @@ const actions: ReadonlyArray<Action> = [
 // Pair view and update behind a single Item-typed factory at module scope:
 const ActionMenu = Menu.create<Action>()
 
-// Inside your update function's M.tagsExhaustive({...}), delegate to
-// ActionMenu.update. The OutMessage's \`Selected\` carries the picked item
-// directly (typed as \`Action\`):
-GotMenuMessage: ({ message }) => {
-  const [nextMenu, commands, maybeOutMessage] = ActionMenu.update(
-    model.menu,
-    message,
-  )
-  const mappedCommands = Command.mapMessages(commands, message =>
-    GotMenuMessage({ message }),
-  )
+// At module scope, fold the OutMessage into your own Model. \`Selected\` carries
+// the picked item directly (typed as \`Action\`). The arm returns an Update.Step
+// over the parent Model, which already has the next Menu Model written back:
+const foldMenuOutMessage = M.type<Menu.OutMessage<Action>>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    // The child has emitted \`Selected\`. In this arm the parent can update
+    // its own state or dispatch its own Commands, for example transition a
+    // page, mutate domain state, or trigger a downstream Command.
+    Selected: () => model => [model, []],
+  }),
+)
 
-  return Option.match(maybeOutMessage, {
-    onNone: () => [evo(model, { menu: () => nextMenu }), mappedCommands],
-    onSome: M.type<Menu.OutMessage<Action>>().pipe(
-      M.tagsExhaustive({
-        Selected: ({ value }) => {
-          // The child has emitted \`Selected\`. The body commits the
-          // child's next state as usual. In this arm the parent can
-          // also update its own state or dispatch its own Commands,
-          // for example transition a page, mutate domain state, or
-          // trigger a downstream Command.
-          return [evo(model, { menu: () => nextMenu }), mappedCommands]
-        },
-      }),
-    ),
-  })
-}
+// Update.foldChild wires the child into the parent: it runs ActionMenu.update,
+// writes the next Menu Model back, maps the Submodel's Commands into your
+// Message type, and hands any OutMessage to foldOutMessage.
+const foldMenu = Update.foldChild({
+  update: ActionMenu.update,
+  read: (model: Model) => Option.some(model.menu),
+  write: (model, nextMenu) => evo(model, { menu: () => nextMenu }),
+  toParentMessage: message => GotMenuMessage({ message }),
+  foldOutMessage: foldMenuOutMessage,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), call the fold:
+GotMenuMessage: ({ message }) => foldMenu(model, message)
 
 // Inside your view function, render the menu via the factory's view. The
 // \`buttonContent\` below names the trigger. When the trigger is icon-only,
@@ -268,8 +266,8 @@ Configuration object passed to `Menu.view()`.
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler.
+Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `Selected` | `{ value: Item; index: number }` | — | Emitted when a menu item is selected. Carries both the value (typed as your `Item` union via `Menu.create<Item>()`) and its index into the items array supplied at view time. Menu closes itself on selection; the parent does not need to dispatch Menu.close. Pattern-match the third tuple element of Menu.update in your GotMenuMessage handler to dispatch the corresponding domain action. |
+| `Selected` | `{ value: Item; index: number }` | — | Emitted when a menu item is selected. Carries both the value (typed as your `Item` union via `Menu.create<Item>()`) and its index into the items array supplied at view time. Menu closes itself on selection; the parent does not need to dispatch Menu.close. Fold it in the `foldOutMessage` of your Menu fold to dispatch the corresponding domain action. |

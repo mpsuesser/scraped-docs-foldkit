@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/combobox
 title: "Combobox"
 description: "Accessible autocomplete input with filtering and selection."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-11T02:16:28.996Z
+current_date: 2026-08-11T02:16:28.996Z
 ---
 
 ## Combobox
@@ -33,7 +33,7 @@ Pass `itemToValue` and `itemToDisplayText` to control how items map to values an
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
 import { Array, Match as M, Option } from 'effect'
-import { Command } from 'foldkit'
+import { Update } from 'foldkit'
 import { type HtmlBuilder, childAttributes } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -70,42 +70,36 @@ const GotComboboxMessage = m('GotComboboxMessage', {
   message: Combobox.Message,
 })
 
-// Delegate keyboard navigation, typeahead, and open/close to
-// CityCombobox.update. The OutMessage's \`Selected\` carries the activated
-// item; fold it into the selection you own. \`ClearedSelection\` only fires
-// for nullable comboboxes, so this combobox keeps its selection there and
-// the fold stays exhaustive:
-GotComboboxMessage: ({ message }) => {
-  const [nextCombobox, commands, maybeOutMessage] = CityCombobox.update(
-    model.combobox,
-    message,
-  )
-  const mappedCommands = Command.mapMessages(commands, message =>
-    GotComboboxMessage({ message }),
-  )
+// At module scope, fold the OutMessage into your own Model. \`Selected\`
+// carries the activated item; fold it into the selection you own.
+// \`ClearedSelection\` only fires for nullable comboboxes, so this combobox
+// keeps its selection there and the fold stays exhaustive. Each arm returns
+// an Update.Step over the parent Model, which already has the next Combobox
+// Model written back:
+const foldComboboxOutMessage = M.type<Combobox.OutMessage<City>>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    Selected:
+      ({ value }) =>
+      model => [evo(model, { maybeCity: () => Option.some(value) }), []],
+    ClearedSelection: () => model => [model, []],
+  }),
+)
 
-  return Option.match(maybeOutMessage, {
-    onNone: () => [
-      evo(model, { combobox: () => nextCombobox }),
-      mappedCommands,
-    ],
-    onSome: M.type<Combobox.OutMessage<City>>().pipe(
-      M.tagsExhaustive({
-        Selected: ({ value }) => [
-          evo(model, {
-            combobox: () => nextCombobox,
-            maybeCity: () => Option.some(value),
-          }),
-          mappedCommands,
-        ],
-        ClearedSelection: () => [
-          evo(model, { combobox: () => nextCombobox }),
-          mappedCommands,
-        ],
-      }),
-    ),
-  })
-}
+// Update.foldChild wires the child into the parent: it delegates keyboard
+// navigation, typeahead, and open/close to CityCombobox.update, writes the
+// next Combobox Model back, maps the Submodel's Commands into your Message
+// type, and hands any OutMessage to foldOutMessage.
+const foldCombobox = Update.foldChild({
+  update: CityCombobox.update,
+  read: (model: Model) => Option.some(model.combobox),
+  write: (model, nextCombobox) => evo(model, { combobox: () => nextCombobox }),
+  toParentMessage: message => GotComboboxMessage({ message }),
+  foldOutMessage: foldComboboxOutMessage,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), call the fold:
+GotComboboxMessage: ({ message }) => foldCombobox(model, message)
 
 const cities: ReadonlyArray<City> = [
   'Johannesburg',
@@ -199,7 +193,7 @@ No selection
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
 import { Array, Match as M, Option } from 'effect'
-import { Command } from 'foldkit'
+import { Update } from 'foldkit'
 import { type HtmlBuilder, childAttributes } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -236,45 +230,45 @@ const GotComboboxMultiMessage = m('GotComboboxMultiMessage', {
   message: Combobox.Message,
 })
 
-// Delegate keyboard navigation, typeahead, and open/close to
-// CitiesCombobox.update. Each \`Selected\` carries the activated item; the
-// parent owns the selection, so it toggles the value's membership.
-// \`ClearedSelection\` only fires for nullable comboboxes, so this combobox
-// keeps its selection there and the fold stays exhaustive:
-GotComboboxMultiMessage: ({ message }) => {
-  const [nextCombobox, commands, maybeOutMessage] = CitiesCombobox.update(
-    model.comboboxMulti,
-    message,
-  )
-  const mappedCommands = Command.mapMessages(commands, message =>
-    GotComboboxMultiMessage({ message }),
-  )
+// At module scope, fold the OutMessage into your own Model. Each \`Selected\`
+// carries the activated item; the parent owns the selection, so it toggles
+// the value's membership. \`ClearedSelection\` only fires for nullable
+// comboboxes, so this combobox keeps its selection there and the fold stays
+// exhaustive. Each arm returns an Update.Step over the parent Model, which
+// already has the next Combobox Model written back:
+const foldComboboxMultiOutMessage = M.type<Combobox.OutMessage<City>>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    Selected:
+      ({ value }) =>
+      model => [
+        evo(model, {
+          selectedCities: () =>
+            Array.contains(model.selectedCities, value)
+              ? Array.filter(model.selectedCities, city => city !== value)
+              : Array.append(model.selectedCities, value),
+        }),
+        [],
+      ],
+    ClearedSelection: () => model => [model, []],
+  }),
+)
 
-  return Option.match(maybeOutMessage, {
-    onNone: () => [
-      evo(model, { comboboxMulti: () => nextCombobox }),
-      mappedCommands,
-    ],
-    onSome: M.type<Combobox.OutMessage<City>>().pipe(
-      M.tagsExhaustive({
-        Selected: ({ value }) => [
-          evo(model, {
-            comboboxMulti: () => nextCombobox,
-            selectedCities: () =>
-              Array.contains(model.selectedCities, value)
-                ? Array.filter(model.selectedCities, city => city !== value)
-                : Array.append(model.selectedCities, value),
-          }),
-          mappedCommands,
-        ],
-        ClearedSelection: () => [
-          evo(model, { comboboxMulti: () => nextCombobox }),
-          mappedCommands,
-        ],
-      }),
-    ),
-  })
-}
+// Update.foldChild wires the child into the parent: it delegates keyboard
+// navigation, typeahead, and open/close to CitiesCombobox.update, writes the
+// next Combobox Model back, maps the Submodel's Commands into your Message
+// type, and hands any OutMessage to foldOutMessage.
+const foldComboboxMulti = Update.foldChild({
+  update: CitiesCombobox.update,
+  read: (model: Model) => Option.some(model.comboboxMulti),
+  write: (model, nextComboboxMulti) =>
+    evo(model, { comboboxMulti: () => nextComboboxMulti }),
+  toParentMessage: message => GotComboboxMultiMessage({ message }),
+  foldOutMessage: foldComboboxMultiOutMessage,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), call the fold:
+GotComboboxMultiMessage: ({ message }) => foldComboboxMulti(model, message)
 
 const cities: ReadonlyArray<City> = [
   'Johannesburg',
@@ -423,9 +417,9 @@ Configuration object passed to `CityCombobox.view`.
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler. The same shape applies to the update returned by `Combobox.Multi.create()`, as in `CitiesCombobox.update`.
+Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config. The same shape applies to the update returned by `Combobox.Multi.create()`, as in `CitiesCombobox.update`.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `Selected` | `{ value: Item }` | — | Emitted when an item is activated. Carries the neutral fact that the item was activated; the parent owns the selection and decides what it means. Single-select stores the value; multi-select toggles the value in and out of its array. Pattern-match the third tuple element of CityCombobox.update in your GotComboboxMessage handler to fold the value into the selection you own. |
+| `Selected` | `{ value: Item }` | — | Emitted when an item is activated. Carries the neutral fact that the item was activated; the parent owns the selection and decides what it means. Single-select stores the value; multi-select toggles the value in and out of its array. Fold it in the `foldOutMessage` of your Combobox fold to lift the value into the selection you own. |
 | `ClearedSelection` | `{}` | — | Emitted when a nullable combobox closes with an empty input, meaning the user cleared it. The parent clears the selection it owns. |

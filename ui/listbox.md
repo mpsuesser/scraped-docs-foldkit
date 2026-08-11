@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/listbox
 title: "Listbox"
 description: "Accessible list selection with single and multi-select modes."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-11T02:16:28.996Z
+current_date: 2026-08-11T02:16:28.996Z
 ---
 
 ## Listbox
@@ -33,7 +33,7 @@ Pass an `itemToConfig` callback that maps each item to its content. The context 
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
 import { Match as M, Option } from 'effect'
-import { Command } from 'foldkit'
+import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -72,34 +72,33 @@ const GotListboxMessage = m('GotListboxMessage', {
   message: Listbox.Message,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), delegate keyboard
-// navigation, typeahead, and open/close to PlanListbox.update. The
-// third tuple element is \`Option<OutMessage>\`; when the user commits a
-// selection it carries \`Selected({ value })\` where \`value: Plan\`:
-GotListboxMessage: ({ message }) => {
-  const [nextListbox, commands, maybeOutMessage] = PlanListbox.update(
-    model.listbox,
-    message,
-  )
-  const mappedCommands = Command.mapMessages(commands, message =>
-    GotListboxMessage({ message }),
-  )
+// At module scope, fold the OutMessage into your own Model. When the user
+// commits a selection it carries \`Selected({ value })\` where \`value: Plan\`.
+// The arm returns an Update.Step over the parent Model, which already has the
+// next Listbox Model written back:
+const foldListboxOutMessage = M.type<Listbox.OutMessage<Plan>>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    Selected:
+      ({ value }) =>
+      model => [evo(model, { maybePlan: () => Option.some(value) }), []],
+  }),
+)
 
-  return Option.match(maybeOutMessage, {
-    onNone: () => [evo(model, { listbox: () => nextListbox }), mappedCommands],
-    onSome: M.type<Listbox.OutMessage<Plan>>().pipe(
-      M.tagsExhaustive({
-        Selected: ({ value }) => [
-          evo(model, {
-            listbox: () => nextListbox,
-            maybePlan: () => Option.some(value),
-          }),
-          mappedCommands,
-        ],
-      }),
-    ),
-  })
-}
+// Update.foldChild wires the child into the parent: it delegates keyboard
+// navigation, typeahead, and open/close to PlanListbox.update, writes the next
+// Listbox Model back, maps the Submodel's Commands into your Message type, and
+// hands any OutMessage to foldOutMessage.
+const foldListbox = Update.foldChild({
+  update: PlanListbox.update,
+  read: (model: Model) => Option.some(model.listbox),
+  write: (model, nextListbox) => evo(model, { listbox: () => nextListbox }),
+  toParentMessage: message => GotListboxMessage({ message }),
+  foldOutMessage: foldListboxOutMessage,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), call the fold:
+GotListboxMessage: ({ message }) => foldListbox(model, message)
 
 const plans: ReadonlyArray<Plan> = ['Free', 'Pro', 'Enterprise']
 
@@ -157,7 +156,7 @@ Use `Listbox.Multi` for multi-selection. The dropdown stays open on selection an
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
 import { Array, Match as M, Option } from 'effect'
-import { Command } from 'foldkit'
+import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -194,40 +193,43 @@ const GotListboxMultiMessage = m('GotListboxMultiMessage', {
   message: Listbox.Message,
 })
 
-// Delegate keyboard navigation, typeahead, and open/close to
-// PeopleListbox.update. The OutMessage's \`Selected\` carries the activated
-// value. The parent owns the selection and decides what it means: for
-// multi-select, toggle the value in and out of its array:
-GotListboxMultiMessage: ({ message }) => {
-  const [nextListbox, commands, maybeOutMessage] = PeopleListbox.update(
-    model.listboxMulti,
-    message,
-  )
-  const mappedCommands = Command.mapMessages(commands, message =>
-    GotListboxMultiMessage({ message }),
-  )
+// At module scope, fold the OutMessage into your own Model. \`Selected\` carries
+// the activated value. The parent owns the selection and decides what it
+// means: for multi-select, toggle the value in and out of its array. The arm
+// returns an Update.Step over the parent Model, which already has the next
+// Listbox Model written back:
+const foldListboxMultiOutMessage = M.type<Listbox.OutMessage<Person>>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    Selected:
+      ({ value }) =>
+      model => [
+        evo(model, {
+          selectedPeople: () =>
+            Array.contains(model.selectedPeople, value)
+              ? Array.filter(model.selectedPeople, person => person !== value)
+              : Array.append(model.selectedPeople, value),
+        }),
+        [],
+      ],
+  }),
+)
 
-  return Option.match(maybeOutMessage, {
-    onNone: () => [
-      evo(model, { listboxMulti: () => nextListbox }),
-      mappedCommands,
-    ],
-    onSome: M.type<Listbox.OutMessage<Person>>().pipe(
-      M.tagsExhaustive({
-        Selected: ({ value }) => [
-          evo(model, {
-            listboxMulti: () => nextListbox,
-            selectedPeople: () =>
-              Array.contains(model.selectedPeople, value)
-                ? Array.filter(model.selectedPeople, person => person !== value)
-                : Array.append(model.selectedPeople, value),
-          }),
-          mappedCommands,
-        ],
-      }),
-    ),
-  })
-}
+// Update.foldChild wires the child into the parent: it delegates keyboard
+// navigation, typeahead, and open/close to PeopleListbox.update, writes the
+// next Listbox Model back, maps the Submodel's Commands into your Message
+// type, and hands any OutMessage to foldOutMessage.
+const foldListboxMulti = Update.foldChild({
+  update: PeopleListbox.update,
+  read: (model: Model) => Option.some(model.listboxMulti),
+  write: (model, nextListboxMulti) =>
+    evo(model, { listboxMulti: () => nextListboxMulti }),
+  toParentMessage: message => GotListboxMultiMessage({ message }),
+  foldOutMessage: foldListboxMultiOutMessage,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), call the fold:
+GotListboxMultiMessage: ({ message }) => foldListboxMulti(model, message)
 
 const people: ReadonlyArray<Person> = [
   'Michael Bluth',
@@ -282,7 +284,7 @@ Pass `itemGroupKey` to group contiguous items by key, and `groupToHeading` to re
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
 import { Match as M, Option } from 'effect'
-import { Command } from 'foldkit'
+import { Update } from 'foldkit'
 import { type HtmlBuilder, childAttributes } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -325,35 +327,33 @@ const GotListboxMessage = m('GotListboxMessage', {
   message: Listbox.Message,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), delegate
-// keyboard navigation, typeahead, and open/close to
-// CharacterListbox.update. On selection, the OutMessage's \`Selected\`
-// variant carries the chosen item's string value (the result of
-// \`itemToValue\`):
-GotListboxMessage: ({ message }) => {
-  const [nextListbox, commands, maybeOutMessage] = CharacterListbox.update(
-    model.listbox,
-    message,
-  )
-  const mappedCommands = Command.mapMessages(commands, message =>
-    GotListboxMessage({ message }),
-  )
+// At module scope, fold the OutMessage into your own Model. On selection, the
+// \`Selected\` variant carries the chosen item's string value (the result of
+// \`itemToValue\`). The arm returns an Update.Step over the parent Model, which
+// already has the next Listbox Model written back:
+const foldListboxOutMessage = M.type<Listbox.OutMessage>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    Selected:
+      ({ value }) =>
+      model => [evo(model, { maybeCharacter: () => Option.some(value) }), []],
+  }),
+)
 
-  return Option.match(maybeOutMessage, {
-    onNone: () => [evo(model, { listbox: () => nextListbox }), mappedCommands],
-    onSome: M.type<Listbox.OutMessage>().pipe(
-      M.tagsExhaustive({
-        Selected: ({ value }) => [
-          evo(model, {
-            listbox: () => nextListbox,
-            maybeCharacter: () => Option.some(value),
-          }),
-          mappedCommands,
-        ],
-      }),
-    ),
-  })
-}
+// Update.foldChild wires the child into the parent: it delegates keyboard
+// navigation, typeahead, and open/close to CharacterListbox.update, writes the
+// next Listbox Model back, maps the Submodel's Commands into your Message
+// type, and hands any OutMessage to foldOutMessage.
+const foldListbox = Update.foldChild({
+  update: CharacterListbox.update,
+  read: (model: Model) => Option.some(model.listbox),
+  write: (model, nextListbox) => evo(model, { listbox: () => nextListbox }),
+  toParentMessage: message => GotListboxMessage({ message }),
+  foldOutMessage: foldListboxOutMessage,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), call the fold:
+GotListboxMessage: ({ message }) => foldListbox(model, message)
 
 const characters: ReadonlyArray<Character> = [
   { firstName: 'Michael', lastName: 'Bluth' },
@@ -485,8 +485,8 @@ Configuration object passed to the view returned by `Listbox.create()`. The same
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler. The same shape applies to the update returned by `Listbox.Multi.create()`, as in `PeopleListbox.update`.
+Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config. The same shape applies to the update returned by `Listbox.Multi.create()`, as in `PeopleListbox.update`.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `Selected` | `{ value: Value }` | — | Emitted when an item is activated. Carries the neutral fact that the item was activated; the parent owns the selection and decides what it means. Single-select stores the value; multi-select toggles the value in and out of its array. Pattern-match the third tuple element of PlanListbox.update in your GotListboxMessage handler to fold the value into the selection you own. |
+| `Selected` | `{ value: Value }` | — | Emitted when an item is activated. Carries the neutral fact that the item was activated; the parent owns the selection and decides what it means. Single-select stores the value; multi-select toggles the value in and out of its array. Fold it in the `foldOutMessage` of your Listbox fold to lift the value into the selection you own. |

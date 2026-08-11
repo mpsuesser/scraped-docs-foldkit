@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/file-drop
 title: "File Drop"
 description: "Headless file drop zone that accepts drag-and-drop plus click-to-browse via a hidden native file input."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-11T02:16:28.996Z
+current_date: 2026-08-11T02:16:28.996Z
 ---
 
 ## FileDrop
@@ -12,7 +12,7 @@ current_date: 2026-08-03T19:45:20.723Z
 
 A file drop zone that accepts files via both drag-and-drop and a hidden `<input type="file">`. FileDrop is headless. The component owns drag state and file-arrival events; your `toView` callback owns the visual.
 
-FileDrop uses the Submodel pattern: initialize with `FileDrop.init()`, delegate in your parent update via `FileDrop.update()`, and render with `FileDrop.view()`. The update function returns `[Model, Commands, Option<OutMessage>]`. `ReceivedFiles` fires when files arrive with a guaranteed non-empty list; `RejectedNonFiles` fires when a drop or change event produced no files (e.g. a drag of non-file data). Pattern-match on both.
+FileDrop uses the Submodel pattern: initialize with `FileDrop.init()`, wire Messages through [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) in your parent update, and render with `FileDrop.view()`. The update function returns `[Model, Commands, Option<OutMessage>]`. `ReceivedFiles` fires when files arrive with a guaranteed non-empty list; `RejectedNonFiles` fires when a drop or change event produced no files (e.g. a drag of non-file data). Match both in the fold's `foldOutMessage`.
 
 See it in an app
 
@@ -27,7 +27,7 @@ A multi-file drop zone. Drag files on or click to browse. The component exposes 
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
 import { Effect, Match as M, Option } from 'effect'
-import { Command, File } from 'foldkit'
+import { File, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -56,35 +56,40 @@ const GotFileDropMessage = m('GotFileDropMessage', {
   message: FileDrop.Message,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), delegate to
-// FileDrop.update and pattern-match on the OutMessage it emits when files
-// arrive (via drop or input change):
-GotFileDropMessage: ({ message }) => {
-  const [nextUploader, commands, maybeOutMessage] = FileDrop.update(
-    model.uploader,
-    message,
-  )
+// At module scope, fold the OutMessage FileDrop emits when files arrive (via
+// drop or input change) into your own Model. Each arm returns an Update.Step
+// over the parent Model, which already has the next FileDrop Model written
+// back:
+const foldFileDropOutMessage = M.type<FileDrop.OutMessage>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    ReceivedFiles:
+      ({ files }) =>
+      model => [
+        evo(model, {
+          uploadedFiles: () => [...model.uploadedFiles, ...files],
+        }),
+        [],
+      ],
+    // Fires when something is dropped but no files came through (e.g.
+    // a drag of text or a URL). Ignore, or show a hint to the user.
+    RejectedNonFiles: () => model => [model, []],
+  }),
+)
 
-  const nextFiles = Option.match(maybeOutMessage, {
-    onNone: () => model.uploadedFiles,
-    onSome: M.type<FileDrop.OutMessage>().pipe(
-      M.tagsExhaustive({
-        ReceivedFiles: ({ files }) => [...model.uploadedFiles, ...files],
-        // Fires when something is dropped but no files came through (e.g.
-        // a drag of text or a URL). Ignore, or show a hint to the user.
-        RejectedNonFiles: () => model.uploadedFiles,
-      }),
-    ),
-  })
+// Update.foldChild wires the child into the parent: it runs FileDrop.update,
+// writes the next FileDrop Model back, maps the Submodel's Commands into your
+// Message type, and hands any OutMessage to foldOutMessage.
+const foldFileDrop = Update.foldChild({
+  update: FileDrop.update,
+  read: (model: Model) => Option.some(model.uploader),
+  write: (model, nextUploader) => evo(model, { uploader: () => nextUploader }),
+  toParentMessage: message => GotFileDropMessage({ message }),
+  foldOutMessage: foldFileDropOutMessage,
+})
 
-  return [
-    evo(model, {
-      uploader: () => nextUploader,
-      uploadedFiles: () => nextFiles,
-    }),
-    Command.mapMessages(commands, message => GotFileDropMessage({ message })),
-  ]
-}
+// Inside your update function's M.tagsExhaustive({...}), call the fold:
+GotFileDropMessage: ({ message }) => foldFileDrop(model, message)
 
 // Render the drop zone. The \`toView\` callback receives attribute groups.
 // Spread \`root\` onto a <label> so clicking opens the picker, and spread
@@ -164,9 +169,9 @@ Attribute groups provided to the `toView` callback.
 
 ### OutMessage
 
-The third element of the update tuple (`[Model, Commands, Option<OutMessage>]`). Pattern-match in your parent update handler to process arriving files.
+The third element of the update tuple (`[Model, Commands, Option<OutMessage>]`). Fold it in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config to process arriving files.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `ReceivedFiles` | `{ files: NonEmptyReadonlyArray<File> }` | — | Emitted when the user drops files on the zone or selects them via the hidden input. The files list is guaranteed non-empty. Pattern-match on the OutMessage in your parent update to process the files (validate, upload, store in Model). |
+| `ReceivedFiles` | `{ files: NonEmptyReadonlyArray<File> }` | — | Emitted when the user drops files on the zone or selects them via the hidden input. The files list is guaranteed non-empty. Fold it in the `foldOutMessage` of your FileDrop fold to process the files (validate, upload, store in Model). |
 | `RejectedNonFiles` | `{}` | — | Emitted when a drop or input-change event fires without any files, typically a drag of non-file data (text, URLs, images from another page). Consumers can ignore this or surface a hint to the user. |

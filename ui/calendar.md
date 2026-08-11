@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/calendar
 title: "Calendar"
 description: "Accessible inline calendar grid with 2D keyboard navigation, locale-aware headers, and min/max/disabled-date constraints."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-11T02:16:28.996Z
+current_date: 2026-08-11T02:16:28.996Z
 ---
 
 ## Calendar
@@ -14,7 +14,7 @@ An accessible inline calendar grid built to the WAI-ARIA grid pattern. Calendar 
 
 The calendar heading is a button: clicking it switches the day grid into a 3×4 months grid. Clicking the year heading from there switches into a paged 3×4 years grid (prev/next page through 12-year windows). Selecting a year drills back to the months grid for that year; selecting a month drills back to the days grid for that month.
 
-Calendar uses the Submodel pattern: initialize with `Calendar.init()`, store the Model in your parent, delegate Messages via `Calendar.update()`, and render with `Calendar.view()`. The update function returns `[Model, Commands, Option<OutMessage>]`. The parent owns the selected date: store it in your Model, pass it back as `maybeSelectedDate`, and fold the `SelectedDate` OutMessage into that field. The OutMessage lets the parent handle meaningful events, for example date selection or month changes.
+Calendar uses the Submodel pattern: initialize with `Calendar.init()`, store the Model in your parent, wire Messages through [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child), and render with `Calendar.view()`. The update function returns `[Model, Commands, Option<OutMessage>]`. The parent owns the selected date: store it in your Model, pass it back as `maybeSelectedDate`, and fold the `SelectedDate` OutMessage into that field. The OutMessage lets the parent handle meaningful events, for example date selection or month changes.
 
 See it in an app
 
@@ -43,7 +43,7 @@ Sat
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
 import { Effect, Match as M, Option } from 'effect'
-import { Calendar, Command } from 'foldkit'
+import { Calendar, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -92,53 +92,43 @@ const GotCalendarMessage = m('GotCalendarMessage', {
   message: UiCalendar.Message,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), delegate
-// navigation, focus, and picker-mode transitions to UiCalendar.update.
-// Its third tuple element is \`Option<OutMessage>\`. When the user
+// At module scope, fold the OutMessage into your own Model. When the user
 // commits a date (click, Enter, or Space) it carries \`SelectedDate({ date })\`.
-// \`ChangedViewMonth\` fires when navigation shifts the visible month
-// without selecting a date.
-GotCalendarMessage: ({ message }) => {
-  const [nextCalendar, commands, maybeOutMessage] = UiCalendar.update(
-    model.calendarDemo,
-    message,
-  )
-  const mappedCommands = Command.mapMessages(commands, message =>
-    GotCalendarMessage({ message }),
-  )
+// \`ChangedViewMonth\` fires when navigation shifts the visible month without
+// selecting a date. Each arm returns an Update.Step over the parent Model,
+// which already has the next Calendar Model written back:
+const foldCalendarOutMessage = M.type<UiCalendar.OutMessage>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    // The child has emitted \`SelectedDate\`. This is where the parent lifts
+    // the committed date into its own field. That field is then passed back
+    // to the calendar as \`maybeSelectedDate\`, so the parent stays the single
+    // source of truth for the selection.
+    SelectedDate:
+      ({ date }) =>
+      model => [evo(model, { maybeSelectedDate: () => Option.some(date) }), []],
+    // The child has emitted \`ChangedViewMonth\`. In this arm the parent can
+    // update its own state or dispatch its own Commands, for example
+    // prefetch month data, fire analytics, or trigger a downstream Command.
+    ChangedViewMonth: () => model => [model, []],
+  }),
+)
 
-  return Option.match(maybeOutMessage, {
-    onNone: () => [
-      evo(model, { calendarDemo: () => nextCalendar }),
-      mappedCommands,
-    ],
-    onSome: M.type<UiCalendar.OutMessage>().pipe(
-      M.tagsExhaustive({
-        SelectedDate: ({ date }) => [
-          // The child has emitted \`SelectedDate\`. The body commits
-          // the child's next state as usual. This is where the parent
-          // lifts the committed date into its own field. That field is
-          // then passed back to the calendar as \`maybeSelectedDate\`, so
-          // the parent stays the single source of truth for the selection.
-          evo(model, {
-            calendarDemo: () => nextCalendar,
-            maybeSelectedDate: () => Option.some(date),
-          }),
-          mappedCommands,
-        ],
-        ChangedViewMonth: () => [
-          // The child has emitted \`ChangedViewMonth\`. The body commits
-          // the child's next state as usual. In this arm the parent
-          // can also update its own state or dispatch its own
-          // Commands, for example prefetch month data, fire analytics,
-          // or trigger a downstream Command.
-          evo(model, { calendarDemo: () => nextCalendar }),
-          mappedCommands,
-        ],
-      }),
-    ),
-  })
-}
+// Update.foldChild wires the child into the parent: it delegates navigation,
+// focus, and picker-mode transitions to UiCalendar.update, writes the next
+// Calendar Model back, maps the Submodel's Commands into your Message type,
+// and hands any OutMessage to foldOutMessage.
+const foldCalendar = Update.foldChild({
+  update: UiCalendar.update,
+  read: (model: Model) => Option.some(model.calendarDemo),
+  write: (model, nextCalendarDemo) =>
+    evo(model, { calendarDemo: () => nextCalendarDemo }),
+  toParentMessage: message => GotCalendarMessage({ message }),
+  foldOutMessage: foldCalendarOutMessage,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), call the fold:
+GotCalendarMessage: ({ message }) => foldCalendar(model, message)
 
 // Inside your view function, render the calendar. The \`toView\` callback
 // receives a discriminated \`CalendarAttributes\` whose variant matches the
@@ -455,11 +445,11 @@ Attribute groups and derived data provided to the `toView` callback.
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Parents pattern-match on the OutMessage in their own update handler.
+Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Parents fold the OutMessage in the `foldOutMessage` of their [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `SelectedDate` | `{ date: CalendarDate }` | — | Emitted when the user commits a date (click / Enter / Space). Pattern-match the third tuple element of Calendar.update in your GotCalendarMessage handler to lift the date into domain state. |
+| `SelectedDate` | `{ date: CalendarDate }` | — | Emitted when the user commits a date (click / Enter / Space). Fold it in the `foldOutMessage` of your Calendar fold to lift the date into domain state. |
 | `ChangedViewMonth` | `{ year: number; month: number }` | — | Emitted when navigation changes the visible month (prev/next buttons, heading-drill selection of a different month, arrow keys crossing a month boundary, or a commit that crosses a month). Useful for inline-calendar consumers loading month-scoped data like holidays or availability. |
 
 ### Programmatic Helpers

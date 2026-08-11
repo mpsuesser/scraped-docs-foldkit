@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/animation
 title: "Animation"
 description: "Coordinates CSS enter/leave animations via a state machine and data attributes. Works with both CSS transitions and keyframe animations."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-11T02:16:28.996Z
+current_date: 2026-08-11T02:16:28.996Z
 ---
 
 ## Animation
@@ -12,7 +12,7 @@ current_date: 2026-08-03T19:45:20.723Z
 
 Animation is a CSS animation lifecycle coordinator that manages enter/leave phases via a state machine and data attributes. If you're coming from imperative animation libraries (for example GSAP, Framer Motion, or `element.animate()`), it will feel inverted: those libraries let you say "do this now" and give you a callback when it's done, while Foldkit is declarative. You dispatch Messages describing what happened, Animation turns the lifecycle into a sequence of more Messages, and your update function reacts at each step. The payoff is that every animation state transition is in your Model, observable in DevTools, testable without a DOM, and can't run outside your update loop.
 
-Concretely, Animation uses the [OutMessage](https://foldkit.dev/core/submodel#surfacing-facts) pattern: your update function handles `StartedLeaveAnimating` (to provide settlement detection) and `TransitionedOut` (to unmount content). It's used internally by Dialog, Menu, Popover, Listbox, and Combobox when `isAnimated` is true, and works with both CSS transitions and CSS keyframe animations.
+Concretely, Animation uses the [OutMessage](https://foldkit.dev/core/submodel#surfacing-facts) pattern: the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config handles `StartedLeaveAnimating` (to provide settlement detection) and `TransitionedOut` (to unmount content). It's used internally by Dialog, Menu, Popover, Listbox, and Combobox when `isAnimated` is true, and works with both CSS transitions and CSS keyframe animations.
 
 ## Why Does This Exist?
 
@@ -39,7 +39,7 @@ Send `Animation.Showed()` to start the enter animation and `Animation.Hid()` to 
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
 import { Effect, Match as M, Option } from 'effect'
-import { Command } from 'foldkit'
+import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -67,58 +67,58 @@ const GotAnimationMessage = m('GotAnimationMessage', {
   message: Animation.Message,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), delegate to
-// Animation.update. It returns the next Animation Model, any Commands
-// to forward, and an optional OutMessage. The OutMessage signals lifecycle
-// events Animation can't handle on its own. Most importantly, it tells you
-// when a leave animation has started so you can provide the Command that
-// listens for animation settlement:
-GotAnimationMessage: ({ message }) => {
-  const [nextAnimation, commands, maybeOutMessage] = Animation.update(
-    model.animation,
-    message,
+// At module scope, fold the OutMessage into your own Model. It signals
+// lifecycle events Animation can't handle on its own. Most importantly, it
+// tells you when a leave animation has started so you can provide the Command
+// that listens for animation settlement. That Command's result is an Animation
+// Message, so take the fold context's \`liftCommand\` and wrap it with the same
+// lift the fold gives the Submodel's own Commands. Each arm returns an
+// Update.Step over the parent Model, which already has the next Animation
+// Model written back:
+const foldAnimationOutMessage: (
+  outMessage: Animation.OutMessage,
+  context: Update.FoldContext<Animation.Message, Message>,
+) => Update.Step<Model, Message> = (outMessage, { liftCommand }) =>
+  M.value(outMessage).pipe(
+    M.withReturnType<Update.Step<Model, Message>>(),
+    M.tagsExhaustive({
+      // Animation handles enter completion internally but hands leave
+      // settlement detection to you here, because the strategy varies
+      // by consumer. For example, Foldkit's Dialog just waits for CSS,
+      // while its Popover races CSS against the anchor button scrolling
+      // off-screen. defaultLeaveCommand is the default strategy: it
+      // waits for every CSS transition and keyframe animation on the
+      // element to settle, then dispatches EndedAnimation back into
+      // Animation.update. Use it unless you need a custom strategy.
+      StartedLeaveAnimating: () => model => [
+        model,
+        [liftCommand(Animation.defaultLeaveCommand(model.animation))],
+      ],
+      // TransitionedOut is Animation's signal that the leave has fully
+      // settled (your leave Command's EndedAnimation message has been
+      // processed). Return Commands for any post-animation work, for
+      // example: close a native dialog, remove an entry from a list,
+      // release a resource. No Commands here because animateSize keeps the
+      // element mounted (collapsed to zero height) so there's nothing to
+      // tear down.
+      TransitionedOut: () => model => [model, []],
+    }),
   )
 
-  // Forward the Submodel's Commands through your parent Message:
-  const mappedCommands = Command.mapMessages(commands, message =>
-    GotAnimationMessage({ message }),
-  )
-
-  const lifecycleCommands = Option.match(maybeOutMessage, {
-    onNone: () => [],
-    onSome: outMessage =>
-      M.value(outMessage).pipe(
-        M.tagsExhaustive({
-          // Animation handles enter completion internally but hands leave
-          // settlement detection to you here, because the strategy varies
-          // by consumer. For example, Foldkit's Dialog just waits for CSS,
-          // while its Popover races CSS against the anchor button scrolling
-          // off-screen. defaultLeaveCommand is the default strategy: it
-          // waits for every CSS transition and keyframe animation on the
-          // element to settle, then dispatches EndedAnimation back into
-          // Animation.update. Use it unless you need a custom strategy.
-          StartedLeaveAnimating: () => [
-            Command.mapMessage(
-              Animation.defaultLeaveCommand(nextAnimation),
-              message => GotAnimationMessage({ message }),
-            ),
-          ],
-          // TransitionedOut is Animation's signal that the leave has fully
-          // settled (your leave Command's EndedAnimation message has been
-          // processed). Return Commands for any post-animation work: close
-          // a native dialog, remove an entry from a list, release a resource,
-          // etc. Empty here because animateSize keeps the element mounted
-          // (collapsed to zero height) so there's nothing to tear down.
-          TransitionedOut: () => [],
-        }),
-      ),
-  })
-
-  return [
+// Update.foldChild wires the child into the parent: it runs Animation.update,
+// writes the next Animation Model back, maps the Submodel's Commands into your
+// Message type, and hands any OutMessage to foldOutMessage.
+const foldAnimation = Update.foldChild({
+  update: Animation.update,
+  read: (model: Model) => Option.some(model.animation),
+  write: (model, nextAnimation) =>
     evo(model, { animation: () => nextAnimation }),
-    [...mappedCommands, ...lifecycleCommands],
-  ]
-}
+  toParentMessage: message => GotAnimationMessage({ message }),
+  foldOutMessage: foldAnimationOutMessage,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), call the fold:
+GotAnimationMessage: ({ message }) => foldAnimation(model, message)
 
 // Inside your view function, toggle visibility by dispatching Animation.Showed()
 // or Hid() wrapped in your parent Message. model.animation.isShowing is your
@@ -246,9 +246,9 @@ Configuration object passed to `Animation.view()`.
 
 ### OutMessages
 
-OutMessages emitted from `Animation.update()`. Handle these in your parent update function.
+OutMessages emitted from `Animation.update()`. Fold these in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `StartedLeaveAnimating` | `OutMessage` | — | Emitted when the leave animation begins. Your update function should provide Animation.defaultLeaveCommand(model) to detect animation settlement. |
+| `StartedLeaveAnimating` | `OutMessage` | — | Emitted when the leave animation begins. Return Animation.defaultLeaveCommand(model) from the fold, lifted with the fold context's liftCommand, to detect animation settlement. |
 | `TransitionedOut` | `OutMessage` | — | Emitted when the leave animation finishes. Use this to unmount content or update your Model. |

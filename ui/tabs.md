@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/tabs
 title: "Tabs"
 description: "Accessible tabbed interface with keyboard navigation."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-11T02:16:28.996Z
+current_date: 2026-08-11T02:16:28.996Z
 ---
 
 ## Tabs
@@ -35,7 +35,7 @@ Declare the tabs component once at module scope with `Tabs.create<Value>()` to l
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
 import { Match as M, Option } from 'effect'
-import { Command } from 'foldkit'
+import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -83,39 +83,38 @@ const descriptions: Record<Framework, string> = {
   Elm: 'The original MVU architecture.',
 }
 
-// Inside your update function's M.tagsExhaustive({...}), delegate to
-// FrameworkTabs.update. The OutMessage's \`Selected\` carries the chosen
-// value (typed as \`Framework\`) and its index. Fold the value into your
-// own Model so it flows back in as selectedValue.
-GotTabsMessage: ({ message }) => {
-  const [nextTabs, commands, maybeOutMessage] = FrameworkTabs.update(
-    model.tabs,
-    message,
-  )
-  const mappedCommands = Command.mapMessages(commands, message =>
-    GotTabsMessage({ message }),
-  )
+// At module scope, fold the OutMessage into your own Model. \`Selected\`
+// carries the chosen value (typed as \`Framework\`) and its index. Fold the
+// value into your own Model so it flows back in as selectedValue. The arm
+// returns an Update.Step over the parent Model, which already has the next
+// Tabs Model written back:
+const foldTabsOutMessage = M.type<Tabs.OutMessage<Framework>>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    // The child has emitted \`Selected\`. Store the selected value as the new
+    // active tab. In this arm the parent can also update its own state or
+    // dispatch Commands, for example route to a new URL, persist the
+    // selection, or trigger a panel content fetch.
+    Selected:
+      ({ value }) =>
+      model => [evo(model, { activeFramework: () => value }), []],
+  }),
+)
 
-  return Option.match(maybeOutMessage, {
-    onNone: () => [evo(model, { tabs: () => nextTabs }), mappedCommands],
-    onSome: M.type<Tabs.OutMessage<Framework>>().pipe(
-      M.tagsExhaustive({
-        Selected: ({ value }) => [
-          // The child has emitted \`Selected\`. Commit the child's next
-          // interaction state and store the selected value as the new
-          // active tab. In this arm the parent can also update its own
-          // state or dispatch Commands, for example route to a new URL,
-          // persist the selection, or trigger a panel content fetch.
-          evo(model, {
-            tabs: () => nextTabs,
-            activeFramework: () => value,
-          }),
-          mappedCommands,
-        ],
-      }),
-    ),
-  })
-}
+// Update.foldChild wires the child into the parent: it runs
+// FrameworkTabs.update, writes the next Tabs Model back, maps the Submodel's
+// Commands into your Message type, and hands any OutMessage to
+// foldOutMessage.
+const foldTabs = Update.foldChild({
+  update: FrameworkTabs.update,
+  read: (model: Model) => Option.some(model.tabs),
+  write: (model, nextTabs) => evo(model, { tabs: () => nextTabs }),
+  toParentMessage: message => GotTabsMessage({ message }),
+  foldOutMessage: foldTabsOutMessage,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), call the fold:
+GotTabsMessage: ({ message }) => foldTabs(model, message)
 
 // Inside your view function, embed the tabs via h.submodel and pass the
 // parent-owned active tab as selectedValue:
@@ -312,8 +311,8 @@ Each entry in `RenderInfo.tabs`. Carries the value, derived state flags, and att
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler.
+Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `Selected` | `{ value: Value; index: number }` | — | Emitted when a tab is committed via click or keyboard. Carries both the tab’s value (typed as your `Value` union via `Tabs.create<Value>()`) and its index. Pattern-match the third tuple element of `Tabs.update` in your `GotTabsMessage` handler. |
+| `Selected` | `{ value: Value; index: number }` | — | Emitted when a tab is committed via click or keyboard. Carries both the tab’s value (typed as your `Value` union via `Tabs.create<Value>()`) and its index. Fold it in the `foldOutMessage` of your Tabs fold. |

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/drag-and-drop
 title: "Drag and Drop"
 description: "Accessible drag and drop with keyboard support, auto-scrolling, and screen reader announcements."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-11T02:16:28.996Z
+current_date: 2026-08-11T02:16:28.996Z
 ---
 
 ## Drag and Drop
@@ -14,7 +14,7 @@ Sortable lists and cross-container movement with pointer tracking, keyboard navi
 
 DragAndDrop is different from other Foldkit UI components in two ways. First, it doesn’t have a `view()` function. Instead, you spread `draggable()` and `droppable()` attributes onto your own elements. Second, its update function returns a three-tuple: `[Model, Commands, Option<OutMessage>]`. You handle `Reordered` and `Cancelled` OutMessages to decide how to reorder your data.
 
-Integration requires four pieces: a `DragAndDrop.Model` field in your Model, update delegation with OutMessage handling, `DragAndDrop.subscriptions` for document-level pointer and keyboard listeners, and `draggable()` / `droppable()` attributes in your view.
+Integration requires four pieces: a `DragAndDrop.Model` field in your Model, an [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) fold with a `foldOutMessage`, `DragAndDrop.subscriptions` for document-level pointer and keyboard listeners, and `draggable()` / `droppable()` attributes in your view.
 
 See it in an app
 
@@ -35,7 +35,7 @@ Done
 // block below is an excerpt. Fit each into your own Model, init, Message,
 // update, subscriptions, and view definitions.
 import { Effect, Match as M, Option } from 'effect'
-import { Command, Subscription } from 'foldkit'
+import { Subscription, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -68,53 +68,44 @@ const GotDragAndDropMessage = m('GotDragAndDropMessage', {
   message: DragAndDrop.Message,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), DragAndDrop.update
-// returns a three-tuple: [model, commands, maybeOutMessage]. Handle the
-// Reordered OutMessage to apply the move to your own list:
-GotDragAndDropMessage: ({ message: dragMessage }) => {
-  const [nextDragAndDrop, dragCommands, maybeOutMessage] = DragAndDrop.update(
-    model.dragAndDrop,
-    dragMessage,
-  )
-
-  const mappedCommands = Command.mapMessages(dragCommands, message =>
-    GotDragAndDropMessage({ message }),
-  )
-
-  return Option.match(maybeOutMessage, {
-    onNone: () => [
-      // Merge the next state into your Model:
-      evo(model, { dragAndDrop: () => nextDragAndDrop }),
-      // Forward the Submodel's Commands through your parent Message:
-      mappedCommands,
-    ],
-    onSome: outMessage =>
-      M.value(outMessage).pipe(
-        M.tagsExhaustive({
-          Reordered: ({ itemId, fromIndex, toIndex }) => [
-            // Merge the next state into your Model:
-            evo(model, {
-              // reorder is your own function that moves the item
-              items: () => reorder(model.items, itemId, fromIndex, toIndex),
-              dragAndDrop: () => nextDragAndDrop,
-            }),
-            // Forward the Submodel's Commands through your parent Message:
-            mappedCommands,
-          ],
-          Cancelled: () => [
-            // The child has emitted \`Cancelled\`. The body commits
-            // the child's next state as usual. In this arm the
-            // parent can also update its own state or dispatch its
-            // own Commands, for example revert an optimistic UI
-            // change, log analytics, or trigger a downstream
-            // Command.
-            evo(model, { dragAndDrop: () => nextDragAndDrop }),
-            mappedCommands,
-          ],
+// At module scope, fold the OutMessage into your own Model. \`Reordered\`
+// carries the move so you can apply it to your own list. Each arm returns an
+// Update.Step over the parent Model, which already has the next DragAndDrop
+// Model written back:
+const foldDragAndDropOutMessage = M.type<DragAndDrop.OutMessage>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    Reordered:
+      ({ itemId, fromIndex, toIndex }) =>
+      model => [
+        evo(model, {
+          // reorder is your own function that moves the item
+          items: () => reorder(model.items, itemId, fromIndex, toIndex),
         }),
-      ),
-  })
-}
+        [],
+      ],
+    // The child has emitted \`Cancelled\`. In this arm the parent can update
+    // its own state or dispatch its own Commands, for example revert an
+    // optimistic UI change, log analytics, or trigger a downstream Command.
+    Cancelled: () => model => [model, []],
+  }),
+)
+
+// Update.foldChild wires the child into the parent: it runs
+// DragAndDrop.update, writes the next DragAndDrop Model back, maps the
+// Submodel's Commands into your Message type, and hands any OutMessage to
+// foldOutMessage.
+const foldDragAndDrop = Update.foldChild({
+  update: DragAndDrop.update,
+  read: (model: Model) => Option.some(model.dragAndDrop),
+  write: (model, nextDragAndDrop) =>
+    evo(model, { dragAndDrop: () => nextDragAndDrop }),
+  toParentMessage: message => GotDragAndDropMessage({ message }),
+  foldOutMessage: foldDragAndDropOutMessage,
+})
+
+// Inside your update function's M.tagsExhaustive({...}), call the fold:
+GotDragAndDropMessage: ({ message }) => foldDragAndDrop(model, message)
 
 // In your subscriptions, lift all four document-level listeners through
 // Subscription.lift in one shot:
@@ -217,9 +208,9 @@ Functions for attaching drag-and-drop behavior to your elements and reading drag
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler.
+Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `Reordered` | `{ itemId, fromContainerId, fromIndex, toContainerId, toIndex }` | — | Emitted when a drag completes with a valid drop target. The parent uses this to commit the reorder against its own data (move the item in the source array, splice it into the destination). Pattern-match the third tuple element of DragAndDrop.update in your GotDragAndDropMessage handler. |
+| `Reordered` | `{ itemId, fromContainerId, fromIndex, toContainerId, toIndex }` | — | Emitted when a drag completes with a valid drop target. The parent uses this to commit the reorder against its own data (move the item in the source array, splice it into the destination). Fold it in the `foldOutMessage` of your DragAndDrop fold. |
 | `Cancelled` | `{}` | — | Emitted when a drag is cancelled via Escape or a pointer release without a valid drop target. No reorder should be applied. |
