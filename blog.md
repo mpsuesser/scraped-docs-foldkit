@@ -2,25 +2,25 @@
 url: https://foldkit.dev/blog
 title: "Blog"
 description: "Announcements, musings, and technical deep dives."
-access_date: 2026-08-12T14:56:45.492Z
-current_date: 2026-08-12T14:56:45.492Z
+access_date: 2026-08-12T19:19:57.990Z
+current_date: 2026-08-12T19:19:57.990Z
 ---
 
 # Blog
 
 Announcements, musings, and technical deep dives.
 
-August 11, 2026 · Devin Jameson
+[Dispatch 1](https://foldkit.dev/blog/dispatch-1)
 
-## [Dispatch 1](https://foldkit.dev/blog/dispatch-1)
+August 11, 2026 · Devin Jameson
 
 APS-4 is on the fritz again.
 
 [Read more →](https://foldkit.dev/blog/dispatch-1)
 
-August 1, 2026 · Devin Jameson
+[Foldkit Has a Blog Now](https://foldkit.dev/blog/introducing-the-foldkit-blog)
 
-## [Foldkit Has a Blog Now](https://foldkit.dev/blog/introducing-the-foldkit-blog)
+August 1, 2026 · Devin Jameson
 
 The Foldkit blog now exists.
 

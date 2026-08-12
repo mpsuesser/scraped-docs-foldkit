@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/dispatch-1
 title: "Dispatch 1"
 description: "APS-4 is on the fritz again."
-access_date: 2026-08-12T14:56:45.492Z
-current_date: 2026-08-12T14:56:45.492Z
+access_date: 2026-08-12T19:19:57.990Z
+current_date: 2026-08-12T19:19:57.990Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
@@ -24,7 +24,9 @@ I’ve done the math. My job is _oversight_. Manual manipulation results in glut
 
 Besides, I don’t pine for the good old days.
 
-APS-4 does what I want. It does what I _don’t know I want_.
+APS-4 does the wrong thing sometimes. It doesn’t matter.
+
+Mostly, it does what I want. It does what I _don’t know I want_.
 
 Every outage I realize how little I ever knew.
 
