@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-disclosure
 title: "Ui/Disclosure"
 description: "API documentation for the Ui/Disclosure module."
-access_date: 2026-08-12T19:19:57.990Z
-current_date: 2026-08-12T19:19:57.990Z
+access_date: 2026-08-12T19:46:46.957Z
+current_date: 2026-08-12T19:46:46.957Z
 ---
 
 # Ui/Disclosure
@@ -14,7 +14,7 @@ current_date: 2026-08-12T19:19:57.990Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/d5993a873d2a0aadaae590b207b001a71fc3fd1c/packages/ui/src/disclosure/index.ts#L10)
+[source](https://github.com/foldkit/foldkit/blob/2a1eaaa0ea08238425afe8d0c55fd5700b4d4a67/packages/ui/src/disclosure/index.ts#L10)
 
 ```
 /**
@@ -30,7 +30,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/d5993a873d2a0aadaae590b207b001a71fc3fd1c/packages/ui/src/disclosure/index.ts#L83)
+[source](https://github.com/foldkit/foldkit/blob/2a1eaaa0ea08238425afe8d0c55fd5700b4d4a67/packages/ui/src/disclosure/index.ts#L83)
 
 ```
 /**
@@ -71,7 +71,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d5993a873d2a0aadaae590b207b001a71fc3fd1c/packages/ui/src/disclosure/index.ts#L26)
+[source](https://github.com/foldkit/foldkit/blob/2a1eaaa0ea08238425afe8d0c55fd5700b4d4a67/packages/ui/src/disclosure/index.ts#L26)
 
 ```
 /**
@@ -97,7 +97,7 @@ type DisclosureAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d5993a873d2a0aadaae590b207b001a71fc3fd1c/packages/ui/src/disclosure/index.ts#L49)
+[source](https://github.com/foldkit/foldkit/blob/2a1eaaa0ea08238425afe8d0c55fd5700b4d4a67/packages/ui/src/disclosure/index.ts#L49)
 
 ```
 /**

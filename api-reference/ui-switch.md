@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-switch
 title: "Ui/Switch"
 description: "API documentation for the Ui/Switch module."
-access_date: 2026-08-12T19:19:57.990Z
-current_date: 2026-08-12T19:19:57.990Z
+access_date: 2026-08-12T19:46:46.957Z
+current_date: 2026-08-12T19:46:46.957Z
 ---
 
 # Ui/Switch
@@ -14,7 +14,7 @@ current_date: 2026-08-12T19:19:57.990Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/d5993a873d2a0aadaae590b207b001a71fc3fd1c/packages/ui/src/switch/index.ts#L57)
+[source](https://github.com/foldkit/foldkit/blob/2a1eaaa0ea08238425afe8d0c55fd5700b4d4a67/packages/ui/src/switch/index.ts#L57)
 
 ```
 /** Returns the description element id, derived from the switch's base id. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/d5993a873d2a0aadaae590b207b001a71fc3fd1c/packages/ui/src/switch/index.ts#L54)
+[source](https://github.com/foldkit/foldkit/blob/2a1eaaa0ea08238425afe8d0c55fd5700b4d4a67/packages/ui/src/switch/index.ts#L54)
 
 ```
 /** Returns the label element id, derived from the switch's base id. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/d5993a873d2a0aadaae590b207b001a71fc3fd1c/packages/ui/src/switch/index.ts#L81)
+[source](https://github.com/foldkit/foldkit/blob/2a1eaaa0ea08238425afe8d0c55fd5700b4d4a67/packages/ui/src/switch/index.ts#L81)
 
 ```
 /**
@@ -75,7 +75,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d5993a873d2a0aadaae590b207b001a71fc3fd1c/packages/ui/src/switch/index.ts#L17)
+[source](https://github.com/foldkit/foldkit/blob/2a1eaaa0ea08238425afe8d0c55fd5700b4d4a67/packages/ui/src/switch/index.ts#L17)
 
 ```
 /**
@@ -103,7 +103,7 @@ type SwitchAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d5993a873d2a0aadaae590b207b001a71fc3fd1c/packages/ui/src/switch/index.ts#L42)
+[source](https://github.com/foldkit/foldkit/blob/2a1eaaa0ea08238425afe8d0c55fd5700b4d4a67/packages/ui/src/switch/index.ts#L42)
 
 ```
 /**

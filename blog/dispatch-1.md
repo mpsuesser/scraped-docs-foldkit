@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/dispatch-1
 title: "Dispatch 1"
 description: "APS-4 is on the fritz again."
-access_date: 2026-08-12T19:19:57.990Z
-current_date: 2026-08-12T19:19:57.990Z
+access_date: 2026-08-12T19:46:46.957Z
+current_date: 2026-08-12T19:46:46.957Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
@@ -42,7 +42,7 @@ But I’m past the point of commanding this thing with my own two hands. Not in 
 
 APS-4 has 10,000 hands. Each hand has 10,000 fingers. Even its fingers have fingers.
 
-I’m not proud enough to cosplay as one billion fingers.
+I’m not proud enough to cosplay as a billion fingers.
 
 _Beep. Beep. Beep._
 
