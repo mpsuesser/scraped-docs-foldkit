@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/managed-resource
 title: "ManagedResource"
 description: "API documentation for the ManagedResource module."
-access_date: 2026-08-11T13:49:05.518Z
-current_date: 2026-08-11T13:49:05.518Z
+access_date: 2026-08-12T01:45:44.345Z
+current_date: 2026-08-12T01:45:44.345Z
 ---
 
 # ManagedResource
@@ -14,7 +14,7 @@ current_date: 2026-08-11T13:49:05.518Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/managedResource/managedResource.ts#L403)
+[source](https://github.com/foldkit/foldkit/blob/a614c5ed5a5c2fb65f8e9128d4ba3bb83d1f550d/packages/foldkit/src/managedResource/managedResource.ts#L403)
 
 ```
 /**
@@ -29,7 +29,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/managedResource/managedResource.ts#L340)
+[source](https://github.com/foldkit/foldkit/blob/a614c5ed5a5c2fb65f8e9128d4ba3bb83d1f550d/packages/foldkit/src/managedResource/managedResource.ts#L340)
 
 ```
 /**
@@ -58,7 +58,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/managedResource/managedResource.ts#L292)
+[source](https://github.com/foldkit/foldkit/blob/a614c5ed5a5c2fb65f8e9128d4ba3bb83d1f550d/packages/foldkit/src/managedResource/managedResource.ts#L292)
 
 ```
 /**
@@ -124,7 +124,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/managedResource/managedResource.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/a614c5ed5a5c2fb65f8e9128d4ba3bb83d1f550d/packages/foldkit/src/managedResource/managedResource.ts#L48)
 
 ```
 /** Creates a managed resource identity with a `.get` accessor for use in commands. */
@@ -137,7 +137,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/managedResource/managedResource.ts#L133)
+[source](https://github.com/foldkit/foldkit/blob/a614c5ed5a5c2fb65f8e9128d4ba3bb83d1f550d/packages/foldkit/src/managedResource/managedResource.ts#L133)
 
 ```
 /**
@@ -175,7 +175,7 @@ type Entry = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/managedResource/managedResource.ts#L83)
+[source](https://github.com/foldkit/foldkit/blob/a614c5ed5a5c2fb65f8e9128d4ba3bb83d1f550d/packages/foldkit/src/managedResource/managedResource.ts#L83)
 
 ```
 /** Internal configuration for a single Managed Resource, used by the runtime. */
@@ -195,7 +195,7 @@ type ManagedResourceConfig = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/managedResource/managedResource.ts#L95)
+[source](https://github.com/foldkit/foldkit/blob/a614c5ed5a5c2fb65f8e9128d4ba3bb83d1f550d/packages/foldkit/src/managedResource/managedResource.ts#L95)
 
 ```
 /** A record of named Managed Resource configurations, keyed by resource name. */
@@ -208,7 +208,7 @@ type ManagedResources = Record<string, ManagedResourceConfig<Model, Message>> & 
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/managedResource/managedResource.ts#L80)
+[source](https://github.com/foldkit/foldkit/blob/a614c5ed5a5c2fb65f8e9128d4ba3bb83d1f550d/packages/foldkit/src/managedResource/managedResource.ts#L80)
 
 ```
 /** Type-level utility to extract the service identity type from a ManagedResource. */
@@ -221,7 +221,7 @@ type ServiceOf = T extends ManagedResource<any, infer S>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/managedResource/managedResource.ts#L154)
+[source](https://github.com/foldkit/foldkit/blob/a614c5ed5a5c2fb65f8e9128d4ba3bb83d1f550d/packages/foldkit/src/managedResource/managedResource.ts#L154)
 
 ```
 /** Type-level utility to extract the service union from a Managed Resources record. */
@@ -238,7 +238,7 @@ type ServicesOf = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/managedResource/managedResource.ts#L77)
+[source](https://github.com/foldkit/foldkit/blob/a614c5ed5a5c2fb65f8e9128d4ba3bb83d1f550d/packages/foldkit/src/managedResource/managedResource.ts#L77)
 
 ```
 /** Type-level utility to extract the value type from a ManagedResource. */
@@ -253,7 +253,7 @@ type Value = T extends ManagedResource<infer V, any>
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/managedResource/managedResource.ts#L39)
+[source](https://github.com/foldkit/foldkit/blob/a614c5ed5a5c2fb65f8e9128d4ba3bb83d1f550d/packages/foldkit/src/managedResource/managedResource.ts#L39)
 
 ```
 /**
@@ -274,7 +274,7 @@ interface ManagedResource {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/b2cf4e3359f2895c69f49aa286ce5584268d2398/packages/foldkit/src/managedResource/managedResource.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/a614c5ed5a5c2fb65f8e9128d4ba3bb83d1f550d/packages/foldkit/src/managedResource/managedResource.ts#L28)
 
 ```
 /** Branded identity type for a managed resource, used in the Effect R channel. */

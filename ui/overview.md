@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/overview
 title: "Foldkit UI"
 description: "Headless, accessible UI components for Foldkit: dialog, menu, tabs, listbox, and more. Built for The Elm Architecture with Effect-TS."
-access_date: 2026-08-11T03:02:29.236Z
-current_date: 2026-08-11T03:02:29.236Z
+access_date: 2026-08-12T01:45:44.345Z
+current_date: 2026-08-12T01:45:44.345Z
 ---
 
 # Foldkit UI
@@ -100,7 +100,7 @@ Custom select dropdown with persistent selection, keyboard navigation, typeahead
 
 Submodel
 
-Autocomplete input with filtering, keyboard navigation, and custom rendering.
+Autocomplete input with filtering, keyboard navigation, custom rendering, and read-only browsing.
 
 [Dialog](https://foldkit.dev/ui/dialog)
 
