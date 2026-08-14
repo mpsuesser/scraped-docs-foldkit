@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/scene
 title: "Scene"
 description: "Test features through the rendered view with Scene. Click buttons, type into inputs, and assert on the HTML using accessible locators."
-access_date: 2026-08-13T05:04:07.016Z
-current_date: 2026-08-13T05:04:07.016Z
+access_date: 2026-08-14T21:53:32.516Z
+current_date: 2026-08-14T21:53:32.516Z
 ---
 
 ## Scene
@@ -253,6 +253,8 @@ For `LocatorAll` (from `all.*`), use `expectAll(locatorAll)` for count-based ass
 | `.toBeEmpty()` | The locator matches zero elements |
 
 ## Handled and Ignored Interactions
+
+An interaction that falls through must be acknowledged. Scene fails when a handler produced no Message and no `expectIgnored()` followed, either at the next interaction or when the scene ends, and the failure names the event and the target it was dispatched on. One acknowledgement covers one fall-through, so two in a row need one each. Saying nothing is not a position Scene lets you hold: a test that leaves a fall-through unsaid passes whether the interaction is correctly inert or its handler regressed.
 
 An interaction on an element with no handler for that event throws, so a Scene test cannot silently target the wrong element. A handler that runs and returns `Option.none()` is a different case: the event falls through, nothing changes, and the step is a no-op. `expectHandled()` asserts the preceding interaction's handler produced a Message; `expectIgnored()` asserts it did not.
 
