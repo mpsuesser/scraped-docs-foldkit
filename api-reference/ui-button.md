@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-button
 title: "Ui/Button"
 description: "API documentation for the Ui/Button module."
-access_date: 2026-08-13T05:04:07.016Z
-current_date: 2026-08-13T05:04:07.016Z
+access_date: 2026-08-14T16:07:50.340Z
+current_date: 2026-08-14T16:07:50.340Z
 ---
 
 # Ui/Button
@@ -14,7 +14,7 @@ current_date: 2026-08-13T05:04:07.016Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/ui/src/button/index.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/ui/src/button/index.ts#L29)
 
 ```
 /**
@@ -38,7 +38,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/ui/src/button/index.ts#L7)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/ui/src/button/index.ts#L7)
 
 ```
 /** Attribute groups the button component provides to the consumer's `toView` callback. */
@@ -51,7 +51,7 @@ type ButtonAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/ui/src/button/index.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/ui/src/button/index.ts#L12)
 
 ```
 /** Configuration for rendering a button with `view`. */

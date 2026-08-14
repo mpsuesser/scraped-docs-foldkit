@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/navigation
 title: "Navigation"
 description: "API documentation for the Navigation module."
-access_date: 2026-08-13T05:04:07.016Z
-current_date: 2026-08-13T05:04:07.016Z
+access_date: 2026-08-14T16:07:50.340Z
+current_date: 2026-08-14T16:07:50.340Z
 ---
 
 # Navigation
@@ -14,7 +14,7 @@ current_date: 2026-08-13T05:04:07.016Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/navigation/index.ts#L20)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/navigation/index.ts#L20)
 
 ```
 /** Navigates back in browser history. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/navigation/index.ts#L24)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/navigation/index.ts#L24)
 
 ```
 /** Navigates forward in browser history. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/navigation/index.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/navigation/index.ts#L28)
 
 ```
 /** Performs a full page navigation to the given href. */
@@ -47,7 +47,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/navigation/index.ts#L33)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/navigation/index.ts#L33)
 
 ```
 /**
@@ -61,7 +61,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/navigation/index.ts#L6)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/navigation/index.ts#L6)
 
 ```
 /** Pushes a new URL to browser history and triggers Foldkit's URL change handling. */
@@ -72,7 +72,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/navigation/index.ts#L13)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/navigation/index.ts#L13)
 
 ```
 /** Replaces the current URL in browser history and triggers Foldkit's URL change handling. */
@@ -85,7 +85,7 @@ function
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/navigation/urlRequest.ts#L14)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/navigation/urlRequest.ts#L14)
 
 ```
 /** A URL request to an external page (different origin). */
@@ -98,7 +98,7 @@ const External: CallableTaggedStruct<"External", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/navigation/urlRequest.ts#L7)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/navigation/urlRequest.ts#L7)
 
 ```
 /** A URL request to a page within the application (same origin). */
@@ -118,7 +118,7 @@ const Internal: CallableTaggedStruct<"Internal", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/navigation/urlRequest.ts#L21)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/navigation/urlRequest.ts#L21)
 
 ```
 /** Union of `Internal` and `External` URL request types. */

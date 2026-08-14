@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/scene
 title: "Scene"
 description: "API documentation for the Scene module."
-access_date: 2026-08-13T05:04:07.016Z
-current_date: 2026-08-13T05:04:07.016Z
+access_date: 2026-08-14T16:07:50.340Z
+current_date: 2026-08-14T16:07:50.340Z
 ---
 
 # Scene
@@ -14,7 +14,7 @@ current_date: 2026-08-13T05:04:07.016Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1240)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1240)
 
 ```
 /** Creates a Locator that finds an element by its `alt` attribute. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1910)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1910)
 
 ```
 /** Simulates a blur event on the element matching the target. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1502)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1502)
 
 ```
 /**
@@ -55,7 +55,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1656)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1656)
 
 ```
 /**
@@ -70,7 +70,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1252)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1252)
 
 ```
 /** Creates a Locator that finds a form control by its current `value`. */
@@ -81,7 +81,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1594)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1594)
 
 ```
 /**
@@ -96,19 +96,19 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L2419)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L2419)
 
 ### expectAll
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L2475)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L2475)
 
 ### expectHandled
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1346)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1346)
 
 ```
 /**
@@ -141,7 +141,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1380)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1380)
 
 ```
 /**
@@ -163,7 +163,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1305)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1305)
 
 ```
 /**
@@ -182,7 +182,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1277)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1277)
 
 ```
 /**
@@ -201,7 +201,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1339)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1339)
 
 ```
 /** Picks the first match from a LocatorAll, producing a single-match Locator. */
@@ -212,7 +212,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1900)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1900)
 
 ```
 /** Simulates a focus event on the element matching the target. */
@@ -223,7 +223,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1138)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1138)
 
 ```
 /** Finds all elements with the given `alt` attribute. */
@@ -234,7 +234,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1156)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1156)
 
 ```
 /** Finds all form controls whose current value matches. */
@@ -245,7 +245,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1052)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1052)
 
 ```
 /**
@@ -260,7 +260,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1129)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1129)
 
 ```
 /** Finds all elements with the given placeholder attribute. */
@@ -271,7 +271,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L956)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L956)
 
 ```
 /** Finds all elements with the given ARIA role and optional matching options. */
@@ -293,7 +293,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1150)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1150)
 
 ```
 /** Finds all elements with the given `data-testid` attribute. */
@@ -304,7 +304,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1115)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1115)
 
 ```
 /**
@@ -323,7 +323,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1144)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1144)
 
 ```
 /** Finds all elements with the given `title` attribute. */
@@ -334,7 +334,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1093)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1093)
 
 ```
 /** Finds the first element with the given `alt` attribute. */
@@ -345,7 +345,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1168)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1168)
 
 ```
 /**
@@ -359,7 +359,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1008)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1008)
 
 ```
 /**
@@ -374,7 +374,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L997)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L997)
 
 ```
 /** Finds the first element with the given placeholder attribute. */
@@ -385,7 +385,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L942)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L942)
 
 ```
 /**
@@ -411,7 +411,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1105)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1105)
 
 ```
 /** Finds the first element with the given `data-testid` attribute. */
@@ -422,7 +422,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L971)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L971)
 
 ```
 /**
@@ -441,7 +441,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1099)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1099)
 
 ```
 /** Finds the first element with the given `title` attribute. */
@@ -452,7 +452,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L647)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L647)
 
 ```
 /** Sets the initial Model for a scene test. */
@@ -463,7 +463,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1881)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1881)
 
 ```
 /**
@@ -477,7 +477,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1453)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1453)
 
 ```
 /**
@@ -497,7 +497,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1236)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1236)
 
 ```
 /** Creates a Locator that finds an element by aria-label. */
@@ -508,7 +508,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1346)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1346)
 
 ```
 /** Picks the last match from a LocatorAll, producing a single-match Locator. */
@@ -519,7 +519,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1229)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1229)
 
 ```
 /** Creates a Locator that finds an element by placeholder attribute. */
@@ -530,7 +530,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1735)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1735)
 
 ```
 /**
@@ -556,7 +556,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1819)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1819)
 
 ```
 /**
@@ -579,7 +579,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1220)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1220)
 
 ```
 /**
@@ -604,7 +604,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1263)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1263)
 
 ```
 /**
@@ -618,7 +618,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L2011)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L2011)
 
 ```
 /** Simulates form submission on the element matching the target. */
@@ -629,7 +629,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1404)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1404)
 
 ```
 /** Runs a function for side effects (e.g. assertions) without breaking the step chain. */
@@ -640,7 +640,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1248)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1248)
 
 ```
 /** Creates a Locator that finds an element by its `data-testid` attribute. */
@@ -651,7 +651,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1256)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1256)
 
 ```
 /** Creates a Locator that finds the most specific element matching the given text content. */
@@ -667,7 +667,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L758)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L758)
 
 ```
 /** Extracts all text content from a VNode tree, depth-first. */
@@ -678,7 +678,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1244)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1244)
 
 ```
 /** Creates a Locator that finds an element by its `title` attribute. */
@@ -689,7 +689,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L2498)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L2498)
 
 ```
 /**
@@ -721,7 +721,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/internal.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/internal.ts#L28)
 
 ```
 /**
@@ -756,7 +756,7 @@ type AnyCommand = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/internal.ts#L134)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/internal.ts#L134)
 
 ```
 /**
@@ -774,7 +774,7 @@ type AnyMount = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1183)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1183)
 
 ```
 /**
@@ -792,7 +792,7 @@ type Locator = (html: VNode) => Option.Option<VNode> & Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1189)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1189)
 
 ```
 /**
@@ -809,7 +809,7 @@ type LocatorAll = (html: VNode) => ReadonlyArray<VNode> & Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/internal.ts#L147)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/internal.ts#L147)
 
 ```
 /**
@@ -829,7 +829,7 @@ type MountMatcher = MountDefinition<string, unknown> | AnyMount
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/internal.ts#L189)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/internal.ts#L189)
 
 ```
 /**
@@ -846,7 +846,7 @@ type MountResolver = readonly [MountMatcher, ResultMessage]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/internal.ts#L124)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/internal.ts#L124)
 
 ```
 /**
@@ -869,7 +869,7 @@ type PendingMount = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/internal.ts#L180)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/internal.ts#L180)
 
 ```
 /**
@@ -887,7 +887,7 @@ type Resolver = readonly [Matcher, ResultMessageForMatcher<Matcher>]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L166)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L166)
 
 ```
 /**
@@ -907,7 +907,7 @@ type SceneSimulation = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L182)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L182)
 
 ```
 /** A single step in a scene: either a `given` step or a scene simulation transform. */
@@ -920,7 +920,7 @@ type SceneStep = GivenStep<NoInfer<Model>> | (simulation: SceneSimulation<Model,
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1194)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1194)
 
 ```
 /**
@@ -945,7 +945,7 @@ const Command: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1264)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1264)
 
 ```
 /**
@@ -961,7 +961,7 @@ const CustomElement: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1249)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1249)
 
 ```
 /**
@@ -984,7 +984,7 @@ const ManagedResource: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1217)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1217)
 
 ```
 /**
@@ -1010,7 +1010,7 @@ const Mount: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1235)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1235)
 
 ```
 /**
@@ -1026,7 +1026,7 @@ const Subscription: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L150)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L150)
 
 ```
 /**
@@ -1061,7 +1061,7 @@ const all: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L798)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L798)
 
 ```
 /** Reads an attribute or prop value from a VNode. */
@@ -1072,7 +1072,7 @@ const attr: (vnode: VNode, name: string) => Option<string>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1921)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1921)
 
 ```
 /**
@@ -1086,7 +1086,7 @@ const change: (target: string | Locator, value: string) => (simulation: SceneSim
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1950)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1950)
 
 ```
 /**
@@ -1102,7 +1102,7 @@ const changeFiles: (target: string | Locator, files: readonly Array<File>) => (s
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L1981)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L1981)
 
 ```
 /**
@@ -1119,7 +1119,7 @@ const dropFiles: (target: string | Locator, files: readonly Array<File>) => (sim
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1383)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1383)
 
 ```
 /**
@@ -1134,7 +1134,7 @@ const filter: (locatorAll: LocatorAll, options: FilterOptions) => LocatorAll
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L740)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L740)
 
 ```
 /** Finds the first VNode matching the CSS selector. */
@@ -1145,7 +1145,7 @@ const find: (html: VNode, selectorString: string) => Option<VNode>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L750)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L750)
 
 ```
 /** Finds all VNodes matching the CSS selector. */
@@ -1156,7 +1156,7 @@ const findAll: (html: VNode, selectorString: string) => readonly Array<VNode>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L2050)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L2050)
 
 ```
 /**
@@ -1170,7 +1170,7 @@ const keydown: (target: string | Locator, key: string) => (simulation: SceneSimu
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1350)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1350)
 
 ```
 /** Picks the nth match (0-indexed) from a LocatorAll, producing a Locator. */
@@ -1181,7 +1181,7 @@ const nth: (locatorAll: LocatorAll, index: number) => Locator
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L2514)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L2514)
 
 ```
 /** Executes a scene test. Throws if any Commands remain unresolved. */
@@ -1195,7 +1195,7 @@ const scene: (config: Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/matchers.ts#L18)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/matchers.ts#L18)
 
 ```
 /** Custom Vitest matchers for scene testing. Register with `expect.extend(Scene.sceneMatchers)`. */
@@ -1223,7 +1223,7 @@ const sceneMatchers: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/scene.ts#L2023)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/scene.ts#L2023)
 
 ```
 /**
@@ -1237,7 +1237,7 @@ const type: (target: string | Locator, value: string) => (simulation: SceneSimul
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71556def2f366e7cb8ecc2caef61d0c08966d6ee/packages/foldkit/src/test/query.ts#L1269)
+[source](https://github.com/foldkit/foldkit/blob/1dc70c730a590031ee0290983e0c1629a5012cf8/packages/foldkit/src/test/query.ts#L1269)
 
 ```
 /**
