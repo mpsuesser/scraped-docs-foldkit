@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/custom-element
 title: "CustomElement"
 description: "API documentation for the CustomElement module."
-access_date: 2026-08-16T19:09:52.991Z
-current_date: 2026-08-16T19:09:52.991Z
+access_date: 2026-08-16T21:27:58.480Z
+current_date: 2026-08-16T21:27:58.480Z
 ---
 
 # CustomElement
@@ -14,7 +14,7 @@ current_date: 2026-08-16T19:09:52.991Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/foldkit/src/customElement/index.ts#L160)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/foldkit/src/customElement/index.ts#L160)
 
 ```
 /**
@@ -35,7 +35,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/foldkit/src/customElement/index.ts#L90)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/foldkit/src/customElement/index.ts#L90)
 
 ```
 /**
@@ -52,7 +52,7 @@ type Builder = Spec extends CustomElementSpec<string, infer Properties, infer Ev
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/foldkit/src/customElement/index.ts#L46)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/foldkit/src/customElement/index.ts#L46)
 
 ```
 /**
@@ -69,7 +69,7 @@ type ElementBuilder = (attributes?: ReadonlyArray<Attribute<Message>>, children?
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/foldkit/src/customElement/index.ts#L58)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/foldkit/src/customElement/index.ts#L58)
 
 ```
 /** Configuration accepted by `CustomElement.define`. */
@@ -84,7 +84,7 @@ interface CustomElementConfig {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/foldkit/src/customElement/index.ts#L74)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/foldkit/src/customElement/index.ts#L74)
 
 ```
 /**

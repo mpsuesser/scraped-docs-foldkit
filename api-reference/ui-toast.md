@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-toast
 title: "Ui/Toast"
 description: "API documentation for the Ui/Toast module."
-access_date: 2026-08-16T19:09:52.991Z
-current_date: 2026-08-16T19:09:52.991Z
+access_date: 2026-08-16T21:27:58.480Z
+current_date: 2026-08-16T21:27:58.480Z
 ---
 
 # Ui/Toast
@@ -14,7 +14,7 @@ current_date: 2026-08-16T19:09:52.991Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/index.ts#L147)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/index.ts#L147)
 
 ## Types
 
@@ -22,7 +22,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/index.ts#L111)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/index.ts#L111)
 
 ```
 /**
@@ -41,7 +41,7 @@ type EntryHandlers = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/schema.ts#L134)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/schema.ts#L134)
 
 ```
 /**
@@ -60,7 +60,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/update.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/update.ts#L48)
 
 ```
 /**
@@ -82,7 +82,7 @@ type ShowInput = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/schema.ts#L76)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/schema.ts#L76)
 
 ```
 /**
@@ -100,7 +100,7 @@ const CompletedWaitBeforeDismissal: CallableTaggedStruct<"CompletedWaitBeforeDis
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/schema.ts#L70)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/schema.ts#L70)
 
 ```
 /**
@@ -116,7 +116,7 @@ const Dismissed: CallableTaggedStruct<"Dismissed", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/schema.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/schema.ts#L72)
 
 ```
 /** Sent when every currently-visible entry should begin dismissing. */
@@ -127,7 +127,7 @@ const DismissedAll: CallableTaggedStruct<"DismissedAll", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/schema.ts#L87)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/schema.ts#L87)
 
 ```
 /** Wraps a single entry's Animation submodel message for delegation. */
@@ -141,7 +141,7 @@ const GotAnimationMessage: CallableTaggedStruct<"GotAnimationMessage", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/schema.ts#L82)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/schema.ts#L82)
 
 ```
 /**
@@ -157,7 +157,7 @@ const HoveredEntry: CallableTaggedStruct<"HoveredEntry", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/schema.ts#L85)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/schema.ts#L85)
 
 ```
 /**
@@ -173,7 +173,7 @@ const LeftEntry: CallableTaggedStruct<"LeftEntry", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/schema.ts#L22)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/schema.ts#L22)
 
 ```
 /** Where the toast viewport is anchored on the screen and how entries stack. */
@@ -184,7 +184,7 @@ const Position: Literals<readonly ["TopLeft", "TopCenter", "TopRight", "BottomLe
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/schema.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/schema.ts#L16)
 
 ```
 /**
@@ -201,7 +201,7 @@ const Variant: Literals<readonly ["Info", "Success", "Warning", "Error"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/toast/update.ts#L59)
+[source](https://github.com/foldkit/foldkit/blob/6fd31988a1c18fb9d006d82fe3b82ae3fcaefe61/packages/ui/src/toast/update.ts#L59)
 
 ```
 /**
