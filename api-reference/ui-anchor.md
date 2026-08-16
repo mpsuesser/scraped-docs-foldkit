@@ -1,0 +1,128 @@
+---
+url: https://foldkit.dev/api-reference/ui-anchor
+title: "Ui/Anchor"
+description: "API documentation for the Ui/Anchor module."
+access_date: 2026-08-16T02:24:27.396Z
+current_date: 2026-08-16T02:24:27.396Z
+---
+
+# Ui/Anchor
+
+## Functions
+
+### anchorSetup
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/ee7bdb696d833bf9a8c61f269d69c9eafc901066/packages/ui/src/anchor/anchor.ts#L125)
+
+```
+/**
+ * Positions a floating element relative to its button using Floating UI, then
+ *  returns a cleanup function. Designed to be called inside an `OnMount`
+ *  action: the consumer wraps the call in `Effect.sync` and stashes the
+ *  returned cleanup in the `Mount` result. When `interceptTab` is true
+ *  (default), Tab key in portal mode refocuses the button. Set to false for
+ *  components like Popover where Tab should navigate naturally within the
+ *  panel. When `focusAfterPosition` is true, the element is focused after the
+ *  first position computation clears visibility, deferred via
+ *  requestAnimationFrame so the element is painted before focus fires.
+ *  `focusSelector` optionally targets a descendant (e.g. a calendar grid
+ *  inside a popover panel) instead of the panel itself.
+ *  The side the element currently sits on is written to `data-placement`, so
+ *  CSS can react to it. When `isPlacementLocked` is true, the element keeps the
+ *  side that the first positioning picks, `flip` is removed from every later
+ *  update, and `data-placement` holds that locked side. Otherwise the attribute
+ *  tracks the side each update resolves to, including the ones `flip` moves.
+ */
+(config: {
+  anchor: Anchor.AnchorConfig
+  buttonId: string
+  focusAfterPosition: boolean
+  focusSelector: string
+  interceptTab: boolean
+}): (element: Element) => () => void
+```
+
+### portalToContainingRoot
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/ee7bdb696d833bf9a8c61f269d69c9eafc901066/packages/ui/src/anchor/anchor.ts#L93)
+
+```
+/**
+ * Relocates an element into the shared `foldkit-portal-root` div within its
+ *  containing root: the shadow root when mounted inside one, otherwise
+ *  `document.body`. Escapes any ancestor stacking context while keeping the
+ *  element under that root's scoped styles. Returns a cleanup function that
+ *  removes the element from the portal root. Designed to be called from inside
+ *  an `OnMount` action: the consumer wraps the call in `Effect.sync` and
+ *  stashes the returned cleanup in the `Mount` result.
+ */
+(element: Element): () => void
+```
+
+## Constants
+
+### AnchorConfig
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/ee7bdb696d833bf9a8c61f269d69c9eafc901066/packages/ui/src/anchor/anchor.ts#L43)
+
+```
+/** Static configuration for anchor-based positioning of a floating element relative to a button. */
+const AnchorConfig: Struct<{
+  gap: optional<Number>
+  isPlacementLocked: optional<Boolean>
+  offset: optional<Number>
+  padding: optional<Union<readonly [
+    Number,
+    Struct<{
+      bottom: optionalKey<Number>
+      left: optionalKey<Number>
+      right: optionalKey<Number>
+      top: optionalKey<Number>
+    }>
+  ]>>
+  placement: optional<Literals<readonly ["top", "right", "bottom", "left", "top-start", "top-end", "right-start", "right-end", "bottom-start", "bottom-end", "left-start", "left-end"]>>
+  portal: optional<Boolean>
+}>
+```
+
+### Padding
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/ee7bdb696d833bf9a8c61f269d69c9eafc901066/packages/ui/src/anchor/anchor.ts#L32)
+
+```
+/**
+ * Schema mirroring `@floating-ui/dom`'s `Padding` type: a uniform number or a
+ *  partial per-side object (`top`/`right`/`bottom`/`left`).
+ */
+const Padding: Union<readonly [
+  Number,
+  Struct<{
+    bottom: optionalKey<Number>
+    left: optionalKey<Number>
+    right: optionalKey<Number>
+    top: optionalKey<Number>
+  }>
+]>
+```
+
+### Placement
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/ee7bdb696d833bf9a8c61f269d69c9eafc901066/packages/ui/src/anchor/anchor.ts#L15)
+
+```
+/**
+ * Schema mirroring `@floating-ui/dom`'s `Placement` literal union: a side
+ *  (`top`/`right`/`bottom`/`left`) optionally suffixed with `-start` or `-end`.
+ */
+const Placement: Literals<readonly ["top", "right", "bottom", "left", "top-start", "top-end", "right-start", "right-end", "bottom-start", "bottom-end", "left-start", "left-end"]>
+```
