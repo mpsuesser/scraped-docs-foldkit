@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-anchor
 title: "Ui/Anchor"
 description: "API documentation for the Ui/Anchor module."
-access_date: 2026-08-16T02:24:27.396Z
-current_date: 2026-08-16T02:24:27.396Z
+access_date: 2026-08-16T19:09:52.991Z
+current_date: 2026-08-16T19:09:52.991Z
 ---
 
 # Ui/Anchor
@@ -14,7 +14,7 @@ current_date: 2026-08-16T02:24:27.396Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ee7bdb696d833bf9a8c61f269d69c9eafc901066/packages/ui/src/anchor/anchor.ts#L125)
+[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/anchor/anchor.ts#L148)
 
 ```
 /**
@@ -35,20 +35,17 @@ function
  *  update, and `data-placement` holds that locked side. Otherwise the attribute
  *  tracks the side each update resolves to, including the ones `flip` moves.
  */
-(config: {
-  anchor: Anchor.AnchorConfig
-  buttonId: string
-  focusAfterPosition: boolean
-  focusSelector: string
-  interceptTab: boolean
-}): (element: Element) => () => void
+(
+  element: Element,
+  config: SetupConfig
+): () => void
 ```
 
 ### portalToContainingRoot
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ee7bdb696d833bf9a8c61f269d69c9eafc901066/packages/ui/src/anchor/anchor.ts#L93)
+[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/anchor/anchor.ts#L97)
 
 ```
 /**
@@ -63,13 +60,44 @@ function
 (element: Element): () => void
 ```
 
+## Types
+
+### SetupConfig
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/anchor/anchor.ts#L124)
+
+```
+/**
+ * Config for `anchorSetup`.
+ * 
+ *  - `buttonId`: id of the trigger to position against, resolved through the
+ *    element's own root.
+ *  - `anchor`: the static positioning options.
+ *  - `interceptTab`: returns focus to the trigger on Tab inside a portaled
+ *    panel. Defaults to `true`.
+ *  - `focusAfterPosition`: focuses the element once the first position
+ *    resolves. Defaults to `false`.
+ *  - `focusSelector`: focuses this descendant instead of the element itself.
+ *    Read only when `focusAfterPosition` is true.
+ */
+type SetupConfig = Readonly<{
+  anchor: AnchorConfig
+  buttonId: string
+  focusAfterPosition: boolean
+  focusSelector: string
+  interceptTab: boolean
+}>
+```
+
 ## Constants
 
 ### AnchorConfig
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ee7bdb696d833bf9a8c61f269d69c9eafc901066/packages/ui/src/anchor/anchor.ts#L43)
+[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/anchor/anchor.ts#L47)
 
 ```
 /** Static configuration for anchor-based positioning of a floating element relative to a button. */
@@ -95,7 +123,7 @@ const AnchorConfig: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ee7bdb696d833bf9a8c61f269d69c9eafc901066/packages/ui/src/anchor/anchor.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/anchor/anchor.ts#L34)
 
 ```
 /**
@@ -117,7 +145,7 @@ const Padding: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ee7bdb696d833bf9a8c61f269d69c9eafc901066/packages/ui/src/anchor/anchor.ts#L15)
+[source](https://github.com/foldkit/foldkit/blob/7014ef6d904c897802df3797298255bb3ce65498/packages/ui/src/anchor/anchor.ts#L15)
 
 ```
 /**
