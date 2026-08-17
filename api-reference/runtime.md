@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/runtime
 title: "Runtime"
 description: "API documentation for the Runtime module."
-access_date: 2026-08-17T01:15:19.180Z
-current_date: 2026-08-17T01:15:19.180Z
+access_date: 2026-08-17T04:17:49.255Z
+current_date: 2026-08-17T04:17:49.255Z
 ---
 
 # Runtime
@@ -14,7 +14,7 @@ current_date: 2026-08-17T01:15:19.180Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L447)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L452)
 
 ```
 (context: SlowContext<unknown, unknown>): void
@@ -24,7 +24,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L3785)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L4156)
 
 ```
 /**
@@ -55,20 +55,41 @@ function
 <P extends Readonly<{
   inbound: Readonly<Record<string, Inbound<any, any>>>
   outbound: Readonly<Record<string, Outbound<any, any>>>
-}> | undefined = undefined>(program: MakeRuntimeReturn<P>): EmbedHandle<P>
+}> | undefined = undefined, Resources = never, Kind extends "Application" | "Element" = "Application" | "Element">(program: MakeRuntimeReturn<P, void, Resources, Kind>): EmbedHandle<P>
+
+<P extends Readonly<{
+  inbound: Readonly<Record<string, Inbound<any, any>>>
+  outbound: Readonly<Record<string, Outbound<any, any>>>
+}> | undefined, Flags, Resources, Kind extends "Application" | "Element">(
+  program: MakeRuntimeReturn<P, Flags, Resources, Kind>,
+  options: RunOptions<Flags, Resources>
+): EmbedHandle<P>
+```
+
+### hydrate
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L4101)
+
+```
+<P extends Readonly<{
+  inbound: Readonly<Record<string, Inbound<any, any>>>
+  outbound: Readonly<Record<string, Outbound<any, any>>>
+}> | undefined, Flags, Resources>(program: MakeRuntimeReturn<P, Flags, Resources, "Application">): void
 ```
 
 ### makeApplication
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L3194)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L3469)
 
 ### makeElement
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L3476)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L3766)
 
 ```
 /**
@@ -89,29 +110,42 @@ function
 }, Flags, Resources = never, ManagedResourceServices = never, P extends Readonly<{
   inbound: Readonly<Record<string, Inbound<any, any>>>
   outbound: Readonly<Record<string, Outbound<any, any>>>
-}> | undefined = undefined>(config: ElementConfigWithFlags<Model, Message, Flags, Resources, ManagedResourceServices, P>): MakeRuntimeReturn<P>
+}> | undefined = undefined>(config: ElementConfigWithFlags<Model, Message, Flags, Resources, ManagedResourceServices, P>): MakeRuntimeReturn<P, void, Resources, "Element">
 
 <Model, Message extends {
   _tag: string
 }, Resources = never, ManagedResourceServices = never, P extends Readonly<{
   inbound: Readonly<Record<string, Inbound<any, any>>>
   outbound: Readonly<Record<string, Outbound<any, any>>>
-}> | undefined = undefined>(config: ElementConfig<Model, Message, Resources, ManagedResourceServices, P>): MakeRuntimeReturn<P>
+}> | undefined = undefined>(config: ElementConfig<Model, Message, Resources, ManagedResourceServices, P>): MakeRuntimeReturn<P, void, Resources, "Element">
 ```
 
 ### run
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L3728)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L4069)
 
 ```
 /**
  * Starts a Foldkit runtime that owns the page for the page's whole lifetime,
- *  with HMR support for development. To start a runtime under a
- *  host-controlled lifecycle instead, use `embed`.
+ *  with HMR support for development. The first render builds the DOM fresh in
+ *  the container, replacing whatever is there. On a server-rendered page use
+ *  `hydrate` instead, which adopts the existing DOM. To start a runtime under a
+ *  host-controlled lifecycle, use `embed`.
  */
-(program: MakeRuntimeReturn<Ports | undefined>): void
+<P extends Readonly<{
+  inbound: Readonly<Record<string, Inbound<any, any>>>
+  outbound: Readonly<Record<string, Outbound<any, any>>>
+}> | undefined, Resources, Kind extends "Application" | "Element">(program: MakeRuntimeReturn<P, void, Resources, Kind>): void
+
+<P extends Readonly<{
+  inbound: Readonly<Record<string, Inbound<any, any>>>
+  outbound: Readonly<Record<string, Outbound<any, any>>>
+}> | undefined, Flags, Resources, Kind extends "Application" | "Element">(
+  program: MakeRuntimeReturn<P, Flags, Resources, Kind>,
+  options: RunOptions<Flags, Resources>
+): void
 ```
 
 ## Types
@@ -120,10 +154,10 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L880)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L968)
 
 ```
-/** Configuration for `makeApplication` without flags or URL routing. */
+/** Configuration for `makeApplication` without Flags or URL routing. */
 type ApplicationConfig = BaseApplicationConfig<Model, Message, Resources, ManagedResourceServices, P> & Readonly<{
   init: () => readonly [Model, ReadonlyArray<Command<Message, never, Resources | ManagedResourceServices>>]
 }>
@@ -133,11 +167,11 @@ type ApplicationConfig = BaseApplicationConfig<Model, Message, Resources, Manage
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L853)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L941)
 
 ```
-/** Configuration for `makeApplication` with flags but no URL routing. */
-type ApplicationConfigWithFlags = BaseApplicationConfig<Model, Message, Resources, ManagedResourceServices, P> & FlagsConfig<Flags, Resources> & Readonly<{
+/** Configuration for `makeApplication` with Flags but no URL routing. */
+type ApplicationConfigWithFlags = BaseApplicationConfig<Model, Message, Resources, ManagedResourceServices, P> & FlagsSchemaConfig<Flags> & Readonly<{
   init: (flags: Flags) => readonly [Model, ReadonlyArray<Command<Message, never, Resources | ManagedResourceServices>>]
 }>
 ```
@@ -146,7 +180,7 @@ type ApplicationConfigWithFlags = BaseApplicationConfig<Model, Message, Resource
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L981)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1078)
 
 ```
 /** The `init` function type for a `makeApplication` app without URL routing. */
@@ -159,7 +193,7 @@ type ApplicationInit = Flags extends void
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L602)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L607)
 
 ```
 /**
@@ -178,7 +212,7 @@ type CrashConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L592)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L597)
 
 ```
 /**
@@ -198,7 +232,7 @@ type CrashContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L172)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L177)
 
 ```
 /**
@@ -230,7 +264,7 @@ type DevToolsConfig = false | Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L131)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L136)
 
 ```
 /**
@@ -246,7 +280,7 @@ type DevToolsMode = "Inspect" | "TimeTravel"
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L138)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L143)
 
 ```
 /**
@@ -266,7 +300,7 @@ type DevToolsModeConfig = DevToolsMode | Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L117)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L122)
 
 ```
 /** Position of the DevTools badge and panel on screen. */
@@ -277,10 +311,10 @@ type DevToolsPosition = "BottomRight" | "BottomLeft" | "TopRight" | "TopLeft"
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L964)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1061)
 
 ```
-/** Configuration for `makeElement` without flags. */
+/** Configuration for `makeElement` without Flags. */
 type ElementConfig = BaseElementConfig<Model, Message, Resources, ManagedResourceServices, P> & Readonly<{
   init: () => readonly [Model, ReadonlyArray<Command<Message, never, Resources | ManagedResourceServices>>]
 }>
@@ -290,11 +324,12 @@ type ElementConfig = BaseElementConfig<Model, Message, Resources, ManagedResourc
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L943)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1031)
 
 ```
-/** Configuration for `makeElement` with flags. */
-type ElementConfigWithFlags = BaseElementConfig<Model, Message, Resources, ManagedResourceServices, P> & FlagsConfig<Flags, Resources> & Readonly<{
+/** Configuration for `makeElement` with Flags. */
+type ElementConfigWithFlags = BaseElementConfig<Model, Message, Resources, ManagedResourceServices, P> & FlagsSchemaConfig<Flags> & Readonly<{
+  flags: Effect.Effect<Flags, never, NoInfer<Resources>>
   init: (flags: Flags) => readonly [Model, ReadonlyArray<Command<Message, never, Resources | ManagedResourceServices>>]
 }>
 ```
@@ -303,7 +338,7 @@ type ElementConfigWithFlags = BaseElementConfig<Model, Message, Resources, Manag
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L905)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L993)
 
 ```
 /**
@@ -321,13 +356,13 @@ type ElementCrashConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L1032)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1129)
 
 ```
 /**
  * The `init` function type for a `makeElement` app. A scoped app never owns
  *  the URL, so its `init` has the same shape as a non-routing
- *  `ApplicationInit`: argless, or receiving flags when `Flags` is set.
+ *  `ApplicationInit`: argless, or receiving Flags when `Flags` is set.
  */
 type ElementInit = ApplicationInit<Model, Message, Flags, Resources, ManagedResourceServices>
 ```
@@ -336,7 +371,7 @@ type ElementInit = ApplicationInit<Model, Message, Flags, Resources, ManagedReso
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L1113)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1234)
 
 ```
 /**
@@ -359,7 +394,7 @@ type EmbedHandle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L1057)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1178)
 
 ```
 /**
@@ -378,7 +413,7 @@ type InboundPortHandle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L1071)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1192)
 
 ```
 /**
@@ -398,7 +433,7 @@ type InboundPortHandles = InboundPorts extends Readonly<Record<string, Inbound<a
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L1045)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1157)
 
 ```
 /**
@@ -406,9 +441,16 @@ type
  *  Pass it to `run` to start a page-owning app, or to `embed` to start it under
  *  a host-controlled lifecycle handle. `ports` is the Ports record from the
  *  config (or `undefined` when the config declared none); it types the
- *  `EmbedHandle` that `embed` returns.
+ *  `EmbedHandle` that `embed` returns. `Flags` and `Resources` carry the
+ *  fresh-boot requirements from `makeApplication` to `run` and `embed`; they
+ *  have no runtime representation.
  */
 type MakeRuntimeReturn = Readonly<{
+  [RuntimeBootTypeId]: Readonly<{
+    Flags: (flags: Flags) => Flags
+    Kind: Kind
+    Resources: (resources: Resources) => Resources
+  }>
   ports: P
   runtimeId: string
   start: (hmrModel?: unknown) => Effect.Effect<void>
@@ -419,7 +461,7 @@ type MakeRuntimeReturn = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L1065)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1186)
 
 ```
 /**
@@ -437,7 +479,7 @@ type OutboundPortHandle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L1085)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1206)
 
 ```
 /**
@@ -457,7 +499,7 @@ type OutboundPortHandles = OutboundPorts extends Readonly<Record<string, Outboun
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L1099)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1220)
 
 ```
 /**
@@ -473,10 +515,10 @@ type PortHandles = P extends Ports
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L827)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L915)
 
 ```
-/** Configuration for `makeApplication` with URL routing but no flags. */
+/** Configuration for `makeApplication` with URL routing but no Flags. */
 type RoutingApplicationConfig = BaseApplicationConfig<Model, Message, Resources, ManagedResourceServices, P> & Readonly<{
   init: (url: Url) => readonly [Model, ReadonlyArray<Command<Message, never, Resources | ManagedResourceServices>>]
   routing: RoutingConfig<Message>
@@ -487,11 +529,11 @@ type RoutingApplicationConfig = BaseApplicationConfig<Model, Message, Resources,
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L798)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L886)
 
 ```
-/** Configuration for `makeApplication` with flags and URL routing. */
-type RoutingApplicationConfigWithFlags = BaseApplicationConfig<Model, Message, Resources, ManagedResourceServices, P> & FlagsConfig<Flags, Resources> & Readonly<{
+/** Configuration for `makeApplication` with Flags and URL routing. */
+type RoutingApplicationConfigWithFlags = BaseApplicationConfig<Model, Message, Resources, ManagedResourceServices, P> & FlagsSchemaConfig<Flags> & Readonly<{
   init: (flags: Flags, url: Url) => readonly [Model, ReadonlyArray<Command<Message, never, Resources | ManagedResourceServices>>]
   routing: RoutingConfig<Message>
 }>
@@ -501,10 +543,10 @@ type RoutingApplicationConfigWithFlags = BaseApplicationConfig<Model, Message, R
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L1004)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1101)
 
 ```
-/** The `init` function type for a `makeApplication` app with URL routing, receives the current URL and optional flags. */
+/** The `init` function type for a `makeApplication` app with URL routing, receives the current URL and optional Flags. */
 type RoutingApplicationInit = Flags extends void
   ? (url: Url) => readonly [Model, ReadonlyArray<Command<Message, never, Resources | ManagedResourceServices>>]
   : (flags: Flags, url: Url) => readonly [Model, ReadonlyArray<Command<Message, never, Resources | ManagedResourceServices>>]
@@ -514,7 +556,7 @@ type RoutingApplicationInit = Flags extends void
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L583)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L588)
 
 ```
 /** Configuration for URL routing with handlers for URL requests and URL changes. */
@@ -524,11 +566,28 @@ type RoutingConfig = Readonly<{
 }>
 ```
 
+### RunOptions
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L1145)
+
+```
+/**
+ * Client-only startup input for an application that declares Flags. Pass it
+ *  to `run` or `embed`; `hydrate` instead decodes the exact Flags value
+ *  embedded by the server render.
+ */
+type RunOptions = Readonly<{
+  flags: Effect.Effect<Flags, never, Resources>
+}>
+```
+
 ### SlowConfig
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L309)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L314)
 
 ```
 /**
@@ -555,7 +614,7 @@ type SlowConfig = false | Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L256)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L261)
 
 ```
 /** Tagged union of every slow-phase context passed to `slow.onSlow`. */
@@ -566,7 +625,7 @@ type SlowContext = SlowViewContext<Model, Message> | SlowUpdateContext<Model, Me
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L238)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L243)
 
 ```
 /** Context provided when DOM patching exceeds its configured time budget. */
@@ -583,7 +642,7 @@ type SlowPatchContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L247)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L252)
 
 ```
 /** Context provided when subscription dependency extraction exceeds its configured time budget. */
@@ -600,7 +659,7 @@ type SlowSubscriptionDependenciesContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L272)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L277)
 
 ```
 /** Budget overrides for slow warning phases. Omitted fields use Foldkit defaults. */
@@ -616,7 +675,7 @@ type SlowThresholdOverrides = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L228)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L233)
 
 ```
 /** Context provided when update exceeds its configured time budget. */
@@ -634,7 +693,7 @@ type SlowUpdateContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L219)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L224)
 
 ```
 /** Context provided when view construction exceeds its configured time budget. */
@@ -651,7 +710,7 @@ type SlowViewContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/viewTransition.ts#L36)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/viewTransition.ts#L36)
 
 ```
 /**
@@ -667,7 +726,7 @@ type ViewTransitionConfig = (context: ViewTransitionContext<Model, Message>) => 
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/viewTransition.ts#L18)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/viewTransition.ts#L18)
 
 ```
 /**
@@ -698,7 +757,7 @@ type ViewTransitionContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/viewTransition.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/viewTransition.ts#L28)
 
 ```
 /**
@@ -716,7 +775,7 @@ type ViewTransitionDecision = boolean | Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L124)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L129)
 
 ```
 /** Controls when a feature is shown. */
@@ -729,7 +788,7 @@ type Visibility = "Development" | "Always"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/foldkit/src/runtime/runtime.ts#L263)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/foldkit/src/runtime/runtime.ts#L268)
 
 ```
 /** Phase names measured by the slow warning runtime option. */

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/virtual-list
 title: "Virtual List"
 description: "Virtualization primitive for large lists. Only items inside the viewport plus an overscan buffer are mounted; spacers above and below keep the scrollbar physically correct."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-17T04:17:49.255Z
+current_date: 2026-08-17T04:17:49.255Z
 ---
 
 ## VirtualList
@@ -25,43 +25,6 @@ Items live in your Model, not the component, and pass through `ViewConfig.items`
 Every row uses the same height, configured at init through `rowHeightPx`. The component divides scroll math by that constant. Prefer this path when row heights are stable.
 
 10,000 activity events
-
-- S
-	Sarah Chen merged PR #1
-	1m ago
-- M
-	Marcus Davies opened issue #14
-	2h ago
-- P
-	Priya Patel commented on PR #27
-	5h ago
-- A
-	Alex Kim approved PR #40
-	7h ago
-- J
-	Jordan Lee closed issue #53
-	9h ago
-- S
-	Sam Rivera reopened issue #66
-	12h ago
-- B
-	Ben Carter requested review on PR #79
-	14h ago
-- M
-	Mira Patel pushed to fix/dialog-focus
-	16h ago
-- L
-	Lucy Hong merged PR #105
-	18h ago
-- C
-	Casey Park opened issue #118
-	21h ago
-- R
-	Robin Adams commented on PR #131
-	23h ago
-- T
-	Tomás Reyes approved PR #144
-	1d ago
 
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
@@ -181,46 +144,6 @@ Pass an `itemToRowHeightPx` callback on `ViewConfig` and rows take the height th
 Programmatic scrolling for variable-height lists uses `scrollToIndexVariable`, which walks the heights to compute the target `scrollTop`. Pass the same `items` and `itemToRowHeightPx` you pass to `view` so the math agrees.
 
 Mixed-height rows: every fourth row is taller and shows a summary
-
-- S
-	Sarah Chen merged PR #1
-	CI passing across all browsers
-	Resolved the flake in the snapshot suite and confirmed the migration step runs idempotently against staging.
-	ci/run-4892
-	1m ago
-- M
-	Marcus Davies opened issue #14
-	2h ago
-- P
-	Priya Patel commented on PR #27
-	5h ago
-- A
-	Alex Kim approved PR #40
-	7h ago
-- J
-	Jordan Lee closed issue #53
-	Failure trace attached
-	Captured the steps to reproduce, attached the failing trace, and tagged the owning team for triage.
-	traces/failure-7c2e
-	9h ago
-- S
-	Sam Rivera reopened issue #66
-	12h ago
-- B
-	Ben Carter requested review on PR #79
-	14h ago
-- M
-	Mira Patel pushed to fix/dialog-focus
-	16h ago
-- L
-	Lucy Hong merged PR #105
-	Tracking upstream change
-	Linked the upstream regression and added reproduction context so the next reviewer has everything in one place.
-	tracker/issue-218
-	18h ago
-- C
-	Casey Park opened issue #118
-	21h ago
 
 ```
 // Pseudocode walkthrough for variable-height rows. Builds on the basic

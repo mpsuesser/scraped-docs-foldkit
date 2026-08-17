@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/foldkit-vs-react-side-by-side
 title: "Foldkit vs React: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and React. Covers state management, side effects, testing, performance, and architectural tradeoffs."
-access_date: 2026-08-10T14:39:49.977Z
-current_date: 2026-08-10T14:39:49.977Z
+access_date: 2026-08-17T04:17:49.255Z
+current_date: 2026-08-17T04:17:49.255Z
 ---
 
 ## Foldkit vs React: Side by Side
@@ -243,7 +243,6 @@ export const init: Runtime.ApplicationInit<Model, Message, Flags> = flags => [
 const application = Runtime.makeApplication({
   Model,
   Flags,
-  flags,
   init,
   update,
   view,
@@ -251,7 +250,7 @@ const application = Runtime.makeApplication({
   container: document.getElementById('root'),
 })
 
-Runtime.run(application)
+Runtime.run(application, { flags })
 ```
 
 No refs. No manual memoization at the component boundary. No prop threading. The `init` function returns the initial Model and an empty list of startup Commands. `Runtime.makeApplication` takes the Model schema, init, update, view, and subscriptions, plus the Flags schema and DOM container. `Runtime.run` starts it. The runtime handles event dispatch, memoization, and side effect execution. You declare what the program is. The framework runs it.

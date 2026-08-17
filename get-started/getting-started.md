@@ -2,8 +2,8 @@
 url: https://foldkit.dev/get-started/getting-started
 title: "Getting Started"
 description: "Set up your first Foldkit application in minutes. Install, scaffold with create-foldkit-app, and build a TypeScript frontend with Effect-TS."
-access_date: 2026-08-14T23:23:27.183Z
-current_date: 2026-08-14T23:23:27.183Z
+access_date: 2026-08-17T04:17:49.255Z
+current_date: 2026-08-17T04:17:49.255Z
 ---
 
 # Getting Started
@@ -34,7 +34,7 @@ npm install @effect/platform-browser@4.0.0-rc.109
 
 ## Quick Start
 
-[Create Foldkit app](https://github.com/foldkit/foldkit/tree/main/packages/create-foldkit-app) is the recommended way to get started. You’ll select an [example](https://foldkit.dev/example-apps) to start with and the package manager you’d like to use.
+[Create Foldkit app](https://github.com/foldkit/foldkit/tree/main/packages/create-foldkit-app) is the recommended way to get started. You’ll pick a rendering mode (a browser-only SPA, static generation, or [server rendering](https://foldkit.dev/core/server-rendering)), an [example](https://foldkit.dev/example-apps) to start from when scaffolding a SPA, and the package manager you’d like to use.
 
 ```sh
 npx create-foldkit-app@latest

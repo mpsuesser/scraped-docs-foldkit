@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps
 title: "Example Apps"
 description: "Working Foldkit example apps: counter, forms, routing, auth, websocket chat, and more. Each demonstrates Effect-TS and Elm Architecture patterns."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-17T04:17:49.255Z
+current_date: 2026-08-17T04:17:49.255Z
 ---
 
 # Examples
@@ -129,6 +129,14 @@ QR code designer wiring two real third-party web components into Foldkit with Cu
 [Embedding](https://foldkit.dev/example-apps/embedding)
 
 A Foldkit widget embedded in a plain TypeScript host page through Runtime.embed. The host seeds initial state with Flags, pushes a step value in through an inbound Port, mirrors the count the widget emits through an outbound Port, and mounts and unmounts the widget with dispose. All communication crosses one Schema-typed handle; the host never touches the Model.
+
+[Static Site Generation](https://foldkit.dev/example-apps/ssg)
+
+A build script renders every route to static HTML through a server entry, and the client hydrates the served markup in place. The same init, view, and Model produce the build output and the running application.
+
+[Server-Side Rendering](https://foldkit.dev/example-apps/ssr)
+
+A server renders each request into HTML using Flags read from a cookie, and the client hydrates with the exact values the server used. Reload the page and your latest count arrives already in the markup, before any JavaScript runs.
 
 [UI Showcase](https://foldkit.dev/example-apps/ui-showcase)
 

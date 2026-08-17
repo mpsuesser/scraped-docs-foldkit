@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/coming-from-react
 title: "Coming from React"
 description: "Moving from React to a principled architecture? Foldkit replaces hooks, useEffect, and component state with The Elm Architecture: one Model, one update function, explicit effects. Built on Effect-TS."
-access_date: 2026-08-04T03:55:42.119Z
-current_date: 2026-08-04T03:55:42.119Z
+access_date: 2026-08-17T04:17:49.255Z
+current_date: 2026-08-17T04:17:49.255Z
 ---
 
 # Coming from React
@@ -489,6 +489,10 @@ Messages dispatched to
 React Router / TanStack Router
 
 Built-in typed routing
+
+Next.js SSR / SSG
+
+Server rendering: one pipeline, build-time or per-request
 
 React Hook Form / Formik
 

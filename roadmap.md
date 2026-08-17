@@ -2,8 +2,8 @@
 url: https://foldkit.dev/roadmap
 title: "Roadmap"
 description: "Where Foldkit is headed: the blocks of work that gate a production-ready 1.0, the directions under exploration after it, and the stances that will not change."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-17T04:17:49.255Z
+current_date: 2026-08-17T04:17:49.255Z
 ---
 
 # Roadmap
@@ -28,7 +28,7 @@ Day-to-day work is tracked at ticket granularity in a private tracker, and that 
 
 ## After 1.0
 
-The largest committed direction is per-request server rendering with a hydration handoff, covered in depth in [What about SSR?](https://foldkit.dev/faq/what-about-ssr). Its timing is not settled yet: it may land shortly before 1.0 or as an early release after.
+Build-time static generation and per-request server rendering share one experimental hydration handoff: `Server.renderToString` in `foldkit/experimental` and explicit adoption via `Runtime.hydrate`. The [Server Rendering](https://foldkit.dev/core/server-rendering) and [What about SSR?](https://foldkit.dev/faq/what-about-ssr) pages cover the architecture, with separate SSG and SSR reference applications.
 
 Beyond that, these are directions being explored, not commitments:
 

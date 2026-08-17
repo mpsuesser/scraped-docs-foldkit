@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-select
 title: "Ui/Select"
 description: "API documentation for the Ui/Select module."
-access_date: 2026-08-17T01:15:19.180Z
-current_date: 2026-08-17T01:15:19.180Z
+access_date: 2026-08-17T04:17:49.255Z
+current_date: 2026-08-17T04:17:49.255Z
 ---
 
 # Ui/Select
@@ -14,7 +14,7 @@ current_date: 2026-08-17T01:15:19.180Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/ui/src/select/index.ts#L26)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/select/index.ts#L26)
 
 ```
 /** Returns the description element id, derived from the select's base id. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/ui/src/select/index.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/select/index.ts#L29)
 
 ```
 /** Renders an accessible select by building ARIA attribute groups and delegating layout to the consumer's `toView` callback. */
@@ -41,7 +41,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/ui/src/select/index.ts#L7)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/select/index.ts#L7)
 
 ```
 /** Attribute groups the select component provides to the consumer's `toView` callback. */
@@ -56,7 +56,7 @@ type SelectAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/bc8ade6f385180d2d701679b7a7f59670916dcbf/packages/ui/src/select/index.ts#L14)
+[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/select/index.ts#L14)
 
 ```
 /** Configuration for rendering a select with `view`. */
