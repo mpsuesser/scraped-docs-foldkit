@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/story
 title: "Story"
 description: "API documentation for the Story module."
-access_date: 2026-08-17T04:55:33.958Z
-current_date: 2026-08-17T04:55:33.958Z
+access_date: 2026-08-17T05:12:55.977Z
+current_date: 2026-08-17T05:12:55.977Z
 ---
 
 # Story
@@ -14,7 +14,7 @@ current_date: 2026-08-17T04:55:33.958Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/foldkit/src/test/story.ts#L300)
+[source](https://github.com/foldkit/foldkit/blob/da6a434e6b200b073e4fbbeae5154287927c7c8d/packages/foldkit/src/test/story.ts#L300)
 
 ```
 /** Asserts that the OutMessage is None. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/foldkit/src/test/story.ts#L278)
+[source](https://github.com/foldkit/foldkit/blob/da6a434e6b200b073e4fbbeae5154287927c7c8d/packages/foldkit/src/test/story.ts#L278)
 
 ```
 /** Asserts that the OutMessage is Some with the expected value. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/foldkit/src/test/story.ts#L85)
+[source](https://github.com/foldkit/foldkit/blob/da6a434e6b200b073e4fbbeae5154287927c7c8d/packages/foldkit/src/test/story.ts#L85)
 
 ```
 /** Sets the initial Model for a test story. */
@@ -47,7 +47,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/foldkit/src/test/story.ts#L106)
+[source](https://github.com/foldkit/foldkit/blob/da6a434e6b200b073e4fbbeae5154287927c7c8d/packages/foldkit/src/test/story.ts#L106)
 
 ```
 /**
@@ -61,7 +61,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/foldkit/src/test/story.ts#L214)
+[source](https://github.com/foldkit/foldkit/blob/da6a434e6b200b073e4fbbeae5154287927c7c8d/packages/foldkit/src/test/story.ts#L214)
 
 ```
 /** Runs an assertion function against the current Model. */
@@ -74,7 +74,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/foldkit/src/test/internal.ts#L46)
+[source](https://github.com/foldkit/foldkit/blob/da6a434e6b200b073e4fbbeae5154287927c7c8d/packages/foldkit/src/test/internal.ts#L46)
 
 ```
 /**
@@ -96,7 +96,7 @@ type CommandMatcher = CommandDefinition<string, unknown> | AnyCommand
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/foldkit/src/test/story.ts#L38)
+[source](https://github.com/foldkit/foldkit/blob/da6a434e6b200b073e4fbbeae5154287927c7c8d/packages/foldkit/src/test/story.ts#L38)
 
 ```
 /** A callable step that sets the initial Model. Carries phantom type for compile-time validation. */
@@ -109,7 +109,7 @@ type GivenStep = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/foldkit/src/test/story.ts#L44)
+[source](https://github.com/foldkit/foldkit/blob/da6a434e6b200b073e4fbbeae5154287927c7c8d/packages/foldkit/src/test/story.ts#L44)
 
 ```
 /** A model-assertion step produced by model. */
@@ -123,7 +123,7 @@ type ModelStep = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/foldkit/src/test/story.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/da6a434e6b200b073e4fbbeae5154287927c7c8d/packages/foldkit/src/test/story.ts#L29)
 
 ```
 /** An immutable test simulation of a Foldkit program. */
@@ -138,7 +138,7 @@ type StorySimulation = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/foldkit/src/test/story.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/da6a434e6b200b073e4fbbeae5154287927c7c8d/packages/foldkit/src/test/story.ts#L51)
 
 ```
 /**
@@ -154,7 +154,7 @@ type StoryStep = GivenStep<NoInfer<Model>> | ModelStep<NoInfer<Model>> | (sim: S
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/foldkit/src/test/story.ts#L256)
+[source](https://github.com/foldkit/foldkit/blob/da6a434e6b200b073e4fbbeae5154287927c7c8d/packages/foldkit/src/test/story.ts#L256)
 
 ```
 /**
@@ -179,7 +179,7 @@ const Command: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/foldkit/src/test/story.ts#L323)
+[source](https://github.com/foldkit/foldkit/blob/da6a434e6b200b073e4fbbeae5154287927c7c8d/packages/foldkit/src/test/story.ts#L323)
 
 ```
 /** Executes a test story. Throws if any Commands remain unresolved. */

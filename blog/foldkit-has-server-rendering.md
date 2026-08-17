@@ -1,14 +1,14 @@
 ---
-url: https://foldkit.dev/blog/foldkit-has-server-rendering-now
-title: "Foldkit Has Server Rendering Now"
+url: https://foldkit.dev/blog/foldkit-has-server-rendering
+title: "Foldkit Has Server Rendering"
 description: "Your Foldkit application can now render to HTML at build time or per request, then hydrate in place on the client."
-access_date: 2026-08-17T04:55:33.958Z
-current_date: 2026-08-17T04:55:33.958Z
+access_date: 2026-08-17T05:12:55.977Z
+current_date: 2026-08-17T05:12:55.977Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
 
-# Foldkit Has Server Rendering Now
+# Foldkit Has Server Rendering
 
 August 15, 2026 · Devin Jameson
 
