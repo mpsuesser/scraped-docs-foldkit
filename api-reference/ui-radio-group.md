@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-radio-group
 title: "Ui/RadioGroup"
 description: "API documentation for the Ui/RadioGroup module."
-access_date: 2026-08-17T04:17:49.255Z
-current_date: 2026-08-17T04:17:49.255Z
+access_date: 2026-08-17T04:55:33.958Z
+current_date: 2026-08-17T04:55:33.958Z
 ---
 
 # Ui/RadioGroup
@@ -14,7 +14,7 @@ current_date: 2026-08-17T04:17:49.255Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L471)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L471)
 
 ```
 /**
@@ -44,7 +44,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L95)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L95)
 
 ```
 /**
@@ -61,7 +61,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L441)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L441)
 
 ```
 /**
@@ -80,7 +80,7 @@ type Bundle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L88)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L88)
 
 ```
 /** Configuration for creating a radio group model with `init`. */
@@ -93,7 +93,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L161)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L161)
 
 ```
 /**
@@ -125,7 +125,7 @@ type OptionInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L78)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L78)
 
 ```
 /**
@@ -140,7 +140,7 @@ type OutMessage = Selected<Value>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L185)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L185)
 
 ```
 /**
@@ -169,7 +169,7 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L66)
 
 ```
 /** Sent to the parent when an option is committed via click or keyboard. Carries both the option's value (typed as `Value` via `RadioGroup.create<Value>()`) and its index. Generic at the type level; the schema stores `value: string` and the factory's fenced cast types it as `Value`. */
@@ -184,7 +184,7 @@ type Selected = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L205)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L205)
 
 ```
 /**
@@ -221,7 +221,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L51)
 
 ```
 /** Sent when the focus-option command completes. */
@@ -232,7 +232,7 @@ const CompletedFocusOption: CallableTaggedStruct<"CompletedFocusOption", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L111)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L111)
 
 ```
 /** Moves focus to the option at the given index. */
@@ -248,7 +248,7 @@ const FocusOption: CommandDefinitionWithArgs<"FocusOption", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L49)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L49)
 
 ```
 /**
@@ -264,7 +264,7 @@ const FocusedOption: CallableTaggedStruct<"FocusedOption", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L54)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L54)
 
 ```
 /** Union of all messages the radio group can produce. */
@@ -275,7 +275,7 @@ const Message: S.Union<[typeof SelectedOption, typeof FocusedOption, typeof Comp
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L32)
 
 ```
 /**
@@ -295,7 +295,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L24)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L24)
 
 ```
 /** Controls the radio group layout direction and which arrow keys navigate between options. */
@@ -306,7 +306,7 @@ const Orientation: Literals<readonly ["Horizontal", "Vertical"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L78)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L78)
 
 ```
 /** Union of out-messages the radio group can produce. Surfaced as the third element of `update`'s return tuple and pattern-matched by the parent. */
@@ -322,7 +322,7 @@ const OutMessage: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L66)
 
 ```
 /** Sent to the parent when an option is committed via click or keyboard. Carries both the option's value (typed as `Value` via `RadioGroup.create<Value>()`) and its index. Generic at the type level; the schema stores `value: string` and the factory's fenced cast types it as `Value`. */
@@ -336,7 +336,7 @@ const Selected: CallableTaggedStruct<"Selected", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/d3269fdc99415133be3631fe1b1a0de48f510fab/packages/ui/src/radioGroup/index.ts#L43)
+[source](https://github.com/foldkit/foldkit/blob/6bd44dd4f7c19a07cf4d9b0bf52dd9931d945c2d/packages/ui/src/radioGroup/index.ts#L43)
 
 ```
 /**

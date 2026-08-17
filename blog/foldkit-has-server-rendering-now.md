@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-has-server-rendering-now
 title: "Foldkit Has Server Rendering Now"
 description: "Your Foldkit application can now render to HTML at build time or per request, then hydrate in place on the client."
-access_date: 2026-08-17T04:17:49.255Z
-current_date: 2026-08-17T04:17:49.255Z
+access_date: 2026-08-17T04:55:33.958Z
+current_date: 2026-08-17T04:55:33.958Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
@@ -82,7 +82,7 @@ After hydration, the initial Commands run, and your Foldkit application behaves 
 
 ## What shipped
 
-Check out the [release notes](https://github.com/foldkit/foldkit/blob/main/packages/foldkit/CHANGELOG.md), the new docs page on [Server Rendering](https://foldkit.dev/core/server-rendering), and the runnable [Static Site Generation](https://foldkit.dev/example-apps/ssg) and [Server-Side Rendering](https://foldkit.dev/example-apps/ssr) examples.
+Check out the [release notes](https://github.com/foldkit/foldkit/releases/tag/foldkit%400.147.0), the new docs page on [Server Rendering](https://foldkit.dev/core/server-rendering), and the runnable [Static Site Generation](https://foldkit.dev/example-apps/ssg) and [Server-Side Rendering](https://foldkit.dev/example-apps/ssr) examples.
 
 This website ([foldkit.dev](https://foldkit.dev)) now prerenders every route through the same `renderPage` contract (SSG). The page you are reading hydrated in place.
 
