@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/animation
 title: "Animation"
 description: "Coordinates CSS enter/leave animations via a state machine and data attributes. Works with both CSS transitions and keyframe animations."
-access_date: 2026-08-11T02:16:28.996Z
-current_date: 2026-08-11T02:16:28.996Z
+access_date: 2026-08-17T01:15:19.180Z
+current_date: 2026-08-17T01:15:19.180Z
 ---
 
 ## Animation
@@ -244,9 +244,9 @@ Configuration object passed to `Animation.view()`.
 | `attributes` | `ReadonlyArray<Attribute<Message>>` | — | Additional attributes for the wrapper. |
 | `element` | `TagName` | `'div'` | The HTML element for the wrapper. |
 
-### OutMessages
+### OutMessage
 
-OutMessages emitted from `Animation.update()`. Fold these in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
+Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
