@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-nav
 title: "Ui/Nav"
 description: "API documentation for the Ui/Nav module."
-access_date: 2026-08-18T16:38:52.332Z
-current_date: 2026-08-18T16:38:52.332Z
+access_date: 2026-08-18T17:46:55.714Z
+current_date: 2026-08-18T17:46:55.714Z
 ---
 
 # Ui/Nav
@@ -14,7 +14,7 @@ current_date: 2026-08-18T16:38:52.332Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6a4fac4ffd2cd09a3bdfab46eafc67e63984d771/packages/ui/src/nav/index.ts#L64)
+[source](https://github.com/foldkit/foldkit/blob/b053caf1506111b0841ad03a92d2baeb82fbea99/packages/ui/src/nav/index.ts#L64)
 
 ```
 /**
@@ -44,7 +44,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6a4fac4ffd2cd09a3bdfab46eafc67e63984d771/packages/ui/src/nav/index.ts#L14)
+[source](https://github.com/foldkit/foldkit/blob/b053caf1506111b0841ad03a92d2baeb82fbea99/packages/ui/src/nav/index.ts#L14)
 
 ```
 /**
@@ -64,7 +64,7 @@ type ItemInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6a4fac4ffd2cd09a3bdfab46eafc67e63984d771/packages/ui/src/nav/index.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/b053caf1506111b0841ad03a92d2baeb82fbea99/packages/ui/src/nav/index.ts#L28)
 
 ```
 /**
@@ -86,7 +86,7 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/6a4fac4ffd2cd09a3bdfab46eafc67e63984d771/packages/ui/src/nav/index.ts#L36)
+[source](https://github.com/foldkit/foldkit/blob/b053caf1506111b0841ad03a92d2baeb82fbea99/packages/ui/src/nav/index.ts#L36)
 
 ```
 /**

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/struct
 title: "Struct"
 description: "API documentation for the Struct module."
-access_date: 2026-08-18T16:38:52.332Z
-current_date: 2026-08-18T16:38:52.332Z
+access_date: 2026-08-18T17:46:55.714Z
+current_date: 2026-08-18T17:46:55.714Z
 ---
 
 # Struct
@@ -14,7 +14,7 @@ current_date: 2026-08-18T16:38:52.332Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/6a4fac4ffd2cd09a3bdfab46eafc67e63984d771/packages/foldkit/src/struct/index.ts#L36)
+[source](https://github.com/foldkit/foldkit/blob/b053caf1506111b0841ad03a92d2baeb82fbea99/packages/foldkit/src/struct/index.ts#L36)
 
 ```
 /** Creates a variant of `evo` whose transforms are checked against a supertype. Useful in generic contexts where `evo`'s `StrictKeys` can't resolve `keyof` on an open type parameter. The returned function evolves a subtype model, preserving all fields not in the transform, and returns the subtype. */
@@ -27,7 +27,7 @@ function
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/6a4fac4ffd2cd09a3bdfab46eafc67e63984d771/packages/foldkit/src/struct/index.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/b053caf1506111b0841ad03a92d2baeb82fbea99/packages/foldkit/src/struct/index.ts#L25)
 
 ```
 /** Immutably updates fields of a struct by applying transform functions. Wraps Effect's `Struct.evolve` with stricter key checking. */
