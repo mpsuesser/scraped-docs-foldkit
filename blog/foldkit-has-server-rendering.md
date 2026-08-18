@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/blog/foldkit-has-server-rendering
 title: "Foldkit Has Server Rendering"
-description: "Your Foldkit application can now render to HTML at build time or per request, then hydrate in place on the client."
-access_date: 2026-08-17T05:12:55.977Z
-current_date: 2026-08-17T05:12:55.977Z
+description: "Your Foldkit application can now render to HTML at build time or per request, then hydrate on the client."
+access_date: 2026-08-18T16:38:52.332Z
+current_date: 2026-08-18T16:38:52.332Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
@@ -24,9 +24,9 @@ There was one more problem. Foldkit not having SSR was the deal-breaker for [Mic
 
 So, Foldkit can render on the server now. It shipped today under `foldkit/experimental/server`. It will be promoted to `foldkit/server` once the community puts it through its paces.
 
-`foldkit/experimental/server` ships `renderToString`, and `foldkit/runtime` ships `hydrate`. Together, they give a Foldkit application two new ways to reach the browser: generate static HTML for selected routes during the build, or render each request on a server. Either way, the browser hydrates the served HTML in place, and the application it boots is the same Foldkit application you wrote yesterday.
+`foldkit/experimental/server` ships `renderToString`, and `foldkit/runtime` ships `hydrate`. Together, they give a Foldkit application two new ways to reach the browser: generate static HTML for selected routes during the build, or render each request on a server. When the server and client agree, the browser adopts the served HTML in place. A mismatched subtree is rebuilt, and an invalid or cross-deployment handoff is refused. The application that boots is the same Foldkit application you wrote yesterday.
 
-A Foldkit app can still be a pure client-side SPA with no server rendering at all, unchanged from before. Server rendering is opt-in.
+A Foldkit app can remain a pure client-side SPA. Server rendering is opt-in.
 
 ## SSG vs SSR
 
@@ -48,7 +48,10 @@ export const renderPage = (request: Request): Promise<Server.EntryResult> =>
     Effect.gen(function* () {
       const renderedApplication = yield* Server.renderToString(
         { Flags, init, view },
-        { flags: flagsForRequest(request) },
+        {
+          flags: flagsForRequest(request),
+          buildId: import.meta.env.FOLDKIT_BUILD_ID,
+        },
       )
 
       return Server.Rendered(renderedApplication, {
@@ -74,15 +77,15 @@ If you are using Foldkit without SSR, the browser runs the whole sequence: your 
 With SSR, the server runs the front of that sequence and the browser finishes it:
 
 - **On the server**, `flagsForRequest` turns the request into flags, `init` builds the first Model, and `view` renders it to HTML. That HTML ships to the browser with the flags serialized alongside it.
-- **On the client**, `init` runs again with those same flags, rebuilds the identical Model, and `view` renders it. Instead of replacing the server's HTML, hydration adopts it in place.
+- **On the client**, `init` runs again with those same flags, rebuilds the initial Model, and `view` renders it. Hydration adopts matching server DOM and rebuilds a mismatched subtree from its nearest parent.
 
-Same flags, same `init`, same `view` on both sides, so there is no separate server-side Model to reconcile with the client's.
+There is no separate server-side Model to reconcile with the client's. Both sides derive the initial Model from the same flags and `init`, then render it through the same `view`.
 
 After hydration, the initial Commands run, and your Foldkit application behaves like a typical SPA with client-side navigation.
 
 ## What shipped
 
-Check out the [release notes](https://github.com/foldkit/foldkit/releases/tag/foldkit%400.147.0), the new docs page on [Server Rendering](https://foldkit.dev/core/server-rendering), and the runnable [Static Site Generation](https://foldkit.dev/example-apps/ssg) and [Server-Side Rendering](https://foldkit.dev/example-apps/ssr) examples.
+Check out the new docs page on [Server Rendering](https://foldkit.dev/core/server-rendering), and the runnable [Static Site Generation](https://foldkit.dev/example-apps/ssg) and [Server-Side Rendering](https://foldkit.dev/example-apps/ssr) examples.
 
 This website ([foldkit.dev](https://foldkit.dev)) now prerenders every route through the same `renderPage` contract (SSG). The page you are reading hydrated in place.
 

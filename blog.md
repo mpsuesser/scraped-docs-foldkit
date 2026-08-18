@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog
 title: "Blog"
 description: "Announcements, musings, and technical deep dives."
-access_date: 2026-08-17T05:12:55.977Z
-current_date: 2026-08-17T05:12:55.977Z
+access_date: 2026-08-18T16:38:52.332Z
+current_date: 2026-08-18T16:38:52.332Z
 ---
 
 # Blog
@@ -14,7 +14,7 @@ Announcements, musings, and technical deep dives.
 
 August 15, 2026 · Devin Jameson
 
-Your Foldkit application can now render to HTML at build time or per request, then hydrate in place on the client.
+Your Foldkit application can now render to HTML at build time or per request, then hydrate on the client.
 
 [Read more →](https://foldkit.dev/blog/foldkit-has-server-rendering)
 
