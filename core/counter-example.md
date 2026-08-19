@@ -2,17 +2,17 @@
 url: https://foldkit.dev/core/counter-example
 title: "Counter Example"
 description: "A minimal Foldkit application explained step by step."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-19T19:38:38.072Z
+current_date: 2026-08-19T19:38:38.072Z
 ---
 
 # A Simple Counter Example
 
-## Overview
+## See the Whole Loop
 
-Here’s a complete counter application. It wires up the core of the loop from the [Architecture](https://foldkit.dev/core/architecture) page (a Model, Messages, update, init, and view).
+This counter puts the core loop from [Architecture](https://foldkit.dev/core/architecture) into one small application. Its Model holds the count. Its Messages record button clicks. Its update function decides the next count, and its view renders the result.
 
-A Foldkit app lives in two files. `src/main.ts` holds the pure definitions: Model, Messages, update, init, view, etc. `src/entry.ts` imports them and boots the runtime. The split keeps `main.ts` importable from tests without booting a runtime as a side effect.
+The example uses two files. `src/main.ts` holds the pure application definitions: Model, Messages, update, init, and view. Larger applications can split those definitions into focused modules. `src/entry.ts` remains the runtime boundary, so tests can import the application without starting it as a side effect.
 
 ```
 import { Match as M, Schema as S } from 'effect'
@@ -106,7 +106,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 const buttonStyle = 'bg-black text-white hover:bg-gray-700 px-4 py-2 transition'
 ```
 
-`entry.ts` is the only place runtime side effects happen. `Runtime.makeApplication` bundles the pieces together. `Runtime.run` starts the app.
+The entry imports those definitions and passes them to `Runtime.makeApplication`. `Runtime.run` then starts the application in the selected container.
 
 ```
 import { Runtime } from 'foldkit'
@@ -124,6 +124,6 @@ const application = Runtime.makeApplication({
 Runtime.run(application)
 ```
 
-Don’t worry about understanding every line yet. The next four pages break this code apart piece by piece. After that, we’ll add new features to the counter (a delayed reset, auto-counting, loading saved state) and each one will introduce a new concept.
+Read the example once for its shape. The next four pages examine the [Model](https://foldkit.dev/core/model), [Messages](https://foldkit.dev/core/messages), [update](https://foldkit.dev/core/update), and [view](https://foldkit.dev/core/view) in order. Later pages extend the same counter with a delayed reset, automatic counting, and saved state to introduce side effects and ongoing work.
 
-Let’s start with the Model: the single data structure that holds everything your application can be.
+Start with the Model, the single data structure that describes the application right now.

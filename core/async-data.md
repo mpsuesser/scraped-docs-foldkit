@@ -2,13 +2,13 @@
 url: https://foldkit.dev/core/async-data
 title: "Async Data"
 description: "A six-state value type for asynchronously loaded data in the Model: Idle, Loading, Refreshing, Failure, Stale, and Success, with stale-while-revalidate and keep-stale-on-failure built in."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-19T19:38:38.072Z
+current_date: 2026-08-19T19:38:38.072Z
 ---
 
 ## Async Data
 
-`foldkit/asyncData` is a shipped Foldkit module: a plain value type in the spirit of `Option` and `Result` from Effect, built for data that arrives asynchronously. It provides a value type, not an application pattern. This page introduces the type, the mental model, and the combinators you reach for most. The [API Reference](https://foldkit.dev/api-reference/async-data) has the exhaustive catalog.
+`foldkit/asyncData` is a plain value type in the spirit of Effect’s `Option` and `Result`, built for data that arrives asynchronously. This page introduces the state model and the combinators you reach for most. The [API Reference](https://foldkit.dev/api-reference/async-data) has the exhaustive catalog.
 
 ## Overview
 
@@ -47,7 +47,7 @@ Three classifications recur across the API, and every combinator is derived from
 
 - “has data”: `Success`, `Refreshing`, `Stale`.
 - “no data”: `Idle`, `Loading`, `Failure`.
-- “pending” (a request in flight): `Loading` and `Refreshing` only. `Stale` is NOT pending; its fetch already failed.
+- “pending” (a request in flight): `Loading` and `Refreshing` only. `Stale` is not pending; its fetch already failed.
 
 Coming from Elm
 
@@ -65,7 +65,7 @@ Because both are type-level states, “show stale data while revalidating” and
 
 ## The Schema Builder
 
-`AsyncData.Schema(dataSchema, errorSchema)` returns the codec you embed in a Model, plus Schema-tightened constructors. The returned `.schema` is the six-state Union codec. This is the generic successor to the monomorphic factory the app used to hand-roll.
+`AsyncData.Schema(dataSchema, errorSchema)` returns the codec you embed in a Model, plus constructors constrained to those data and error types. The returned `.schema` is the six-state Union codec.
 
 ```
 import { Schema as S } from 'effect'
@@ -103,7 +103,7 @@ const success = NotesAsyncData.Success({ data: [] }) // { _tag: 'Success', data:
 
 ## Working With the Value
 
-The API is a namespace of free, curried-dual functions over `AsyncData<A, E>` values, exactly like `Option`, `Result`, and `Exit`. Every dual ships its data-last overload first, so `pipe(notes, AsyncData.map(f))` and `AsyncData.map(notes, f)` both work.
+The API is a namespace of free, curried-dual functions over `AsyncData<A, E>` values, like `Option`, `Result`, and `Exit`. Both `pipe(notes, AsyncData.map(f))` and `AsyncData.map(notes, f)` work.
 
 The fundamental way to read a value is `match`. It dispatches on the tag and passes the unwrapped payload to each of six required handlers. Handler keys are tag-named here because each handler covers exactly one tag. The one asymmetry is `onStale`, which receives the whole `{ error, data }` object, because only `Stale` carries two fields.
 
@@ -118,7 +118,7 @@ AsyncData.match(model.allNotes, {
 })
 ```
 
-Most views do not need six arms. `matchData` collapses the six states into the three channels a view usually renders: `onData` spans `Success`, `Refreshing`, AND `Stale`, `onFailure` receives the `Failure` error, and `onEmpty` covers `Idle` and `Loading` together. Routing `Stale` through `onData` is the point of keeping its data. `matchDataSplitEmpty` is the same collapse with the two cold states split into `onIdle` and `onLoading`, for views that render them differently; reach for `match` when the stale error or the `Refreshing` signal matters.
+Most views do not need six arms. `matchData` collapses the six states into the three channels a view usually renders: `onData` spans `Success`, `Refreshing`, and `Stale`; `onFailure` receives the `Failure` error; and `onEmpty` covers `Idle` and `Loading` together. Routing `Stale` through `onData` is the point of keeping its data. `matchDataSplitEmpty` is the same collapse with the two cold states split into `onIdle` and `onLoading`, for views that render them differently. Reach for `match` when the stale error or the `Refreshing` signal matters.
 
 ```
 AsyncData.matchData(model.allNotes, {
@@ -128,7 +128,7 @@ AsyncData.matchData(model.allNotes, {
 })
 ```
 
-`AsyncData.map` transforms every data-bearing state and preserves its tag, so a pure transform does not erase the `Refreshing` or `Stale` signal. `Stale` maps only its `data` and keeps its `error`. This is the free-function replacement for the app’s old bound `mapData`, and it is how a mutation edits the cached list in place.
+`AsyncData.map` transforms every data-bearing state and preserves its tag, so a pure transform does not erase the `Refreshing` or `Stale` signal. `Stale` maps only its `data` and keeps its `error`. This is how a mutation can edit cached data in place without erasing its request state.
 
 ```
 import { Array, HashMap, Option } from 'effect'
@@ -171,7 +171,7 @@ export const noteNotebookId = (
 
 Stale is not pending
 
-`isPending` is true for `Loading` and `Refreshing` only, NOT `Stale`. It answers “is a request in flight”, so it drives a spinner regardless of whether data is held. `Stale` is not pending: in this union it does not mean merely outdated data, it is specifically the state a failed refresh leaves behind, which is why it always carries the error.
+`isPending` is true for `Loading` and `Refreshing` only, not `Stale`. It answers “is a request in flight”, so it drives a spinner regardless of whether data is held. `Stale` does not mean merely outdated data in this union. It is specifically the state a failed refresh leaves behind, which is why it always carries the error.
 
 The getter vocabulary is deliberate: predicates are tag-named (`isSuccess`, `isFailure`) but getters are payload-named (`getData`, `getError`, and their boolean twins `hasData`, `hasError`), because `getData` spans three tags and `getError` spans two, so a tag-named getter would be wrong.
 
@@ -296,8 +296,6 @@ The precedence, most to least dominant, is `Failure > Loading > Idle > Stale > R
 All-or-nothing on data
 
 The combine is all-or-nothing on data. Because the combined value needs every input’s data, a single no-data child collapses the whole result to that non-data state. `zipWith(Idle, Success(x), f)` discards `x` and yields `Idle`. This is forced, not a bug. Combining also requires a shared error type `E`; unify heterogeneous errors with `mapError` first.
-
-This section is the mental model; reach for the record form of `all` when one screen depends on several fields at once.
 
 An `AsyncData` field lives in one place: the [Model](https://foldkit.dev/core/model), the single source of truth. Fetches are [Commands](https://foldkit.dev/core/commands): run the fetch through `Effect.result`, carry the `Result` in the Message, and fold it in with `settle`. [Field Validation](https://foldkit.dev/core/field-validation) is the sibling shipped module in the same tier, and the [API Reference](https://foldkit.dev/api-reference/async-data) has the generated, exhaustive catalog of every name and its per-state behavior.
 

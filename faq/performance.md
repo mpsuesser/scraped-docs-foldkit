@@ -2,8 +2,8 @@
 url: https://foldkit.dev/faq/performance
 title: "Performance"
 description: "How Foldkit performs and why: the rendering cost model, TodoMVC benchmark numbers against React, Elm, Svelte, Solid, and Lustre, what development mode costs that production does not, and the optimization toolkit."
-access_date: 2026-08-10T02:30:27.972Z
-current_date: 2026-08-10T02:30:27.972Z
+access_date: 2026-08-19T19:38:38.072Z
+current_date: 2026-08-19T19:38:38.072Z
 ---
 
 # Performance
@@ -173,4 +173,4 @@ What splits today:
 
 What does not split today: the routes of a single app. A Foldkit program is one statically composed Model, update, and view, so the code for every page ships in the initial bundle. Elm shares this property for the same reason. Splitting a program by route would take design work against the single-Model architecture, not a configuration flag.
 
-See [What about SSR?](https://foldkit.dev/faq/what-about-ssr) for first-paint and SEO concerns.
+For first-paint and SEO concerns, see [Server Rendering](https://foldkit.dev/core/server-rendering). Rendering a route on the server or at build time puts real content in the response before the bundle loads.

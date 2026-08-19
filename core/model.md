@@ -2,19 +2,19 @@
 url: https://foldkit.dev/core/model
 title: "Model"
 description: "Define your entire application state as a single Effect-TS Schema. Learn how Foldkit's Model replaces useState, Redux, and Zustand."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-19T19:38:38.072Z
+current_date: 2026-08-19T19:38:38.072Z
 ---
 
 # Model
 
-## Overview
+## One State Tree
 
-The Model represents your entire application state in a single, immutable data structure defined with [Effect Schema](https://effect.website/docs/schema/introduction/). Everything your app can be at any moment lives here, not scattered across components, not split between local and global state.
+The Model is the complete application state in one immutable data structure. Everything the application can be at a moment lives here, rather than being divided between component-local and global stores.
 
-In the [restaurant analogy](https://foldkit.dev/core/architecture#the-restaurant-analogy), the Model is the waiter’s notebook: the running picture of everything happening right now. Orders in flight, tables seated, who’s waiting for dessert. Every fact about the current state of the restaurant lives in one place.
+In the [restaurant analogy](https://foldkit.dev/core/architecture#the-restaurant-analogy), this is the waiter's notebook. The analogy is a memory aid; the literal contract is one state tree that every transition receives and returns.
 
-In the counter example, the Model is a Struct with a single field:
+The counter defines its Model with [Effect Schema](https://effect.website/docs/schema/introduction/):
 
 ```
 import { Schema as S } from 'effect'
@@ -27,9 +27,11 @@ const Model = S.Struct({
 type Model = typeof Model.Type
 ```
 
-TypeScript types disappear when your code compiles. They help the compiler check your code, but they don’t exist at runtime. Schema keeps that type information alive as a value. This gives Foldkit knowledge of your Model at runtime: it can compare models for equality, decode state from unknown sources, and manage resource lifecycles, things that need the Model’s shape as a value, not just a compile-time annotation. You’ll see these capabilities pay off as the counter grows, especially on the Subscriptions page.
+`S.Struct` creates the runtime Schema. `typeof Model.Type` derives the TypeScript type from that same definition, so the runtime and compiler agree on the Model’s shape.
 
-The counter starts with a single field, but Models grow with your app. When we add auto-counting later, the Model will expand:
+That runtime value matters because TypeScript types disappear after compilation. Foldkit uses the Model Schema to encode and decode state preserved across hot updates. The same Schema can validate unknown data at application boundaries.
+
+The counter starts with one field. When automatic counting becomes part of the application state, the Model grows to record it:
 
 ```
 import { Schema as S } from 'effect'
@@ -44,8 +46,8 @@ const Model = S.Struct({
 type Model = typeof Model.Type
 ```
 
-One state tree, not many
+Model the application, not the screen
 
-Think of the Model as combining useState, useContext, and your Redux store into one typed structure. Instead of state scattered across components, everything lives here.
+Store facts the application needs to remember. Values used only to render one frame can usually be derived in view instead of becoming another Model field.
 
-The Model captures what your app is at any moment. But how does it change? In Foldkit, every change starts with a [Message](https://foldkit.dev/core/messages): a fact about something that happened.
+The Model describes the current state. Every change begins with a [Message](https://foldkit.dev/core/messages), a fact about something that happened.

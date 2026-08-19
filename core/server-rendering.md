@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/server-rendering
 title: "Server Rendering"
 description: "Render a request to HTML with renderToString and hydrate the DOM in place on boot."
-access_date: 2026-08-18T16:38:52.332Z
-current_date: 2026-08-18T16:38:52.332Z
+access_date: 2026-08-19T19:38:38.072Z
+current_date: 2026-08-19T19:38:38.072Z
 ---
 
 ## Server Rendering
@@ -27,27 +27,27 @@ One program gives Foldkit one rendering pipeline with two delivery policies:
 
 An application can use either policy, or use SSG for some URLs and SSR for others. The application code does not need a second rendering API.
 
-Here is one page from request to live application:
+For an application with Flags, here is the handoff from server input to a live application:
 
 ```
-GET /page  (from the browser)
-   │
-   ▼
-── on the host ──  Vite in dev, your server in production
-     renderPage      [you write]
-        derives Flags from the request
-     renderToString  [Foldkit]
-        calls your init, runs your view → HTML
-     toResponse      [Foldkit]
-        fills index.html, embeds the Flags payload
-   │
-   ▼  HTML page + Flags payload
-── on the browser ──
-     Runtime.hydrate [Foldkit]
-        reads the Flags, calls the same init
-        adopts matching DOM, rebuilds mismatches
-     live application
-        listeners and Mounts attach to the existing elements
+SERVER                         BROWSER
+
+request or build input                 normal Foldkit app
+         │                                     ▲
+         ▼                                     │
+       Flags                           adopt matching DOM
+         │                                     ▲
+         ▼                                     │
+        init                                same view
+         │                                     ▲
+         ▼                                     │
+       Model                          equivalent Model
+         │                                     ▲
+         ▼                                     │
+        view                               same init
+         │                                     ▲
+         ▼                                     │
+HTML + serialized Flags ────────► Runtime.hydrate reads Flags
 ```
 
 Once the live application takes over, it behaves like any other Foldkit application. Routing, update, Commands, and Subscriptions run in the browser. Navigation moves between routes without contacting the server. The server renders again only on a full page load, such as a reload or a link the runtime does not handle.
@@ -177,8 +177,8 @@ A hydratable render carries these markers:
 - The application root has `data-foldkit-app`. Its value is the `runtimeId`.
 - The root also has `data-foldkit-build`. Its value identifies the deployment that rendered the page.
 - An application with Flags emits a `<script type="application/json" data-foldkit-flags="...">`. It carries the Schema-encoded Flags that produced the server Model. The attribute value matches the root's `runtimeId`.
-- Keyed elements carry `data-foldkit-key`. Elements with build-assigned view identity carry `data-foldkit-identity`. Both values are digests. The marker contains neither the original key, which may hold an account id or email address, nor the build's source path. Hydration compares each digest and removes the marker as it adopts the element. A render with `isHydratable: false` emits neither marker.
-	A digest is a comparison token, not a secret. A reader cannot reverse it directly, but can hash a guessed value and test for a match. Key by values that are safe to publish.
+- Keyed elements carry `data-foldkit-key`. Elements with build-assigned view identity carry `data-foldkit-identity`. Both values are deterministic, non-cryptographic fingerprints. Neither marker contains the original key, which may hold an account id or email address, or the build's source path. Hydration compares each fingerprint and removes the marker as it adopts the element. A render with `isHydratable: false` emits neither marker.
+	A fingerprint is a public comparison token, not a secret or an authentication check. A reader can compute the fingerprint of a guessed key or view identity and test for a match. An attacker can also construct two values with the same fingerprint. Key by values that are safe to publish. Hydratable keys must be strings or numbers other than `NaN`.
 
 Conceptually, the handoff appears next to the rendered root:
 
@@ -397,11 +397,11 @@ Every other refusal contains the page. This includes calling `Runtime.hydrate` w
 
 ### Page containment
 
-Foldkit marks the document body with `inert`, `aria-hidden`, and `data-foldkit-refused`. It opens a nondismissable modal shield beside the body and above existing top-layer content, including dialogs in closed shadow roots. The shield takes focus so physical keyboard input cannot reach stale body handlers.
+Foldkit marks the document body with `inert`, `aria-hidden`, and `data-foldkit-refused`. It opens a nondismissable modal shield beside the body and above existing top-layer content, including dialogs in closed shadow roots. The shield takes focus. Document-level input guards keep physical keyboard input from reaching stale handlers in the same document if older top-layer content requests focus.
 
 Author-owned dialogs remain open behind the shield. Containment does not call `close()` or dispatch `cancel`, either of which could run a stale listener while startup is failing.
 
-Links, forms, and focusable controls stop responding. The shield asks the visitor to reload. The served DOM remains connected, and `data-foldkit-refused` is available for styling or monitoring. Nothing else in Foldkit sets that attribute.
+Pointer and physical keyboard input do not activate links, forms, or controls in that document. The shield asks the visitor to reload. The served DOM remains connected, and `data-foldkit-refused` is available for styling or monitoring. Nothing else in Foldkit sets that attribute.
 
 Nothing moves. Foldkit marks the existing body instead of wrapping the application root. Wrapping would reparent the subtree, call `disconnectedCallback` and then `connectedCallback` on every upgraded custom element, and reload every iframe. Marking the body avoids those lifecycle effects.
 
@@ -415,6 +415,7 @@ Containment starts only after the client detects a refusal. It cannot undo earli
 - A custom element may already have run `connectedCallback`.
 - A visitor may have interacted with the page before the client entry ran. A script can still submit a form programmatically despite `inert`.
 - Containment is not a script or global-event sandbox. Capture listeners on `window` or `document` run before an event reaches the shield. The browser may also dispatch global or top-layer events.
+- An iframe has its own document. Stale code can focus a control inside it, and physical keyboard input dispatched there does not reach the parent document's guards.
 - A timer or stale listener can open a new dialog after containment. That dialog enters the top layer above the shield. The shield covers top-layer content that existed when refusal began without invoking its lifecycle.
 
 ### Stale HTML and caches

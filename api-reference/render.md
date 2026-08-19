@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/render
 title: "Render"
 description: "API documentation for the Render module."
-access_date: 2026-08-18T17:46:55.714Z
-current_date: 2026-08-18T17:46:55.714Z
+access_date: 2026-08-19T19:38:38.072Z
+current_date: 2026-08-19T19:38:38.072Z
 ---
 
 # Render
@@ -14,7 +14,7 @@ current_date: 2026-08-18T17:46:55.714Z
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b053caf1506111b0841ad03a92d2baeb82fbea99/packages/foldkit/src/render/render.ts#L62)
+[source](https://github.com/foldkit/foldkit/blob/e1bd76c3e64733d394b4b361e6ecd1621b84e882/packages/foldkit/src/render/render.ts#L62)
 
 ```
 /**
@@ -43,7 +43,7 @@ const afterCommit: Effect.Effect<void>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b053caf1506111b0841ad03a92d2baeb82fbea99/packages/foldkit/src/render/render.ts#L84)
+[source](https://github.com/foldkit/foldkit/blob/e1bd76c3e64733d394b4b361e6ecd1621b84e882/packages/foldkit/src/render/render.ts#L84)
 
 ```
 /**

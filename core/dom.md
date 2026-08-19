@@ -2,21 +2,23 @@
 url: https://foldkit.dev/core/dom
 title: "Dom"
 description: "Effects for common DOM operations like focus, scroll, dialog open/close, scroll lock, and inert isolation."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-19T19:38:38.072Z
+current_date: 2026-08-19T19:38:38.072Z
 ---
 
 # Dom
 
 ## Overview
 
-The `Dom` module wraps the most common DOM operations as Effects: focusing an element, scrolling something into view, programmatically clicking, opening and closing dialogs, locking page scroll, marking surrounding elements inert. You use them inside your own [Commands](https://foldkit.dev/core/commands).
+The `Dom` module packages common imperative browser operations as Effects for use inside your own [Commands](https://foldkit.dev/core/commands). It covers focus, scrolling, programmatic clicks, dialogs, page scroll locks, inert isolation, element movement, and animation settling.
 
-Each helper is an Effect. `Dom.focus` returns an `Effect.Effect<void, ElementNotFound>`; `Dom.lockScroll` returns an `Effect.Effect<void>`. They gate themselves on the runtime's next render commit internally, so you can return one from `update` immediately after a state-changing Message and trust the element will be there.
+Use a Dom helper when a Message should cause a one-time DOM operation. For example: opening a dialog can return a Command that focuses its first input. The operation stays outside view, and its result still comes back through update as a Message.
+
+Each helper exposes its failure type in the Effect channel. `Dom.focus` returns `Effect.Effect<void, ElementNotFound>`, while helpers without an expected application failure, such as `Dom.lockScroll`, return `Effect.Effect<void>`.
 
 ## Using Dom
 
-Wrap a Dom helper in a Command at the call site. The helper produces a value (or fails with a typed error), and you map that into one of your Messages.
+Wrap the helper in a Command and map its success or failure into one of that Command's declared Messages.
 
 ```
 import { Effect } from 'effect'
@@ -28,8 +30,31 @@ const FocusEmailInput = Command.define('FocusEmailInput', {
 })
 ```
 
-Dom helpers that touch a specific element can fail. `Dom.focus`, `Dom.scrollIntoView`, `Dom.scrollIntoViewAfterPaint`, `Dom.scrollIntoViewIfNotVisible`, `Dom.clickElement`, and `Dom.advanceFocus` all fail with `ElementNotFound` when the selector does not match. Catch the failure with `Effect.catch` and turn it into a Message, or ignore it with `Effect.ignore` when the failure is not interesting (a stale focus call after the user has navigated away).
+Most helpers that resolve a live element wait until Foldkit has committed the latest render before querying the DOM. This lets update return a Command for an element that the same Message just brought into the view. You do not need to add `Render.afterCommit` before `Dom.focus`, `Dom.showDialog`, `Dom.clickElement`, `Dom.scrollIntoView`, or `Dom.advanceFocus`.
 
-## Full API surface
+Scrolling has two later-timing variants. `Dom.scrollIntoViewAfterPaint` waits until the target has been painted, which suits a route that just inserted a fragment target. `Dom.scrollIntoViewIfNotVisible` also waits through paint by default, but accepts `{ when: 'Commit' }` when the first visible frame should already be scrolled.
 
-The Dom module covers focus management, scrolling, dialog show/close, scroll locking, inert isolation, element movement detection, and animation settling. The [Dom API reference](https://foldkit.dev/api-reference/dom) lists every function with its signature and an inline example.
+Cleanup and global-state helpers run immediately because they do not need a newly rendered target. These include `Dom.closeDialog`, `Dom.releaseDialogResources`, `Dom.lockScroll`, `Dom.unlockScroll`, and `Dom.restoreInert`. `Dom.waitForAnimationSettled` has its own timing contract: it checks the target's active Web Animations on the next animation frame and waits for them to settle.
+
+Use Render for custom timing
+
+Dom helpers include the timing their operation needs. Reach for [Render](https://foldkit.dev/core/render) directly when writing a custom Command or DOM-observing Subscription that must wait for a Foldkit commit or a browser paint.
+
+### Selector Failures
+
+Helpers that require one matching element fail with `ElementNotFound` when the selector resolves to the wrong element type or no element at all:
+
+- `Dom.focus`
+- `Dom.showDialog`
+- `Dom.closeDialog`
+- `Dom.clickElement`
+- `Dom.scrollIntoView`
+- `Dom.scrollIntoViewAfterPaint`
+- `Dom.scrollIntoViewIfNotVisible`
+- `Dom.advanceFocus`
+
+Catch a meaningful failure with `Effect.catch` and turn it into a Message. Use `Effect.ignore` only when a missing target is expected and does not matter, such as a stale focus Command after navigation.
+
+## Full API Surface
+
+The [Dom API reference](https://foldkit.dev/api-reference/dom) lists every helper with its signature and an inline example.
