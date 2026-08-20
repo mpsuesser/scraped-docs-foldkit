@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/mount
 title: "Mount"
-description: "OnMount: the single mount-time DOM hook for integrating third-party libraries with paired cleanup. Keeps imperative work confined to the seam where the virtual DOM meets the real one."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "Run DOM work while a specific rendered element exists. Mount supplies the live Element, emits declared result Messages, and keeps setup paired with cleanup."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## Overview

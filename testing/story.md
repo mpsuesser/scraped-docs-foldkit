@@ -1,24 +1,27 @@
 ---
 url: https://foldkit.dev/testing/story
 title: "Story"
-description: "Test the state machine with Story. Send Messages, resolve Commands inline, and assert on the Model. Pure, deterministic, fast."
-access_date: 2026-08-07T02:46:48.844Z
-current_date: 2026-08-07T02:46:48.844Z
+description: "Drive update with Messages, inspect the Model and Commands, and supply Command results without executing their Effects."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Story
 
 ## Testing the Update Loop
 
-The Elm Architecture makes testing straightforward. The update function is pure. Given a Model and a Message, it always returns the same result. No DOM, no HTTP calls, no timers. Just a function that takes data and returns data.
+`Story` calls update with the Model and Messages you provide. Commands stay as data until the test supplies their result Messages. You can test a complete state transition without a DOM, a timer, or a running Effect.
 
-`Story` tests the state machine. You send Messages through update, resolve Commands inline, and assert on the Model. The entire test is one `story` call. No mocking libraries, no fake timers, no setup or teardown.
+The entire test is one `story` call. Start from a Model, send a Message, resolve any Commands, and assert on the next Model.
 
 ## The API
 
-Import the steps you need from `foldkit/story`. The top-level steps are `story`, `given`, `message`, `model`, `expectOutMessage`, and `expectNoOutMessage`. Command resolution and assertions live under the `Command` namespace: `Command.resolve`, `Command.resolveAll`, `Command.resolveAllExact`, `Command.expectHas`, `Command.expectExact`, and `Command.expectNone`.
+Import the steps you need from `foldkit/story`.
 
-A test file usually needs only one of the two testing modules, so named imports keep the call sites short. When a single file tests both a story and a scene, import the namespaces instead (`import { Scene, Story } from 'foldkit'`) so `Story.given` and `Scene.given` stay distinguishable.
+- Top-level steps start the test, send Messages, and inspect results: `story`, `given`, `message`, `model`, `expectOutMessage`, and `expectNoOutMessage`.
+- The `Command` namespace handles pending Commands: `resolve`, `resolveAll`, `resolveAllExact`, `expectHas`, `expectExact`, and `expectNone`.
+
+Use named imports when the file contains only Story tests. If a file contains both Story and Scene tests, import the namespaces from `foldkit` so `Story.given` and `Scene.given` stay distinct.
 
 ```
 import { Array } from 'effect'
@@ -98,7 +101,9 @@ story(
 )
 ```
 
-Command matchers (`expectHas`, `expectExact`, and `resolve`) accept either a Command Definition (matches by name) or a Command instance (matches by name AND structural-equal args). Pass a Definition when the test only cares that the Command was dispatched. Pass an instance like `FetchWeather({ zipCode: '90210' })` when the args are part of what the test is verifying. Strict matching catches regressions where a Command fires with wrong inputs, which a name-only match would silently pass.
+A Command matcher accepts either a Definition or an instance. A Definition matches by name. An instance also checks structurally equal arguments.
+
+Use `FetchWeather` when the test only cares that the Command was dispatched. Use `FetchWeather({ zipCode: '90210' })` when the zip code is part of the contract.
 
 Mount lifecycle is a Scene concern
 
@@ -106,7 +111,7 @@ Story does not render the view, so the OnMount lifecycle is not observable from 
 
 ## Your First Test
 
-Here’s a test for the delayed reset from the [Commands](https://foldkit.dev/core/commands) page. When the user clicks reset, a one-second delay fires, then the count resets to zero:
+Here’s a test for the delayed reset from the [Commands](https://foldkit.dev/core/commands) page. Clicking reset starts a one-second delay. When the delay completes, the count returns to zero.
 
 ```
 import { Command, given, message, model, story } from 'foldkit/story'
@@ -126,11 +131,11 @@ test('delayed reset: count resets after the delay fires', () => {
 })
 ```
 
-The test reads as a story. Start from a Model with count 5. Send `ClickedResetAfterDelay()`. Verify that update returned a `DelayReset` Command. Resolve it with `CompletedDelayReset()`. Verify the count is 0. Every step is visible. The simulation called update, resolved the Command with the Message you provided, fed that Message back through update, and arrived at the final state.
+Read it from top to bottom. The Model starts at 5. `ClickedResetAfterDelay()` returns `DelayReset`. The test resolves that Command with `CompletedDelayReset()`, which update handles by setting the count to 0.
 
 ## Multi-Step Flows
 
-Real apps have multi-step user stories. `Command.resolve`, `Command.resolveAll`, and `Command.resolveAllExact` let you resolve Commands inline at any point in the story. This keeps the resolution next to the step that produced the Command, so the test reads chronologically:
+Keep each Command result next to the Message that caused it. `Command.resolve`, `Command.resolveAll`, and `Command.resolveAllExact` let a longer test stay chronological:
 
 ```
 import { Command, given, message, model, story } from 'foldkit/story'
@@ -171,11 +176,13 @@ test('weather search: success then failure', () => {
 })
 ```
 
-Every `message` is a user action: “the user submitted the form.” Every Command resolver is world-building: “the weather API succeeded.” Every `model` is a scene check: “the weather is showing.”
+The test does not run an HTTP request. It declares that `FetchWeather` succeeded, feeds the resulting Message through update, and checks the Model that the view will render.
 
 Resolvers are a queue
 
-Each entry in `resolveAll` resolves exactly one matching dispatch in declaration order. `[FetchCount, m1], [FetchCount, m2], [FetchCount, m3]` reads as three responses to three dispatches. For N identical responses, compose with `Array.makeBy(n, () => [Def, message])`. Resolvers carry across calls: unused entries can match later dispatches, and a new entry replaces any leftover resolvers sharing its Definition or Instance shape (latest wins).
+Each `resolveAll` entry resolves one matching dispatch in declaration order. Three `[FetchCount, message]` entries resolve three `FetchCount` dispatches. For N identical responses, use `Array.makeBy(n, () => [Definition, message])`.
+
+Unused resolvers can match later dispatches. A new resolver replaces any leftover resolver with the same Definition or instance shape.
 
 Exact resolution
 
@@ -187,7 +194,7 @@ Unresolved Commands
 
 ## Testing Side Effects
 
-The simulation tests the state machine. Messages go in, Model changes come out, Commands are resolved declaratively. It does not run the actual Effects inside Commands.
+Story tests the state machine. It does not run the Effect inside a Command.
 
 To test that a Command’s Effect works correctly (for example, that an HTTP request parses the response right), test it separately with `Effect.provide` and a mock service layer:
 
@@ -240,4 +247,4 @@ test('fetchWeather returns SucceededFetchWeather on success', async () => {
 })
 ```
 
-Two levels, clean separation. The simulation proves the state machine wires correctly. `Effect.provide` proves the side effect works. If the state machine sends the right Command, and the Command does the right thing, the program works.
+The two tests cover different contracts. Story checks which Command update returns and what update does with its result Message. The Effect test checks the work the Command executes.

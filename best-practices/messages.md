@@ -1,41 +1,75 @@
 ---
 url: https://foldkit.dev/best-practices/messages
 title: "Messages"
-description: "Name messages as past-tense events, not imperative commands."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+description: "Name Messages as verb-first, past-tense facts, and name Command result Messages after the Command that produced them."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Messages
 
-## Messages as Events
+## Event Names
 
-Messages describe what happened, not what to do. Name them as verb-first, past-tense events where the prefix acts as a category marker: `Clicked*` for button presses, `Updated*` for input changes, `Succeeded*`/`Failed*` for Command results that can meaningfully fail, `Completed*` for every other Command result, `Got*` for child module results via the [OutMessage](https://foldkit.dev/core/submodel#surfacing-facts) pattern. For example, `ClickedFormSubmit` and `RemovedCartItem` rather than imperative Commands like `SubmitForm` or `RemoveFromCart`.
+Messages record what happened. They do not tell update what to do. Name them as verb-first, past-tense facts such as `SubmittedUsernameForm`, `PressedKey`, and `RemovedCartItem`.
 
-### Good Message Names
+Common prefixes make the source of a fact visible:
 
-- `ClickedAddToCart`
-- `UpdatedSearchInput`
-- `SucceededFetchUser`
+Prefix
 
-### Avoid These
+Use
 
-- `SetCartItems`
-- `UpdateSearchText`
-- `MutateUserState`
+Example
 
-The `update` function decides how to handle a Message. The Message itself is just a fact about what occurred.
+`Clicked*`
 
-### Every Message Carries Meaning
+A particular button or control was clicked.
 
-Never use a generic `NoOp` Message. Every Message should describe what happened, even for fire-and-forget Commands where the update function is a no-op. For example, when a focus Command completes, use `CompletedFocusItems`. When scroll is locked, use `CompletedLockScroll`. When an internal navigation finishes, use `CompletedNavigateInternal`.
+`ClickedAddToCart`
 
-Notice that this mirrors how you name Commands. Command Definitions are PascalCase verb-first imperatives such as `LockScroll`, `FocusItems`, and `ShowDialog`: instructions to the runtime. The resulting Message keeps the same verb-first order with a prefix: `CompletedLockScroll`, `CompletedFocusItems`, `CompletedShowDialog`. Verb-first naming aligns with Command names, making Command→Message pairs instantly recognizable: Command `FocusItems` → Message `CompletedFocusItems`, Command `LockScroll` → Message `CompletedLockScroll`.
+`Updated*`
 
-Check the Command name before deriving the Message. Name the effect its `execute` body performs, not the later Model transition caused when update handles the result. If a Toast Command only waits before update starts dismissal, call it `WaitBeforeDismissal`, not `DismissAfter`; its result is `CompletedWaitBeforeDismissal`.
+An input value changed.
 
-A payload doesn't change the rule. A Command that reads the clock, generates an id, or hits storage still names its result after itself, and the value it resolved rides along as the payload: Command `DetermineStartTime` → Message `CompletedDetermineStartTime({ startTime })`, Command `GenerateCardId` → Message `CompletedGenerateCardId({ cardId })`. Conjugating the Command's own verb into the Message (`DeterminedStartTime`, `GeneratedCardId`) breaks the pairing and reads like a fact that arrived on its own.
+`UpdatedSearchInput`
 
-This turns the DevTools timeline from a wall of identical `NoOp` entries into a readable narrative: `Opened` → `CompletedFocusItems`, `CompletedLockScroll`, `CompletedInertOthers`. Every line tells you what happened in your application.
+`Succeeded*`
 
-Command names are often more specific than the Messages they produce. Several Commands (`NavigateInternal`, `RedirectToLogin`, `ReplaceSearchUrl`) all produce `CompletedNavigateInternal`. The Message is intentionally generic because update handles all internal navigations the same way. The Command name preserves the context that the Message discards: not just that a navigation happened, but why.
+/
+
+`Failed*`
+
+A Command completed with a meaningful success or failure.
+
+`SucceededFetchUser`
+
+`Completed*`
+
+Any other Command result.
+
+`CompletedFocusSearchInput`
+
+`Got*`
+
+A parent received a child Submodel result.
+
+`GotSearchMessage`
+
+Avoid imperative names such as `SetCartItems`, `UpdateSearchText`, and `MutateUserState`. Those names prescribe a transition before update has seen the current Model. A fact leaves the decision where it belongs: in update.
+
+## Command Result Names
+
+For an infallible Command, add `Completed` to the Command name. `FocusSearchInput` produces `CompletedFocusSearchInput`, and `LockScroll` produces `CompletedLockScroll`.
+
+Name the Command for what its `execute` body does, not the later Model transition. A timer that only waits before update begins a dismissal is `WaitBeforeDismissal`, not `DismissAfter`. Its result is `CompletedWaitBeforeDismissal`.
+
+A payload does not change the rule. `DetermineStartTime` produces `CompletedDetermineStartTime({ startTime })`, and `GenerateCardId` produces `CompletedGenerateCardId({ cardId })`. Names such as `DeterminedStartTime` hide the Command-to-Message pair.
+
+When a Command can meaningfully fail, use the same pairing with `Succeeded` and `Failed`: `FetchUser` produces `SucceededFetchUser` or `FailedFetchUser`.
+
+The exception is a Message with more than one cause. Name that Message for the shared fact. For example, `EndedAnimation` can come from `WaitForAnimationSettled` or a component-specific Command that races animation settlement against another event.
+
+## Descriptive Results
+
+Never use a generic `NoOp` Message. A Command result still records a fact when its update handler leaves the Model unchanged. For example: `CompletedFocusSearchInput` confirms that `FocusSearchInput` finished, even when the handler returns `[model, []]`.
+
+Descriptive results keep DevTools and tests readable. A timeline containing `OpenedDialog`, `CompletedFocusSearchInput`, and `CompletedLockScroll` shows which work finished without requiring a reader to inspect the Command definitions.

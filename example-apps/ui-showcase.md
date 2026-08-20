@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/ui-showcase
 title: "UI Showcase"
-description: "Interactive showcase of every Foldkit UI component with styled examples, routing, and component state management."
-access_date: 2026-08-17T01:15:19.180Z
-current_date: 2026-08-17T01:15:19.180Z
+description: "An interactive showcase of every Foldkit UI component, with styled routed demos and their parent and Submodel wiring."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # UI Showcase
 
-Interactive showcase of every Foldkit UI component with styled examples, routing, and component state management.
+An interactive showcase of every Foldkit UI component, with styled routed demos and their parent and Submodel wiring.
 
 UI Components
 

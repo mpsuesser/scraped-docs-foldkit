@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/counters
 title: "Counters"
-description: "A dynamic list of Counter Submodels. Add and remove rows; each row is an independent Submodel embedded via h.submodel, with per-instance routing via a wrapper Message."
-access_date: 2026-08-08T21:58:00.646Z
-current_date: 2026-08-08T21:58:00.646Z
+description: "Add and remove independent Counter Submodels in a dynamic list. Each row is embedded through h.submodel and routed through a wrapper Message."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Counters
 
-A dynamic list of Counter Submodels. Add and remove rows; each row is an independent Submodel embedded via h.submodel, with per-instance routing via a wrapper Message.
+Add and remove independent Counter Submodels in a dynamic list. Each row is embedded through h.submodel and routed through a wrapper Message.
 
 Submodels
 

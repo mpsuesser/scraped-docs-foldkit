@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/managed-resources
 title: "Managed Resources"
-description: "Resources that activate and release based on Model state."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+description: "Acquire a stateful handle while a Model condition holds, expose it to Commands, and release it when dependencies change. Covers Layers and Submodel lifting."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Managed Resources

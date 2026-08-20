@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/managed-resource-layer
 title: "Managed Resource Layer"
-description: "Layer-backed ManagedResource that starts a ComputeEngine service from an Effect Layer, exposes it to Commands, and runs Layer finalizers when the Model turns it off."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+description: "A layer-backed ManagedResource starts a ComputeEngine service from an Effect Layer, exposes it to Commands, and runs Layer finalizers when the Model turns it off."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Managed Resource Layer
 
-Layer-backed ManagedResource that starts a ComputeEngine service from an Effect Layer, exposes it to Commands, and runs Layer finalizers when the Model turns it off.
+A layer-backed ManagedResource starts a ComputeEngine service from an Effect Layer, exposes it to Commands, and runs Layer finalizers when the Model turns it off.
 
 Managed Resources
 

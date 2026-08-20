@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/messages
 title: "Messages"
-description: "Type-safe events that drive state changes in Foldkit. Messages replace React event handlers with a declarative, traceable pattern."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+description: "Define the facts update can handle as a Schema-backed Message union, with naming conventions for user actions, Command results, and Submodel wrappers."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Messages

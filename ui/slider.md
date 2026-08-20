@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/ui/slider
 title: "Slider"
-description: "Accessible slider for numeric range input. Pointer drag, keyboard navigation, ARIA slider semantics."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "A numeric range Submodel with pointer dragging, keyboard navigation, constraints, steps, and ARIA slider semantics."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## Overview
@@ -184,7 +184,7 @@ Slider exposes `data-dragging` while the user is actively dragging, `data-disabl
 | `data-dragging` | Present on the root, track, filled track, and thumb while the user is actively dragging. |
 | `data-disabled` | Present on all groups when isDisabled is true. |
 | `data-readonly` | Present on all groups when isReadOnly is true. |
-| `data-orientation` | Present on the root. Always "horizontal" in v1; vertical is planned. |
+| `data-orientation` | Present on the root. Always "horizontal"; vertical orientation is not supported. |
 
 ## Keyboard Interaction
 

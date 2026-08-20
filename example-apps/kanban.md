@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/kanban
 title: "Kanban"
-description: "Drag-and-drop kanban board with cross-column reordering, keyboard navigation, fractional indexing, and screen reader announcements."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+description: "A drag-and-drop kanban board with cross-column reordering, keyboard navigation, fractional indexing, and screen reader announcements."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Kanban
 
-Drag-and-drop kanban board with cross-column reordering, keyboard navigation, fractional indexing, and screen reader announcements.
+A drag-and-drop kanban board with cross-column reordering, keyboard navigation, fractional indexing, and screen reader announcements.
 
 Drag & Drop
 

@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/ui/fieldset
 title: "Fieldset"
-description: "Group related form fields with accessible labeling."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "A stateless wrapper around the native fieldset with linked legend and description attributes."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## Overview

@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/architecture
 title: "Architecture"
-description: "How Foldkit implements The Elm Architecture (TEA) with Effect-TS: Model, update, view, Commands, and Subscriptions."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+description: "How Model, Messages, update, view, Commands, Subscriptions, and the Runtime form Foldkit’s Elm Architecture loop."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Architecture
@@ -26,30 +26,18 @@ Every Foldkit app repeats the same cycle:
 The complete cycle looks like this:
 
 ```
-          +------------------------------------------------------+
-          |                                                      |
-          ↓                                                      |
-       Message                                                   |
-          |                                                      |
-          ↓                                                      |
-  +---------------+                                              |
-  |    update     |                                              |
-  +-------+-------+                                              |
-  ↓               ↓                                              |
-Model    Array<Command<Message>>                                 |
-  |               |                                              |
-  |               +-> Runtime -----------------------------------+
-  |                                                              |
-  +-> view -> Browser -> user events ----------------------------+
-  |                                                              |
-  +-> view -> Mount(Element) -> Effect<Message> -> Runtime ------+
-  |                                                              |
-  +-> Subscriptions -> Stream<Message> -> Runtime ---------------+
-  |                                                              |
-  +-> ManagedResources -> acquire/release Messages -> Runtime ---+
+Message ──▶ update ──▶ Model ──▶ view ──▶ Browser
+  ▲          │          │          │          │
+  │          │          │          │          └─ events ─────┐
+  │          │          │          └─ Mounts ────────────────┤
+  │          │          ├─ Subscriptions ────────────────────┤
+  │          │          └─ ManagedResources ─────────────────┤
+  │          └─ Commands ────────────────────────────────────┤
+  │                                                          ▼
+  └────────────────────────── Runtime ◀──────────────────────┘
 ```
 
-Every path on the right side produces a Message that feeds back into `update`. Five sources: Commands, the Browser, Mount, Subscriptions, and ManagedResources. One loop.
+Five sources report through the Runtime: Commands, the Browser, Mounts, Subscriptions, and ManagedResources. When one produces a Message, the Runtime dispatches it back into `update`.
 
 ### Where Messages Come From
 

@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/ui/menu
 title: "Menu"
-description: "Accessible dropdown menu with keyboard navigation."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "An anchored action-menu Submodel with keyboard navigation, typeahead, dismissal, and optional modal behavior."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## Overview

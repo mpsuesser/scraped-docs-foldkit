@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/view-transitions
 title: "View Transitions"
-description: "Animated renders via the View Transitions API, with direction-aware types and shared-element morphs."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+description: "Animate qualifying renders with the browser View Transitions API. Covers route direction, shared elements, and when a running transition is skipped."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # View Transitions

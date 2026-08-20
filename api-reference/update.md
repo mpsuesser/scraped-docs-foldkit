@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/update
 title: "Update"
 description: "API documentation for the Update module."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Update
@@ -14,7 +14,7 @@ current_date: 2026-08-20T02:21:49.544Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L135)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L135)
 
 ```
 /**
@@ -44,7 +44,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L163)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L163)
 
 ```
 /**
@@ -75,7 +75,7 @@ type ChildFold = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L237)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L237)
 
 ```
 /**
@@ -104,7 +104,7 @@ type ChildFoldWithOutMessage = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L272)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L272)
 
 ```
 /**
@@ -136,7 +136,7 @@ type ChildFoldWithParentOutMessage = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L532)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L532)
 
 ```
 /**
@@ -158,7 +158,7 @@ type ChildStepFold = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L549)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L549)
 
 ```
 /**
@@ -180,7 +180,7 @@ type ChildStepFoldWithOutMessage = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L16)
 
 ```
 /**
@@ -202,7 +202,7 @@ type Commands = ReadonlyArray<Command<Message, never, R>>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L329)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L329)
 
 ```
 /**
@@ -218,7 +218,7 @@ type Fold = (model: ParentModel, input: Input) => Return<ParentModel, ParentMess
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L217)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L217)
 
 ```
 /**
@@ -270,7 +270,7 @@ type FoldContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L338)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L338)
 
 ```
 /**
@@ -286,7 +286,7 @@ type FoldWithOutMessage = (model: ParentModel, input: Input) => ReturnWithOutMes
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L112)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L112)
 
 ```
 /**
@@ -314,7 +314,7 @@ type Refreshable = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L30)
 
 ```
 /**
@@ -336,7 +336,7 @@ type Return = readonly [Model, Commands<Message, R>]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L40)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L40)
 
 ```
 /**
@@ -353,7 +353,7 @@ type ReturnWithOutMessage = readonly [Model, Commands<Message, R>, Option.Option
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L50)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L50)
 
 ```
 /**
@@ -368,7 +368,7 @@ type Step = (model: Model) => Return<Model, Message, R>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L321)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L321)
 
 ```
 /**
@@ -385,7 +385,7 @@ type StepWithOutMessage = (model: Model) => ReturnWithOutMessage<Model, Message,
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L79)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L79)
 
 ```
 /**
@@ -422,7 +422,7 @@ const combine: (steps: readonly Array<Step<Model, Message, R>>) => Step<Model, M
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L412)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L412)
 
 ```
 /**
@@ -492,7 +492,7 @@ const foldChild: (childFold: ChildFoldWithParentOutMessage<ParentModel, ParentMe
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/update/update.ts#L616)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/update/update.ts#L616)
 
 ```
 /**

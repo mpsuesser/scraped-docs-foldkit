@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/dom
 title: "Dom"
-description: "Effects for common DOM operations like focus, scroll, dialog open/close, scroll lock, and inert isolation."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+description: "Use Effects for common DOM work such as focus, dialog control, scrolling, scroll locks, and inert isolation."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Dom

@@ -1,14 +1,14 @@
 ---
 url: https://foldkit.dev/ui/switch
 title: "Switch"
-description: "Accessible toggle switch for boolean settings."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "A stateless, controlled toggle for immediate on-and-off actions, with keyboard behavior and switch semantics."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## Overview
 
-An on/off toggle. Semantically different from Checkbox: Switch represents an immediate action (like a light switch), while Checkbox represents a form value that gets submitted. Switch is a stateless controlled render helper with the same wiring as Checkbox: your Model owns the on/off value, you pass it in as `isChecked`, and `onToggle` dispatches a Message when the user toggles it. In your update handler, just store the value.
+An on/off toggle. Switch represents an immediate action, such as turning on a light. Checkbox represents a form value that gets submitted. Switch is a stateless controlled render helper with the same wiring as Checkbox: your Model owns the value passed as `isChecked`, and `onToggle` turns an interaction into a Message for update to store.
 
 See it in an app
 
@@ -152,7 +152,7 @@ Configuration object passed to `Switch.view()`.
 | --- | --- | --- | --- |
 | `id` | `string` | — | Unique ID for the switch instance. Used to link the label and description via ARIA. |
 | `isChecked` | `boolean` | — | The current on/off state, read from your Model. `aria-checked` and the `data-checked` marker derive from it. |
-| `onToggle` | `(isChecked: boolean) => Message` | — | Maps the new on/off state to a Message when the user toggles the switch. Your update handler just stores the value. |
+| `onToggle` | `(isChecked: boolean) => Message` | — | Maps the new on/off state to a Message when the user toggles the switch. Store that value in update. |
 | `toView` | `(attributes: SwitchAttributes) => Html` | — | Callback that receives attribute groups for the button, label, description, and hidden input elements. |
 | `isDisabled` | `boolean` | `false` | Whether the switch is disabled. |
 | `isReadOnly` | `boolean` | `false` | Whether the switch is readable but not toggleable. Carries `aria-readonly` rather than `aria-disabled`. Independent of `isDisabled`. |

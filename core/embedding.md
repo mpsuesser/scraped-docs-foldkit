@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/embedding
 title: "Embedding"
-description: "Run a Foldkit app inside a host application with a typed lifecycle handle and Ports."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+description: "Embed a Foldkit widget in another application through a Schema-typed handle. Covers initial Flags, inbound and outbound Ports, disposal, and React integration."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Embedding

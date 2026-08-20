@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/faq/performance
 title: "Performance"
-description: "How Foldkit performs and why: the rendering cost model, TodoMVC benchmark numbers against React, Elm, Svelte, Solid, and Lustre, what development mode costs that production does not, and the optimization toolkit."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+description: "Foldkit’s rendering cost model, TodoMVC benchmark results, development-mode overhead, and the tools for measuring and memoizing expensive views."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Performance

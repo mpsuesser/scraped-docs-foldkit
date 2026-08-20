@@ -1,20 +1,20 @@
 ---
 url: https://foldkit.dev/tooling/oxlint-plugin
 title: "Oxlint Plugin"
-description: "Use the Foldkit oxlint plugin to enforce Foldkit-specific naming and message conventions, with examples for each custom rule."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+description: "Install and configure @foldkit/oxlint-plugin, then see what each Foldkit-specific rule accepts and rejects."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Oxlint Plugin
 
-## Overview
+## Foldkit Rules
 
-Foldkit projects use `oxlint` for linting and `@foldkit/oxlint-plugin` for rules that understand Foldkit naming and Message conventions.
+Foldkit projects use `oxlint` for general linting and `@foldkit/oxlint-plugin` for architecture and API conventions specific to Foldkit.
 
 ## Scaffolded Projects
 
-[Create Foldkit app](https://foldkit.dev/get-started/getting-started) includes `.oxlintrc.json`, a `lint` script, `oxlint`, and `@foldkit/oxlint-plugin`. A generated project enables this starter set of rules:
+[Create Foldkit app](https://foldkit.dev/get-started/getting-started) includes `.oxlintrc.json`, a `lint` script, `oxlint`, and `@foldkit/oxlint-plugin`. Generated projects enable a starter set of Foldkit rules:
 
 ```
 {
@@ -68,7 +68,7 @@ Foldkit projects use `oxlint` for linting and `@foldkit/oxlint-plugin` for rules
 }
 ```
 
-The full rule set is grouped by convention surface below. The rules enabled in the scaffold config above are the starter set; the rest are opt-in. Turn one on by adding `"foldkit/<rule-name>": "error"` to the `rules` block. Each rule covers a Foldkit-specific case that oxlint does not know about on its own.
+The rest of the plugin's rules are opt-in. Enable one by adding `"foldkit/<rule-name>": "error"` to the `rules` block. The complete rule set is grouped by the part of the architecture it protects below.
 
 ## Message Naming and Construction
 

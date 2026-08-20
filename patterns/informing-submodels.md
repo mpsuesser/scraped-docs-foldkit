@@ -2,21 +2,21 @@
 url: https://foldkit.dev/patterns/informing-submodels
 title: "Informing Submodels"
 description: "Relay a change a Submodel does not own (a URL, a server push, an auth change) through a helper it exposes, so it can update its own state in response."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Informing Submodels
 
-## Overview
+## Parent-Owned Changes
 
-A Submodel owns its state and describes its state transitions in its own `update`. However, sometimes it has to respond to changes outside its boundary, like the URL changing or a server push it folds into its state. It owns none of these, and they never reach its `update` on their own. So how does a Submodel respond to these changes without leaking into its parent?
+A Submodel sometimes needs to react to a change it does not own. The URL may change, a server may push new data, or a sibling field may establish a new constraint. The parent observes that change, but the child still owns the state transition it causes.
 
-The Submodel closes that gap by exposing a helper the parent calls when the change happens. The helper runs the change through the Submodel’s own `update`, so the Submodel derives its new state and returns any Commands the change calls for. The parent only needs to know that one named entry point, not the Submodel’s internal Messages, so the Submodel keeps full control of how it responds.
+Export an `inform*` helper from the child. The helper runs an internal child Message through update and returns the next child Model and Commands. The parent folds that helper with `Update.foldChild`, so it never imports or constructs the internal Message.
 
-Conventionally, that helper is an `inform*` helper: the parent informs the child of a change it doesn’t own, and the child decides what that means for its state.
+Use `inform*` when the child must derive a transition or return Commands. Use a silent [`reflect*` helper](https://foldkit.dev/core/submodel#reflecting-external-state) when the child only needs to conform one of its values to an external source.
 
-The rest of this page works the `inform*` pattern through routing, its most common case. The example is a `/people` page whose People Submodel holds a search input, a results list, and a list of recent searches. The Submodel does not own the route, so it exposes an `informRouteChanged` helper, and the parent delegates to that helper on every URL change that resolves to a People route.
+The example below uses routing. A People Submodel owns its search input, results, and recent searches. The root owns the Route. When the URL resolves to a People Route, the root calls `People.informRouteChanged`.
 
 Prerequisite
 
@@ -24,14 +24,14 @@ This page builds on the [Submodels](https://foldkit.dev/core/submodel) pattern. 
 
 ## The Child
 
-People declares `ChangedRoute` alongside its other Messages. It carries a `PeopleRoute`: the slice of the App route People handles, not the whole `AppRoute`.
+People declares an internal `ChangedRoute` Message carrying only `PeopleRoute`, the part of the application Route that the feature understands.
 
-People handles `ChangedRoute` in `update` like any other Message. It reads the new params out of the route, sets the search input to match, records the search in its history, and returns a `FetchPeople` Command so the results match the new query.
+Update copies the route query into the input, records it in recent searches, and returns `FetchPeople` for the new results.
 
-`ChangedRoute` itself stays internal. Rather than import and dispatch it, the parent calls `informRouteChanged`, a helper that runs `update(model, ChangedRoute({ route }))`. The People Submodel can change how it handles a route change without the parent knowing.
+`informRouteChanged` is the public entry point. It calls `update(model, ChangedRoute({ route }))`, keeping the Message constructor private.
 
 ```
-import { Match as M, Option, Schema as S } from 'effect'
+import { Match as M, Option, Schema as S, String } from 'effect'
 import { Command } from 'foldkit'
 import { m } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -75,7 +75,10 @@ export const update = (
         model,
         [
           PushSearchUrl({
-            searchText: Option.fromNullishOr(model.searchInput || null),
+            searchText: Option.liftPredicate(
+              model.searchInput,
+              String.isNonEmpty,
+            ),
           }),
         ],
       ],
@@ -106,67 +109,67 @@ export const informRouteChanged = (model: Model, route: PeopleRoute) =>
 
 Not an OutMessage
 
-`ChangedRoute` flows from parent to child. It is a normal child Message that the parent triggers through `informRouteChanged`, not a fact the child surfaces upward. The [OutMessage](https://foldkit.dev/core/submodel#surfacing-facts) pattern goes the other way.
+`ChangedRoute` moves from parent to child through an `inform*` helper. An [OutMessage](https://foldkit.dev/core/submodel#surfacing-facts) moves a fact from child to parent.
 
 ## The Parent
 
-The parent’s `ChangedUrl` handler resolves the URL into a route, stores it on `model.route`, then branches on the route tag. When the new route is one a Submodel handles, the parent calls that Submodel’s `informRouteChanged` and lifts the result the way it lifts any child update: the next child Model goes into its slice, and the child Commands map into `GotPeopleMessage`. The `ChangedUrl` branch and the `GotPeopleMessage` branch read almost the same, because both just run People’s `update` and lift what comes back.
+The root defines one fold for regular People Messages and another for `informRouteChanged`. Both folds use the same `read`, `write`, and `toParentMessage` boundary. The `ChangedUrl` handler stores the next Route, then composes the relevant child step with `Update.combine`.
 
 ```
-import { Match as M } from 'effect'
-import { Command } from 'foldkit'
+import { Match as M, Option } from 'effect'
+import { Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
 import { People } from './page'
+
+const foldPeople = Update.foldChild({
+  update: People.update,
+  read: (model: Model) => Option.some(model.peoplePage),
+  write: (model, nextPeoplePage) =>
+    evo(model, { peoplePage: () => nextPeoplePage }),
+  toParentMessage: message => GotPeopleMessage({ message }),
+})
+
+const foldPeopleRouteChanged = Update.foldChild({
+  update: People.informRouteChanged,
+  read: (model: Model) => Option.some(model.peoplePage),
+  write: (model, nextPeoplePage) =>
+    evo(model, { peoplePage: () => nextPeoplePage }),
+  toParentMessage: message => GotPeopleMessage({ message }),
+})
+
+const setRoute =
+  (nextRoute: AppRoute): Update.Step<Model, Message> =>
+  model => [evo(model, { route: () => nextRoute }), []]
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.tagsExhaustive({
       ChangedUrl: ({ url }) => {
         const nextRoute = urlToAppRoute(url)
-        const modelWithNextRoute = evo(model, { route: () => nextRoute })
 
-        return M.value(nextRoute).pipe(
-          M.tag('People', peopleRoute => {
-            const [nextPeoplePage, peopleCommands] = People.informRouteChanged(
-              modelWithNextRoute.peoplePage,
-              peopleRoute,
-            )
-            return [
-              evo(modelWithNextRoute, { peoplePage: () => nextPeoplePage }),
-              Command.mapMessages(peopleCommands, childMessage =>
-                GotPeopleMessage({ message: childMessage }),
-              ),
-            ]
-          }),
-          M.orElse(() => [modelWithNextRoute, []]),
+        const routeSteps = M.value(nextRoute).pipe(
+          M.withReturnType<ReadonlyArray<Update.Step<Model, Message>>>(),
+          M.tag('People', peopleRoute => [foldPeopleRouteChanged(peopleRoute)]),
+          M.orElse(() => []),
         )
+
+        return Update.combine(model, [setRoute(nextRoute), ...routeSteps])
       },
 
-      GotPeopleMessage: ({ message }) => {
-        const [nextPeoplePage, peopleCommands] = People.update(
-          model.peoplePage,
-          message,
-        )
-        return [
-          evo(model, { peoplePage: () => nextPeoplePage }),
-          Command.mapMessages(peopleCommands, childMessage =>
-            GotPeopleMessage({ message: childMessage }),
-          ),
-        ]
-      },
+      GotPeopleMessage: ({ message }) => foldPeople(model, message),
     }),
   )
 ```
 
 Multiple Submodels
 
-When several Submodels each handle different routes, give `ChangedUrl` one `M.tag` arm per Submodel. Each arm calls the `informRouteChanged` helper of the Submodel that handles that route.
+When several page Submodels react to routing, match the next Route and return the `informRouteChanged` step for the page that owns that Route.
 
 Cold loads
 
-`informRouteChanged` only runs when the URL changes, and a cold load is not a change. The parent’s `init` parses the initial URL and calls the Submodel’s `init(route)`, which seeds the route-derived state and returns the boot Commands the route calls for. See [Cold Loads and the Initial Route](https://foldkit.dev/core/routing-and-navigation#cold-loads).
+`informRouteChanged` handles later URL changes. On a cold load, root init parses the initial URL and passes the People Route to child init. See [Cold Loads and the Initial Route](https://foldkit.dev/core/routing-and-navigation#cold-loads).
 
-The [Routing example](https://foldkit.dev/example-apps/routing) has the full implementation: a controlled search input, an async-fetched results list, and a recent-searches list, all kept in step with the URL. The [Routing & Navigation](https://foldkit.dev/core/routing-and-navigation) guide covers the route parser the parent uses to turn URLs into the routes this page assumes.
+The [Routing example](https://foldkit.dev/example-apps/routing) contains the complete search flow. [Routing and Navigation](https://foldkit.dev/core/routing-and-navigation) covers the parser that produces these Routes.
 
-Routing is the common case, but not the only one. Whether a change reaches the parent through the router, a [Subscription](https://foldkit.dev/core/subscriptions), or a [Command](https://foldkit.dev/core/commands), a Submodel that has to respond to it exposes the same kind of helper. The question is always the same: does the Submodel own the value, or only need to hear that it changed?
+The same pattern works when a [Subscription](https://foldkit.dev/core/subscriptions) or [Command](https://foldkit.dev/core/commands) tells the parent about a change the child must process. The cause changes, but ownership does not.

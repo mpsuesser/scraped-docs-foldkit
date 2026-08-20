@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/ui/popover
 title: "Popover"
-description: "Floating content panels anchored to trigger elements."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "An anchored floating panel for arbitrary content, with dismissal, focus return, portaling, and optional modal behavior."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## Overview

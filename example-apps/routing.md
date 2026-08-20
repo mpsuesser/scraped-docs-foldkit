@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/routing
 title: "Routing"
-description: "Client-side routing with URL parameters, nested routes, rest segments, and navigation."
-access_date: 2026-08-10T15:05:45.218Z
-current_date: 2026-08-10T15:05:45.218Z
+description: "A client-routed application with URL parameters, nested routes, rest segments, and navigation."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Routing
 
-Client-side routing with URL parameters, nested routes, rest segments, and navigation.
+A client-routed application with URL parameters, nested routes, rest segments, and navigation.
 
 Routing
 

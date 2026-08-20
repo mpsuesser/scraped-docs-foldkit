@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/interrupting-commands
 title: "Interrupting Commands"
-description: "Simulated file uploads driven by interruptible Commands. Cancel a single upload, cancel every upload in flight, or restart a cancelled one; each cancellation resolves through a keyed interrupt registry and an outcome-carrying result Message."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+description: "Simulated file uploads driven by interruptible Commands. Cancel one upload, cancel every upload in flight, or restart a cancelled upload through a keyed interrupt registry and an outcome-carrying result Message."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Interrupting Commands
 
-Simulated file uploads driven by interruptible Commands. Cancel a single upload, cancel every upload in flight, or restart a cancelled one; each cancellation resolves through a keyed interrupt registry and an outcome-carrying result Message.
+Simulated file uploads driven by interruptible Commands. Cancel one upload, cancel every upload in flight, or restart a cancelled upload through a keyed interrupt registry and an outcome-carrying result Message.
 
 Commands
 

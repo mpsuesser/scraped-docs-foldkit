@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/auth
 title: "Auth"
-description: "Authentication flow with Submodels, OutMessage, protected routes, and session management."
-access_date: 2026-08-07T17:45:14.882Z
-current_date: 2026-08-07T17:45:14.882Z
+description: "An authentication flow with Submodels, OutMessage, protected routes, and session management."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Auth
 
-Authentication flow with Submodels, OutMessage, protected routes, and session management.
+An authentication flow with Submodels, OutMessage, protected routes, and session management.
 
 Auth
 

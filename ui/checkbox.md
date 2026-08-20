@@ -2,13 +2,13 @@
 url: https://foldkit.dev/ui/checkbox
 title: "Checkbox"
 description: "Accessible checkbox with indeterminate state support."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## Overview
 
-A toggle with checked, unchecked, and indeterminate states. Checkbox is a stateless controlled render helper: call it directly with a ViewConfig in your own view; no Model, update, or `h.submodel` wrapping. Your Model owns the checked value, you pass it in as `isChecked`, and `onToggle` dispatches a Message when the user toggles it. In your update handler, just store the value. For an on/off toggle that represents an immediate action (like a light switch), use Switch instead.
+A toggle with checked, unchecked, and indeterminate states. Checkbox is a stateless controlled render helper. Call it directly with a ViewConfig in your own view, with no Model, update, or `h.submodel` wrapping of its own. Your Model owns the value passed as `isChecked`, and `onToggle` turns an interaction into a Message for update to store. For an on/off toggle that represents an immediate action, such as a light switch, use Switch instead.
 
 See it in an app
 
@@ -233,7 +233,7 @@ Configuration object passed to `Checkbox.view()`.
 | --- | --- | --- | --- |
 | `id` | `string` | — | Unique ID for the checkbox instance. Used to link the label and description via ARIA. |
 | `isChecked` | `boolean` | — | The current checked state, read from your Model. `aria-checked` and the `data-checked` marker derive from it. |
-| `onToggle` | `(isChecked: boolean) => Message` | — | Maps the new checked state to a Message when the user toggles the checkbox. Your update handler just stores the value. |
+| `onToggle` | `(isChecked: boolean) => Message` | — | Maps the new checked state to a Message when the user toggles the checkbox. Store that value in update. |
 | `toView` | `(attributes: CheckboxAttributes) => Html` | — | Callback that receives attribute groups for the checkbox, label, description, and hidden input elements. |
 | `isDisabled` | `boolean` | `false` | Whether the checkbox is disabled. |
 | `isReadOnly` | `boolean` | `false` | Whether the checkbox is readable but not toggleable. Carries `aria-readonly` rather than `aria-disabled`. Independent of `isDisabled`. |

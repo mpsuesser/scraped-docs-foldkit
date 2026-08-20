@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/command-interruptible
 title: "Command/Interruptible"
 description: "API documentation for the Command/Interruptible module."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Command/Interruptible
@@ -14,7 +14,7 @@ current_date: 2026-08-20T02:21:49.544Z
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/command/interruptible/interruptible.ts#L180)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/command/interruptible/interruptible.ts#L180)
 
 ```
 /**
@@ -33,7 +33,7 @@ interface DefinitionNoArgs {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/command/interruptible/interruptible.ts#L194)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/command/interruptible/interruptible.ts#L194)
 
 ```
 /**
@@ -53,7 +53,7 @@ interface DefinitionWithArgs {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/command/interruptible/interruptible.ts#L217)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/command/interruptible/interruptible.ts#L217)
 
 ```
 /**
@@ -75,7 +75,7 @@ interface DefinitionWithArgsNameKeyed {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/command/interruptible/interruptible.ts#L149)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/command/interruptible/interruptible.ts#L149)
 
 ```
 /**
@@ -93,7 +93,7 @@ interface InterruptDefinitionNoArgs {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/command/interruptible/interruptible.ts#L163)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/command/interruptible/interruptible.ts#L163)
 
 ```
 /**
@@ -114,7 +114,7 @@ interface InterruptDefinitionWithArgs {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/command/interruptible/interruptible.ts#L9)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/command/interruptible/interruptible.ts#L9)
 
 ```
 /**
@@ -129,7 +129,7 @@ const Interrupted: CallableTaggedStruct<"Interrupted", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/command/interruptible/interruptible.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/command/interruptible/interruptible.ts#L19)
 
 ```
 /**
@@ -144,7 +144,7 @@ const NotFound: CallableTaggedStruct<"NotFound", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/command/interruptible/interruptible.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/command/interruptible/interruptible.ts#L29)
 
 ```
 /**

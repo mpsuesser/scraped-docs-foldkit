@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/pixel-art
 title: "Pixel Art"
-description: "Pixel art editor showcasing undo/redo with immutable snapshots, time-travel history, UI components (RadioGroup, Switch, Listbox, Dialog, Button), createLazy view optimization, Subscriptions, Commands with error handling, and localStorage persistence via Flags."
-access_date: 2026-08-16T19:09:52.991Z
-current_date: 2026-08-16T19:09:52.991Z
+description: "A pixel art editor with immutable undo and redo, time-travel history, Foldkit UI components, lazy views, Subscriptions, Commands that report errors as Messages, and localStorage persistence through Flags."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Pixel Art
 
-Pixel art editor showcasing undo/redo with immutable snapshots, time-travel history, UI components (RadioGroup, Switch, Listbox, Dialog, Button), createLazy view optimization, Subscriptions, Commands with error handling, and localStorage persistence via Flags.
+A pixel art editor with immutable undo and redo, time-travel history, Foldkit UI components, lazy views, Subscriptions, Commands that report errors as Messages, and localStorage persistence through Flags.
 
 Undo/Redo
 

@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/view
 title: "View"
-description: "Render your UI as a pure function of the Model. Foldkit views are plain TypeScript functions. No JSX, no hooks, no component lifecycle."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "Return a Document or Html value as a pure function of the Model. Covers document metadata, element builders, events, and view decomposition."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## Model In, HTML Out
@@ -304,21 +304,5 @@ h.button(
 The iOS keyboard case has one extra constraint: the target must already exist when the user taps. An input inside a closed dialog does not. Keep an always-present, visually hidden text input as a keyboard warmup and point `OnClickFocus` at it. The same attribute dispatches the Message that opens the dialog. Update can then return a `Dom.focus` Command to move focus to the real input after it mounts, while iOS keeps the keyboard open.
 
 These attributes are narrow browser-integration primitives, not a general escape hatch. Use them only when the browser requires synchronous work inside a gesture. Anything that can wait belongs in the normal lifecycle, usually a Command.
-
-## Trusted Content Boundaries
-
-Typed builders prevent a handler from dispatching the wrong Message. They do not sanitize content that you explicitly ask the browser to interpret as HTML, script, or an executable resource.
-
-Raw HTML, script sources, and script attributes need trusted content
-
-Several inputs run whatever you pass them, in the browser and in server-rendered HTML alike:
-
-- `h.InnerHTML` and `h.Srcdoc` render their strings as raw HTML.
-- A raw `onclick` -style attribute runs its string as script.
-- The `src` of a `<script>` or `<iframe>`, and the `data` of an `<object>`, load and run whatever they point at, including an `http(s)` or `data:` URL.
-
-Only pass content you control to these APIs. User input, a URL parameter, or an API response can become a cross-site scripting vector. Build ordinary markup with `h` instead, or sanitize the value before it reaches one of these sinks.
-
-`h.Href`, `h.Src`, `h.Action`, and `h.Formaction` neutralize `javascript:` and `vbscript:` URLs, including control-character obfuscation, to an empty value. This blocks the classic scheme-based injection on a link or form. It does not make every URL safe. A `<script>` or `<iframe>` still executes an `http(s)` or `data:` source, so any URL that loads code must be trusted.
 
 The basic loop is now complete: a Message reaches update, update returns a Model, and view renders it. The next step is side effects. [Commands](https://foldkit.dev/core/commands) describe one-shot work for the runtime to execute.

@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/ui/button
 title: "Button"
-description: "A thin wrapper around the native button with accessibility attributes and styling hooks."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "A stateless wrapper around the native button with accessibility attributes, event wiring, and styling hooks."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## Overview

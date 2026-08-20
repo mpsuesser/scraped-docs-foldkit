@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/todo
 title: "Todo"
-description: "A todo list with local storage persistence. Add, complete, and delete tasks."
-access_date: 2026-08-14T23:23:27.183Z
-current_date: 2026-08-14T23:23:27.183Z
+description: "A todo list persisted in localStorage. Add, complete, and delete tasks."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Todo
 
-A todo list with local storage persistence. Add, complete, and delete tasks.
+A todo list persisted in localStorage. Add, complete, and delete tasks.
 
 Storage
 

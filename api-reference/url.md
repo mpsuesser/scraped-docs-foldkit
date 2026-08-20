@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/url
 title: "Url"
 description: "API documentation for the Url module."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Url
@@ -14,7 +14,7 @@ current_date: 2026-08-20T02:21:49.544Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/url/index.ts#L110)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/url/index.ts#L110)
 
 ```
 /** Parses a URL string into a `Url`, returning `Option.None` if invalid. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/url/index.ts#L112)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/url/index.ts#L112)
 
 ```
 /** Serializes a `Url` back to a string. */
@@ -38,7 +38,7 @@ function
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ce6e12fe473f674bed6fcf9964c1b3edf81d4a13/packages/foldkit/src/url/index.ts#L13)
+[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/url/index.ts#L13)
 
 ```
 /** Schema representing a parsed URL with protocol, host, port, pathname, search, and hash fields. */

@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/counter-example
 title: "Counter Example"
-description: "A minimal Foldkit application explained step by step."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+description: "Build and trace a minimal Counter through its Model, Message Schema, update, view, init, and Runtime wiring."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # A Simple Counter Example

@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/runtime
 title: "Runtime"
-description: "Mount and run a Foldkit application in the browser."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+description: "Configure a page-owning application with makeApplication, or mount a reusable widget with makeElement and embed."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Runtime

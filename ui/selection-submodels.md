@@ -1,14 +1,16 @@
 ---
 url: https://foldkit.dev/ui/selection-submodels
 title: "Selection Submodels"
-description: "How Foldkit UI components expose create<Item>() factories that pair view and update behind one type parameter so Item types cannot drift between the rendered list and the selection handler."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "Use create<Item>() factories to keep one item type across a selection Submodel’s view, update, programmatic helpers, and OutMessages."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## Overview
 
-Foldkit UI ships five Submodels for selecting one or more values from a set: [Listbox](https://foldkit.dev/ui/listbox), [Combobox](https://foldkit.dev/ui/combobox), [Tabs](https://foldkit.dev/ui/tabs), [Menu](https://foldkit.dev/ui/menu), and [RadioGroup](https://foldkit.dev/ui/radio-group). For example, a Listbox of plans, a Combobox of cities, a Tabs of view modes, a Menu of actions, or a RadioGroup of pricing plans.
+Foldkit UI ships five Submodels for selecting values from a set: [Listbox](https://foldkit.dev/ui/listbox), [Combobox](https://foldkit.dev/ui/combobox), [Tabs](https://foldkit.dev/ui/tabs), [Menu](https://foldkit.dev/ui/menu), and [RadioGroup](https://foldkit.dev/ui/radio-group). Listbox and Combobox also provide multi-select variants.
+
+For example: a Listbox of plans, a Combobox of cities, Tabs for view modes, a Menu of actions, or a RadioGroup of pricing plans.
 
 Each exposes a `create<Item>()` factory that pairs the view and update behind a single type parameter, so the value type is fixed at the binding site and flows into the OutMessage.
 

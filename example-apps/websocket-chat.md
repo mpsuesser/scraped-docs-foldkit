@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/websocket-chat
 title: "WebSocket Chat"
-description: "Managed resources with WebSocket integration. Connection lifecycle, reconnection, and message streaming."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+description: "A ManagedResource owns a WebSocket connection lifecycle. Demonstrates connection state, reconnection, and frames entering update as Messages."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # WebSocket Chat
 
-Managed resources with WebSocket integration. Connection lifecycle, reconnection, and message streaming.
+A ManagedResource owns a WebSocket connection lifecycle. Demonstrates connection state, reconnection, and frames entering update as Messages.
 
 Managed Resources
 

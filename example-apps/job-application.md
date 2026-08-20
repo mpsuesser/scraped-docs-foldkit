@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/job-application
 title: "Job Application"
-description: "Multi-step form with async email validation, cross-field date constraints, file uploads, and per-step error indicators."
-access_date: 2026-08-17T04:17:49.255Z
-current_date: 2026-08-17T04:17:49.255Z
+description: "A multi-step form with asynchronous email validation, cross-field date constraints, file uploads, and per-step error indicators."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Job Application
 
-Multi-step form with async email validation, cross-field date constraints, file uploads, and per-step error indicators.
+A multi-step form with asynchronous email validation, cross-field date constraints, file uploads, and per-step error indicators.
 
 Validation
 

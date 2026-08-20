@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/slow-warnings
 title: "Slow Warnings"
-description: "Interactive lab for triggering slow update, view, patch, and Subscription dependency warnings with default thresholds and a visible warning log."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+description: "Trigger slow update, view, patch, and Subscription dependency warnings at their default thresholds, then inspect them in a visible log."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Slow Warnings
 
-Interactive lab for triggering slow update, view, patch, and Subscription dependency warnings with default thresholds and a visible warning log.
+Trigger slow update, view, patch, and Subscription dependency warnings at their default thresholds, then inspect them in a visible log.
 
 Performance
 

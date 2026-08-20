@@ -1,88 +1,83 @@
 ---
 url: https://foldkit.dev/best-practices/side-effects-and-purity
 title: "Side Effects & Purity"
-description: "Why Foldkit programs should have zero side effects outside of Commands."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "Keep update and view deterministic by confining outside work to Commands, Subscriptions, Mounts, ManagedResources, and other Runtime-managed boundaries."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
-## Overview
+# Side Effects and Purity
 
-A correct Foldkit program is a pure description with zero side effects, period. Yes, zero (0). Your program is the Foldkit application you define: your Model, update, view, the Command values returned by update, and more. Evaluating it does not perform side effects.
+## Purity in Foldkit
 
-Every side effect is described as an Effect: a value that represents a computation without executing it. An Effect does nothing when you construct it. The side effects still happen, but only when the Foldkit runtime runs your program and executes the Effects it produces.
+Foldkit keeps view and update pure. They describe the next UI and any work to perform, but they do not perform that work themselves.
 
-Both `view` and `update` are pure functions. They take inputs and return outputs without touching the outside world.
+`view` returns a `Document` or `Html` value. Its event handlers construct Messages. `update` returns the next Model, Commands, and, for a Submodel, an optional OutMessage. Given the same inputs, both functions make the same decisions without reading or changing the outside world.
 
-You encapsulate side effects in exactly six places:
+Effectful work lives at boundaries managed by the Runtime. Depending on the boundary, that work is described by an Effect, Stream, or Layer:
 
-- [Commands](https://foldkit.dev/core/commands): an Effect that performs a side effect and returns a Message. HTTP requests, DOM operations, reading from storage. This is where most of your side effects live.
-- [Mount](https://foldkit.dev/core/mount): an Effect run with the live `Element` when a view element enters the DOM, paired with cleanup that fires when it unmounts. The seam where view code reaches a real DOM node, like portaling an overlay to the body or handing the element to a third-party library that owns its own DOM.
-- [flags](https://foldkit.dev/core/init-and-flags#flags): an Effect that returns the initial data your program needs to start. Reading from local storage, detecting browser capabilities, or fetching configuration.
-- [Subscription](https://foldkit.dev/core/subscriptions) streams: a `Stream<Message>`. Subscriptions model ongoing processes like keyboard events, window resizing, or intersection observers. When a stream callback needs to perform a side effect before producing a Message (like calling `event.preventDefault()`), use `Stream.mapEffect`. The runtime controls when streams subscribe and unsubscribe based on your Model.
-- [Resources](https://foldkit.dev/core/resources): an Effect Layer that provides long-lived services to your Commands. One-time setup like assembling an RPC client or opening a database connection.
-- [Managed Resources](https://foldkit.dev/core/managed-resources): `acquire` and `release` Effects for stateful resources that activate and deactivate based on your Model. Camera streams, WebSocket connections, media recorders.
+- [Commands](https://foldkit.dev/core/commands) describe one-shot work caused by a Message, such as an HTTP request, navigation, storage operation, or focus change.
+- [Mount](https://foldkit.dev/core/mount) describes work tied to one live `Element`. Use it for element measurement, observers, portaling, and imperative third-party libraries.
+- [Flags](https://foldkit.dev/core/init-and-flags#flags) obtain the outside data needed before init can construct the first Model.
+- [Subscriptions](https://foldkit.dev/core/subscriptions) describe ongoing work whose lifetime follows dependencies derived from the Model.
+- [Resources](https://foldkit.dev/core/resources) provide app-lifetime services shared by Commands, Subscriptions, Mounts, and Flags.
+- [ManagedResource](https://foldkit.dev/core/managed-resources) acquires a typed stateful handle while a Model condition holds. Commands and Subscriptions can use that handle while it is live.
 
-That’s it. Every side effect in your program is an Effect value, managed by the runtime. Your logic is pure.
+These descriptions do nothing until the Runtime starts them. One narrow exception stays inside its boundary: a mapper passed to `Subscription.fromEvent` may perform synchronous browser work such as `event.preventDefault()` before returning a Message.
 
-## Why Zero Side Effects?
+A [CustomElement](https://foldkit.dev/core/custom-element) binding remains declarative. Properties flow from the Model into the native element, and its events return as Messages. The browser owns the custom element's internal implementation.
 
-Foldkit gains powerful guarantees from zero side effects:
+## Why Purity Matters
 
-- DevTools replay: the DevTools can replay any sequence of Messages against your `update` function because it’s pure. If `update` had side effects, replaying would double-fire them.
-- Time-travel debugging: you can jump to any point in your app’s history and see exactly what the Model looked like, because each state is a deterministic function of the previous state plus the Message.
-- Predictability: reading `update` tells you everything about how a Message changes the Model. There are no hidden effects, no action-at-a-distance, no callbacks firing behind the scenes.
+- **Replay stays safe.** DevTools can replay Messages through update without firing network requests, analytics, storage writes, or DOM work again.
+- **State remains explainable.** Each Model follows from the previous Model and one Message. The history does not depend on a hidden callback changing data elsewhere.
+- **Tests stay deterministic.** Story tests resolve Command results explicitly, while Scene tests acknowledge effect boundaries surfaced by the rendered view.
 
 ## Common Mistakes
 
-- `console.log` in `update`: `console.log` during development is fine for quick debugging. But production logging or error monitoring is a side effect that belongs in a Command. It will fire again during DevTools replay, and you want structured control over what gets reported.
-- `Date.now()` in `update`: calling `Date.now()` breaks purity because the same Model and Message produce different results depending on when they run. Request the current time via a Command using Effect’s [DateTime](https://effect.website/docs/data-types/datetime/) module and return it as a Message.
-- `fetch` in `view`: the view is called on every render. Instead, return a Command from `update` that fetches your data and returns a Message. Handle the Message to update your Model.
-- DOM access anywhere: reading `document.getElementById` or `window.innerWidth` breaks purity. Use Subscriptions for reactive values, or Commands for one-off reads.
+For example:
 
-## Pure Functions Everywhere
+- Production logging inside update runs again during DevTools replay. Put logging and error reporting in a Command. Temporary `console.log` calls are still useful while debugging, but remove them when the investigation ends.
+- `Date.now()` and `Math.random()` inside update make the result depend on when it runs. Ask for time or randomness through a Command and return the value in its result Message.
+- `fetch` inside view starts work whenever the view renders. Start the request with a Command returned by update.
+- Reading `document` or `window` inside view or update hides browser state outside the Model. Use a Command for one-shot reads, a Subscription for ongoing external state, or Mount when the work requires a particular live element.
+
+## View and update
 
 ### View is Pure
 
-- No hooks, no lifecycle methods
-- No fetching data, no timers, no subscriptions
-- Given the same Model, always returns the same Html
+View reads the Model and any declared ViewInputs, then returns `Document` or `Html`. It does not fetch, schedule timers, subscribe, or read live DOM state. Event attributes construct Messages for the Runtime to dispatch.
 
 ```
 import type { Document, HtmlBuilder } from 'foldkit/html'
 
 import type { Message } from './message'
-import { Model } from './model'
+import type { Model } from './model'
 
 // ❌ Don't do this in view
 const view = (model: Model, h: HtmlBuilder<Message>): Document => {
-  // Fetching data in view
   fetch('/api/user').then(res => res.json())
-
-  // Setting timers
   setTimeout(() => console.log('tick'), 1000)
+  window.addEventListener('resize', () => {})
 
-  // Subscriptions
-  window.addEventListener('resize', handleResize)
-
-  return { title: 'Hello', body: h.div([], ['Hello']) }
+  return { title: model.title, body: h.div([], [model.title]) }
 }
 ```
 
 ```
 import type { Document, HtmlBuilder } from 'foldkit/html'
 
-import { ClickedIncrement, Message } from './message'
-import { Model } from './model'
+import { ClickedIncrement, type Message } from './message'
+import type { Model } from './model'
 
-// ✅ View is a pure function from Model to a Document describing the page
+// ✅ Keep view pure
 const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: model.title,
   body: h.div(
     [h.Class('container')],
     [
       h.h1([], [model.title]),
-      h.p([], [\`Count: ${model.count}\`]),
+      h.p([], [`Count: ${model.count}`]),
       h.button([h.OnClick(ClickedIncrement())], ['+']),
     ],
   ),
@@ -91,119 +86,111 @@ const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 ### Update is Pure
 
-- Returns a new Model and a list of Commands. It doesn’t execute anything. Each Command carries a name for tracing and testing. Foldkit runs the provided Commands.
-- No mutations, no side effects
-- Given the same Model and Message, always returns the same result
+Update reads the current Model and one Message. It returns a new Model plus descriptions of any work that should follow. It does not mutate the Model, touch the DOM, or execute a Command.
 
 ```
-import { Match } from 'effect'
+import { Match as M } from 'effect'
+import { type Command } from 'foldkit'
+import { evo } from 'foldkit/struct'
 
-import { Message } from './message'
-import { Model } from './model'
+import type { Message } from './message'
+import type { Model } from './model'
+
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 
 // ❌ Don't do this in update
 const update = (model: Model, message: Message) =>
-  Match.value(message).pipe(
-    Match.tagsExhaustive({
-      ClickedFetchUser: () => {
-        // Making HTTP requests directly
-        fetch('/api/user').then(res => {
-          model.user = res.json() // Mutating state!
-        })
-        return [model, []]
+  M.value(message).pipe(
+    M.withReturnType<UpdateReturn>(),
+    M.tagsExhaustive({
+      OpenedDialog: () => {
+        document.querySelector<HTMLInputElement>('#search-input')?.focus()
+        return [evo(model, { dialogState: () => 'Open' }), []]
       },
     }),
   )
 ```
 
 ```
-import { Match } from 'effect'
+import { Effect, Match as M } from 'effect'
+import { Command } from 'foldkit'
+import * as Dom from 'foldkit/dom'
 import { evo } from 'foldkit/struct'
 
-import { fetchUser } from './command'
-import { Message } from './message'
-import { Model } from './model'
+import { CompletedFocusSearchInput, type Message } from './message'
+import type { Model } from './model'
 
-// ✅ Update returns new state and commands
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+
+const FocusSearchInput = Command.define('FocusSearchInput', {
+  messages: [CompletedFocusSearchInput],
+  execute: Dom.focus('#search-input').pipe(
+    Effect.ignore,
+    Effect.as(CompletedFocusSearchInput()),
+  ),
+})
+
+// ✅ Return the next Model and a Command
 const update = (model: Model, message: Message) =>
-  Match.value(message).pipe(
-    Match.tagsExhaustive({
-      ClickedFetchUser: () => [
-        evo(model, { isLoading: () => true }),
-        [fetchUser(model.userId)], // Command handles the side effect
+  M.value(message).pipe(
+    M.withReturnType<UpdateReturn>(),
+    M.tagsExhaustive({
+      OpenedDialog: () => [
+        evo(model, { dialogState: () => 'Open' }),
+        [FocusSearchInput()],
       ],
-
-      SucceededFetchUser: ({ user }) => [
-        evo(model, { isLoading: () => false, user: () => user }),
-        [], // Result received, no more commands needed
-      ],
+      CompletedFocusSearchInput: () => [model, []],
     }),
   )
 ```
 
-This purity has a practical payoff: testing is trivial. Foldkit ships `foldkit/test`: a simulation module that lets you send Messages, declare Command resolvers, and assert on the Model in a single pipe chain. See the [Testing](https://foldkit.dev/testing) guide for the full API.
+The [Testing](https://foldkit.dev/testing) guide shows how Story drives update and resolves Commands without a DOM, while Scene exercises the effect boundaries exposed by a rendered view.
 
-## Requesting Values
+## Requesting Outside Values
 
-A common mistake is computing random or time-based values directly in `update`. This breaks purity. Calling the function twice with the same inputs would return different results.
+Randomness, clocks, storage, and browser APIs produce values that are not already in the Model or Message. Request those values through a Command.
 
-### Don’t Compute in Update
+This version generates a different position each time update receives the same inputs:
 
 ```
-import { Match } from 'effect'
+import { Match as M } from 'effect'
+import { type Command } from 'foldkit'
+import { evo } from 'foldkit/struct'
 
 import { GRID_SIZE } from './constants'
-import { Message, RequestedApple } from './message'
-import { Model } from './model'
+import type { Message } from './message'
+import type { Model } from './model'
 
-// ❌ Don't do this - calling random directly in update
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
+
+// ❌ Don't call random directly in update
 const update = (model: Model, message: Message) =>
-  Match.value(message).pipe(
-    Match.tagsExhaustive({
+  M.value(message).pipe(
+    M.withReturnType<UpdateReturn>(),
+    M.tagsExhaustive({
       RequestedApple: () => {
         const x = Math.floor(Math.random() * GRID_SIZE)
         const y = Math.floor(Math.random() * GRID_SIZE)
-        return [{ ...model, apple: { x, y } }, []]
+        return [evo(model, { apple: () => ({ x, y }) }), []]
       },
     }),
   )
-
-// Same inputs produce different outputs - this breaks purity!
-const model = { snake: [{ x: 0, y: 0 }], apple: { x: 5, y: 5 } }
-const message = RequestedApple()
-
-console.log(update(model, message)[0].apple) // { x: 12, y: 7 }
-console.log(update(model, message)[0].apple) // { x: 3, y: 19 }
-console.log(update(model, message)[0].apple) // { x: 8, y: 2 }
 ```
 
-### Request Via Command
-
-Instead, return a Command that generates the value and sends it back as a Message:
+The pure version returns `GenerateApplePosition`. Its Effect generates the coordinates and sends them back in `CompletedGenerateApplePosition`:
 
 ```
-import { Effect, Match, Random } from 'effect'
+import { Effect, Match as M, Random } from 'effect'
 import { Command } from 'foldkit'
+import { evo } from 'foldkit/struct'
 
 import { GRID_SIZE } from './constants'
-import {
-  CompletedGenerateApplePosition,
-  Message,
-  RequestedApple,
-} from './message'
-import { Model } from './model'
+import { CompletedGenerateApplePosition, type Message } from './message'
+import type { Model } from './model'
 
-const update = (model: Model, message: Message) =>
-  Match.value(message).pipe(
-    Match.tagsExhaustive({
-      RequestedApple: () => [model, [GenerateApplePosition()]],
-      CompletedGenerateApplePosition: ({ position }) => [
-        { ...model, apple: position },
-        [],
-      ],
-    }),
-  )
+type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 
+// ✅ Run random work in a Command
 const GenerateApplePosition = Command.define('GenerateApplePosition', {
   messages: [CompletedGenerateApplePosition],
   execute: Effect.gen(function* () {
@@ -213,14 +200,19 @@ const GenerateApplePosition = Command.define('GenerateApplePosition', {
   }),
 })
 
-const model = { snake: [{ x: 0, y: 0 }], apple: { x: 5, y: 5 } }
-const message = RequestedApple()
-
-console.log(update(model, message))
-console.log(update(model, message))
-console.log(update(model, message))
+const update = (model: Model, message: Message) =>
+  M.value(message).pipe(
+    M.withReturnType<UpdateReturn>(),
+    M.tagsExhaustive({
+      RequestedApple: () => [model, [GenerateApplePosition()]],
+      CompletedGenerateApplePosition: ({ position }) => [
+        evo(model, { apple: () => position }),
+        [],
+      ],
+    }),
+  )
 ```
 
-This “request/response” pattern keeps `update` pure. The `RequestedApple` handler always returns the same result. It just emits a Command. The actual random generation happens in the Effect, and the result comes back via `CompletedGenerateApplePosition`.
+`RequestedApple` now returns the same Model and Command every time. Only the result handler writes the generated position into the Model.
 
-See the [Snake example](https://github.com/foldkit/foldkit/blob/main/examples/snake/src/main.ts#L220-L234) for a complete implementation of this pattern.
+See the [Snake example](https://github.com/foldkit/foldkit/blob/main/examples/snake/src/main.ts#L220-L245) for a complete implementation of this pattern.

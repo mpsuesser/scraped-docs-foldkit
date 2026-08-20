@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/ui/overview
 title: "Foldkit UI"
-description: "Headless, accessible UI components for Foldkit: dialog, menu, tabs, listbox, and more. Built for The Elm Architecture with Effect-TS."
-access_date: 2026-08-16T19:09:52.991Z
-current_date: 2026-08-16T19:09:52.991Z
+description: "Choose between stateful Submodels and stateless render helpers in Foldkit’s headless UI package. Covers accessibility, styling, installation, and the component catalog."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Foldkit UI
 
-## What is Foldkit UI?
+## Overview
 
-Foldkit UI is a set of headless, accessible UI components. Each component is renderless. You provide the markup and styling through a toView callback, and Foldkit UI provides the accessibility attributes, keyboard navigation, and (where applicable) state management.
+Foldkit UI is a set of headless, accessible UI components. You provide markup and styling through a `toView` callback. Foldkit UI provides attribute bundles, keyboard behavior, and state management where the interaction requires it.
 
 ## Installation
 
@@ -20,13 +20,15 @@ Foldkit UI is a set of headless, accessible UI components. Each component is ren
 npm install @foldkit/ui
 ```
 
-## Two categories
+## Component Categories
 
-Foldkit UI components fall into two categories, distinguished by whether they carry state.
+Components are either stateful Submodels or stateless render helpers.
 
-Stateful [Submodels](https://foldkit.dev/core/submodel) (Menu, Listbox, Combobox, Calendar, Dialog, Popover, among others) manage their own Model, Message, update, and OutMessage. You embed them via h.submodel and handle their events by pattern-matching the OutMessage in your update.
+Stateful [Submodels](https://foldkit.dev/core/submodel), including Menu, Listbox, Combobox, Calendar, Dialog, and Popover, have their own Model, Message union, update, and OutMessage. Embed them with `h.submodel` and fold their OutMessages into the parent update.
 
-Stateless render helpers (Button, Input, Textarea, Select, Checkbox, Switch, Disclosure, Fieldset, Nav) are called directly with a ViewConfig and your builder, and return Html. They bundle ARIA and data attributes onto consumer-rendered DOM. No Model, no h.submodel wiring. The controlled helpers dispatch the Messages returned by their config callbacks, and the builder you pass is what determines the Message type those callbacks must return, so there is no type argument to write. The “Kind” column in the table below marks which is which.
+Stateless render helpers, including Button, Input, Textarea, Select, Checkbox, Switch, Disclosure, Fieldset, and Nav, take a `ViewConfig` and your builder and return Html. They bundle ARIA, data, and event attributes for DOM elements that you render. They need no child Model or `h.submodel` wiring. The builder determines the Message type returned by their callbacks, so you do not provide a Message type argument.
+
+The Kind column below identifies each component category.
 
 ## Components
 
@@ -172,4 +174,4 @@ Underneath the floating components sits [Anchor](https://foldkit.dev/ui/anchor),
 
 ## Showcase
 
-The [UI Showcase](https://foldkit.dev/example-apps/ui-showcase) example demonstrates every component with styled, interactive examples. It’s a good reference for how to wire up component state, handle Messages, and compose views.
+The [UI Showcase](https://foldkit.dev/example-apps/ui-showcase) demonstrates every component with styled, interactive examples. Use its source to see parent-child wiring, OutMessage folds, and view composition in one application.

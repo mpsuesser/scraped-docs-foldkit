@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/init-and-flags
 title: "Init & Flags"
-description: "Set up the initial Model, pass external data via flags, and run startup Commands."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "Construct the first Model and startup Commands. Routing supplies the current URL, while Schema-validated Flags support fresh client boots and hydration."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## The First Model
@@ -133,6 +133,6 @@ The example provides `KeyValueStore` inside the Flags Effect because that servic
 
 Server rendering provides Flags from the request or build instead of running a client Flags Effect. `renderToString` uses that value to call `init`, encodes it through the Schema, and embeds the result in the HTML. `Runtime.hydrate` decodes the same value and calls the same `init`, so the client reconstructs the Model that produced the server HTML.
 
-A hydrating entry does not provide a client Flags Effect. Missing or invalid handoff data fails startup instead of silently booting a different Model. The [Server Rendering](https://foldkit.dev/core/server-rendering#flags-and-browser-facts) guide explains which data is safe and reproducible across that boundary.
+A hydrating entry does not provide a client Flags Effect. Missing or invalid handoff data fails startup instead of silently booting a different Model. The [Server Rendering](https://foldkit.dev/core/server-rendering#flags-and-what-only-the-browser-knows) guide explains which data is safe and reproducible across that boundary.
 
 Once one Model, Message union, and update function become too large to reason about as a unit, decompose the state machine into [Submodels](https://foldkit.dev/core/submodel). Each child owns its own Model, Messages, update, and Commands behind an explicit parent boundary.

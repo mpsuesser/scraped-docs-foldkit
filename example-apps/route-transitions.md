@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/route-transitions
 title: "Route Transitions"
-description: "Live log of every navigation, narrated by the Transition helpers. Entering the gallery loads the catalog once, the stayed helper refetches a painting only when its id changes, and the exited helper saves a draft when you leave the studio."
-access_date: 2026-08-07T15:31:08.863Z
-current_date: 2026-08-07T15:31:08.863Z
+description: "A live log shows which Transition helper handles each navigation. Entering the gallery loads its catalog once, staying on a painting refetches only when its id changes, and leaving the studio saves a draft."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Route Transitions
 
-Live log of every navigation, narrated by the Transition helpers. Entering the gallery loads the catalog once, the stayed helper refetches a painting only when its id changes, and the exited helper saves a draft when you leave the studio.
+A live log shows which Transition helper handles each navigation. Entering the gallery loads its catalog once, staying on a painting refetches only when its id changes, and leaving the studio saves a draft.
 
 Routing
 

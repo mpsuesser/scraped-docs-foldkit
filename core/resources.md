@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/resources
 title: "Resources"
-description: "Long-lived browser singletons shared across Commands."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+description: "Provide app-lifetime Effect services to Commands, Subscriptions, Mounts, and Flags, or provide a service directly when sharing is unnecessary."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Resources

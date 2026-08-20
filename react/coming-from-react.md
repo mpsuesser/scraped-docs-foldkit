@@ -1,22 +1,20 @@
 ---
 url: https://foldkit.dev/react/coming-from-react
 title: "Coming from React"
-description: "Moving from React to a principled architecture? Foldkit replaces hooks, useEffect, and component state with The Elm Architecture: one Model, one update function, explicit effects. Built on Effect-TS."
-access_date: 2026-08-17T04:17:49.255Z
-current_date: 2026-08-17T04:17:49.255Z
+description: "See how Foldkit replaces component-owned state and Effects with one Model, Messages, update, Commands, Subscriptions, and Submodels."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Coming from React
 
-If you know React, you already have the instincts for building UIs. Foldkit channels those instincts through a different structure: one where every state change, every side effect, and every event is explicit and visible. The best way to feel the difference is to build the same thing in both.
+If you know React, you already have the instincts for building declarative interfaces. Foldkit puts those instincts inside a different structure. React organizes behavior around components and Hooks. Foldkit organizes it around one Model, Messages, update, and a view.
 
-Foldkit doesn’t compete with React on brevity, and it isn’t trying to. The first counter you see below is longer than its React counterpart, and the shape will feel unfamiliar: a separate Model, Message union, update function, and view, where React fits the same idea into a single component with a hook. That gap is the point. Foldkit names every piece React leaves implicit (state, events, side effects, subscriptions) so they stay legible as the app grows.
-
-The trade is upfront verbosity for structural guarantees that compound. If you read the small example and think “that’s a lot of code for a counter,” you’re right. Keep reading: the next two sections add features that turn React into stale-closure debugging and leave Foldkit unchanged in shape.
+Foldkit does not compete with React on the brevity of a small component, and it is not trying to. Its first counter is longer because it names the state machine before the application needs much of one. That gap is deliberate. The examples below keep adding behavior to the same counter so you can see what the structure buys as effects and time enter the picture.
 
 ## A Simple Counter
 
-A counter in React:
+Here is a counter in React:
 
 ```
 import { useState } from 'react'
@@ -37,7 +35,7 @@ function Counter() {
 }
 ```
 
-The same counter in Foldkit:
+The Foldkit version separates state, events, transitions, and rendering:
 
 ```
 import { Match as M, Schema as S } from 'effect'
@@ -87,22 +85,20 @@ const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })
 ```
 
-More lines, same result. At this scale, Foldkit’s structure (Model, Message, update, view) looks like overhead. The benefits come with scale. Every piece earns its place as more complex behavior is introduced.
+For one number and one button, React is more compact. Foldkit’s structure starts paying for itself when the same state participates in timers, network requests, keyboard input, or several views. The rest of this page adds one of those concerns at a time.
 
 ## Adding Auto-Count
 
-New requirement: a play/pause button that auto-increments the counter every second.
+The next requirement is a play/pause button that increments the counter every second.
 
-React adds a ref to hold the interval ID and a `useEffect` to start and stop the interval:
+React uses an Effect to synchronize an interval with `isAutoCounting`:
 
 ```
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const TICK_INTERVAL_MS = 1000
 
 function Counter() {
-  const intervalRef = useRef<number>()
-
   const [count, setCount] = useState(0)
   const [isAutoCounting, setIsPlaying] = useState(false)
 
@@ -115,13 +111,15 @@ function Counter() {
   }
 
   useEffect(() => {
-    if (isAutoCounting) {
-      intervalRef.current = setInterval(() => {
-        setCount(count => count + 1)
-      }, TICK_INTERVAL_MS)
+    if (!isAutoCounting) {
+      return
     }
 
-    return () => clearInterval(intervalRef.current)
+    const intervalId = setInterval(() => {
+      setCount(count => count + 1)
+    }, TICK_INTERVAL_MS)
+
+    return () => clearInterval(intervalId)
   }, [isAutoCounting])
 
   return (
@@ -136,9 +134,9 @@ function Counter() {
 }
 ```
 
-The interval state lives outside React’s state system (in a ref) because the effect needs to clear the previous interval before starting a new one. The cleanup function is critical: miss it and you leak intervals.
+The Effect starts the interval when auto-counting is active and returns the cleanup that stops it. React runs the cleanup before the Effect starts again and when the component unmounts. The functional state updater keeps the interval from depending on a captured `count`.
 
-Foldkit adds a Subscription and a Message:
+Foldkit adds a Subscription and a `Ticked` Message:
 
 ```
 import { Duration, Effect, Match as M, Schema as S, Stream } from 'effect'
@@ -224,22 +222,20 @@ const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })
 ```
 
-The Subscription emits `Ticked` every second while `isAutoCounting` is true. Foldkit manages the stream lifecycle: starts it when the dependency changes to true, tears it down when it changes to false. No refs, no manual cleanup.
+The Subscription emits `Ticked` while `isAutoCounting` is true. Foldkit scopes the Stream to that Model condition, so the runtime starts and stops it as the condition changes. The interval does not live in the view, and its ticks enter the application through the same update function as button clicks.
 
 ## Adding a Step Size
 
-One more feature: an input that controls how much each tick and manual click increments by.
+Now the user can choose how much each manual click and timer tick adds.
 
-This is where the React version gets subtle. The `setInterval` callback captures `step` at creation time. If you change the step while playing, the interval keeps using the old value: a stale closure. Nothing flags it at build time; the counter just increments by the wrong amount. React’s current fix is `useEffectEvent`, stable since 19.2: declare the tick as an Effect Event and every call reads current state:
+A naive React interval that reads `step` from its original closure keeps using that old value. Adding `step` to the Effect dependencies gives the interval the latest value, but also restarts the interval whenever the input changes. If the interval should keep its rhythm, React 19.2’s `useEffectEvent` lets the tick read the latest committed `step` without making `step` a synchronization dependency:
 
 ```
-import { useEffect, useEffectEvent, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 
 const TICK_INTERVAL_MS = 1000
 
 function Counter() {
-  const intervalRef = useRef<number>()
-
   const [count, setCount] = useState(0)
   const [isAutoCounting, setIsPlaying] = useState(false)
   const [step, setStep] = useState(1)
@@ -257,11 +253,13 @@ function Counter() {
   })
 
   useEffect(() => {
-    if (isAutoCounting) {
-      intervalRef.current = setInterval(() => onTick(), TICK_INTERVAL_MS)
+    if (!isAutoCounting) {
+      return
     }
 
-    return () => clearInterval(intervalRef.current)
+    const intervalId = setInterval(() => onTick(), TICK_INTERVAL_MS)
+
+    return () => clearInterval(intervalId)
   }, [isAutoCounting])
 
   return (
@@ -284,9 +282,9 @@ function Counter() {
 }
 ```
 
-This is React’s best answer, and look at what it asks of you. First you meet the bug at runtime, because nothing flags a stale closure. Then you classify the read: `step` must be non-reactive here, so it belongs in an Effect Event. The nearest wrong answer is silent: for the naive version, `react-hooks/exhaustive-deps` suggests adding `step` to the dependency array instead, which restarts the interval on every keystroke and quietly resets its rhythm. And codebases older than React 19.2 solve this with a ref plus a sync effect to carry the current value past the closure, a pattern you will still meet everywhere. Most React developers have been burned by this.
+The distinction is meaningful in React. `isAutoCounting` controls whether the external interval exists, so it is an Effect dependency. `step` is data read when the interval fires, so the Effect Event reads its current value without restarting the interval. The Hooks linter enforces where an Effect Event may be called and keeps it out of the dependency array.
 
-In Foldkit, there is no stale closure:
+The Foldkit version adds `step` to the Model and handles `ChangedStep`:
 
 ```
 import { Duration, Effect, Match as M, Schema as S, Stream } from 'effect'
@@ -390,65 +388,61 @@ const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })
 ```
 
-`model.step` is always current. The update function receives the latest Model every time a Message arrives. Both `ClickedIncrement` and `Ticked` use `model.step` and it just works. No refs, no Effect Events, and no deciding which reads are reactive.
+Each `Ticked` Message is handled with the current Model, so `model.step` is current when update calculates the next count. The Subscription still depends only on whether auto-counting is active. There is no closure decision to make and no second mechanism for reading the latest value.
 
-Read the update function top to bottom. Every behavior in the app is right there. Each case is independent. They don’t interact through shared mutable state or overlapping effect dependencies. Adding a feature meant adding cases, not restructuring existing ones.
+The architectural difference
 
-The pattern
+React synchronizes an external resource from component state, so the Effect must distinguish values that control the resource from values read when it emits. Foldkit’s Subscription controls the resource from a Model condition and emits Messages. Update reads the current Model when each Message arrives.
 
-In React, each new feature interacts with the effects, refs, and closures already there. In Foldkit, each new feature adds Messages, update cases, and possibly Commands or Subscriptions to structures that already exist, and the cases don’t interact through shared mutable state.
+`useEffectEvent` is a good answer to the React problem. Foldkit does not create that problem. The timer emits a fact, and update decides what that fact means using the current Model.
 
-This structure also makes testing trivial. Your update function is pure. Pass a Model and a Message, assert on the returned Model. No rendering, no mocking `useEffect`, no wrapping in providers.
-
-This is a toy example. Consider what happens at real scale: a multiplayer game with WebSocket streams, a mix of client and server state, handling keyboard events, animations, and reconnection logic. In React, every feature adds effects that interact with every other effect. In Foldkit, the architecture is the same as the counter: Messages come in, the update function decides what to do, Commands and Subscriptions handle the rest. The complexity of your domain grows, but the complexity of your architecture doesn’t.
+The Foldkit example can be tested below the view by passing Models and Messages directly to update. A view-level Scene test can exercise the same flow through the buttons and input. Neither test needs to wait for a real interval because `Ticked` is already a value the test can dispatch.
 
 ## Translating React Concepts
 
-Here’s how React patterns map to Foldkit:
+The mappings below are starting points, not one-to-one replacements:
 
-React Ecosystem
+React ecosystem
 
 Foldkit
 
 `useState`
 
-Model (single state tree)
+/ component state
+
+Fields in the Model
 
 `useReducer`
 
-`update`
+The update function and Message union
 
-function
+Event-driven side effect
 
-`useEffect`
+A Command returned from update
 
-(one-off)
+External event source tied to state
 
-Commands (returned from
+A Subscription gated by Model dependencies
 
-`update`
+DOM work tied to an element
 
-)
+`Mount.define`
 
-`useRef`
+or
 
-+
+`Mount.defineStream`
 
-`useEffect`
+Stateful resource shared with Commands
 
-(DOM access)
+ManagedResource
 
-Mount (
+Context used for application state
 
-`OnMount`
+The Model
 
-with paired cleanup)
+Context used for services
 
-`useContext`
-
-/ Redux / Zustand
-
-Single Model (no prop drilling)
+Effect services and Layers
 
 `useMemo`
 
@@ -456,66 +450,60 @@ Single Model (no prop drilling)
 
 `useCallback`
 
+Often no equivalent;
+
 `createLazy`
 
-/
+and
 
 `createKeyedLazy`
 
-(memoize on data, not closure identity)
+skip expensive view work when needed
 
-Custom hooks
+Custom Hook
 
-Domain modules with pure functions
+A domain module, pure helper, lifecycle primitive, or combination of them
 
 JSX
 
-Plain functions from Model to HTML
+Typed HTML builder functions
 
 Component props
 
 Function parameters
 
-Component state
+Event handler
 
-Part of the single Model
-
-Event handlers
-
-Messages dispatched to
-
-`update`
+A Message value or a function that constructs one
 
 React Router / TanStack Router
 
 Built-in typed routing
 
-Next.js SSR / SSG
+Next.js SSG / SSR
 
-Server rendering: one pipeline, build-time or per-request
+[Server rendering](https://foldkit.dev/core/server-rendering)
+
+, at build time or per request
 
 React Hook Form / Formik
 
-Model + Messages +
+Model, Messages, and
 
-`foldkit/fieldValidation`
-
-Event streams (useEffect / RxJS)
-
-Subscriptions (automatic lifecycle)
+[field validation](https://foldkit.dev/core/field-validation)
 
 Headless UI / Radix UI
 
-Foldkit UI (headless, typed components)
+[Foldkit UI](https://foldkit.dev/ui/overview)
 
-Error boundaries
+Error Boundary for an unexpected rendering crash
 
-Typed errors in Effects +
+[Crash view](https://foldkit.dev/core/crash-view)
 
-`crash.view`
+; expected Effect failures return as Messages and become explicit Model state
 
-If you know Redux...
+If you know Redux
 
-The Model-View-Update pattern will feel familiar. Think of the Model as your Redux store, Messages as actions, and update as your reducer, but without action creators, selectors, or middleware.
+The Model-View-Update pattern will feel familiar. The Model resembles the store, Messages resemble actions, and update resembles a reducer. Foldkit’s update also returns Commands, and its Message union is exhaustively matched.
 
 ## FAQ

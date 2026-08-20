@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/ui/listbox
 title: "Listbox"
-description: "Accessible list selection with single and multi-select modes."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "A selection Submodel with single-select and multi-select modes, keyboard navigation, typeahead, and anchored positioning."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## Overview

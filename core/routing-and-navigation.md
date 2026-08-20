@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/routing-and-navigation
-title: "Routing and Navigation"
-description: "Type-safe routing with bidirectional parser combinators in Foldkit. URLs parse into typed routes and build back. No string matching, built on Effect-TS."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+title: "Routing & Navigation"
+description: "Define routes with bidirectional parser combinators that decode URLs into typed values and build URLs from Schema-validated parameters."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Routing & Navigation

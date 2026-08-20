@@ -1,52 +1,49 @@
 ---
 url: https://foldkit.dev/patterns/subscription-organization
 title: "Subscription Organization"
-description: "Canonical layout for subscription wiring across nested submodels."
-access_date: 2026-08-10T01:37:55.778Z
-current_date: 2026-08-10T01:37:55.778Z
+description: "Organize Subscription records by ownership and lift child Subscriptions through nested Model and Message types."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Subscription Organization
 
-## Overview
+## Lifting Child Subscriptions
 
-Once your app uses [Submodel](https://foldkit.dev/core/submodel) and any of those Submodels need [Subscriptions](https://foldkit.dev/core/subscriptions), a question shows up: where do the Subscription definitions live, and who translates the Stream of child Messages into the parent’s Message type?
+A Submodel owns the Subscriptions that produce its Messages. Its parent lifts those Subscriptions into the parent Model and Message types, then aggregates them with other Subscription records at that level.
 
-This page documents the canonical answer. The shape mirrors how `update` and `view` compose across Submodels. `Subscription.lift` translates a child Submodel’s Stream into the parent’s Message type, and `Subscription.aggregate` combines that with any other Subscription records the level holds.
+This mirrors the other halves of the boundary. `Update.foldChild` lifts child update, `h.submodel` lifts child view, and `Subscription.lift` lifts child Streams.
 
 ## The Composition Levels
 
-Subscriptions compose in levels. Each level can declare its own Streams via `Subscription.make` and lift child Streams via `Subscription.lift` into the level’s Message type. The Stream emerging at the top is in the root’s Message type, ready for the runtime to dispatch through `update`.
+Each level declares local entries with `Subscription.make` and lifts child records with `Subscription.lift`. By the time a Stream reaches the root, it emits root Messages that the Runtime can dispatch through update. This diagram follows one leaf record through those lifts:
 
 ```
-         ready for runtime processing
-                      ↑
-+--------------------------------------------+
-| in subscription.ts (root)                  |
-| lift to Message                            |
-| via GotSettingsMessage                     |
-| to declare                                 |
-| Stream<Message>                            |
-+--------------------------------------------+
-                      ↑
-+--------------------------------------------+
-| in page/settings/subscription.ts           |
-| lift to Settings.Message                   |
-| via GotThemeMenuMessage                    |
-| to declare                                 |
-| Stream<Settings.Message>                   |
-+--------------------------------------------+
-                      ↑
-+--------------------------------------------+
-| in page/settings/themeMenu/subscription.ts |
-| declare                                    |
-| Stream<ThemeMenu.Message>                  |
-+--------------------------------------------+
+page/settings/themeMenu/
+  subscription.ts
+  Subscription.make
+  Stream<ThemeMenu.Message>
+               │
+       Subscription.lift
+ wraps with GotThemeMenuMessage
+               ▼
+page/settings/
+  subscription.ts
+  Stream<Settings.Message>
+               │
+       Subscription.lift
+   wraps with GotSettingsMessage
+               ▼
+subscription.ts (root)
+  Stream<Message>
+               │
+               ▼
+            Runtime
 ```
 
 ## The Composition Verbs
 
-Three verbs on the `Subscription` namespace do almost all of the composition work. Knowing which one applies at a given level is what makes a Subscription file easy to read.
+Three functions build the hierarchy.
 
 Verb
 
@@ -56,63 +53,55 @@ When to reach for it
 
 `Subscription.make`
 
-Declares a Subscriptions record at the current level. Each entry pairs a dependency field map with
+Declares local entries from dependency Schemas,
 
 `modelToDependencies`
 
-and
+, and
 
 `dependenciesToStream`
 
-callbacks.
+.
 
-The current level has Subscriptions of its own to declare.
+The current level owns a Subscription.
 
 `Subscription.lift`
 
-Lifts a child Submodel’s Subscriptions into the current level’s Model and Message via one
-
-`toChildModel`
-
-lens and one
-
-`toParentMessage`
-
-constructor. An optional
+Reads a child Model and wraps each emitted child Message. An optional
 
 `when`
 
-gates the whole record on the parent Model.
+adds a parent-owned gate.
 
-Embedding a child whose Subscriptions all share the same wrapper Message.
+A child exports a Subscriptions record.
 
 `Subscription.aggregate`
 
-Combines two or more Subscriptions records into one. Throws at startup on duplicate keys instead of silently overriding.
+Combines records and throws at startup when two entries use the same key.
 
-A level combines multiple sources of Subscriptions (lifted children, inline entries, or both).
+A level has more than one local or lifted record.
 
 ## Organization Principles
 
 ### Submodel Cohesion
 
-A Submodel’s Subscription wiring belongs next to its Model, Message, init, update, and view. Subscriptions that emit Messages for a Submodel are part of that Submodel’s set of concerns.
+A Subscription that emits child Messages belongs inside that child's folder. The child exports it without knowing which parent will lift it.
 
 ### One Wrap Per Level
 
-A Subscription file produces Messages in its own Message type, and only that one. When a parent embeds it, the parent wraps the emitted Messages via `Subscription.lift`.
+Each `subscription.ts` produces only the Message type for its level. Every `Subscription.lift` adds one wrapper, just as one `h.submodel` boundary does for view handlers.
 
 ### Uniform Interface
 
-Every Submodel that exposes Subscriptions exports one named value: a `subscriptions` record built via `Subscription.make`. A parent embeds it by combining it through `Subscription.aggregate` alongside its own Subscriptions. One record stays right even when the parent [gates](#gating) some of its entries and not others, because a gate attaches per entry at the lift. A Submodel never organizes its exports around its parent's conditions.
+Export one `subscriptions` record from the child. The parent decides whether to lift every entry, gate the whole record, or gate named entries. The child does not split its exports around parent-owned conditions.
 
 ## Putting It Together
 
-Here is one composition traced through every level: a leaf Submodel, a composing Submodel that embeds it, and a root that combines them.
+The next three snippets trace one record from a leaf, through a composing Submodel, to the root.
 
 ### The Leaf Submodel
 
-A leaf Submodel has no children with Subscriptions of their own. Its `subscription.ts` declares entries via `Subscription.make`:
+A leaf declares its entries with `Subscription.make`.
 
 ```
 // page/settings/themeMenu/subscription.ts
@@ -142,7 +131,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
 
 ### The Composing Submodel
 
-A Submodel that hosts Subscription-bearing children lifts each child via `Subscription.lift`, declares any local Subscriptions via `Subscription.make`, and combines them through `Subscription.aggregate`:
+A composing Submodel lifts child records, declares any local entries, and aggregates the results.
 
 ```
 // page/settings/subscription.ts
@@ -192,7 +181,7 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
 
 ### The Root
 
-The root `subscription.ts` uses the same shape as a composing Submodel. Its lifts target the root `Model` and `Message`:
+The root uses the same shape. Its lifts target the root Model and Message.
 
 ```
 // subscription.ts
@@ -238,9 +227,9 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
 
 ## Gating a Lifted Record
 
-A Submodel decides through its own `modelToDependencies` whether its Streams should run, but it can only read facts it holds. The route it sits behind is the common thing it cannot see: a page Submodel listening for key presses has no way to know the app is showing a different page.
+A child can express conditions from its own Model in its dependencies and Stream construction. It cannot see parent-owned state such as the active Route.
 
-The parent owns that half of the condition, so the gate lives on the parent’s `lift` call. `when` receives the **parent** Model, never the child’s, and a gated entry runs only while it returns `true`:
+Put a parent-owned condition in `when` on the lift. The predicate receives the parent Model. The gated entries run only while it returns `true`.
 
 ```
 // subscription.ts
@@ -264,9 +253,9 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
 )
 ```
 
-A closed gate is a teardown, not a pause. The entry’s Stream stops, and the child’s `modelToDependencies` does not run again until the parent reopens the gate, so child state that changes behind a closed gate causes no restarts.
+Closing a gate tears down the Stream. Foldkit also stops calling the child's `modelToDependencies` until the gate reopens, so hidden child changes do not restart it.
 
-`when` takes either shape. One predicate gates every entry in the record, which is the common case where the whole child answers to one parent condition. A map keyed by entry name gates entries individually, for a child whose Subscriptions answer to different conditions: a page that holds both a WebSocket stream and a keyboard listener wants the socket to survive navigation and the keys to stop at it. Entries the map omits are lifted ungated.
+`when` accepts either one predicate for the whole record or a map of predicates by entry name. An omitted entry remains ungated. For example: a Room page can keep its WebSocket alive across navigation while gating its keyboard listener to the active Room Route.
 
 ```
 // subscription.ts
@@ -291,6 +280,6 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
 )
 ```
 
-Ownership splits cleanly. The parent writes `when` and answers it from parent state, and the child neither declares nor sees the gate: it keeps holding its own condition in `modelToDependencies`.
+The parent owns `when`. The child keeps its child-owned conditions in its own Subscription definition.
 
-Lifts chain, so a gate attaches at whichever level knows the condition. A record lifted through two levels can be gated at the outer one on a fact only the root holds, and the level in between passes it along without knowing a gate is there. Gates at different levels compose: the entry runs only while every gate above it is open.
+Attach each gate at the level that owns its condition. When a record passes through several levels, all gates compose. The entry runs only while every gate above it is open.

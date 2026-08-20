@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/form
 title: "Form"
-description: "Form handling with field validation, error states, and async submission."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+description: "A form with field validation, error states, and asynchronous submission."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Form
 
-Form handling with field validation, error states, and async submission.
+A form with field validation, error states, and asynchronous submission.
 
 Validation
 

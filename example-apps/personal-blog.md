@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/personal-blog
 title: "Personal Blog"
-description: "Blog whose prose lives in markdown files. The @foldkit/markdown Vite plugin compiles each file into a typed document at build time, the app restyles the fold with per-node view overrides, and directive islands place a live Counter Submodel and a Note callout between paragraphs."
-access_date: 2026-08-08T21:58:00.646Z
-current_date: 2026-08-08T21:58:00.646Z
+description: "A blog whose prose lives in Markdown files. The @foldkit/markdown Vite plugin compiles each file into a typed document, per-node view overrides style the result, and directive islands place a live Counter Submodel and Note callout between paragraphs."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Personal Blog
 
-Blog whose prose lives in markdown files. The @foldkit/markdown Vite plugin compiles each file into a typed document at build time, the app restyles the fold with per-node view overrides, and directive islands place a live Counter Submodel and a Note callout between paragraphs.
+A blog whose prose lives in Markdown files. The @foldkit/markdown Vite plugin compiles each file into a typed document, per-node view overrides style the result, and directive islands place a live Counter Submodel and Note callout between paragraphs.
 
 Markdown
 

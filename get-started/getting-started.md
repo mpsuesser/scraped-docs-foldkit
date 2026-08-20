@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/get-started/getting-started
 title: "Getting Started"
-description: "Set up your first Foldkit application in minutes. Install, scaffold with create-foldkit-app, and build a TypeScript frontend with Effect-TS."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+description: "Create a Foldkit project from a starter, inspect the generated structure, or add Foldkit to an existing Vite application."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Getting Started

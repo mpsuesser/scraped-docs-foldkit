@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/ui/combobox
 title: "Combobox"
-description: "Accessible autocomplete input with filtering and selection."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+description: "A searchable selection Submodel with parent-controlled filtering, single-select and multi-select modes, and anchored positioning."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 ## Overview

@@ -1,33 +1,35 @@
 ---
 url: https://foldkit.dev/best-practices/immutability
 title: "Immutability"
-description: "Immutable model updates with evo for predictable state transitions."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+description: "Update Models immutably with evo, preserving references for unchanged branches and keeping state transitions predictable."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Immutability
 
-## Immutable Updates with evo
+## Updating the Model with evo
 
-Foldkit provides `evo` for immutable Model updates. It wraps Effect’s `Struct.evolve` with stricter type checking. If you remove or rename a key from your Model, you’ll get type errors everywhere you try to update it.
+`update` returns a new Model instead of mutating the current one. Foldkit provides `evo` for these immutable field updates. It wraps Effect's `Struct.evolve` with stricter key checking, so removing or renaming a Model field produces errors at every stale update site.
 
 ```
+import { Schema as S } from 'effect'
 import { evo } from 'foldkit/struct'
 
-type Model = { count: number; lastUpdated: number }
-const model: Model = { count: 0, lastUpdated: 0 }
-
-// evo takes the model and an object of transform functions
-const newModel = evo(model, {
-  count: count => count + 1,
-  lastUpdated: () => Date.now(),
+const Model = S.Struct({
+  count: S.Number,
+  status: S.Literals(['Idle', 'Counting']),
 })
+type Model = typeof Model.Type
 
-// Invalid keys are caught at compile time
-const badModel = evo(model, {
-  counnt: count => count + 1, // ❌ Error: 'counnt' does not exist in Model
+const model: Model = { count: 0, status: 'Idle' }
+
+const nextModel = evo(model, {
+  count: count => count + 1,
+  status: () => 'Counting',
 })
 ```
 
-Each property in the transform object is a function that takes the current value and returns the new value. Properties not included remain unchanged.
+Each property in the transform object receives that field's current value and returns its next value. Omitted properties remain unchanged.
+
+Use the current value when the change depends on it, such as incrementing a count. Use `() => value` when a Message payload or Command result replaces the field. Keep the transformer deterministic. Time, randomness, browser state, and other outside values belong behind a [Command](https://foldkit.dev/core/commands).

@@ -1,16 +1,16 @@
 ---
 url: https://foldkit.dev/example-apps/charting
 title: "Charting"
-description: "Live dashboard for public Foldkit telemetry from GitHub and npm. Demonstrates HTTP Commands, async state, an ECharts Mount adapter, and a Subscription that turns chart clicks back into Messages."
-access_date: 2026-08-12T19:19:57.990Z
-current_date: 2026-08-12T19:19:57.990Z
+description: "A live dashboard for public Foldkit telemetry from GitHub and npm. Demonstrates HTTP Commands, asynchronous state, an ECharts Mount adapter, and a Subscription that turns chart clicks into Messages."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
 
 # Charting
 
-Live dashboard for public Foldkit telemetry from GitHub and npm. Demonstrates HTTP Commands, async state, an ECharts Mount adapter, and a Subscription that turns chart clicks back into Messages.
+A live dashboard for public Foldkit telemetry from GitHub and npm. Demonstrates HTTP Commands, asynchronous state, an ECharts Mount adapter, and a Subscription that turns chart clicks into Messages.
 
 Charts
 

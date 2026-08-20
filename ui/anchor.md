@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/ui/anchor
 title: "Anchor"
-description: "The Floating UI positioning runtime behind Foldkit UI’s floating components, exported so you can anchor and portal a panel of your own from a Mount."
-access_date: 2026-08-16T19:09:52.991Z
-current_date: 2026-08-16T19:09:52.991Z
+description: "Position and portal floating panels with the same Floating UI runtime used by Listbox, Combobox, Menu, Popover, Tooltip, and Date Picker."
+access_date: 2026-08-20T21:25:20.391Z
+current_date: 2026-08-20T21:25:20.391Z
 ---
 
 # Anchor
