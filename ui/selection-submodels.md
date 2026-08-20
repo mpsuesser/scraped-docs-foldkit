@@ -2,11 +2,9 @@
 url: https://foldkit.dev/ui/selection-submodels
 title: "Selection Submodels"
 description: "How Foldkit UI components expose create<Item>() factories that pair view and update behind one type parameter so Item types cannot drift between the rendered list and the selection handler."
-access_date: 2026-08-11T02:16:28.996Z
-current_date: 2026-08-11T02:16:28.996Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Selection Submodels
 
 ## Overview
 

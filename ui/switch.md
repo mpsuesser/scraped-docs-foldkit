@@ -2,11 +2,9 @@
 url: https://foldkit.dev/ui/switch
 title: "Switch"
 description: "Accessible toggle switch for boolean settings."
-access_date: 2026-08-07T15:31:08.863Z
-current_date: 2026-08-07T15:31:08.863Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Switch
 
 ## Overview
 

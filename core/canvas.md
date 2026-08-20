@@ -2,11 +2,9 @@
 url: https://foldkit.dev/core/canvas
 title: "Canvas"
 description: "Declarative 2D rendering with a Schema-defined Shape AST and pointer events translated to canvas-local coordinates."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Canvas
 
 ## Overview
 

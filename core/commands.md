@@ -2,11 +2,9 @@
 url: https://foldkit.dev/core/commands
 title: "Commands"
 description: "Model side effects as values returned from update. Commands replace useEffect with explicit, testable Effect-TS operations."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Commands
 
 ## One-Shot Effects as Data
 

@@ -2,11 +2,9 @@
 url: https://foldkit.dev/core/async-data
 title: "Async Data"
 description: "A six-state value type for asynchronously loaded data in the Model: Idle, Loading, Refreshing, Failure, Stale, and Success, with stale-while-revalidate and keep-stale-on-failure built in."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Async Data
 
 `foldkit/asyncData` is a plain value type in the spirit of Effect’s `Option` and `Result`, built for data that arrives asynchronously. This page introduces the state model and the combinators you reach for most. The [API Reference](https://foldkit.dev/api-reference/async-data) has the exhaustive catalog.
 

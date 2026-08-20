@@ -2,11 +2,9 @@
 url: https://foldkit.dev/ui/dialog
 title: "Dialog"
 description: "A modal dialog backed by the native dialog element with focus trapping and scroll locking."
-access_date: 2026-08-07T15:31:08.863Z
-current_date: 2026-08-07T15:31:08.863Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Dialog
 
 ## Overview
 

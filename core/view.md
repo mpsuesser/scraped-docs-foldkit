@@ -2,11 +2,9 @@
 url: https://foldkit.dev/core/view
 title: "View"
 description: "Render your UI as a pure function of the Model. Foldkit views are plain TypeScript functions. No JSX, no hooks, no component lifecycle."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## View
 
 ## Model In, HTML Out
 

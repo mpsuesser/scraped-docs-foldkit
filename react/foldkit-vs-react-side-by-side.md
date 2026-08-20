@@ -2,11 +2,9 @@
 url: https://foldkit.dev/react/foldkit-vs-react-side-by-side
 title: "Foldkit vs React: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and React. Covers state management, side effects, testing, performance, and architectural tradeoffs."
-access_date: 2026-08-17T04:17:49.255Z
-current_date: 2026-08-17T04:17:49.255Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Foldkit vs React: Side by Side
 
 ## Overview
 

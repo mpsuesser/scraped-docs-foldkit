@@ -2,11 +2,9 @@
 url: https://foldkit.dev/ui/calendar
 title: "Calendar"
 description: "Accessible inline calendar grid with 2D keyboard navigation, locale-aware headers, and min/max/disabled-date constraints."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Calendar
 
 ## An Inline Calendar You Render
 

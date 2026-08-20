@@ -2,11 +2,9 @@
 url: https://foldkit.dev/react/coming-from-tanstack-query
 title: "Coming from TanStack Query"
 description: "Coming from TanStack Query? Foldkit has no useQuery. AsyncData ships the six query states, with stale-while-revalidate built in, and caching, background refetch, deduplication, and invalidation stay ordinary Model state and a pure update function. Maps query status flags onto the six states and includes the latest-request-wins pattern for response races."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Coming from TanStack Query
 
 TanStack Query is excellent at what it does. If you are coming from it, you are used to caching, background refetching, deduplication, and retries arriving as configuration on a hook. Foldkit has no `useQuery`, and it does not need one. This page shows where each piece of that behavior lives instead.
 

@@ -2,11 +2,9 @@
 url: https://foldkit.dev/best-practices/side-effects-and-purity
 title: "Side Effects & Purity"
 description: "Why Foldkit programs should have zero side effects outside of Commands."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Side Effects & Purity
 
 ## Overview
 

@@ -2,11 +2,9 @@
 url: https://foldkit.dev/core/init-and-flags
 title: "Init & Flags"
 description: "Set up the initial Model, pass external data via flags, and run startup Commands."
-access_date: 2026-08-19T19:38:38.072Z
-current_date: 2026-08-19T19:38:38.072Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Init & Flags
 
 ## The First Model
 

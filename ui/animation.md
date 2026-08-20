@@ -2,11 +2,9 @@
 url: https://foldkit.dev/ui/animation
 title: "Animation"
 description: "Coordinates CSS enter/leave animations via a state machine and data attributes. Works with both CSS transitions and keyframe animations."
-access_date: 2026-08-17T01:15:19.180Z
-current_date: 2026-08-17T01:15:19.180Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Animation
 
 ## Overview
 

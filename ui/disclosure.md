@@ -2,11 +2,9 @@
 url: https://foldkit.dev/ui/disclosure
 title: "Disclosure"
 description: "An accessible show/hide foundation for toggleable content sections."
-access_date: 2026-08-07T15:31:08.863Z
-current_date: 2026-08-07T15:31:08.863Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Disclosure
 
 ## Overview
 

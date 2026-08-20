@@ -2,11 +2,9 @@
 url: https://foldkit.dev/ui/date-picker
 title: "Date Picker"
 description: "Accessible date picker that wraps Calendar in a Popover. Focus choreography, click-outside dismissal, and hidden form input for native form submission."
-access_date: 2026-08-16T21:27:58.480Z
-current_date: 2026-08-16T21:27:58.480Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Date Picker
 
 ## Overview
 

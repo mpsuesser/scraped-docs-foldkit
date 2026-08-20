@@ -2,11 +2,9 @@
 url: https://foldkit.dev/react/foldkit-vs-react-effect-atom
 title: "Foldkit vs React + Effect Atom"
 description: "Two Effect-native ways to build a frontend, compared. Effect Atom distributes state across reactive cells wired into React; Foldkit centralizes it into one Model changed by one update function. Covers state, async data, side effects, testing with Story and Scene, debugging, scaling, and AI-assisted development."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Foldkit vs React + Effect Atom
 
 ## Overview
 

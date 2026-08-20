@@ -2,11 +2,9 @@
 url: https://foldkit.dev/ui/tooltip
 title: "Tooltip"
 description: "Non-interactive floating label that appears on hover or focus and hides on leave, blur, or Escape."
-access_date: 2026-08-11T02:16:28.996Z
-current_date: 2026-08-11T02:16:28.996Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Tooltip
 
 ## Overview
 

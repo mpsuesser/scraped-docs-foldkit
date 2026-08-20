@@ -2,11 +2,9 @@
 url: https://foldkit.dev/ui/popover
 title: "Popover"
 description: "Floating content panels anchored to trigger elements."
-access_date: 2026-08-11T02:16:28.996Z
-current_date: 2026-08-11T02:16:28.996Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Popover
 
 ## Overview
 

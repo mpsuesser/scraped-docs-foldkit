@@ -2,11 +2,9 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Compose applications from independent, encapsulated modules."
-access_date: 2026-08-10T22:19:09.629Z
-current_date: 2026-08-10T22:19:09.629Z
+access_date: 2026-08-20T02:21:49.544Z
+current_date: 2026-08-20T02:21:49.544Z
 ---
-
-## Submodel
 
 ## Overview
 
