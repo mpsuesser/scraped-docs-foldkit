@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/route-transition
 title: "Route/Transition"
 description: "API documentation for the Route/Transition module."
-access_date: 2026-08-21T00:40:18.371Z
-current_date: 2026-08-21T00:40:18.371Z
+access_date: 2026-08-21T01:47:37.174Z
+current_date: 2026-08-21T01:47:37.174Z
 ---
 
 # Route/Transition
@@ -14,7 +14,7 @@ current_date: 2026-08-21T00:40:18.371Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/route/transition.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/transition.ts#L28)
 
 ```
 /**
@@ -29,7 +29,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/route/transition.ts#L62)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/transition.ts#L62)
 
 ```
 /**
@@ -53,7 +53,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/route/transition.ts#L40)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/transition.ts#L40)
 
 ```
 /**
@@ -74,7 +74,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/route/transition.ts#L92)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/transition.ts#L92)
 
 ```
 /**
@@ -96,7 +96,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/route/transition.ts#L80)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/transition.ts#L80)
 
 ```
 /**
@@ -119,7 +119,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/route/transition.ts#L140)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/transition.ts#L140)
 
 ```
 /**
@@ -144,7 +144,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/route/transition.ts#L17)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/transition.ts#L17)
 
 ```
 /**
@@ -162,7 +162,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/route/transition.ts#L111)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/transition.ts#L111)
 
 ```
 /**
@@ -198,7 +198,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/route/transition.ts#L9)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/transition.ts#L9)
 
 ```
 /**

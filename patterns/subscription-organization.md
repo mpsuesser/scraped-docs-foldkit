@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/subscription-organization
 title: "Subscription Organization"
 description: "Organize Subscription records by ownership and lift child Subscriptions through nested Model and Message types."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-21T01:47:37.174Z
+current_date: 2026-08-21T01:47:37.174Z
 ---
 
 # Subscription Organization
@@ -23,21 +23,21 @@ page/settings/themeMenu/
   subscription.ts
   Subscription.make
   Stream<ThemeMenu.Message>
-               │
+               |
        Subscription.lift
  wraps with GotThemeMenuMessage
-               ▼
+               v
 page/settings/
   subscription.ts
   Stream<Settings.Message>
-               │
+               |
        Subscription.lift
    wraps with GotSettingsMessage
-               ▼
+               v
 subscription.ts (root)
   Stream<Message>
-               │
-               ▼
+               |
+               v
             Runtime
 ```
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/animation
 title: "Animation"
 description: "Coordinates CSS enter/leave animations via a state machine and data attributes. Works with both CSS transitions and keyframe animations."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-21T01:47:37.174Z
+current_date: 2026-08-21T01:47:37.174Z
 ---
 
 ## Overview
@@ -163,21 +163,21 @@ ENTER                                LEAVE
 Animation drives completion          Parent detects settlement
 
 Showed()                              Hid()
-   │                                    │
-   ▼                                    ▼
+   |                                    |
+   v                                    v
 EnterStart                           LeaveStart
-   │ rAF × 2                            │ rAF × 2
-   ▼                                    ▼
+   | rAF x 2                            | rAF x 2
+   v                                    v
 EnterAnimating                       LeaveAnimating
-   │ EndedAnimation (internal)          ├─ emits StartedLeaveAnimating
-   ▼                                    │  parent supplies leave Command
- Idle                                   │
-                                        │  Command dispatches
-                                        │  EndedAnimation
-                                        ▼
+   | EndedAnimation (internal)          +-> emits StartedLeaveAnimating
+   v                                    |   parent supplies leave Command
+ Idle                                   |
+                                        |   Command dispatches
+                                        |   EndedAnimation
+                                        v
                                        Idle
-                                        └─ emits TransitionedOut
-                                           parent handles cleanup
+                                        +-> emits TransitionedOut
+                                            parent handles cleanup
 ```
 
 The double-rAF timing (one frame to set the start state, another to trigger the animation) ensures browsers flush layout between phases so the CSS animation actually plays.

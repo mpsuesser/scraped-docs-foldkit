@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-menu
 title: "Ui/Menu"
 description: "API documentation for the Ui/Menu module."
-access_date: 2026-08-21T00:40:18.371Z
-current_date: 2026-08-21T00:40:18.371Z
+access_date: 2026-08-21T01:47:37.174Z
+current_date: 2026-08-21T01:47:37.174Z
 ---
 
 # Ui/Menu
@@ -14,7 +14,7 @@ current_date: 2026-08-21T00:40:18.371Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L308)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L308)
 
 ```
 /**
@@ -30,7 +30,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L1362)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L1362)
 
 ```
 /**
@@ -57,7 +57,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L276)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L276)
 
 ```
 /** Creates an initial menu model from a config. Defaults to closed with no active item. */
@@ -70,7 +70,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L52)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L52)
 
 ```
 /** Schema for the activation trigger: whether the user interacted via mouse or keyboard. */
@@ -81,7 +81,7 @@ type ActivationTrigger = Literals<readonly ["Pointer", "Keyboard"]>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L1311)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L1311)
 
 ```
 /**
@@ -104,7 +104,7 @@ type Bundle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L807)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L807)
 
 ```
 /** Configuration for a group heading rendered above a group of items. */
@@ -118,7 +118,7 @@ type GroupHeading = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L269)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L269)
 
 ```
 /** Configuration for creating a menu model with `init`. `isAnimated` enables animation coordination (default `false`). `isModal` locks page scroll and inerts other elements when open (default `false`). */
@@ -133,7 +133,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L801)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L801)
 
 ```
 /** Configuration for an individual menu item's appearance. */
@@ -147,7 +147,7 @@ type ItemConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L239)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L239)
 
 ```
 /**
@@ -162,7 +162,7 @@ type OutMessage = Selected<Value>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L227)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L227)
 
 ```
 /** Sent to the parent when a menu item is selected. Carries both the selected value (from the `viewInputs.items` array supplied at view time) and its index. The menu has already closed when this fires; the parent does not need to dispatch `Menu.close`. */
@@ -177,7 +177,7 @@ type Selected = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L817)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L817)
 
 ```
 /**
@@ -225,7 +225,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L92)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L92)
 
 ```
 /** Sent when an item is highlighted via arrow keys or mouse hover. Includes activation trigger. */
@@ -239,7 +239,7 @@ const ActivatedItem: CallableTaggedStruct<"ActivatedItem", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L741)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L741)
 
 ```
 /**
@@ -285,7 +285,7 @@ const AnchorMenu: MountDefinitionWithArgs<"AnchorMenu", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L90)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L90)
 
 ```
 /** Sent when the menu items container loses focus. */
@@ -296,7 +296,7 @@ const BlurredItems: CallableTaggedStruct<"BlurredItems", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L379)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L379)
 
 ```
 /** Programmatically clicks the active menu item's DOM element. */
@@ -312,7 +312,7 @@ const ClickItem: CommandDefinitionWithArgs<"ClickItem", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L88)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L88)
 
 ```
 /** Sent when the menu closes via Escape key or backdrop click. */
@@ -323,7 +323,7 @@ const Closed: CallableTaggedStruct<"Closed", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L143)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L143)
 
 ```
 /** Sent when the menu items panel mounts and Floating UI has positioned it. Update no-ops; the side effect is the act of positioning, surfaced for DevTools observability. */
@@ -334,7 +334,7 @@ const CompletedAnchorMenu: CallableTaggedStruct<"CompletedAnchorMenu", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L137)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L137)
 
 ```
 /** Sent when the programmatic click command completes. */
@@ -345,7 +345,7 @@ const CompletedClickItem: CallableTaggedStruct<"CompletedClickItem", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L113)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L113)
 
 ```
 /** Sent after the search debounce period to clear the accumulated query. */
@@ -358,7 +358,7 @@ const CompletedDelayClearSearch: CallableTaggedStruct<"CompletedDelayClearSearch
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L125)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L125)
 
 ```
 /** Sent when the focus-button command completes after closing or selecting. */
@@ -369,7 +369,7 @@ const CompletedFocusButton: CallableTaggedStruct<"CompletedFocusButton", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L123)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L123)
 
 ```
 /** Sent when the focus-items command completes after opening the menu. */
@@ -380,7 +380,7 @@ const CompletedFocusItems: CallableTaggedStruct<"CompletedFocusItems", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L131)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L131)
 
 ```
 /** Sent when the inert-others command completes. */
@@ -391,7 +391,7 @@ const CompletedInertOthers: CallableTaggedStruct<"CompletedInertOthers", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L127)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L127)
 
 ```
 /** Sent when the scroll lock command completes. */
@@ -402,7 +402,7 @@ const CompletedLockScroll: CallableTaggedStruct<"CompletedLockScroll", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L145)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L145)
 
 ```
 /** Sent when the menu backdrop mounts and is portaled to the document body. Update no-ops; surfaces the portal side effect for DevTools. */
@@ -413,7 +413,7 @@ const CompletedPortalMenuBackdrop: CallableTaggedStruct<"CompletedPortalMenuBack
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L133)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L133)
 
 ```
 /** Sent when the restore-inert command completes. */
@@ -424,7 +424,7 @@ const CompletedRestoreInert: CallableTaggedStruct<"CompletedRestoreInert", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L135)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L135)
 
 ```
 /** Sent when the scroll-into-view command completes after keyboard activation. */
@@ -435,7 +435,7 @@ const CompletedScrollIntoView: CallableTaggedStruct<"CompletedScrollIntoView", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L129)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L129)
 
 ```
 /** Sent when the scroll unlock command completes. */
@@ -446,7 +446,7 @@ const CompletedUnlockScroll: CallableTaggedStruct<"CompletedUnlockScroll", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L97)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L97)
 
 ```
 /** Sent when the mouse leaves an enabled item. */
@@ -457,7 +457,7 @@ const DeactivatedItem: CallableTaggedStruct<"DeactivatedItem", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L389)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L389)
 
 ```
 /** Waits for the typeahead search debounce period before clearing the query. */
@@ -473,7 +473,7 @@ const DelayClearSearch: CommandDefinitionWithArgs<"DelayClearSearch", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L398)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L398)
 
 ```
 /** Detects whether the menu button moved or the leave animation ended. Whichever comes first; both outcomes signal the Animation submodel that leave is complete. */
@@ -497,7 +497,7 @@ const DetectMovementOrAnimationEnd: CommandDefinitionWithArgs<"DetectMovementOrA
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L359)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L359)
 
 ```
 /** Moves focus back to the menu button after closing. */
@@ -512,7 +512,7 @@ const FocusButton: CommandDefinitionWithArgs<"FocusButton", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L349)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L349)
 
 ```
 /** Moves focus to the menu items container after opening. */
@@ -527,7 +527,7 @@ const FocusItems: CommandDefinitionWithArgs<"FocusItems", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L147)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L147)
 
 ```
 /** Wraps an Animation submodel message for delegation. */
@@ -540,7 +540,7 @@ const GotAnimationMessage: CallableTaggedStruct<"GotAnimationMessage", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L139)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L139)
 
 ```
 /** Sent when a mouse click on the button is ignored because pointer-down already handled the toggle. */
@@ -551,7 +551,7 @@ const IgnoredMouseClick: CallableTaggedStruct<"IgnoredMouseClick", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L333)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L333)
 
 ```
 /** Marks all elements outside the menu as inert for modal behavior. */
@@ -566,7 +566,7 @@ const InertOthers: CommandDefinitionWithArgs<"InertOthers", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L323)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L323)
 
 ```
 /** Prevents page scrolling while the menu is open. */
@@ -579,7 +579,7 @@ const LockScroll: CommandDefinitionNoArgs<"LockScroll", Effect<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L166)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L166)
 
 ```
 /** Union of all messages the menu component can produce. */
@@ -590,7 +590,7 @@ const Message: S.Union<[typeof Opened, typeof Closed, typeof BlurredItems, typeo
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L62)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L62)
 
 ```
 /** Schema for the menu component's state, tracking open/closed status, active item, activation trigger, and typeahead search. */
@@ -625,7 +625,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L117)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L117)
 
 ```
 /** Sent when the pointer moves over a menu item, carrying screen coordinates for tracked-pointer comparison. */
@@ -640,7 +640,7 @@ const MovedPointerOverItem: CallableTaggedStruct<"MovedPointerOverItem", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L84)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L84)
 
 ```
 /** Sent when the menu opens via button click or keyboard. Contains an optional initial active item index: None for pointer, Some for keyboard. */
@@ -653,7 +653,7 @@ const Opened: CallableTaggedStruct<"Opened", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L239)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L239)
 
 ```
 /** Union of out-messages the menu component can produce. Surfaced as the third element of `update`'s return tuple and pattern-matched by the parent. */
@@ -669,7 +669,7 @@ const OutMessage: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L766)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L766)
 
 ```
 /**
@@ -686,7 +686,7 @@ const PortalMenuBackdrop: MountDefinitionNoArgs<"PortalMenuBackdrop", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L151)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L151)
 
 ```
 /** Sent when the user presses a pointer device on the menu button. Records pointer type and toggles for mouse. */
@@ -703,7 +703,7 @@ const PressedPointerOnButton: CallableTaggedStruct<"PressedPointerOnButton", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L159)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L159)
 
 ```
 /** Sent when the user releases a pointer on the items container, enabling drag-to-select for mouse. */
@@ -718,7 +718,7 @@ const ReleasedPointerOnItems: CallableTaggedStruct<"ReleasedPointerOnItems", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L104)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L104)
 
 ```
 /** Sent when Enter or Space is pressed on the active item, triggering a programmatic click on the DOM element. */
@@ -731,7 +731,7 @@ const RequestedItemClick: CallableTaggedStruct<"RequestedItemClick", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L342)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L342)
 
 ```
 /** Removes the inert attribute from elements outside the menu. */
@@ -746,7 +746,7 @@ const RestoreInert: CommandDefinitionWithArgs<"RestoreInert", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L369)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L369)
 
 ```
 /** Scrolls the active menu item into view after keyboard navigation. */
@@ -762,7 +762,7 @@ const ScrollIntoView: CommandDefinitionWithArgs<"ScrollIntoView", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L108)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L108)
 
 ```
 /** Sent when a printable character is typed for typeahead search. */
@@ -776,7 +776,7 @@ const Searched: CallableTaggedStruct<"Searched", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L227)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L227)
 
 ```
 /** Sent to the parent when a menu item is selected. Carries both the selected value (from the `viewInputs.items` array supplied at view time) and its index. The menu has already closed when this fires; the parent does not need to dispatch `Menu.close`. */
@@ -790,7 +790,7 @@ const Selected: CallableTaggedStruct<"Selected", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L99)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L99)
 
 ```
 /** Sent when an item is selected via Enter, Space, or click. */
@@ -804,7 +804,7 @@ const SelectedItem: CallableTaggedStruct<"SelectedItem", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L141)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L141)
 
 ```
 /** Sent when a Space key-up is captured to prevent page scrolling. */
@@ -815,7 +815,7 @@ const SuppressedSpaceScroll: CallableTaggedStruct<"SuppressedSpaceScroll", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/menu/index.ts#L328)
+[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/menu/index.ts#L328)
 
 ```
 /** Re-enables page scrolling after the menu closes. */

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/subscriptions
 title: "Subscriptions"
 description: "Run ongoing Streams whose lifetime follows Model-derived dependencies. Covers restart behavior, timers, browser events, live dependency reads, and Submodel lifting."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-21T01:47:37.174Z
+current_date: 2026-08-21T01:47:37.174Z
 ---
 
 ## Ongoing Work with a Model-Driven Lifetime
@@ -14,34 +14,34 @@ The first dependency value opens the Stream's initial scope. After every Model u
 
 ```
 Model
-                    │ modelToDependencies(model)
-                    ▼
+                    | modelToDependencies(model)
+                    v
                Dependencies
-                    │
-     ┌──────────────┴───────────────┐
-     │                              │
+                    |
+     +--------------+---------------+
+     |                              |
 first value                   later value
-     │                              │
-     │                              ▼
-     │                   compare with previous
-     │                              │
-     │                 ┌────────────┴───────────┐
-     │                 │                        │
-     │              changed                equivalent
-     │                 │                        │
-     │                 ▼                        ▼
-     │         close old scope         keep current scope
-     │          run finalizers                  │
-     │                 │                        │
-     └─────────────────┤                        │
-                       ▼                        │
-                open fresh scope                │
-                       │                        │
-                       └────────────┬───────────┘
-                                    ▼
+     |                              |
+     |                              v
+     |                   compare with previous
+     |                              |
+     |                 +------------+-----------+
+     |                 |                        |
+     |              changed                equivalent
+     |                 |                        |
+     |                 v                        v
+     |         close old scope         keep current scope
+     |          run finalizers                  |
+     |                 |                        |
+     +-----------------+                        |
+                       v                        |
+                open fresh scope                |
+                       |                        |
+                       +------------+-----------+
+                                    v
                          active Stream<Message>
-                                    │
-                                    ▼
+                                    |
+                                    v
                                   update
 ```
 

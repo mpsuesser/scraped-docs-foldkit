@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/server-rendering
 title: "Server Rendering"
 description: "Render the same application to HTML for request-time SSR or build-time SSG, then hydrate it in place through a validated build-id and Flags handoff."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-21T01:47:37.174Z
+current_date: 2026-08-21T01:47:37.174Z
 ---
 
 ## Overview
@@ -31,21 +31,21 @@ For an application with Flags, here is the handoff from server input to a live a
 SERVER OR BUILD                      BROWSER
 
 request or build input                 live Foldkit app
-         │                                     ▲
-         ▼                                     │
+         |                                     ^
+         v                                     |
        Flags                           adopts matching DOM
-         │                                     ▲
-         ▼                                     │
+         |                                     ^
+         v                                     |
         init                                same view
-         │                                     ▲
-         ▼                                     │
+         |                                     ^
+         v                                     |
        Model                          equivalent Model
-         │                                     ▲
-         ▼                                     │
+         |                                     ^
+         v                                     |
         view                               same init
-         │                                     ▲
-         ▼                                     │
-HTML + serialized Flags ────────▶ Runtime.hydrate reads Flags
+         |                                     ^
+         v                                     |
+HTML + serialized Flags --------> Runtime.hydrate reads Flags
 ```
 
 Once the live application takes over, it behaves like any other Foldkit application. Routing, update, Commands, and Subscriptions run in the browser. A handled navigation does not ask the delivery host to render another document, though the application's Commands may still request data. The server renders the document again only on a full page load, such as a reload or a link the runtime does not handle.

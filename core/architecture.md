@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/architecture
 title: "Architecture"
 description: "How Model, Messages, update, view, Commands, Subscriptions, and the Runtime form Foldkit’s Elm Architecture loop."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-21T01:47:37.174Z
+current_date: 2026-08-21T01:47:37.174Z
 ---
 
 # Architecture
@@ -26,15 +26,23 @@ Every Foldkit app repeats the same cycle:
 The complete cycle looks like this:
 
 ```
-Message ──▶ update ──▶ Model ──▶ view ──▶ Browser
-  ▲          │          │          │          │
-  │          │          │          │          └─ events ─────┐
-  │          │          │          └─ Mounts ────────────────┤
-  │          │          ├─ Subscriptions ────────────────────┤
-  │          │          └─ ManagedResources ─────────────────┤
-  │          └─ Commands ────────────────────────────────────┤
-  │                                                          ▼
-  └────────────────────────── Runtime ◀──────────────────────┘
++------> update -> Commands -----------+
+|         |                            |
+|         v                            |
+|       Model -> Subscriptions --------+
+|         |                            |
+|         +-> ManagedResources --------+
+|         |                            |
+|         v                            |
+|       view -> Mounts ----------------+
+|         |                            |
+|         v                            |
+|       Browser -> events -------------+
+|                                      v
+|                                   Runtime
+|                                      |
+|                                      v
++<--------------------------------- Message
 ```
 
 Five sources report through the Runtime: Commands, the Browser, Mounts, Subscriptions, and ManagedResources. When one produces a Message, the Runtime dispatches it back into `update`.
