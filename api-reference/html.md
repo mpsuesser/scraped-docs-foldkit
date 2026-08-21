@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/html
 title: "Html"
 description: "API documentation for the Html module."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-21T00:40:18.371Z
+current_date: 2026-08-21T00:40:18.371Z
 ---
 
 # Html
@@ -14,7 +14,7 @@ current_date: 2026-08-20T21:25:20.391Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/html/childAttribute.ts#L61)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/html/childAttribute.ts#L61)
 
 ```
 /**
@@ -55,7 +55,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/html/lazy.ts#L142)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/html/lazy.ts#L142)
 
 ```
 /**
@@ -90,7 +90,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/html/lazy.ts#L104)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/html/lazy.ts#L104)
 
 ```
 /**
@@ -122,7 +122,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/html/index.ts#L482)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/html/index.ts#L482)
 
 ```
 /**
@@ -1078,7 +1078,7 @@ type Attribute = Data.TaggedEnum<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/html/childAttribute.ts#L27)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/html/childAttribute.ts#L27)
 
 ```
 /**
@@ -1113,7 +1113,7 @@ type ChildAttribute = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/html/index.ts#L199)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/html/index.ts#L199)
 
 ```
 /**
@@ -1151,7 +1151,7 @@ type Document = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/html/index.ts#L154)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/html/index.ts#L154)
 
 ```
 /**
@@ -1166,7 +1166,7 @@ type Html = VNode | null
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/html/index.ts#L5069)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/html/index.ts#L5069)
 
 ```
 /**
@@ -1207,7 +1207,7 @@ type HtmlBuilder = MessageUniverse<Message> & HtmlElements<Message> & HtmlAttrib
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/html/index.ts#L137)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/html/index.ts#L137)
 
 ```
 /** Modifier key state extracted from a `KeyboardEvent`. */
@@ -1223,7 +1223,7 @@ type KeyboardModifiers = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/html/index.ts#L209)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/html/index.ts#L209)
 
 ```
 /** Union of all valid HTML, SVG, and MathML tag names. */
@@ -1236,7 +1236,7 @@ type TagName = "a" | "abbr" | "address" | "area" | "article" | "aside" | "audio"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/html/index.ts#L159)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/html/index.ts#L159)
 
 ```
 /**
@@ -1250,7 +1250,7 @@ const TextDirection: Literals<readonly ["Ltr", "Rtl", "Auto"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/foldkit/src/html/index.ts#L5152)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/foldkit/src/html/index.ts#L5152)
 
 ```
 /**

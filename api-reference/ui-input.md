@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-input
 title: "Ui/Input"
 description: "API documentation for the Ui/Input module."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-21T00:40:18.371Z
+current_date: 2026-08-21T00:40:18.371Z
 ---
 
 # Ui/Input
@@ -14,7 +14,7 @@ current_date: 2026-08-20T21:25:20.391Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/ui/src/input/index.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/input/index.ts#L29)
 
 ```
 /** Returns the description element id, derived from the input's base id. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/ui/src/input/index.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/input/index.ts#L32)
 
 ```
 /** Renders an accessible input by building ARIA attribute groups and delegating layout to the consumer's `toView` callback. */
@@ -41,7 +41,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/ui/src/input/index.ts#L7)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/input/index.ts#L7)
 
 ```
 /** Attribute groups the input component provides to the consumer's `toView` callback. */
@@ -56,7 +56,7 @@ type InputAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a0c2b4e65417f7d9c98b4dbc290093be950345c2/packages/ui/src/input/index.ts#L14)
+[source](https://github.com/foldkit/foldkit/blob/619a80e18c76a5d300c7b85921c86db36d1856fc/packages/ui/src/input/index.ts#L14)
 
 ```
 /** Configuration for rendering an input with `view`. */
