@@ -2,17 +2,17 @@
 url: https://foldkit.dev/ui/listbox
 title: "Listbox"
 description: "A selection Submodel with single-select and multi-select modes, keyboard navigation, typeahead, and anchored positioning."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Overview
 
 A custom select dropdown with keyboard navigation, typeahead search, and anchor positioning. Unlike Menu (which is for actions), Listbox is for choosing a value. The parent owns the selection: it passes the chosen value in as `maybeSelectedValue` (multi-select passes `selectedValues`) and folds the `Selected` OutMessage into its own state (single-select stores the value, multi-select toggles the value in its array). For a searchable input with filtering, use Combobox instead.
 
-Embed Listbox via the [`create<Item, Value?>()` factory](https://foldkit.dev/ui/selection-submodels) at module scope: `const PlanListbox = Listbox.create<Plan>()`. The factory binds the view, update, and imperative helpers to the same `Item` type so the selected value flows through the OutMessage typed end-to-end.
+Embed Listbox via the [`create<Item, Value?>()` factory](https://foldkit.dev/ui/selection-submodels) at module scope: `const PlanListbox = Listbox.create<Plan>()`. The factory binds the view, update, and programmatic helpers to the same `Item` type, so the `Selected` OutMessage carries a `Plan`.
 
-For programmatic control in update functions, use the factory instance helpers `PlanListbox.open(model)`, `PlanListbox.close(model)`, and `PlanListbox.selectItem(model, item)`. Each returns `[Model, Commands, Option<OutMessage>]` directly.
+Programmatic helpers are child entry points. Fold `PlanListbox.open` and `PlanListbox.close` with `Update.foldChildStep`. Fold `PlanListbox.selectItem` with `Update.foldChild` because it takes the selected item as input.
 
 What the factory returns is typed [`Listbox.Bundle<Item, Value>`](https://foldkit.dev/ui/selection-submodels#bundle-type) (`Listbox.Multi.Bundle` for the multi-select variant), for the cases where a created bundle has to be named rather than called directly.
 
@@ -30,10 +30,10 @@ Pass an `itemToConfig` callback that maps each item to its content. The context 
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Listbox } from '@foldkit/ui'
@@ -56,18 +56,17 @@ const Model = S.Struct({
 })
 
 // In your init function, initialize the Listbox Submodel with a unique id:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     maybePlan: Option.none(),
     listbox: Listbox.init({ id: 'plan' }),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Wrap Listbox's Messages so they can flow through your update:
-const GotListboxMessage = m('GotListboxMessage', {
-  message: Listbox.Message,
+const Message = defineMessageUnion({
+  GotListboxMessage: { message: Listbox.Message },
 })
 
 // At module scope, fold the OutMessage into your own Model. When the user
@@ -79,7 +78,7 @@ const foldListboxOutMessage = M.type<Listbox.OutMessage<Plan>>().pipe(
   M.tagsExhaustive({
     Selected:
       ({ value }) =>
-      model => [evo(model, { maybePlan: () => Option.some(value) }), []],
+      model => ({ model: evo(model, { maybePlan: () => Option.some(value) }) }),
   }),
 )
 
@@ -91,11 +90,11 @@ const foldListbox = Update.foldChild({
   update: PlanListbox.update,
   read: (model: Model) => Option.some(model.listbox),
   write: (model, nextListbox) => evo(model, { listbox: () => nextListbox }),
-  toParentMessage: message => GotListboxMessage({ message }),
+  toParentMessage: message => Message.GotListboxMessage({ message }),
   foldOutMessage: foldListboxOutMessage,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), call the fold:
+// In the corresponding Message.match handler, call the fold:
 GotListboxMessage: ({ message }) => foldListbox(model, message)
 
 const plans: ReadonlyArray<Plan> = ['Free', 'Pro', 'Enterprise']
@@ -139,7 +138,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
           backdropClassName: 'fixed inset-0',
           anchor: { placement: 'bottom-start', gap: 4, padding: 8 },
         },
-        toParentMessage: message => GotListboxMessage({ message }),
+        toParentMessage: message => Message.GotListboxMessage({ message }),
       }),
     ],
   )
@@ -153,10 +152,10 @@ Use `Listbox.Multi` for multi-selection. The dropdown stays open on selection an
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Array, Match as M, Option } from 'effect'
+import { Array, Match as M, Option, Schema as S } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Listbox } from '@foldkit/ui'
@@ -177,18 +176,17 @@ const Model = S.Struct({
 })
 
 // In your init function, initialize the Listbox Submodel with a unique id:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     selectedPeople: [],
     listboxMulti: Listbox.Multi.init({ id: 'people' }),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Wrap Listbox's Messages so they can flow through your update:
-const GotListboxMultiMessage = m('GotListboxMultiMessage', {
-  message: Listbox.Message,
+const Message = defineMessageUnion({
+  GotListboxMultiMessage: { message: Listbox.Message },
 })
 
 // At module scope, fold the OutMessage into your own Model. \`Selected\` carries
@@ -201,15 +199,14 @@ const foldListboxMultiOutMessage = M.type<Listbox.OutMessage<Person>>().pipe(
   M.tagsExhaustive({
     Selected:
       ({ value }) =>
-      model => [
-        evo(model, {
+      model => ({
+        model: evo(model, {
           selectedPeople: () =>
             Array.contains(model.selectedPeople, value)
               ? Array.filter(model.selectedPeople, person => person !== value)
               : Array.append(model.selectedPeople, value),
         }),
-        [],
-      ],
+      }),
   }),
 )
 
@@ -222,11 +219,11 @@ const foldListboxMulti = Update.foldChild({
   read: (model: Model) => Option.some(model.listboxMulti),
   write: (model, nextListboxMulti) =>
     evo(model, { listboxMulti: () => nextListboxMulti }),
-  toParentMessage: message => GotListboxMultiMessage({ message }),
+  toParentMessage: message => Message.GotListboxMultiMessage({ message }),
   foldOutMessage: foldListboxMultiOutMessage,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), call the fold:
+// In the corresponding Message.match handler, call the fold:
 GotListboxMultiMessage: ({ message }) => foldListboxMulti(model, message)
 
 const people: ReadonlyArray<Person> = [
@@ -269,7 +266,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
       backdropClassName: 'fixed inset-0',
       anchor: { placement: 'bottom-start', gap: 4, padding: 8 },
     },
-    toParentMessage: message => GotListboxMultiMessage({ message }),
+    toParentMessage: message => Message.GotListboxMultiMessage({ message }),
   })
 ```
 
@@ -281,10 +278,10 @@ Pass `itemGroupKey` to group contiguous items by key, and `groupToHeading` to re
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Update } from 'foldkit'
 import { type HtmlBuilder, childAttributes } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Listbox } from '@foldkit/ui'
@@ -311,18 +308,17 @@ const Model = S.Struct({
 })
 
 // In your init function, initialize the Listbox Submodel with a unique id:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     maybeCharacter: Option.none(),
     listbox: Listbox.init({ id: 'character' }),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Wrap Listbox's Messages so they can flow through your update:
-const GotListboxMessage = m('GotListboxMessage', {
-  message: Listbox.Message,
+const Message = defineMessageUnion({
+  GotListboxMessage: { message: Listbox.Message },
 })
 
 // At module scope, fold the OutMessage into your own Model. On selection, the
@@ -334,7 +330,9 @@ const foldListboxOutMessage = M.type<Listbox.OutMessage>().pipe(
   M.tagsExhaustive({
     Selected:
       ({ value }) =>
-      model => [evo(model, { maybeCharacter: () => Option.some(value) }), []],
+      model => ({
+        model: evo(model, { maybeCharacter: () => Option.some(value) }),
+      }),
   }),
 )
 
@@ -346,11 +344,11 @@ const foldListbox = Update.foldChild({
   update: CharacterListbox.update,
   read: (model: Model) => Option.some(model.listbox),
   write: (model, nextListbox) => evo(model, { listbox: () => nextListbox }),
-  toParentMessage: message => GotListboxMessage({ message }),
+  toParentMessage: message => Message.GotListboxMessage({ message }),
   foldOutMessage: foldListboxOutMessage,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), call the fold:
+// In the corresponding Message.match handler, call the fold:
 GotListboxMessage: ({ message }) => foldListbox(model, message)
 
 const characters: ReadonlyArray<Character> = [
@@ -401,7 +399,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
       backdropClassName: 'fixed inset-0',
       anchor: { placement: 'bottom-start', gap: 4, padding: 8 },
     },
-    toParentMessage: message => GotListboxMessage({ message }),
+    toParentMessage: message => Message.GotListboxMessage({ message }),
   })
 ```
 
@@ -499,7 +497,7 @@ Configuration object passed to the view returned by `Listbox.create()`. The same
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config. The same shape applies to the update returned by `Listbox.Multi.create()`, as in `PeopleListbox.update`.
+Messages emitted to the parent through the optional `outMessage` field. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config. The same shape applies to the update returned by `Listbox.Multi.create()`, as in `PeopleListbox.update`.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |

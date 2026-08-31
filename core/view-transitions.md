@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view-transitions
 title: "View Transitions"
 description: "Animate qualifying renders with the browser View Transitions API. Covers route direction, shared elements, and when a running transition is skipped."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # View Transitions
@@ -46,7 +46,7 @@ The context carries two Models alongside `message`, because a transition is betw
 Return `{ types }` instead of `true` to tag the transition. Direction is the pair, so hand the two routes to [Route.Transition](https://foldkit.dev/api-reference/route) and match on what the navigation entered:
 
 ```
-import { Match as M, Option } from 'effect'
+import { Option } from 'effect'
 import { Runtime } from 'foldkit'
 import { Transition } from 'foldkit/route'
 
@@ -68,14 +68,11 @@ export const viewTransition: Runtime.ViewTransitionConfig<Model, Message> = ({
   // compile error here until it is given a direction.
   return Option.match(Transition.enteredAny(transition), {
     onNone: () => true,
-    onSome: M.type<AppRoute>().pipe(
-      M.withReturnType<Runtime.ViewTransitionDecision>(),
-      M.tagsExhaustive({
-        Artwork: () => ({ types: ['to-artwork-detail'] }),
-        Gallery: () => ({ types: ['to-gallery'] }),
-        NotFound: () => true,
-      }),
-    ),
+    onSome: AppRoute.match<Runtime.ViewTransitionDecision>({
+      Artwork: () => ({ types: ['to-artwork-detail'] }),
+      Gallery: () => ({ types: ['to-gallery'] }),
+      NotFound: () => true,
+    }),
   })
 }
 ```

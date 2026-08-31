@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/field-validation
 title: "FieldValidation"
 description: "API documentation for the FieldValidation module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # FieldValidation
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L217)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L300)
 
 ```
 /**
@@ -38,7 +38,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L223)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L306)
 
 ```
 /**
@@ -52,7 +52,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L209)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L292)
 
 ```
 /**
@@ -69,7 +69,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L201)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L284)
 
 ```
 /**
@@ -83,7 +83,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L187)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L270)
 
 ```
 /**
@@ -104,7 +104,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L115)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L123)
 
 ```
 /**
@@ -118,7 +118,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L131)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L214)
 
 ```
 /**
@@ -136,7 +136,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L154)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L237)
 
 ```
 /**
@@ -152,7 +152,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L24)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L32)
 
 ```
 /** The four-state union that represents a field's value in the Model. */
@@ -163,7 +163,7 @@ type Field = NotValidated<A> | Validating<A> | Valid<A> | Invalid<A>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L17)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L25)
 
 ```
 /** The `Invalid` state: one or more rules failed. Carries a non-empty `errors` array. */
@@ -178,7 +178,7 @@ type Invalid = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L90)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L98)
 
 ```
 /** Options accepted by `makeRules`. */
@@ -193,7 +193,7 @@ type MakeRulesOptions = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L8)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L16)
 
 ```
 /** The `NotValidated` state: user hasn't interacted yet. */
@@ -207,7 +207,7 @@ type NotValidated = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L83)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L91)
 
 ```
 /**
@@ -228,7 +228,7 @@ type Rules = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L14)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L22)
 
 ```
 /** The `Valid` state: every rule passed. */
@@ -242,7 +242,7 @@ type Valid = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L11)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L19)
 
 ```
 /** The `Validating` state: async validation is in flight. */
@@ -258,7 +258,7 @@ type Validating = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L24)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L32)
 
 ```
 /**
@@ -292,7 +292,7 @@ const Field: (valueSchema: Codec<A, I>) => Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L17)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L25)
 
 ```
 /** Constructs an `Invalid` state. */
@@ -306,7 +306,7 @@ const Invalid: (field: Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L8)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L16)
 
 ```
 /** Constructs a `NotValidated` state. */
@@ -319,7 +319,7 @@ const NotValidated: (field: Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L14)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L22)
 
 ```
 /** Constructs a `Valid` state. */
@@ -332,11 +332,35 @@ const Valid: (field: Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/fieldValidation/fieldValidation.ts#L11)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L19)
 
 ```
 /** Constructs a `Validating` state. */
 const Validating: (field: Readonly<{
   value: A
 }>) => Validating<A>
+```
+
+### match
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/fieldValidation/fieldValidation.ts#L151)
+
+```
+/**
+ * Handles every field state. `onNotValidated`, `onValidating`, and `onValid`
+ *  each receive the state's `value`; `onInvalid` alone receives the whole
+ *  `{ value, errors }` payload object because `Invalid` carries two fields.
+ *  Data-first with the field, or data-last for pipelines.
+ */
+const match: (handlers: Readonly<{
+  onInvalid: (payload: Readonly<{
+    errors: Array.NonEmptyReadonlyArray<string>
+    value: A
+  }>) => F
+  onNotValidated: (value: A) => B
+  onValid: (value: A) => D
+  onValidating: (value: A) => C
+}>) => (self: Field<A>) => B | C | D | F
 ```

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/story
 title: "Story"
 description: "API documentation for the Story module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Story
@@ -14,29 +14,32 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/test/story.ts#L300)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L293)
 
 ```
-/** Asserts that the OutMessage is None. */
-(): (simulation: StorySimulation<Model, Message, Option.Option<OutMessage>>) => StorySimulation<Model, Message, Option.Option<OutMessage>>
+/** Asserts that update emitted no OutMessage. */
+(): (simulation: StorySimulation<Model, Message, OutMessage>) => StorySimulation<Model, Message, OutMessage>
 ```
 
 ### expectOutMessage
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/test/story.ts#L278)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L275)
 
 ```
-/** Asserts that the OutMessage is Some with the expected value. */
-<Expected>(expected: Expected): (simulation: StorySimulation<Model, Message, Option.Option<OutMessage>>) => StorySimulation<Model, Message, Option.Option<OutMessage>>
+/**
+ * Asserts by structural equality that update emitted the expected OutMessage,
+ *  so callers can pass a freshly constructed expected value.
+ */
+<Expected>(expected: Expected): (simulation: StorySimulation<Model, Message, OutMessage>) => StorySimulation<Model, Message, OutMessage>
 ```
 
 ### given
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/test/story.ts#L85)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L82)
 
 ```
 /** Sets the initial Model for a test story. */
@@ -47,7 +50,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/test/story.ts#L106)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L103)
 
 ```
 /**
@@ -61,7 +64,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/test/story.ts#L214)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L210)
 
 ```
 /** Runs an assertion function against the current Model. */
@@ -74,7 +77,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/test/internal.ts#L46)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/internal.ts#L46)
 
 ```
 /**
@@ -96,7 +99,7 @@ type CommandMatcher = CommandDefinition<string, unknown> | AnyCommand
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/test/story.ts#L38)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L39)
 
 ```
 /** A callable step that sets the initial Model. Carries phantom type for compile-time validation. */
@@ -109,7 +112,7 @@ type GivenStep = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/test/story.ts#L44)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L45)
 
 ```
 /** A model-assertion step produced by model. */
@@ -123,14 +126,14 @@ type ModelStep = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/test/story.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L30)
 
 ```
 /** An immutable test simulation of a Foldkit program. */
 type StorySimulation = Readonly<{
   commands: ReadonlyArray<AnyCommand>
   model: Model
-  outMessage: OutMessage
+  outMessage: OutMessage | undefined
 }>
 ```
 
@@ -138,7 +141,7 @@ type StorySimulation = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/test/story.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L52)
 
 ```
 /**
@@ -154,7 +157,7 @@ type StoryStep = GivenStep<NoInfer<Model>> | ModelStep<NoInfer<Model>> | (sim: S
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/test/story.ts#L256)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L252)
 
 ```
 /**
@@ -179,19 +182,13 @@ const Command: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/test/story.ts#L323)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L313)
 
 ```
 /** Executes a test story. Throws if any Commands remain unresolved. */
-const story: (updateFn: (model: Model, message: Message) => readonly [
-  Model,
-  readonly Array<Readonly<{
-    args: Record<string, unknown>
-    interruptsKey: string
-    key: string
-    messageMappers: ReadonlyArray<(message: unknown) => unknown>
-    name: string
-  }>>,
-  OutMessage
-], steps: readonly Array<StoryStep<NoInfer<Model>>>) => void
+const story: (updateFn: (model: Model, message: Message) => Readonly<{
+  commands: ReadonlyArray<AnyCommand>
+  model: Model
+  outMessage: OutMessage
+}>, steps: readonly Array<StoryStep<NoInfer<Model>>>) => void
 ```

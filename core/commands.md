@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/commands
 title: "Commands"
 description: "Describe one-shot Effects caused by Messages, map their results back into Messages, test them as values, and interrupt keyed work when needed."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## One-Shot Effects as Data
@@ -19,38 +19,34 @@ React event handlers often perform work directly by calling `fetch()`, starting 
 The counter has returned an empty Commands array so far. A delayed reset puts that second return value to work:
 
 ```
-import { Effect, Match as M } from 'effect'
-import { Command } from 'foldkit'
-import { m } from 'foldkit/message'
+import { Effect } from 'effect'
+import { Command, type Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
-const ClickedResetAfterDelay = m('ClickedResetAfterDelay')
-const CompletedDelayReset = m('CompletedDelayReset')
+const Message = defineMessageUnion({
+  ClickedResetAfterDelay: {},
+  CompletedDelayReset: {},
+})
 
 const DelayReset = Command.define(
   // The identifier for the Command, surfaces in DevTools and Story/Scene tests
   'DelayReset',
   {
     // Every Message this Command can produce
-    messages: [CompletedDelayReset],
+    messages: [Message.CompletedDelayReset],
     // The Effect
-    execute: Effect.sleep('1 second').pipe(Effect.as(CompletedDelayReset())),
+    execute: Effect.sleep('1 second').pipe(
+      Effect.as(Message.CompletedDelayReset()),
+    ),
   },
 )
 
-const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.withReturnType<
-      readonly [Model, ReadonlyArray<Command.Command<Message>>]
-    >(),
-    M.tagsExhaustive({
-      ClickedResetAfterDelay: () => [model, [DelayReset()]],
-      CompletedDelayReset: () => [evo(model, { count: () => 0 }), []],
-    }),
-  )
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedResetAfterDelay: () => ({ model, commands: [DelayReset()] }),
+    CompletedDelayReset: () => ({ model: evo(model, { count: () => 0 }) }),
+  })
 ```
 
 ## Anatomy of a Command
@@ -98,24 +94,22 @@ Use `message` to dispatch Messages, `Command.resolve` to supply results, and `mo
 The same structure applies to network work. This version asks an API for the next count instead of incrementing locally:
 
 ```
-import { Effect, Match as M, Schema as S } from 'effect'
+import { Effect, Schema as S } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
-import { Command, Http } from 'foldkit'
-import { m } from 'foldkit/message'
+import { Command, Http, type Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
-const ClickedFetchCount = m('ClickedFetchCount')
-const SucceededFetchCount = m('SucceededFetchCount', {
-  count: S.Number,
-})
-const FailedFetchCount = m('FailedFetchCount', {
-  error: S.String,
+const Message = defineMessageUnion({
+  ClickedFetchCount: {},
+  SucceededFetchCount: { count: S.Number },
+  FailedFetchCount: { error: S.String },
 })
 
 const CountResponse = S.Struct({ count: S.Number })
 
 const FetchCount = Command.define('FetchCount', {
-  messages: [SucceededFetchCount, FailedFetchCount],
+  messages: [Message.SucceededFetchCount, Message.FailedFetchCount],
   execute: Effect.gen(function* () {
     const client = yield* HttpClient.HttpClient
     const response = yield* client.execute(HttpClientRequest.get('/api/count'))
@@ -127,32 +121,23 @@ const FetchCount = Command.define('FetchCount', {
     const { count } = yield* S.decodeUnknownEffect(CountResponse)(
       yield* response.json,
     )
-    return SucceededFetchCount({ count })
+    return Message.SucceededFetchCount({ count })
   }).pipe(
     Effect.catch(error =>
-      Effect.succeed(FailedFetchCount({ error: String(error) })),
+      Effect.succeed(Message.FailedFetchCount({ error: String(error) })),
     ),
     Effect.provide(Http.layer),
   ),
 })
 
-const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.withReturnType<
-      readonly [Model, ReadonlyArray<Command.Command<Message>>]
-    >(),
-    M.tagsExhaustive({
-      ClickedFetchCount: () => [model, [FetchCount()]],
-      SucceededFetchCount: ({ count }) => [
-        evo(model, { count: () => count }),
-        [],
-      ],
-      FailedFetchCount: () => [model, []],
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedFetchCount: () => ({ model, commands: [FetchCount()] }),
+    SucceededFetchCount: ({ count }) => ({
+      model: evo(model, { count: () => count }),
     }),
-  )
+    FailedFetchCount: () => ({ model }),
+  })
 ```
 
 `FetchCount` obtains `HttpClient` from the Effect context, executes the request, and decodes the response with Schema. Success produces `SucceededFetchCount`. `Effect.catch` converts failures into `FailedFetchCount`, so a failed request becomes another fact for update to handle instead of crashing the application.
@@ -168,22 +153,23 @@ The Effect error channel records whether a Command can fail. Once every failure 
 Many Commands need an input that changes from one dispatch to the next. For example: a weather lookup needs a zip code, a focus call needs an element id, and a delay may need a duration. Declare those values in `args`. The Command Definition then accepts a typed record, and `execute` receives that record when the runtime starts the work.
 
 ```
-import { Effect, Match as M, Schema as S } from 'effect'
+import { Effect, Schema as S } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
-import { Command, Http } from 'foldkit'
-import { m } from 'foldkit/message'
+import { Command, Http, type Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+import { evo } from 'foldkit/struct'
 
-const SubmittedWeatherForm = m('SubmittedWeatherForm')
-const SucceededFetchWeather = m('SucceededFetchWeather', {
-  weather: WeatherSchema,
+const Message = defineMessageUnion({
+  SubmittedWeatherForm: {},
+  SucceededFetchWeather: { weather: WeatherSchema },
+  FailedFetchWeather: { error: S.String },
 })
-const FailedFetchWeather = m('FailedFetchWeather', { error: S.String })
 
 const FetchWeather = Command.define('FetchWeather', {
   // Args schema: the per-dispatch inputs the Command needs.
   args: { zipCode: S.String },
   // Every Message this Command can produce.
-  messages: [SucceededFetchWeather, FailedFetchWeather],
+  messages: [Message.SucceededFetchWeather, Message.FailedFetchWeather],
   // The Effect receives a typed args record.
   execute: ({ zipCode }) =>
     Effect.gen(function* () {
@@ -194,33 +180,27 @@ const FetchWeather = Command.define('FetchWeather', {
       const weather = yield* S.decodeUnknownEffect(WeatherSchema)(
         yield* response.json,
       )
-      return SucceededFetchWeather({ weather })
+      return Message.SucceededFetchWeather({ weather })
     }).pipe(
       Effect.catch(error =>
-        Effect.succeed(FailedFetchWeather({ error: String(error) })),
+        Effect.succeed(Message.FailedFetchWeather({ error: String(error) })),
       ),
       Effect.provide(Http.layer),
     ),
 })
 
-const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.withReturnType<
-      readonly [Model, ReadonlyArray<Command.Command<Message>>]
-    >(),
-    M.tagsExhaustive({
-      // Pass args when dispatching the Command.
-      SubmittedWeatherForm: () => [
-        model,
-        [FetchWeather({ zipCode: model.zipCodeInput })],
-      ],
-      SucceededFetchWeather: ({ weather }) => [{ ...model, weather }, []],
-      FailedFetchWeather: () => [model, []],
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    // Pass args when dispatching the Command.
+    SubmittedWeatherForm: () => ({
+      model,
+      commands: [FetchWeather({ zipCode: model.zipCodeInput })],
     }),
-  )
+    SucceededFetchWeather: ({ weather }) => ({
+      model: evo(model, { weather: () => weather }),
+    }),
+    FailedFetchWeather: () => ({ model }),
+  })
 ```
 
 Args appear beside the Command name in DevTools. Story and Scene tests can also match the exact dispatch with `Command.expectExact(FetchWeather({ zipCode: '90210' }))`.
@@ -239,17 +219,19 @@ Commands normally run to completion. Sometimes the user cancels an upload or new
 Foldkit prefixes a derived key with the Command name, so definitions with distinct names occupy distinct namespaces. A Command without declared args has no values from which to derive a key, so `interrupt: true` is its only form.
 
 ```
-import { Array, Effect, Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { m } from 'foldkit/message'
+import { Array, Effect, Schema as S } from 'effect'
+import { Command, type Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
-const ClickedCancelUpload = m('ClickedCancelUpload', { uploadId: S.Number })
-const SucceededUploadFile = m('SucceededUploadFile', { uploadId: S.Number })
-const FailedUploadFile = m('FailedUploadFile', { uploadId: S.Number })
-const CompletedCancelUploadFile = m('CompletedCancelUploadFile', {
-  uploadId: S.Number,
-  outcome: Command.Interruptible.Outcome,
+const Message = defineMessageUnion({
+  ClickedCancelUpload: { uploadId: S.Number },
+  SucceededUploadFile: { uploadId: S.Number },
+  FailedUploadFile: { uploadId: S.Number },
+  CompletedCancelUploadFile: {
+    uploadId: S.Number,
+    outcome: Command.Interruptible.Outcome,
+  },
 })
 
 const UploadKey = S.Struct({ uploadId: S.Number })
@@ -257,7 +239,7 @@ type UploadKey = typeof UploadKey.Type
 
 const UploadFile = Command.define('UploadFile', {
   args: { ...UploadKey.fields, file: S.instanceOf(File) },
-  messages: [SucceededUploadFile, FailedUploadFile],
+  messages: [Message.SucceededUploadFile, Message.FailedUploadFile],
   // The key function maps args to what distinguishes invocations. Foldkit
   // prefixes the Command name automatically, so the full key for upload 7
   // is "UploadFile:7".
@@ -267,8 +249,10 @@ const UploadFile = Command.define('UploadFile', {
   },
   execute: ({ uploadId, file }) =>
     postFile(file).pipe(
-      Effect.as(SucceededUploadFile({ uploadId })),
-      Effect.catch(() => Effect.succeed(FailedUploadFile({ uploadId }))),
+      Effect.as(Message.SucceededUploadFile({ uploadId })),
+      Effect.catch(() =>
+        Effect.succeed(Message.FailedUploadFile({ uploadId })),
+      ),
     ),
 })
 
@@ -277,51 +261,39 @@ const setStatusForId = (uploadId: number, status: UploadStatus) =>
     upload.id === uploadId ? evo(upload, { status: () => status }) : upload,
   )
 
-const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.withReturnType<
-      readonly [Model, ReadonlyArray<Command.Command<Message>>]
-    >(),
-    M.tagsExhaustive({
-      // Interrupt only the upload with this uploadId.
-      ClickedCancelUpload: ({ uploadId }) => [
-        model,
-        [
-          UploadFile.Interrupt({ uploadId }, outcome =>
-            CompletedCancelUploadFile({ uploadId, outcome }),
-          ),
-        ],
-      ],
-      CompletedCancelUploadFile: ({ uploadId, outcome }) =>
-        M.value(outcome).pipe(
-          M.withReturnType<
-            readonly [Model, ReadonlyArray<Command.Command<Message>>]
-          >(),
-          M.tagsExhaustive({
-            // The upload was stopped. Its result Message will never arrive,
-            // so this branch owns the state transition.
-            Interrupted: () => [
-              evo(model, { uploads: setStatusForId(uploadId, 'Cancelled') }),
-              [],
-            ],
-            // Nothing held the key: the upload already completed (or never
-            // started), and its own result Message handles the Model.
-            NotFound: () => [model, []],
-          }),
+type UpdateReturn = Update.Return<Model, Message>
+
+const update = (model: Model, message: Message) =>
+  Message.match<UpdateReturn>(message, {
+    // Interrupt only the upload with this uploadId.
+    ClickedCancelUpload: ({ uploadId }) => ({
+      model,
+      commands: [
+        UploadFile.Interrupt({ uploadId }, outcome =>
+          Message.CompletedCancelUploadFile({ uploadId, outcome }),
         ),
-      SucceededUploadFile: ({ uploadId }) => [
-        evo(model, { uploads: setStatusForId(uploadId, 'Done') }),
-        [],
-      ],
-      FailedUploadFile: ({ uploadId }) => [
-        evo(model, { uploads: setStatusForId(uploadId, 'Failed') }),
-        [],
       ],
     }),
-  )
+    CompletedCancelUploadFile: ({ uploadId, outcome }) =>
+      Command.Interruptible.Outcome.match<UpdateReturn>(outcome, {
+        // The upload was stopped. Its result Message will never arrive,
+        // so this branch owns the state transition.
+        Interrupted: () => ({
+          model: evo(model, {
+            uploads: setStatusForId(uploadId, 'Cancelled'),
+          }),
+        }),
+        // Nothing held the key: the upload already completed (or never
+        // started), and its own result Message handles the Model.
+        NotFound: () => ({ model }),
+      }),
+    SucceededUploadFile: ({ uploadId }) => ({
+      model: evo(model, { uploads: setStatusForId(uploadId, 'Done') }),
+    }),
+    FailedUploadFile: ({ uploadId }) => ({
+      model: evo(model, { uploads: setStatusForId(uploadId, 'Failed') }),
+    }),
+  })
 ```
 
 ### Choosing a Key

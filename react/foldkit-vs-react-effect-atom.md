@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/foldkit-vs-react-effect-atom
 title: "Foldkit vs React + Effect Atom"
 description: "Two Effect-native architectures: Effect Atom distributes state across reactive cells inside React, while Foldkit builds the application around one Model and update function."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Foldkit vs React + Effect Atom
@@ -86,9 +86,9 @@ In this example, the ways `todosAtom` changes live at its setter call sites. An 
 The Foldkit version represents the same actions as Messages:
 
 ```
-import { Array, Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { m } from 'foldkit/message'
+import { Array, Schema as S } from 'effect'
+import { type Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
 
 // MODEL
 
@@ -102,36 +102,30 @@ type Model = typeof Model.Type
 
 // MESSAGE
 
-const AddedTodo = m('AddedTodo')
-const ClearedDoneTodos = m('ClearedDoneTodos')
-const SelectedFilter = m('SelectedFilter', { filter: Filter })
-
-const Message = S.Union([AddedTodo, ClearedDoneTodos, SelectedFilter])
+const Message = defineMessageUnion({
+  AddedTodo: {},
+  ClearedDoneTodos: {},
+  SelectedFilter: { filter: Filter },
+})
 type Message = typeof Message.Type
 
 // UPDATE
 
-export const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    withUpdateReturn,
-    M.tagsExhaustive({
-      AddedTodo: () => [evo(model, { todos: Array.append(emptyTodo()) }), []],
-      ClearedDoneTodos: () => [
-        evo(model, { todos: Array.filter(todo => !todo.done) }),
-        [],
-      ],
-      SelectedFilter: ({ filter }) => [
-        evo(model, { filter: () => filter }),
-        [],
-      ],
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    AddedTodo: () => ({
+      model: evo(model, { todos: Array.append(emptyTodo()) }),
     }),
-  )
+    ClearedDoneTodos: () => ({
+      model: evo(model, { todos: Array.filter(todo => !todo.done) }),
+    }),
+    SelectedFilter: ({ filter }) => ({
+      model: evo(model, { filter: () => filter }),
+    }),
+  })
 ```
 
-`AddedTodo`, `ClearedDoneTodos`, and `SelectedFilter` appear in DevTools and in Story or Scene tests. “How can the todo list change?” is answered by one Message union and one update function. `M.tagsExhaustive` reports every place that must handle a newly added Message variant.
+`AddedTodo`, `ClearedDoneTodos`, and `SelectedFilter` appear in DevTools and in Story or Scene tests. “How can the todo list change?” is answered by one Message union and one update function. `Message.match` reports every place that must handle a newly added Message variant.
 
 ## Async State
 
@@ -175,9 +169,9 @@ The Effect runs when the registry first evaluates the atom, and the registry sto
 Foldkit stores remote state in the Model. [AsyncData](https://foldkit.dev/core/async-data) represents six states: `Idle`, `Loading`, `Refreshing`, `Failure`, `Stale`, and `Success`. A Command performs the request, and its result returns through update as a Message.
 
 ```
-import { Effect, Match as M, Schema as S } from 'effect'
-import { AsyncData, Command } from 'foldkit'
-import { m } from 'foldkit/message'
+import { Effect, Schema as S } from 'effect'
+import { AsyncData, Command, type Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
 
 import { Api } from './api'
 
@@ -194,51 +188,43 @@ type Model = typeof Model.Type
 
 // MESSAGE
 
-const ClickedLoadUser = m('ClickedLoadUser')
-const SucceededLoadUser = m('SucceededLoadUser', { user: User })
-const FailedLoadUser = m('FailedLoadUser', { error: ApiError })
-
-const Message = S.Union([ClickedLoadUser, SucceededLoadUser, FailedLoadUser])
+const Message = defineMessageUnion({
+  ClickedLoadUser: {},
+  SucceededLoadUser: { user: User },
+  FailedLoadUser: { error: ApiError },
+})
 type Message = typeof Message.Type
 
 // COMMAND
 
 // Api is an Effect service; Api.Default is its layer.
 const FetchUser = Command.define('FetchUser', {
-  messages: [SucceededLoadUser, FailedLoadUser],
+  messages: [Message.SucceededLoadUser, Message.FailedLoadUser],
   execute: Effect.gen(function* () {
     const api = yield* Api
     const user = yield* api.getUser()
-    return SucceededLoadUser({ user })
+    return Message.SucceededLoadUser({ user })
   }).pipe(
-    Effect.catch(error => Effect.succeed(FailedLoadUser({ error }))),
+    Effect.catch(error => Effect.succeed(Message.FailedLoadUser({ error }))),
     Effect.provide(Api.Default),
   ),
 })
 
 // UPDATE
 
-export const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    withUpdateReturn,
-    M.tagsExhaustive({
-      ClickedLoadUser: () => [
-        evo(model, { user: () => UserAsyncData.Loading() }),
-        [FetchUser()],
-      ],
-      SucceededLoadUser: ({ user }) => [
-        evo(model, { user: () => UserAsyncData.Success({ data: user }) }),
-        [],
-      ],
-      FailedLoadUser: ({ error }) => [
-        evo(model, { user: () => UserAsyncData.Failure({ error }) }),
-        [],
-      ],
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedLoadUser: () => ({
+      model: evo(model, { user: () => UserAsyncData.Loading() }),
+      commands: [FetchUser()],
     }),
-  )
+    SucceededLoadUser: ({ user }) => ({
+      model: evo(model, { user: () => UserAsyncData.Success({ data: user }) }),
+    }),
+    FailedLoadUser: ({ error }) => ({
+      model: evo(model, { user: () => UserAsyncData.Failure({ error }) }),
+    }),
+  })
 ```
 
 `AsyncData` includes stale-while-revalidate and keep-stale-on-failure states. It does not provide a fetching registry or choose refresh policy. The application models a cache in the Model and decides when to run each Command. Remote data then shares the same Message timeline and tests as the rest of the Model.

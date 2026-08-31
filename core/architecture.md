@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/architecture
 title: "Architecture"
 description: "How Model, Messages, update, view, Commands, Subscriptions, and the Runtime form Foldkit’s Elm Architecture loop."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Architecture
@@ -109,7 +109,11 @@ The Foldkit engine that executes Commands, runs Subscriptions, manages Mount and
 
 Submodel
 
-A self-contained Model, Message, update, and Commands that a parent embeds and delegates to. A child can surface high-level facts to its parent through an OutMessage in the third tuple element returned by update.
+A self-contained Model, Message, update, and Commands that a parent embeds and delegates to. A child can surface high-level facts to its parent through the optional
+
+`outMessage`
+
+field returned by update.
 
 ## The Restaurant Analogy
 

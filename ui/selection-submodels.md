@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/selection-submodels
 title: "Selection Submodels"
 description: "Use create<Item>() factories to keep one item type across a selection Submodel’s view, update, programmatic helpers, and OutMessages."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Overview
@@ -12,7 +12,7 @@ Foldkit UI ships five Submodels for selecting values from a set: [Listbox](https
 
 For example: a Listbox of plans, a Combobox of cities, Tabs for view modes, a Menu of actions, or a RadioGroup of pricing plans.
 
-Each exposes a `create<Item>()` factory that pairs the view and update behind a single type parameter, so the value type is fixed at the binding site and flows into the OutMessage.
+Each exposes a `create<Item>()` factory that pairs the view and update behind a single type parameter. The binding fixes the item type used by the view and the `Selected` OutMessage.
 
 A Listbox over a literal-union `Plan` type:
 
@@ -20,10 +20,10 @@ A Listbox over a literal-union `Plan` type:
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Listbox } from '@foldkit/ui'
@@ -46,18 +46,17 @@ const Model = S.Struct({
 })
 
 // In your init function, initialize the Listbox Submodel with a unique id:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     maybePlan: Option.none(),
     listbox: Listbox.init({ id: 'plan' }),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Wrap Listbox's Messages so they can flow through your update:
-const GotListboxMessage = m('GotListboxMessage', {
-  message: Listbox.Message,
+const Message = defineMessageUnion({
+  GotListboxMessage: { message: Listbox.Message },
 })
 
 // At module scope, fold the OutMessage into your own Model. When the user
@@ -69,7 +68,7 @@ const foldListboxOutMessage = M.type<Listbox.OutMessage<Plan>>().pipe(
   M.tagsExhaustive({
     Selected:
       ({ value }) =>
-      model => [evo(model, { maybePlan: () => Option.some(value) }), []],
+      model => ({ model: evo(model, { maybePlan: () => Option.some(value) }) }),
   }),
 )
 
@@ -81,11 +80,11 @@ const foldListbox = Update.foldChild({
   update: PlanListbox.update,
   read: (model: Model) => Option.some(model.listbox),
   write: (model, nextListbox) => evo(model, { listbox: () => nextListbox }),
-  toParentMessage: message => GotListboxMessage({ message }),
+  toParentMessage: message => Message.GotListboxMessage({ message }),
   foldOutMessage: foldListboxOutMessage,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), call the fold:
+// In the corresponding Message.match handler, call the fold:
 GotListboxMessage: ({ message }) => foldListbox(model, message)
 
 const plans: ReadonlyArray<Plan> = ['Free', 'Pro', 'Enterprise']
@@ -129,7 +128,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
           backdropClassName: 'fixed inset-0',
           anchor: { placement: 'bottom-start', gap: 4, padding: 8 },
         },
-        toParentMessage: message => GotListboxMessage({ message }),
+        toParentMessage: message => Message.GotListboxMessage({ message }),
       }),
     ],
   )
@@ -137,7 +136,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
 
 ## The create<Item>() Factory
 
-A call to `Listbox.create<Plan>()` returns an object whose entry points are all bound to `Plan`: `view` accepts `items: ReadonlyArray<Plan>`, `update` returns an OutMessage carrying the picked `Plan`, and the imperative helpers the Submodel exposes (`selectItem`, `open`, and `close` for Listbox and Combobox) accept and emit `Plan` too. Declare the factory once at module scope and use the same bundle at every site that needs it.
+A call to `Listbox.create<Plan>()` returns an object whose entry points are all bound to `Plan`. Its `view` accepts `items: ReadonlyArray<Plan>`. Its `update` and `selectItem` helper can return a `Selected` OutMessage carrying a `Plan`. Declare the factory once at module scope and use the same bundle at every site that needs it.
 
 There is no inbound reflect helper for the selection: the parent owns it outright and passes it in as `maybeSelectedValue` (`selectedValues` for multi-select), so there is nothing on the Listbox or Combobox to reflect onto. When an external value (a URL parameter, restored storage, a server push) changes the selection, the parent writes its own field. The `reflect*` family lives on the components with configuration the parent feeds in: `reflectMinDate`, `reflectMaxDate`, `reflectDisabledDates`, and `reflectDisabledDaysOfWeek` on Calendar and DatePicker, and `reflectRange` on Slider. See [Reflecting External State](https://foldkit.dev/core/submodel#reflecting-external-state) for the concept.
 

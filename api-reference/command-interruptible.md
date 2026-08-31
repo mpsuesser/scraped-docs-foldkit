@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/command-interruptible
 title: "Command/Interruptible"
 description: "API documentation for the Command/Interruptible module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Command/Interruptible
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/command/interruptible/interruptible.ts#L180)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/command/interruptible/interruptible.ts#L167)
 
 ```
 /**
@@ -33,7 +33,7 @@ interface DefinitionNoArgs {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/command/interruptible/interruptible.ts#L194)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/command/interruptible/interruptible.ts#L181)
 
 ```
 /**
@@ -53,7 +53,7 @@ interface DefinitionWithArgs {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/command/interruptible/interruptible.ts#L217)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/command/interruptible/interruptible.ts#L204)
 
 ```
 /**
@@ -75,7 +75,7 @@ interface DefinitionWithArgsNameKeyed {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/command/interruptible/interruptible.ts#L149)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/command/interruptible/interruptible.ts#L136)
 
 ```
 /**
@@ -93,7 +93,7 @@ interface InterruptDefinitionNoArgs {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/command/interruptible/interruptible.ts#L163)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/command/interruptible/interruptible.ts#L150)
 
 ```
 /**
@@ -110,47 +110,21 @@ interface InterruptDefinitionWithArgs {
 
 ## Constants
 
-### Interrupted
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/command/interruptible/interruptible.ts#L9)
-
-```
-/**
- * At least one in-flight Command held the interrupt key, and every holder
- *  has been stopped. Their declared result Messages are guaranteed never to
- *  dispatch.
- */
-const Interrupted: CallableTaggedStruct<"Interrupted", {}>
-```
-
-### NotFound
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/command/interruptible/interruptible.ts#L19)
-
-```
-/**
- * No Command holds the interrupt key: every target already completed (its
- *  result Message dispatched or will dispatch) or was never dispatched. The
- *  two cases are indistinguishable by design.
- */
-const NotFound: CallableTaggedStruct<"NotFound", {}>
-```
-
 ### Outcome
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/command/interruptible/interruptible.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/command/interruptible/interruptible.ts#L10)
 
 ```
 /**
- * The result of an Interrupt Command: Interrupted when at least one
- *  holder was stopped, NotFound when nothing held the key.
- *  Interruption itself cannot fail.
+ * The result of interrupting a key. `Outcome.Interrupted` means at least one
+ * in-flight Command was stopped and will not dispatch its result Message.
+ * `Outcome.NotFound` means no Command held the key. The interrupt operation
+ * itself cannot fail.
  */
-const Outcome: Union<readonly [CallableTaggedStruct<"Interrupted", {}>, CallableTaggedStruct<"NotFound", {}>]>
+const Outcome: TaggedUnion<{
+  Interrupted: {}
+  NotFound: {}
+}>
 ```

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/async-data
 title: "Async Data"
 description: "A six-state value type for asynchronously loaded data in the Model: Idle, Loading, Refreshing, Failure, Stale, and Success, with stale-while-revalidate and keep-stale-on-failure built in."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 `foldkit/asyncData` is a plain value type in the spirit of Effect’s `Option` and `Result`, built for data that arrives asynchronously. This page introduces the state model and the combinators you reach for most. The [API Reference](https://foldkit.dev/api-reference/async-data) has the exhaustive catalog.
@@ -180,39 +180,39 @@ Two transitions drive route-entry loading, and both send `Success` and `Stale` f
 `AsyncData.revalidateOrLoad` is the route-entry decision. It returns `Option<AsyncData>`: cold no-data states (`Idle`, `Failure`) start `Loading`, already-pending states (`Loading`, `Refreshing`) yield `None` so the app does not restart an in-flight fetch, and both loaded states (`Success`, `Stale`) revalidate to `Refreshing`. `None` means “no transition needed”.
 
 ```
-const enterNotebooksRoute = (model: Model): readonly [Model, Commands] =>
+const enterNotebooksRoute = (model: Model): Update.Return<Model, Message> =>
   Option.match(AsyncData.revalidateOrLoad(model.notebooks), {
-    onNone: () => [model, []],
-    onSome: nextNotebooks => [
-      evo(model, { notebooks: () => nextNotebooks }),
-      [LoadNotebooks()],
-    ],
+    onNone: () => ({ model }),
+    onSome: nextNotebooks => ({
+      model: evo(model, { notebooks: () => nextNotebooks }),
+      commands: [LoadNotebooks()],
+    }),
   })
 ```
 
 `AsyncData.revalidate` is the narrower transition for reloading what is already loaded, typically after a mutation. It revalidates `Success` and `Stale` to `Refreshing` and yields `None` for everything else, so it never cold-starts a `Loading`, and a cache that holds nothing is left alone.
 
 ```
-const revalidateAllNotes = (model: Model): readonly [Model, Commands] =>
+const revalidateAllNotes = (model: Model): Update.Return<Model, Message> =>
   Option.match(AsyncData.revalidate(model.allNotes), {
-    onNone: () => [model, []],
-    onSome: refreshingAllNotes => [
-      evo(model, { allNotes: () => refreshingAllNotes }),
-      [LoadAllNotes()],
-    ],
+    onNone: () => ({ model }),
+    onSome: refreshingAllNotes => ({
+      model: evo(model, { allNotes: () => refreshingAllNotes }),
+      commands: [LoadAllNotes()],
+    }),
   })
 ```
 
 `AsyncData.loadIfMissing` is the first-visit load: the cold no-data states (`Idle`, `Failure`) start `Loading`, and every other state yields `None`, so loaded data is kept without revalidation and a request in flight is not restarted. It is the load-only counterpart of `revalidateOrLoad`, the state-machine form of “fetch on first visit, keep the cache afterwards”.
 
 ```
-const enterStatsRoute = (model: Model): readonly [Model, Commands] =>
+const enterStatsRoute = (model: Model): Update.Return<Model, Message> =>
   Option.match(AsyncData.loadIfMissing(model.stats), {
-    onNone: () => [model, []],
-    onSome: loadingStats => [
-      evo(model, { stats: () => loadingStats }),
-      [LoadStats()],
-    ],
+    onNone: () => ({ model }),
+    onSome: loadingStats => ({
+      model: evo(model, { stats: () => loadingStats }),
+      commands: [LoadStats()],
+    }),
   })
 ```
 
@@ -239,14 +239,12 @@ const LoadAllNotes = Command.define('LoadAllNotes', {
 })
 
 M.tagsExhaustive({
-  SucceededLoadAllNotes: ({ notes }) => [
-    evo(model, { allNotes: () => AsyncData.Success({ data: notes }) }),
-    [],
-  ],
-  FailedLoadAllNotes: ({ error }) => [
-    evo(model, { allNotes: () => AsyncData.Failure({ error }) }),
-    [],
-  ],
+  SucceededLoadAllNotes: ({ notes }) => ({
+    model: evo(model, { allNotes: () => AsyncData.Success({ data: notes }) }),
+  }),
+  FailedLoadAllNotes: ({ error }) => ({
+    model: evo(model, { allNotes: () => AsyncData.Failure({ error }) }),
+  }),
 })
 ```
 
@@ -263,12 +261,11 @@ const LoadAllNotes = Command.define('LoadAllNotes', {
 })
 
 M.tagsExhaustive({
-  SettledLoadAllNotes: ({ result }) => [
-    evo(model, {
+  SettledLoadAllNotes: ({ result }) => ({
+    model: evo(model, {
       allNotes: previous => AsyncData.settle(previous, result),
     }),
-    [],
-  ],
+  }),
 })
 ```
 

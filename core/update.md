@@ -2,11 +2,9 @@
 url: https://foldkit.dev/core/update
 title: "Update"
 description: "Handle every Message with a pure update function that returns the next Model and Commands. Use Match and evo to keep transitions exhaustive and immutable."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
-
-# Update
 
 ## One Function Defines Every Transition
 
@@ -14,35 +12,206 @@ The update function receives the current Model and a Message, then returns the n
 
 Update is pure. Given the same Model and Message, it returns the same result. It does not mutate state, call browser APIs, start timers, or make requests. That makes a transition direct to test: pass in the inputs and assert on the returned values.
 
-Use [Effect's `Match`](https://effect.website/docs/code-style/pattern-matching/) and `M.tagsExhaustive` to handle the Message union. If you add a Message and omit its branch, TypeScript reports the missing case. No `default` branch silently absorbs a new variant.
+Use `Message.match` to handle the Message union. If you add a Message and omit its branch, TypeScript reports the missing case. No `default` branch silently absorbs a new variant.
+
+Use [Effect's `Match`](https://effect.website/docs/code-style/pattern-matching/) for other tagged unions, partial matches, fallbacks, and one handler shared across several tags.
 
 ```
-import { Match as M } from 'effect'
-import { Command } from 'foldkit'
+import { type Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
 // UPDATE
 
-const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.withReturnType<
-      readonly [Model, ReadonlyArray<Command.Command<Message>>]
-    >(),
-    M.tagsExhaustive({
-      ClickedDecrement: () => [evo(model, { count: count => count - 1 }), []],
-      ClickedIncrement: () => [evo(model, { count: count => count + 1 }), []],
-      ClickedReset: () => [evo(model, { count: () => 0 }), []],
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedDecrement: () => ({
+      model: evo(model, { count: count => count - 1 }),
     }),
-  )
+    ClickedIncrement: () => ({
+      model: evo(model, { count: count => count + 1 }),
+    }),
+    ClickedReset: () => ({ model: evo(model, { count: () => 0 }) }),
+  })
 ```
 
-Each branch describes one transition. `ClickedDecrement` and `ClickedIncrement` transform the current count. `ClickedReset` replaces it with zero. All three return an empty Commands array because this version of the counter has no side effects.
+Each branch describes one transition. `ClickedDecrement` and `ClickedIncrement` transform the current count. `ClickedReset` replaces it with zero. This version of the counter has no side effects, so all three omit `commands`.
 
 The branches build their next Model with [evo](https://foldkit.dev/best-practices/immutability#immutable-updates). Each named field receives a function from its current value to its next value. Omitted fields keep their existing values and references, so the same update style continues to work as the Model grows.
 
-Update returns a tuple containing the next Model and an array of Commands. A Command describes one side effect, such as an HTTP request, timer, or browser API call. The [Commands](https://foldkit.dev/core/commands) page adds a delayed reset and puts that second tuple element to work.
+Update returns a record containing the next Model and, when needed, an array of Commands. A Command describes one side effect, such as an HTTP request, timer, or browser API call. The [Commands](https://foldkit.dev/core/commands) page adds a delayed reset and puts the optional `commands` field to work.
 
-First, the [view function](https://foldkit.dev/core/view) completes the basic loop by turning the Model into what the user sees.
+## Returning Commands
+
+Return Commands beside the next Model from the Message branch that requests the work:
+
+```
+import { type Update } from 'foldkit'
+import { evo } from 'foldkit/struct'
+
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedIncrement: () => {
+      const nextCount = model.count + 1
+
+      return {
+        model: evo(model, { count: () => nextCount }),
+        commands: [PersistCount({ count: nextCount })],
+      }
+    },
+    CompletedPersistCount: () => ({ model }),
+  })
+```
+
+`ClickedIncrement` changes the count and asks the runtime to persist it. `CompletedPersistCount` records that the Command finished, but it has no more work to request, so that branch omits `commands`.
+
+An update, init, boot, or component helper that statically creates no Commands omits `commands`. When it computes a Commands collection, it returns that collection directly without checking whether it is empty. The [`foldkit/no-empty-commands-array`](https://foldkit.dev/tooling/oxlint-plugin#no-empty-commands-array) lint rule rejects only a literal `commands: []` property.
+
+## Composing Results
+
+### Keeping Results Together
+
+Keep an update-like result attached to the operation that produced it. Name the value after the operation and use dot access:
+
+```
+const homeInit = Home.init()
+
+return {
+  model: { home: homeInit.model },
+  commands: Command.mapMessages(homeInit.commands, message =>
+    Message.GotHomeMessage({ message }),
+  ),
+}
+```
+
+The same rule applies when a test consumes an update result:
+
+```
+const formSubmit = update(model, Message.SubmittedForm())
+
+expect(formSubmit.model.status).toBe('Submitting')
+expect(formSubmit.commands ?? []).toHaveLength(1)
+```
+
+When the operation name collides with the function, use a trailing underscore such as `init_`. Do not destructure or rename `model`, `commands`, or `outMessage`. Dot access does not make an OutMessage impossible to ignore. It keeps the operation and its returned values visibly connected.
+
+Pass optional Commands directly to APIs that accept them, including `Command.mapMessages`. Use `result.commands ?? []` only when the next operation requires an array for spreading, concatenating, execution, or an assertion.
+
+### Composing Update Steps
+
+TypeScript rejects this manual composition when the enclosing update returns `Update.Return<Model, Message>`:
+
+```
+const dialogOpen = openDialog(model)
+
+return {
+  model: evo(dialogOpen.model, { isSubmitting: () => false }),
+  // Type error: with exactOptionalPropertyTypes, this property must be
+  // omitted when dialogOpen.commands is undefined.
+  commands: dialogOpen.commands,
+}
+```
+
+Every Foldkit template enables `exactOptionalPropertyTypes`. With that setting, the optional `commands` property may be absent. When the property is present, it must contain Commands. `dialogOpen.commands` has the type `Update.Commands<Message> | undefined`, so TypeScript rejects `commands: dialogOpen.commands`.
+
+This error often points to update results being composed by hand. When both operations update the same Model, express them as Steps and compose them with `Update.combine`:
+
+```
+return Update.combine(model, [
+  openDialog,
+  stepModel => ({
+    model: evo(stepModel, { isSubmitting: () => false }),
+  }),
+])
+```
+
+Manual unpacking of a child result usually means the site should use `Update.foldChild` or `Update.foldChildStep`.
+
+Use `Update.combine` when two or more operations transform the same Model and a later Step should receive the Model produced by an earlier Step. Name that parameter `stepModel` when an inline Step needs it:
+
+```
+return Update.combine(model, [
+  foldDialogClose,
+  stepModel => ({
+    model: evo(stepModel, { isSubmitting: () => false }),
+  }),
+])
+```
+
+`combine` appends the Commands to its returned array in Step order. The runtime forks those Commands independently, so an application must not depend on their execution or completion order.
+
+Do not wrap one Step in `Update.combine`; call that operation directly.
+
+### Combining Independent Results
+
+Independent child inits are not a sequence because neither child updates the other child's Model. Initialize them separately and assemble the parent Model:
+
+```
+const homeInit = Home.init()
+const roomInit = Room.init(route)
+
+return {
+  model: {
+    home: homeInit.model,
+    room: roomInit.model,
+  },
+  commands: [
+    ...Command.mapMessages(homeInit.commands, toGotHomeMessage),
+    ...Command.mapMessages(roomInit.commands, toGotRoomMessage),
+  ],
+}
+```
+
+## Preventing Lost OutMessages
+
+Use `Update.Return<Model, Message>` for an update that cannot emit an OutMessage. It prevents a result containing an OutMessage from entering code that would keep only its Model and Commands:
+
+```
+const childUpdate: Update.ReturnWithOutMessage<
+  Child.Model,
+  Child.Message,
+  Child.OutMessage
+> = Child.update(model.child, message)
+
+// Type error: childUpdate may contain an OutMessage that this type cannot hold.
+const plainChildUpdate: Update.Return<Child.Model, Child.Message> = childUpdate
+```
+
+Otherwise, that OutMessage would be lost.
+
+A result with no `outMessage` can still be used where `Update.ReturnWithOutMessage<Model, Message, OutMessage>` is expected:
+
+```
+const plainUpdate: Update.Return<Model, Message> = { model }
+
+const submodelUpdate: Update.ReturnWithOutMessage<Model, Message, OutMessage> =
+  plainUpdate
+```
+
+The missing field means this update emitted no OutMessage.
+
+### Returning an OutMessage
+
+When the OutMessage is already known while constructing a new result, include it directly:
+
+```
+return { model, outMessage: OutMessage.Closed() }
+```
+
+Use `Update.withOutMessage` when attaching an OutMessage to an existing plain result or when the value has the type `OutMessage | undefined`. If an operation already produced the plain result, pipe that named result into the helper:
+
+```
+const dialogClose = closeDialog(model)
+
+return pipe(dialogClose, Update.withOutMessage(outMessage))
+```
+
+The object-spread alternative is easy to get wrong:
+
+```
+// Avoid: this writes outMessage: undefined and accepts a result that already has an OutMessage.
+return { ...dialogClose, outMessage }
+```
+
+`Update.withOutMessage` preserves `dialogClose.model` and `dialogClose.commands`. A defined value becomes `outMessage`; `undefined` leaves the property out. The update result must be a plain return, so the helper cannot overwrite an OutMessage another operation emitted.
+
+When constructing the plain result in the same expression and the value has the type `OutMessage | undefined`, pass the result first: `Update.withOutMessage({ model, commands }, outMessage)`.

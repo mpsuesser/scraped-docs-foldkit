@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/switch
 title: "Switch"
 description: "A stateless, controlled toggle for immediate on-and-off actions, with keyboard behavior and switch semantics."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Overview
@@ -26,7 +26,7 @@ Get notified when something important happens.
 // update, and view definitions.
 import { Schema as S } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Switch } from '@foldkit/ui'
@@ -38,28 +38,25 @@ const Model = S.Struct({
 })
 
 // In your init function, start it off:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     notificationsEnabled: false,
     // ...your other fields
   },
-  [],
-]
-
-// A verb-first, past-tense Message carries the new checked state:
-const ToggledNotifications = m('ToggledNotifications', {
-  isChecked: S.Boolean,
 })
 
-const Message = S.Union([ToggledNotifications])
+// A verb-first, past-tense Message carries the new checked state:
 
-// Inside your update function's M.tagsExhaustive({...}), store the value.
+const Message = defineMessageUnion({
+  ToggledNotifications: { isChecked: S.Boolean },
+})
+
+// In the corresponding Message.match handler, store the value.
 // This is the moment to persist the preference, sync to a backend, or fire
 // analytics.
-ToggledNotifications: ({ isChecked }) => [
-  evo(model, { notificationsEnabled: () => isChecked }),
-  [],
-]
+ToggledNotifications: ({ isChecked }) => ({
+  model: evo(model, { notificationsEnabled: () => isChecked }),
+})
 
 // Inside your view function, render the switch with Switch.view. It reads the
 // checked state from your Model and calls onToggle with the new state. The
@@ -70,7 +67,7 @@ const view = (model, h: HtmlBuilder<Message>) =>
     {
       id: 'notifications',
       isChecked: model.notificationsEnabled,
-      onToggle: isChecked => ToggledNotifications({ isChecked }),
+      onToggle: isChecked => Message.ToggledNotifications({ isChecked }),
       toView: attributes =>
         h.div(
           [h.Class('flex items-center gap-3')],

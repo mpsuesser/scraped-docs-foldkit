@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/coming-from-react
 title: "Coming from React"
 description: "See how Foldkit replaces component-owned state and Effects with one Model, Messages, update, Commands, Subscriptions, and Submodels."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Coming from React
@@ -38,10 +38,10 @@ function Counter() {
 The Foldkit version separates state, events, transitions, and rendering:
 
 ```
-import { Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
+import { Schema as S } from 'effect'
+import { type Update } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 // MODEL - Your entire application state
@@ -53,23 +53,19 @@ type Model = typeof Model.Type
 
 // MESSAGE - Events that can happen in your app
 
-const ClickedIncrement = m('ClickedIncrement')
-
-const Message = S.Union([ClickedIncrement])
+const Message = defineMessageUnion({
+  ClickedIncrement: {},
+})
 type Message = typeof Message.Type
 
 // UPDATE - How Messages change the Model
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
-const withUpdateReturn = M.withReturnType<UpdateReturn>()
-
-const update = (model: Model, message: Message): UpdateReturn =>
-  M.value(message).pipe(
-    withUpdateReturn,
-    M.tagsExhaustive({
-      ClickedIncrement: () => [evo(model, { count: count => count + 1 }), []],
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedIncrement: () => ({
+      model: evo(model, { count: count => count + 1 }),
     }),
-  )
+  })
 
 // VIEW - A pure function from Model to a Document
 
@@ -79,7 +75,7 @@ const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
     [],
     [
       h.p([], [`Count: ${model.count}`]),
-      h.button([h.OnClick(ClickedIncrement())], ['Increment']),
+      h.button([h.OnClick(Message.ClickedIncrement())], ['Increment']),
     ],
   ),
 })
@@ -139,10 +135,10 @@ The Effect starts the interval when auto-counting is active and returns the clea
 Foldkit adds a Subscription and a `Ticked` Message:
 
 ```
-import { Duration, Effect, Match as M, Schema as S, Stream } from 'effect'
-import { Command, Subscription } from 'foldkit'
+import { Duration, Effect, Schema as S, Stream } from 'effect'
+import { Subscription, type Update } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 const TICK_INTERVAL_MS = 1000
@@ -157,11 +153,11 @@ type Model = typeof Model.Type
 
 // MESSAGE
 
-const ClickedIncrement = m('ClickedIncrement')
-const ClickedToggleAutoCount = m('ClickedToggleAutoCount')
-const Ticked = m('Ticked')
-
-const Message = S.Union([ClickedIncrement, ClickedToggleAutoCount, Ticked])
+const Message = defineMessageUnion({
+  ClickedIncrement: {},
+  ClickedToggleAutoCount: {},
+  Ticked: {},
+})
 type Message = typeof Message.Type
 
 // SUBSCRIPTION
@@ -176,7 +172,7 @@ const subscriptions = Subscription.make<Model, Message>()(entry => ({
       dependenciesToStream: ({ isAutoCounting }) =>
         Stream.when(
           Stream.tick(Duration.millis(TICK_INTERVAL_MS)).pipe(
-            Stream.map(Ticked),
+            Stream.map(Message.Ticked),
           ),
           Effect.sync(() => isAutoCounting),
         ),
@@ -186,23 +182,18 @@ const subscriptions = Subscription.make<Model, Message>()(entry => ({
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
-const withUpdateReturn = M.withReturnType<UpdateReturn>()
-
-const update = (model: Model, message: Message): UpdateReturn =>
-  M.value(message).pipe(
-    withUpdateReturn,
-    M.tagsExhaustive({
-      ClickedIncrement: () => [evo(model, { count: count => count + 1 }), []],
-      ClickedToggleAutoCount: () => [
-        evo(model, {
-          isAutoCounting: isAutoCounting => !isAutoCounting,
-        }),
-        [],
-      ],
-      Ticked: () => [evo(model, { count: count => count + 1 }), []],
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedIncrement: () => ({
+      model: evo(model, { count: count => count + 1 }),
     }),
-  )
+    ClickedToggleAutoCount: () => ({
+      model: evo(model, {
+        isAutoCounting: isAutoCounting => !isAutoCounting,
+      }),
+    }),
+    Ticked: () => ({ model: evo(model, { count: count => count + 1 }) }),
+  })
 
 // VIEW
 
@@ -212,9 +203,9 @@ const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
     [],
     [
       h.p([], [`Count: ${model.count}`]),
-      h.button([h.OnClick(ClickedIncrement())], ['Increment']),
+      h.button([h.OnClick(Message.ClickedIncrement())], ['Increment']),
       h.button(
-        [h.OnClick(ClickedToggleAutoCount())],
+        [h.OnClick(Message.ClickedToggleAutoCount())],
         [model.isAutoCounting ? 'Stop' : 'Auto-Count'],
       ),
     ],
@@ -287,10 +278,10 @@ The distinction is meaningful in React. `isAutoCounting` controls whether the ex
 The Foldkit version adds `step` to the Model and handles `ChangedStep`:
 
 ```
-import { Duration, Effect, Match as M, Schema as S, Stream } from 'effect'
-import { Command, Subscription } from 'foldkit'
+import { Duration, Effect, Schema as S, Stream } from 'effect'
+import { Subscription, type Update } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 const TICK_INTERVAL_MS = 1000
@@ -306,17 +297,12 @@ type Model = typeof Model.Type
 
 // MESSAGE
 
-const ClickedIncrement = m('ClickedIncrement')
-const ClickedToggleAutoCount = m('ClickedToggleAutoCount')
-const ChangedStep = m('ChangedStep', { step: S.Number })
-const Ticked = m('Ticked')
-
-const Message = S.Union([
-  ClickedIncrement,
-  ClickedToggleAutoCount,
-  ChangedStep,
-  Ticked,
-])
+const Message = defineMessageUnion({
+  ClickedIncrement: {},
+  ClickedToggleAutoCount: {},
+  ChangedStep: { step: S.Number },
+  Ticked: {},
+})
 type Message = typeof Message.Type
 
 // SUBSCRIPTION
@@ -331,7 +317,7 @@ const subscriptions = Subscription.make<Model, Message>()(entry => ({
       dependenciesToStream: ({ isAutoCounting }) =>
         Stream.when(
           Stream.tick(Duration.millis(TICK_INTERVAL_MS)).pipe(
-            Stream.map(Ticked),
+            Stream.map(Message.Ticked),
           ),
           Effect.sync(() => isAutoCounting),
         ),
@@ -341,27 +327,21 @@ const subscriptions = Subscription.make<Model, Message>()(entry => ({
 
 // UPDATE
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
-const withUpdateReturn = M.withReturnType<UpdateReturn>()
-
-const update = (model: Model, message: Message): UpdateReturn =>
-  M.value(message).pipe(
-    withUpdateReturn,
-    M.tagsExhaustive({
-      ClickedIncrement: () => [
-        evo(model, { count: count => count + model.step }),
-        [],
-      ],
-      ClickedToggleAutoCount: () => [
-        evo(model, {
-          isAutoCounting: isAutoCounting => !isAutoCounting,
-        }),
-        [],
-      ],
-      ChangedStep: ({ step }) => [evo(model, { step: () => step }), []],
-      Ticked: () => [evo(model, { count: count => count + model.step }), []],
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedIncrement: () => ({
+      model: evo(model, { count: count => count + model.step }),
     }),
-  )
+    ClickedToggleAutoCount: () => ({
+      model: evo(model, {
+        isAutoCounting: isAutoCounting => !isAutoCounting,
+      }),
+    }),
+    ChangedStep: ({ step }) => ({ model: evo(model, { step: () => step }) }),
+    Ticked: () => ({
+      model: evo(model, { count: count => count + model.step }),
+    }),
+  })
 
 // VIEW
 
@@ -375,12 +355,14 @@ const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
         [],
         [
           'Step: ',
-          h.input([h.OnInput(value => ChangedStep({ step: Number(value) }))]),
+          h.input([
+            h.OnInput(value => Message.ChangedStep({ step: Number(value) })),
+          ]),
         ],
       ),
-      h.button([h.OnClick(ClickedIncrement())], ['Increment']),
+      h.button([h.OnClick(Message.ClickedIncrement())], ['Increment']),
       h.button(
-        [h.OnClick(ClickedToggleAutoCount())],
+        [h.OnClick(Message.ClickedToggleAutoCount())],
         [model.isAutoCounting ? 'Stop' : 'Auto-Count'],
       ),
     ],

@@ -2,25 +2,59 @@
 url: https://foldkit.dev/api-reference/schema
 title: "Schema"
 description: "API documentation for the Schema module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Schema
 
 ## Functions
 
-### ts
+### defineTaggedUnion
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/schema/index.ts#L95)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/schema/index.ts#L410)
 
 ```
 /**
- * Wraps `Schema.TaggedStruct` to create a callable tagged struct you can call directly as a constructor.
- * Use `ts` for non-message, non-route tagged structs — enabling `Loading()`
- * instead of `Loading.make()`.
+ * Declares every variant of a domain union in one object. Use it for Model
+ * states, submission results, filter modes, and other unions that are not
+ * Messages or Routes.
+ * 
+ * The result is both a Schema and a namespace. It provides:
+ * 
+ * - One callable Schema constructor per variant.
+ * - `match` for exhaustive handling.
+ * - `guards` and `isAnyOf` for variant checks.
+ * - `subset` for a Schema that accepts only the named variants.
+ * - `members` for APIs such as `Machine.define` that enumerate the union.
+ * 
+ * Use `taggedStruct` when the variants cannot be declared together. Recursive
+ * unions and standalone tagged structs are the common cases.
+ * 
+ * A tag cannot use a name already owned by the union, such as `make`, `match`,
+ * `cases`, `ast`, `members`, or `subset`. TypeScript rejects these names, and
+ * untyped calls throw an error.
+ */
+<CasesByTag extends Record<string, Fields>>(casesByTag: CasesByTag & ValidateVariantNames<CasesByTag>): TaggedUnion<CasesByTag>
+```
+
+### taggedStruct
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/schema/index.ts#L487)
+
+```
+/**
+ * Declares one tagged struct as a callable Schema. Call `Loading()` instead of
+ * `Loading.make()`.
+ * 
+ * Prefer `defineTaggedUnion` when every variant can be declared together. Use
+ * `taggedStruct` for a recursive union, a union assembled across modules, a
+ * tagged child struct that is not a union variant, or a variant created inside
+ * a generic Schema factory.
  */
 <Tag extends string>(tag: Tag): CallableTaggedStruct<Tag, {}>
 
@@ -36,7 +70,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/schema/index.ts#L4)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/schema/index.ts#L4)
 
 ```
 /** A `TaggedStruct` schema that can be called directly as a constructor: `Foo({ count: 1 })` instead of `Foo.make({ count: 1 })`. */
@@ -47,4 +81,21 @@ type CallableTaggedStruct = S.TaggedStruct<Tag, Fields> & keyof Fields extends n
   : (value: Parameters<S.TaggedStruct<Tag, Fields>["make"]>[0]) => Types.Simplify<S.Struct.Type<{
     _tag: S.tag<Tag>
   } & Fields>>
+```
+
+### TaggedUnion
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/schema/index.ts#L260)
+
+```
+/**
+ * The Schema returned by `defineTaggedUnion`. It includes callable variant
+ * constructors, exhaustive `match`, `guards`, `isAnyOf`, `subset`, and
+ * `members`.
+ */
+type TaggedUnion = RichUnionSchema<CasesByTag> & {
+  readonly [Tag in keyof CasesByTag & string]: CallableTaggedStruct<Tag, CasesByTag[Tag]>
+}
 ```

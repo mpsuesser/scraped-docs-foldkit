@@ -2,33 +2,35 @@
 url: https://foldkit.dev/core/init-and-flags
 title: "Init & Flags"
 description: "Construct the first Model and startup Commands. Routing supplies the current URL, while Schema-validated Flags support fresh client boots and hydration."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## The First Model
 
-`init` constructs the first Model and returns any Commands that should run when the application starts. Its result has the same shape as update's result: `[Model, ReadonlyArray<Command<Message>>]`.
+`init` constructs the first Model and returns any Commands that should run when the application starts. It returns `Update.Return<Model, Message>`, the same type as update.
 
 The counter starts at zero and has no startup work:
 
 ```
 import { Schema as S } from 'effect'
 import type { Runtime } from 'foldkit'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 const Model = S.Struct({
   count: S.Number,
 })
 type Model = typeof Model.Type
 
-const ClickedIncrement = m('ClickedIncrement')
-const ClickedDecrement = m('ClickedDecrement')
-
-const Message = S.Union([ClickedIncrement, ClickedDecrement])
+const Message = defineMessageUnion({
+  ClickedIncrement: {},
+  ClickedDecrement: {},
+})
 type Message = typeof Message.Type
 
-const init: Runtime.ApplicationInit<Model, Message> = () => [{ count: 0 }, []]
+const init: Runtime.ApplicationInit<Model, Message> = () => ({
+  model: { count: 0 },
+})
 ```
 
 A non-routing application or element calls `init` with no arguments. A routing application passes the current URL, so its first Model can reflect the route. When the application declares Flags, they become the first argument in either form.
@@ -53,6 +55,8 @@ const Todo = S.Struct({
 
 const Todos = S.Array(Todo)
 
+const TodosJsonString = S.fromJsonString(S.toCodecJson(Todos))
+
 const Flags = S.Struct({
   todos: S.Option(Todos),
 })
@@ -65,7 +69,7 @@ const flags: Effect.Effect<Flags> = Effect.gen(function* () {
     Option.fromNullishOr(yield* store.get('todos')),
   )
 
-  const decodeTodos = S.decodeEffect(S.fromJsonString(Todos))
+  const decodeTodos = S.decodeEffect(TodosJsonString)
   const todos = yield* decodeTodos(todosJson)
 
   return Flags.make({ todos: Option.some(todos) })
@@ -80,7 +84,7 @@ const flags: Effect.Effect<Flags> = Effect.gen(function* () {
 ```
 import { Option, Schema as S } from 'effect'
 import type { Runtime } from 'foldkit'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 const Model = S.Struct({
   count: S.Number,
@@ -93,17 +97,17 @@ const Flags = S.Struct({
 })
 type Flags = typeof Flags.Type
 
-const ClickedIncrement = m('ClickedIncrement')
-const Message = S.Union([ClickedIncrement])
+const Message = defineMessageUnion({
+  ClickedIncrement: {},
+})
 type Message = typeof Message.Type
 
-const init: Runtime.ApplicationInit<Model, Message, Flags> = flags => [
-  {
+const init: Runtime.ApplicationInit<Model, Message, Flags> = flags => ({
+  model: {
     count: Option.getOrElse(flags.savedCount, () => 0),
     startingCount: flags.savedCount,
   },
-  [],
-]
+})
 ```
 
 ### Fresh Client Boot

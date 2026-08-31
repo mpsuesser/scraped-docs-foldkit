@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-date-picker
 title: "Ui/DatePicker"
 description: "API documentation for the Ui/DatePicker module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Ui/DatePicker
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L299)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L224)
 
 ```
 /** Programmatically clears the selected date. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L292)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L216)
 
 ```
 /** Programmatically closes the date picker. Use this in domain-event handlers. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L123)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L80)
 
 ```
 /**
@@ -54,12 +54,12 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L289)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L212)
 
 ```
 /**
- * Programmatically opens the date picker, updating the model and returning
- * focus and popover commands. Use this in domain-event handlers.
+ * Programmatically opens the DatePicker, updating the Model and returning
+ *  focus and Popover Commands. Use this in domain-event handlers.
  */
 (model: DatePicker.Model): UpdateReturn
 ```
@@ -68,7 +68,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L295)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L220)
 
 ```
 /** Programmatically selects a date, committing it and closing the popover. Emits a `SelectedDate` OutMessage just like a user-initiated selection. */
@@ -86,7 +86,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L390)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L316)
 
 ```
 /**
@@ -103,7 +103,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L244)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L193)
 
 ## Types
 
@@ -111,7 +111,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L105)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L62)
 
 ```
 /** Configuration for creating a date picker model with `init`. */
@@ -132,16 +132,16 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L402)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L328)
 
 ```
 /**
  * Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field.
  * 
  *  The DatePicker emits a `SelectedDate({ date })` OutMessage when the
- *  user commits a date. Consumers pattern-match this in their
- *  `GotDatePickerMessage` handler (third tuple element of
- *  `DatePicker.update`'s return) to lift the date into domain state.
+ *  user commits a date. Handle it in the `foldOutMessage` of the
+ *  DatePicker's `Update.foldChild` config to lift the date into domain
+ *  state.
  */
 type ViewInputs = Readonly<{
   anchor: AnchorConfig
@@ -165,147 +165,99 @@ type ViewInputs = Readonly<{
 
 ## Constants
 
-### ChangedViewMonth
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L78)
-
-```
-/**
- * Emitted when the visible month changes (propagated from the embedded
- * Calendar). Useful for month-scoped data loading.
- */
-const ChangedViewMonth: CallableTaggedStruct<"ChangedViewMonth", {
-  month: Int
-  year: Int
-}>
-```
-
-### Cleared
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L46)
-
-```
-/** Sent when the user clears the selected date. Does not close the popover. */
-const Cleared: CallableTaggedStruct<"Cleared", {}>
-```
-
-### ClearedDate
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L92)
-
-```
-/**
- * Emitted when the user clears the selected date. The parent clears its own
- * value field.
- */
-const ClearedDate: CallableTaggedStruct<"ClearedDate", {}>
-```
-
-### Closed
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L52)
-
-```
-/**
- * Sent when the popover should close. Delegates to Popover which returns
- * focus to the trigger button.
- */
-const Closed: CallableTaggedStruct<"Closed", {}>
-```
-
-### GotCalendarMessage
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L33)
-
-```
-/** Wraps a Calendar submodel message for delegation. */
-const GotCalendarMessage: CallableTaggedStruct<"GotCalendarMessage", {
-  message: Union<readonly [
-    CallableTaggedStruct<"ClickedDay", {
-      date: Struct<{
-        day: Int
-        month: Int
-        year: Int
-      }>
-    }>,
-    CallableTaggedStruct<"PressedKeyOnGrid", {
-      isShift: Boolean
-      key: String
-    }>,
-    CallableTaggedStruct<"ClickedPreviousMonthButton", {}>,
-    CallableTaggedStruct<"ClickedNextMonthButton", {}>,
-    CallableTaggedStruct<"ClickedHeading", {}>,
-    CallableTaggedStruct<"SelectedMonth", {
-      month: Int
-    }>,
-    CallableTaggedStruct<"SelectedYear", {
-      year: Int
-    }>,
-    CallableTaggedStruct<"PagedYears", {
-      direction: Literals<readonly [1, -1]>
-    }>,
-    CallableTaggedStruct<"FocusedGrid", {}>,
-    CallableTaggedStruct<"BlurredGrid", {}>,
-    CallableTaggedStruct<"RefreshedToday", {
-      today: Struct<{
-        day: Int
-        month: Int
-        year: Int
-      }>
-    }>,
-    CallableTaggedStruct<"CompletedFocusGrid", {}>
-  ]>
-}>
-```
-
-### GotPopoverMessage
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L37)
-
-```
-/** Wraps a Popover submodel message for delegation. */
-const GotPopoverMessage: CallableTaggedStruct<"GotPopoverMessage", {
-  message: Union<[
-    CallableTaggedStruct<"RequestedOpen", {}>,
-    CallableTaggedStruct<"RequestedClose", {}>,
-    CallableTaggedStruct<"BlurredPanel", {}>,
-    CallableTaggedStruct<"PressedPointerOnButton", {
-      button: Number
-      pointerType: String
-    }>,
-    CallableTaggedStruct<"CompletedFocusPanel", {}>
-  ]>
-}>
-```
-
 ### Message
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L55)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L32)
 
 ```
 /** Union of all messages the date picker component can produce. */
-const Message: S.Union<[typeof GotCalendarMessage, typeof GotPopoverMessage, typeof RequestedSelectDate, typeof Cleared, typeof Opened, typeof Closed]>
+const Message: MessageUnion<{
+  Cleared: {}
+  Closed: {}
+  GotCalendarMessage: {
+    message: MessageUnion<{
+      BlurredGrid: {}
+      ClickedDay: {
+        date: Struct<{
+          day: Int
+          month: Int
+          year: Int
+        }>
+      }
+      ClickedHeading: {}
+      ClickedNextMonthButton: {}
+      ClickedPreviousMonthButton: {}
+      CompletedFocusGrid: {}
+      FocusedGrid: {}
+      PagedYears: {
+        direction: Literals<readonly [1, -1]>
+      }
+      PressedKeyOnGrid: {
+        isShift: Boolean
+        key: String
+      }
+      RefreshedToday: {
+        today: Struct<{
+          day: Int
+          month: Int
+          year: Int
+        }>
+      }
+      SelectedMonth: {
+        month: Int
+      }
+      SelectedYear: {
+        year: Int
+      }
+    }>
+  }
+  GotPopoverMessage: {
+    message: MessageUnion<{
+      BlurredPanel: {}
+      CompletedAnchorPopover: {}
+      CompletedFocusButton: {}
+      CompletedFocusPanel: {}
+      CompletedInertOthers: {}
+      CompletedLockScroll: {}
+      CompletedPortalPopoverBackdrop: {}
+      CompletedRestoreInert: {}
+      CompletedUnlockScroll: {}
+      GotAnimationMessage: {
+        message: MessageUnion<{
+          CompletedWaitForPaint: {}
+          EndedAnimation: {}
+          Hid: {}
+          Showed: {}
+        }>
+      }
+      IgnoredMouseClick: {}
+      PressedPointerOnButton: {
+        button: Number
+        pointerType: String
+      }
+      RequestedClose: {}
+      RequestedOpen: {}
+      SuppressedSpaceScroll: {}
+    }>
+  }
+  Opened: {}
+  RequestedSelectDate: {
+    date: Struct<{
+      day: Int
+      month: Int
+      year: Int
+    }>
+  }
+}>
 ```
 
 ### Model
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L23)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L22)
 
 ```
 /**
@@ -373,82 +325,27 @@ const Model: Struct<{
 }>
 ```
 
-### Opened
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L49)
-
-```
-/**
- * Sent when the popover should open. Triggers focus-grid on the embedded
- * Calendar so keyboard focus lands inside the grid instead of the panel.
- */
-const Opened: CallableTaggedStruct<"Opened", {}>
-```
-
 ### OutMessage
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L95)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L45)
 
 ```
 /** Union of out-messages the date picker can produce. */
-const OutMessage: Union<readonly [
-  CallableTaggedStruct<"ChangedViewMonth", {
+const OutMessage: MessageUnion<{
+  ChangedViewMonth: {
     month: Int
     year: Int
-  }>,
-  CallableTaggedStruct<"SelectedDate", {
+  }
+  ClearedDate: {}
+  SelectedDate: {
     date: Struct<{
       day: Int
       month: Int
       year: Int
     }>
-  }>,
-  CallableTaggedStruct<"ClearedDate", {}>
-]>
-```
-
-### RequestedSelectDate
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L42)
-
-```
-/**
- * Sent when the user commits a date via click or keyboard. Updates the
- * selected date, syncs the calendar, and closes the popover.
- */
-const RequestedSelectDate: CallableTaggedStruct<"RequestedSelectDate", {
-  date: Struct<{
-    day: Int
-    month: Int
-    year: Int
-  }>
-}>
-```
-
-### SelectedDate
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L86)
-
-```
-/**
- * Emitted when the user commits a date selection (propagated from the
- * embedded Calendar). The popover has already closed; the parent stores the
- * committed date and passes it back in as `maybeSelectedDate`.
- */
-const SelectedDate: CallableTaggedStruct<"SelectedDate", {
-  date: Struct<{
-    day: Int
-    month: Int
-    year: Int
-  }>
+  }
 }>
 ```
 
@@ -456,7 +353,7 @@ const SelectedDate: CallableTaggedStruct<"SelectedDate", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L306)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L232)
 
 ```
 /**
@@ -464,7 +361,7 @@ const
  *  the selection (which the parent owns). Use it to navigate the picker onto a
  *  known date, for example after the parent sets its value externally (a URL
  *  parameter, a saved draft) so opening the picker shows that month. Returns
- *  the model directly because it produces no commands and no OutMessage.
+ *  the Model directly because it produces no Commands and no OutMessage.
  */
 const focusDate: Reflect<Model, CalendarDate>
 ```
@@ -473,7 +370,7 @@ const focusDate: Reflect<Model, CalendarDate>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L350)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L276)
 
 ```
 /**
@@ -488,7 +385,7 @@ const reflectDisabledDates: Reflect<Model, ReadonlyArray<CalendarDate>>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L365)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L291)
 
 ```
 /**
@@ -503,7 +400,7 @@ const reflectDisabledDaysOfWeek: Reflect<Model, ReadonlyArray<Calendar.DayOfWeek
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L336)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L262)
 
 ```
 /**
@@ -518,7 +415,7 @@ const reflectMaxDate: Reflect<Model, Option.Option<CalendarDate>>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L322)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L248)
 
 ```
 /**
@@ -538,7 +435,7 @@ const reflectMinDate: Reflect<Model, Option.Option<CalendarDate>>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/datePicker/index.ts#L437)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/datePicker/index.ts#L363)
 
 ```
 /**

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/counter
 title: "Counter"
 description: "The classic counter example. Increment, decrement, and reset a number."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -21,10 +21,10 @@ State
 /
 
 ```
-import { Match as M, Schema as S } from 'effect'
-import { Command, Runtime } from 'foldkit'
+import { Schema as S } from 'effect'
+import { Runtime, type Update } from 'foldkit'
 import { Document, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Button } from '@foldkit/ui'
@@ -36,40 +36,31 @@ export type Model = typeof Model.Type
 
 // MESSAGE
 
-export const ClickedDecrement = m('ClickedDecrement')
-export const ClickedIncrement = m('ClickedIncrement')
-export const ClickedReset = m('ClickedReset')
-
-export const Message = S.Union([
-  ClickedDecrement,
-  ClickedIncrement,
-  ClickedReset,
-])
+export const Message = defineMessageUnion({
+  ClickedDecrement: {},
+  ClickedIncrement: {},
+  ClickedReset: {},
+})
 export type Message = typeof Message.Type
 
 // UPDATE
 
-export const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.withReturnType<
-      readonly [Model, ReadonlyArray<Command.Command<Message>>]
-    >(),
-    M.tagsExhaustive({
-      ClickedDecrement: () => [evo(model, { count: count => count - 1 }), []],
-      ClickedIncrement: () => [evo(model, { count: count => count + 1 }), []],
-      ClickedReset: () => [evo(model, { count: () => 0 }), []],
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedDecrement: () => ({
+      model: evo(model, { count: count => count - 1 }),
     }),
-  )
+    ClickedIncrement: () => ({
+      model: evo(model, { count: count => count + 1 }),
+    }),
+    ClickedReset: () => ({ model: evo(model, { count: () => 0 }) }),
+  })
 
 // INIT
 
-export const init: Runtime.ApplicationInit<Model, Message> = () => [
-  { count: 0 },
-  [],
-]
+export const init: Runtime.ApplicationInit<Model, Message> = () => ({
+  model: { count: 0 },
+})
 
 // VIEW
 
@@ -91,7 +82,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
         [
           Button.view(
             {
-              onClick: ClickedDecrement(),
+              onClick: Message.ClickedDecrement(),
               toView: attributes =>
                 h.button([...attributes.button, h.Class(buttonStyle)], ['-']),
             },
@@ -99,7 +90,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
           ),
           Button.view(
             {
-              onClick: ClickedReset(),
+              onClick: Message.ClickedReset(),
               toView: attributes =>
                 h.button(
                   [...attributes.button, h.Class(buttonStyle)],
@@ -110,7 +101,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
           ),
           Button.view(
             {
-              onClick: ClickedIncrement(),
+              onClick: Message.ClickedIncrement(),
               toView: attributes =>
                 h.button([...attributes.button, h.Class(buttonStyle)], ['+']),
             },

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/toast
 title: "Toast"
 description: "Stack of transient notifications anchored to a corner of the viewport with per-entry enter/leave animations and auto-dismiss."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Overview
@@ -27,9 +27,9 @@ No toasts dismissed yet
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
 import { Match as M, Option, Schema as S } from 'effect'
-import { Command, Update } from 'foldkit'
+import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Toast as UiToast } from '@foldkit/ui'
@@ -55,21 +55,24 @@ const Model = S.Struct({
   maybeLastDismissedBody: S.Option(S.String),
   // ...your other fields
 })
+type Model = typeof Model.Type
 
 // In your init function, initialize it:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     toast: Toast.init({ id: 'app-toast' }),
     maybeLastDismissedBody: Option.none(),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Embed the Toast Message in your parent Message, plus any domain Messages
 // that should push a toast:
-const GotToastMessage = m('GotToastMessage', { message: Toast.Message })
-const ClickedSave = m('ClickedSave')
+const Message = defineMessageUnion({
+  GotToastMessage: { message: Toast.Message },
+  ClickedSave: {},
+})
+type Message = typeof Message.Type
 
 // At module scope, fold the OutMessage into your own Model, lifting the
 // DismissedToast event into domain state. The arm returns an Update.Step over
@@ -79,12 +82,11 @@ const foldToastOutMessage = M.type<typeof Toast.OutMessage.Type>().pipe(
   M.tagsExhaustive({
     DismissedToast:
       ({ payload }) =>
-      model => [
-        evo(model, {
+      model => ({
+        model: evo(model, {
           maybeLastDismissedBody: () => Option.some(payload.bodyText),
         }),
-        [],
-      ],
+      }),
   }),
 )
 
@@ -96,15 +98,23 @@ const foldToast = Update.foldChild({
   update: Toast.update,
   read: (model: Model) => Option.some(model.toast),
   write: (model, nextToast) => evo(model, { toast: () => nextToast }),
-  toParentMessage: message => GotToastMessage({ message }),
+  toParentMessage: message => Message.GotToastMessage({ message }),
   foldOutMessage: foldToastOutMessage,
 })
 
-// Inside your update's M.tagsExhaustive({...}), call the fold:
+const foldToastShow = Update.foldChild({
+  update: Toast.show,
+  read: (model: Model) => Option.some(model.toast),
+  write: (model, nextToast) => evo(model, { toast: () => nextToast }),
+  toParentMessage: message => Message.GotToastMessage({ message }),
+  foldOutMessage: foldToastOutMessage,
+})
+
+// In the corresponding Message.match handler, call the fold:
 GotToastMessage: ({ message }) => foldToast(model, message)
 
-ClickedSave: () => {
-  const [nextToast, commands] = Toast.show(model.toast, {
+ClickedSave: () =>
+  foldToastShow(model, {
     variant: 'Success',
     payload: {
       bodyText: 'Changes saved',
@@ -114,12 +124,6 @@ ClickedSave: () => {
       maybeLink: Option.some({ href: changesRouter(), text: 'View' }),
     },
   })
-
-  return [
-    evo(model, { toast: () => nextToast }),
-    Command.mapMessages(commands, message => GotToastMessage({ message })),
-  ]
-}
 
 // In your view, embed Toast via h.submodel once at the app root. The
 // entryToView callback lays out each entry from its payload. The
@@ -160,7 +164,7 @@ const view = (h: HtmlBuilder<Message>) =>
           ],
         ),
     },
-    toParentMessage: message => GotToastMessage({ message }),
+    toParentMessage: message => Message.GotToastMessage({ message }),
   })
 ```
 
@@ -220,18 +224,18 @@ Configuration object passed to `Toast.view()`.
 
 ### Programmatic Helpers
 
-Helper functions for driving toasts from parent update handlers, returning `[Model, Commands]`.
+Toast helpers are child entry points. Fold `show` and `dismiss` with `Update.foldChild` because they take additional input. Fold `dismissAll` with `Update.foldChildStep`.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `show` | `(model: Model, input: ShowInput) => [Model, Commands]` | — | Adds a new toast entry. Call this from any parent update handler that needs to surface a notification. Returns the next model plus commands for the enter animation and the auto-dismiss timer. |
-| `dismiss` | `(model: Model, entryId: string) => [Model, Commands]` | — | Begins dismissing a specific entry. Safe to call for an entry that is already leaving or has been removed. |
-| `dismissAll` | `(model: Model) => [Model, Commands]` | — | Begins dismissing every currently-visible entry. |
+| `show` | `(model: Model, input: ShowInput) => Update.ReturnWithOutMessage<Model, Message, OutMessage>` | — | Adds a new toast entry. Fold it from any parent handler that needs to surface a notification. Returns the next Model plus Commands for the enter animation and the auto-dismiss timer. |
+| `dismiss` | `(model: Model, entryId: string) => Update.ReturnWithOutMessage<Model, Message, OutMessage>` | — | Begins dismissing a specific entry. Calling it for an entry that is already leaving or has been removed is a no-op. |
+| `dismissAll` | `(model: Model) => Update.ReturnWithOutMessage<Model, Message, OutMessage>` | — | Begins dismissing every currently-visible entry. |
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
+Messages emitted to the parent through the optional `outMessage` field. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `DismissedToast` | `{ payload: Payload }` | — | Emitted once an entry has finished its leave animation and is being removed from the model. Carries the toast’s payload typed as your `Payload` schema. Fold it in the `foldOutMessage` of your Toast fold to lift the dismissal into domain state (e.g., resolving a pending action or firing analytics). Only fires after `TransitionedOut`, so it represents the actual removal, not the initial dismiss request. |
+| `DismissedToast` | `{ payload: Payload }` | — | Emitted once an entry has finished its leave animation and is being removed from the Model. Carries the toast's payload typed as your `Payload` Schema. Fold it in the `foldOutMessage` of your Toast fold to lift the dismissal into domain state, for example to resolve a pending action or fire analytics. It fires only after `TransitionedOut`, so it represents the actual removal, not the initial dismiss request. |

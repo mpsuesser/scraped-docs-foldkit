@@ -2,8 +2,8 @@
 url: https://foldkit.dev/faq/performance
 title: "Performance"
 description: "Foldkit’s rendering cost model, TodoMVC benchmark results, development-mode overhead, and the tools for measuring and memoizing expensive views."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Performance
@@ -29,15 +29,15 @@ The cost model above puts the cost of a Message on your `update` logic. What the
 
 - `Update.foldChild` adds a function call and an arity check over the wiring you would otherwise write by hand. Inside, it does exactly what the hand-written handler does: read the child out of the Model, run its update, write it back, and lift the child’s Commands through `toParentMessage`.
 - `evo` is Effect’s `Struct.evolve` at runtime; the wrapper adds key checking at the type level only. It walks the struct’s own enumerable keys once and applies a transform only where you provided one, copying everything else by reference. The cost is proportional to the Model’s top-level field count, the same as an object spread, and that reference preservation is what lets [createLazy](https://foldkit.dev/core/view-memoization) hit its `===` check.
-- `Match.tagsExhaustive` is the one whose cost scales with your app. The handler object and one closure per arm are allocated on every dispatch, and because the arms close over `model` they cannot be hoisted to module scope.
+- `Message.match` is the one whose cost scales with your app. It dispatches directly on `_tag`, but the handler object and one closure per arm are still allocated on every dispatch. Because the arms close over `model`, they cannot be hoisted to module scope.
 
-Keep `Match.tagsExhaustive` anyway. Its signature requires a handler for every tag in the union, so adding a Message variant fails to compile in every update that does not handle it. That is a correctness guarantee bought with short-lived allocations a young-generation collector does not notice, and an `if`/`else` chain on `_tag` gives it up. If a profile ever puts a genuinely hot update at the top, that trade is available, but it is the last change to reach for rather than the first.
+Keep `Message.match` anyway. Its signature requires a handler for every tag in the union, so adding a Message variant fails to compile in every update that does not handle it. It also avoids the matcher pipeline that Effect `Match` builds for more general pattern matching. An `if`/`else` chain on `_tag` gives up exhaustiveness for less allocation. If a profile ever puts a genuinely hot update at the top, that trade is available, but it is the last change to reach for rather than the first.
 
 ## Benchmarks
 
 Foldkit ships a TodoMVC implementation for the [lustre-labs/benchmark](https://github.com/lustre-labs/benchmark) harness, which drives each implementation through the same TodoMVC workload and required selectors (add 100 todos, toggle each one, destroy the first one 100 times). Same-batch timings are comparable because every implementation uses the same driver, runbook, and browser batch. Foldkit registers two slots: an unoptimized view that rebuilds the entire tree on every Message with no memoization, and an optimized view that adds `createLazy` slots for the header, the footer, the filters list, and the toggle-all controls, and `createKeyedLazy` per todo item. The Model and update logic are identical in both. The implementation lives [in the Foldkit repo](https://github.com/foldkit/foldkit/tree/main/internal/lustre-benchmark), so you can run the comparison yourself.
 
-These cover every current-version framework variant in the harness plus Foldkit’s two current development slots; the legacy Lustre 4 and older Foldkit slots are excluded. The medians come from fifteen interleaved runs in one position-balanced batch, so every implementation occupied every ordinal run position once. The batch used harness commit 03fff17 and Chromium 149.0.7827.55. The relative column divides each displayed median by the fastest median from that same batch. A parenthesized label appears only where the harness registers both a baseline and a memoized slot. Solid and Alpine drive the DOM without a diff to skip, so each registers one implementation and its row carries a bare name. Absolute times depend on hardware and browser conditions; the same-run relationships are the result to compare.
+These cover every current-version framework variant in the harness plus Foldkit’s two current development slots; the legacy Lustre 4 and older Foldkit slots are excluded. The medians come from fifteen interleaved runs in one position-balanced batch, so every implementation occupied every ordinal run position once. The batch used harness commit 03fff17 and Chromium 152.0.7977.65. The relative column divides each displayed median by the fastest median from that same batch. A parenthesized label appears only where the harness registers both a baseline and a memoized slot. Solid and Alpine drive the DOM without a diff to skip, so each registers one implementation and its row carries a bare name. Absolute times depend on hardware and browser conditions; the same-run relationships are the result to compare.
 
 Implementation
 
@@ -47,99 +47,99 @@ Relative to fastest
 
 Svelte (optimized)
 
-59.2ms
+104.5ms
 
 1.00×
 
 Gren (optimized)
 
-70.6ms
+114.3ms
 
-1.19×
+1.09×
 
 Elm (optimized)
 
-72.7ms
+116.3ms
 
-1.23×
+1.11×
 
 Svelte (unoptimized)
 
-79.1ms
+156.2ms
 
-1.34×
-
-Solid
-
-86.7ms
-
-1.46×
+1.49×
 
 Lustre 5 (optimized)
 
-97.1ms
+192.8ms
 
-1.64×
+1.84×
+
+Solid
+
+192.9ms
+
+1.85×
 
 Foldkit (optimized)
 
-119.3ms
+210.0ms
 
-2.02×
+2.01×
 
 Vue (unoptimized)
 
-134.2ms
+270.6ms
 
-2.27×
+2.59×
 
 React 19 (optimized)
 
-136.1ms
+279.1ms
 
-2.30×
+2.67×
 
 Gren (unoptimized)
 
-159.3ms
+306.4ms
 
-2.69×
+2.93×
 
 Elm (unoptimized)
 
-161.4ms
+309.1ms
 
-2.73×
+2.96×
 
 Lustre 5 (unoptimized)
 
-169.0ms
+405.2ms
 
-2.85×
+3.88×
 
 React 19 (unoptimized)
 
-198.9ms
+503.8ms
 
-3.36×
+4.82×
 
 Alpine
 
-258.1ms
+540.3ms
 
-4.36×
+5.17×
 
 Foldkit (unoptimized)
 
-352.9ms
+614.0ms
 
-5.96×
+5.88×
 
 ### Reading the numbers
 
-Foldkit optimized ranks seventh of fifteen in this batch. It takes 2.02 times the fastest row, about 1.23 times optimized Lustre’s time, and 1.38 times Solid’s. Vue takes about 1.12 times Foldkit’s time, while optimized React takes about 1.14 times Foldkit’s. Per-bucket attribution puts the remaining distance in view and patch work inside animation frames rather than Message dispatch.
+Foldkit optimized ranks seventh of fifteen in this batch. It takes 2.01 times the fastest row, about 1.09 times optimized Lustre’s time, and 1.09 times Solid’s. Vue takes about 1.29 times Foldkit’s time, while optimized React takes about 1.33 times Foldkit’s. Per-bucket attribution puts the remaining distance in view and patch work inside animation frames rather than Message dispatch.
 
-Elm is the proof of what this architecture can do. Elm renders a pure view into a virtual DOM with lazy memoization, exactly Foldkit’s design, and sits near the batch leaders at 1.23 times the fastest row. Foldkit takes 1.64 times Elm’s time. That distance is runtime implementation, not architecture, which is why optimization work targets the runtime and owned differ rather than replacing the rendering model.
+Elm is the proof of what this architecture can do. Elm renders a pure view into a virtual DOM with lazy memoization, exactly Foldkit’s design, and sits near the batch leaders at 1.11 times the fastest row. Foldkit takes 1.81 times Elm’s time. That distance is runtime implementation, not architecture, which is why optimization work targets runtime hot paths rather than replacing the rendering model.
 
 ## Development mode is not production
 

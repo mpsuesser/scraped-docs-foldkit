@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/model
 title: "Model"
 description: "Define application state as one Schema-backed Model. Foldkit uses its runtime Schema to preserve state across hot updates and validate unknown data."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Model
@@ -30,6 +30,46 @@ type Model = typeof Model.Type
 `S.Struct` creates the runtime Schema. `typeof Model.Type` derives the TypeScript type from that same definition, so the runtime and compiler agree on the Model’s shape.
 
 That runtime value matters because TypeScript types disappear after compilation. Foldkit uses the Model Schema to encode and decode state preserved across hot updates. The same Schema can validate unknown data at application boundaries.
+
+## State with Variants
+
+Use `defineTaggedUnion` when a Model field can have several named shapes. Declare every variant together, then construct and match values through the union:
+
+```
+import { Schema as S } from 'effect'
+import { defineTaggedUnion } from 'foldkit/schema'
+
+const EditorMode = defineTaggedUnion({
+  Browsing: {},
+  Editing: { noteId: S.String },
+  Previewing: { noteId: S.String },
+})
+type EditorMode = typeof EditorMode.Type
+
+const Model = S.Struct({
+  editorMode: EditorMode,
+})
+type Model = typeof Model.Type
+
+const init = (): Model => ({
+  editorMode: EditorMode.Browsing(),
+})
+
+const modeLabel = (mode: EditorMode): string =>
+  EditorMode.match(mode, {
+    Browsing: () => 'Browsing notes',
+    Editing: ({ noteId }) => `Editing ${noteId}`,
+    Previewing: ({ noteId }) => `Previewing ${noteId}`,
+  })
+```
+
+`EditorMode` is the Schema stored in `Model` and the namespace used to construct values such as `EditorMode.Browsing()`. Its `match` method requires every variant to be handled. If you add another editor mode, TypeScript finds each match that needs a new branch.
+
+Use `EditorMode.guards.Editing` to check one variant and `EditorMode.isAnyOf(['Editing', 'Previewing'])` to check several.
+
+When another Schema accepts only some editor modes, build it with `EditorMode.subset(['Editing', 'Previewing'])`. `subset` includes only the tags you name. If you add another mode later, the smaller Schema will not accept it until you add its tag. There is no `omit`: an exclusion list would silently accept every mode added later.
+
+Use `taggedStruct` only when the variants cannot be declared together. Recursive unions and standalone tagged structs are the common cases.
 
 The counter starts with one field. When automatic counting becomes part of the application state, the Model grows to record it:
 

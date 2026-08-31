@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/custom-element
 title: "CustomElement"
 description: "API documentation for the CustomElement module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # CustomElement
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/customElement/index.ts#L179)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/customElement/index.ts#L187)
 
 ```
 /**
@@ -35,7 +35,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/customElement/index.ts#L90)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/customElement/index.ts#L98)
 
 ```
 /**
@@ -52,15 +52,18 @@ type Builder = Spec extends CustomElementSpec<string, infer Properties, infer Ev
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/customElement/index.ts#L46)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/customElement/index.ts#L54)
 
 ```
 /**
  * Typed call site for a defined custom element. The element constructor
  *  itself is callable; each declared property gets a PascalCase factory
  *  method, and each declared event gets an `On{PascalCase}` factory method.
+ *  The attribute array accepts ChildAttribute alongside
+ *  `Attribute<Message>`, like every html element builder, so a Submodel's
+ *  published attribute groups can be spread into a custom element.
  */
-type ElementBuilder = (attributes?: ReadonlyArray<Attribute<Message>>, children?: ReadonlyArray<Child>) => Html & PropertyFactories<Message, Properties> & EventFactories<Message, Events>
+type ElementBuilder = (attributes?: ReadonlyArray<Attribute<Message> | ChildAttribute>, children?: ReadonlyArray<Child>) => Html & PropertyFactories<Message, Properties> & EventFactories<Message, Events>
 ```
 
 ## Interfaces
@@ -69,7 +72,7 @@ type ElementBuilder = (attributes?: ReadonlyArray<Attribute<Message>>, children?
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/customElement/index.ts#L58)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/customElement/index.ts#L66)
 
 ```
 /** Configuration accepted by `CustomElement.define`. */
@@ -84,7 +87,7 @@ interface CustomElementConfig {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/customElement/index.ts#L74)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/customElement/index.ts#L82)
 
 ```
 /**

@@ -2,15 +2,15 @@
 url: https://foldkit.dev/ui/drag-and-drop
 title: "Drag and Drop"
 description: "Accessible drag and drop with keyboard support, auto-scrolling, and screen reader announcements."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Overview
 
 Sortable lists and cross-container movement with pointer tracking, keyboard navigation, collision detection, auto-scrolling, and screen reader announcements.
 
-DragAndDrop is different from other Foldkit UI components in two ways. First, it doesn’t have a `view()` function. Instead, you spread `draggable()` and `droppable()` attributes onto your own elements. Second, its update function returns a three-tuple: `[Model, Commands, Option<OutMessage>]`. You handle `Reordered` and `Cancelled` OutMessages to decide how to reorder your data.
+DragAndDrop is different from other Foldkit UI components in two ways. First, it doesn’t have a `view()` function. Instead, you spread `draggable()` and `droppable()` attributes onto your own elements. Second, its update function can return `Reordered` and `Cancelled` through the optional `outMessage` field. You handle those OutMessages to decide how to reorder your data.
 
 Integration requires four pieces: a `DragAndDrop.Model` field in your Model, an [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) fold with a `foldOutMessage`, `DragAndDrop.subscriptions` for document-level pointer and keyboard listeners, and `draggable()` / `droppable()` attributes in your view.
 
@@ -32,10 +32,10 @@ Done
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit each into your own Model, init, Message,
 // update, subscriptions, and view definitions.
-import { Effect, Match as M, Option } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Subscription, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { DragAndDrop } from '@foldkit/ui'
@@ -48,8 +48,8 @@ const Model = S.Struct({
 })
 
 // In your init function, initialize the DragAndDrop Submodel with a unique id:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     items: [
       { id: '1', label: 'First' },
       { id: '2', label: 'Second' },
@@ -58,12 +58,11 @@ const init = () => [
     dragAndDrop: DragAndDrop.init({ id: 'sortable-list' }),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Embed the DragAndDrop Message in your parent Message:
-const GotDragAndDropMessage = m('GotDragAndDropMessage', {
-  message: DragAndDrop.Message,
+const Message = defineMessageUnion({
+  GotDragAndDropMessage: { message: DragAndDrop.Message },
 })
 
 // At module scope, fold the OutMessage into your own Model. \`Reordered\`
@@ -75,17 +74,16 @@ const foldDragAndDropOutMessage = M.type<DragAndDrop.OutMessage>().pipe(
   M.tagsExhaustive({
     Reordered:
       ({ itemId, fromIndex, toIndex }) =>
-      model => [
-        evo(model, {
+      model => ({
+        model: evo(model, {
           // reorder is your own function that moves the item
           items: () => reorder(model.items, itemId, fromIndex, toIndex),
         }),
-        [],
-      ],
+      }),
     // The child has emitted \`Cancelled\`. In this arm the parent can update
     // its own state or dispatch its own Commands, for example revert an
     // optimistic UI change, log analytics, or trigger a downstream Command.
-    Cancelled: () => model => [model, []],
+    Cancelled: () => model => ({ model }),
   }),
 )
 
@@ -98,11 +96,11 @@ const foldDragAndDrop = Update.foldChild({
   read: (model: Model) => Option.some(model.dragAndDrop),
   write: (model, nextDragAndDrop) =>
     evo(model, { dragAndDrop: () => nextDragAndDrop }),
-  toParentMessage: message => GotDragAndDropMessage({ message }),
+  toParentMessage: message => Message.GotDragAndDropMessage({ message }),
   foldOutMessage: foldDragAndDropOutMessage,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), call the fold:
+// In the corresponding Message.match handler, call the fold:
 GotDragAndDropMessage: ({ message }) => foldDragAndDrop(model, message)
 
 // In your subscriptions, lift all four document-level listeners through
@@ -114,7 +112,7 @@ const dragAndDropSubscriptions = Subscription.lift({
   autoScroll: DragAndDrop.subscriptions.autoScroll,
 })<Model, Message>({
   toChildModel: model => model.dragAndDrop,
-  toParentMessage: message => GotDragAndDropMessage({ message }),
+  toParentMessage: message => Message.GotDragAndDropMessage({ message }),
 })
 
 const subscriptions = Subscription.aggregate<Model, Message>()(
@@ -136,7 +134,8 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
           ...DragAndDrop.draggable(
             {
               model: model.dragAndDrop,
-              toParentMessage: message => GotDragAndDropMessage({ message }),
+              toParentMessage: message =>
+                Message.GotDragAndDropMessage({ message }),
               itemId: item.id,
               containerId: 'list',
               index,
@@ -206,7 +205,7 @@ Functions for attaching drag-and-drop behavior to your elements and reading drag
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
+Messages emitted to the parent through the optional `outMessage` field. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |

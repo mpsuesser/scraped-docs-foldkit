@@ -2,17 +2,15 @@
 url: https://foldkit.dev/react/foldkit-vs-react-side-by-side
 title: "Foldkit vs React: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and React. Covers state management, side effects, testing, performance, and architectural tradeoffs."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
-
-# Foldkit vs React: Side by Side
 
 ## Overview
 
 This comparison uses the same [pixel art editor](https://foldkit.dev/example-apps/pixel-art) in Foldkit and React. Both versions include grid editing, undo and redo, brush, fill, and eraser tools, mirror modes, localStorage persistence, PNG export, keyboard shortcuts, accessible controls, and a 32×32 grid that makes rendering work visible.
 
-The React version uses React 19.2, `useReducer`, [Headless UI](https://headlessui.com), custom Hooks, and manual memoization. The Foldkit version uses a Model, Messages, update, Commands, Subscriptions, Foldkit UI Submodels, and view memoization.
+The React version uses React 19.2, `useReducer`, [Headless UI](https://headlessui.com/), custom Hooks, and manual memoization. The Foldkit version uses a Model, Messages, update, Commands, Subscriptions, Foldkit UI Submodels, and view memoization.
 
 This is a comparison of those two implementations. React applications can choose other state and effect architectures, and Foldkit applications can still be structured well or poorly within the framework’s constraints. The useful question is what each implementation makes explicit and what each framework makes unavoidable.
 
@@ -31,71 +29,33 @@ Start with the input domain for application state. Both versions define a discri
 The Foldkit application currently has 25 parent Messages:
 
 ```
-const PressedCell = m('PressedCell', { x: S.Number, y: S.Number })
-const EnteredCell = m('EnteredCell', { x: S.Number, y: S.Number })
-const LeftCanvas = m('LeftCanvas')
-const ReleasedMouse = m('ReleasedMouse')
-const SelectedColor = m('SelectedColor', { colorIndex: PaletteIndex })
-const SelectedTool = m('SelectedTool', { tool: Tool })
-const SelectedGridSize = m('SelectedGridSize', { size: S.Number })
-const ToggledMirrorHorizontal = m('ToggledMirrorHorizontal')
-const ToggledMirrorVertical = m('ToggledMirrorVertical')
-const ClickedUndo = m('ClickedUndo')
-const ClickedRedo = m('ClickedRedo')
-const ClickedHistoryStep = m('ClickedHistoryStep', { stepIndex: S.Number })
-const ClickedRedoStep = m('ClickedRedoStep', { stepIndex: S.Number })
-const ClickedClear = m('ClickedClear')
-const ClickedExport = m('ClickedExport')
-const SucceededExportPng = m('SucceededExportPng')
-const FailedExportPng = m('FailedExportPng', { error: S.String })
-const GotErrorDialogMessage = m('GotErrorDialogMessage', {
-  message: Dialog.Message,
+const Message = defineMessageUnion({
+  PressedCell: { x: S.Number, y: S.Number },
+  EnteredCell: { x: S.Number, y: S.Number },
+  LeftCanvas: {},
+  ReleasedMouse: {},
+  SelectedColor: { colorIndex: PaletteIndex },
+  SelectedTool: { tool: Tool },
+  SelectedGridSize: { size: S.Number },
+  ToggledMirrorHorizontal: {},
+  ToggledMirrorVertical: {},
+  ClickedUndo: {},
+  ClickedRedo: {},
+  ClickedHistoryStep: { stepIndex: S.Number },
+  ClickedRedoStep: { stepIndex: S.Number },
+  ClickedClear: {},
+  ClickedExport: {},
+  SucceededExportPng: {},
+  FailedExportPng: { error: S.String },
+  GotErrorDialogMessage: { message: Dialog.Message },
+  GotThemeListboxMessage: { message: Listbox.Message },
+  GotToolRadioGroupMessage: { message: RadioGroup.Message },
+  GotGridSizeRadioGroupMessage: { message: RadioGroup.Message },
+  GotPaletteRadioGroupMessage: { message: RadioGroup.Message },
+  ConfirmedGridSizeChange: {},
+  GotGridSizeConfirmDialogMessage: { message: Dialog.Message },
+  CompletedSaveCanvas: {},
 })
-const ConfirmedGridSizeChange = m('ConfirmedGridSizeChange')
-const GotGridSizeConfirmDialogMessage = m('GotGridSizeConfirmDialogMessage', {
-  message: Dialog.Message,
-})
-const GotThemeListboxMessage = m('GotThemeListboxMessage', {
-  message: Listbox.Message,
-})
-const GotToolRadioGroupMessage = m('GotToolRadioGroupMessage', {
-  message: RadioGroup.Message,
-})
-const GotGridSizeRadioGroupMessage = m('GotGridSizeRadioGroupMessage', {
-  message: RadioGroup.Message,
-})
-const GotPaletteRadioGroupMessage = m('GotPaletteRadioGroupMessage', {
-  message: RadioGroup.Message,
-})
-const CompletedSaveCanvas = m('CompletedSaveCanvas')
-
-const Message = S.Union([
-  PressedCell,
-  EnteredCell,
-  LeftCanvas,
-  ReleasedMouse,
-  SelectedColor,
-  SelectedTool,
-  SelectedGridSize,
-  ToggledMirrorHorizontal,
-  ToggledMirrorVertical,
-  ClickedUndo,
-  ClickedRedo,
-  ClickedHistoryStep,
-  ClickedRedoStep,
-  ClickedClear,
-  ClickedExport,
-  SucceededExportPng,
-  FailedExportPng,
-  GotErrorDialogMessage,
-  GotThemeListboxMessage,
-  GotToolRadioGroupMessage,
-  GotGridSizeRadioGroupMessage,
-  GotPaletteRadioGroupMessage,
-  ConfirmedGridSizeChange,
-  GotGridSizeConfirmDialogMessage,
-  CompletedSaveCanvas,
-])
 type Message = typeof Message.Type
 ```
 
@@ -235,8 +195,8 @@ The Foldkit entry point supplies the Runtime with the application definitions:
 ```
 // src/main.ts
 
-export const init: Runtime.ApplicationInit<Model, Message, Flags> = flags => [
-  {
+export const init: Runtime.ApplicationInit<Model, Message, Flags> = flags => ({
+  model: {
     grid: Option.match(flags.maybeSavedCanvas, {
       onNone: () => createEmptyGrid(DEFAULT_GRID_SIZE),
       onSome: ({ grid }) => grid,
@@ -251,8 +211,7 @@ export const init: Runtime.ApplicationInit<Model, Message, Flags> = flags => [
     themeListbox: Listbox.init({ id: 'theme-picker' }),
     // remaining fields elided for brevity
   },
-  [],
-]
+})
 
 // src/entry.ts (imports Model, Flags, flags, init, update, view, subscriptions from ./main)
 
@@ -343,56 +302,51 @@ For a given Message, Foldkit update returns both the next Model and the Commands
 
 ### Foldkit update (state + side effects)
 
-The return type is `[Model, Command[]]`:
+The return type is `Update.Return<Model, Message>`:
 
 ```
-export const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    withUpdateReturn,
-    M.tagsExhaustive({
-      PressedCell: ({ x, y }) =>
-        M.value(model.tool).pipe(
-          withUpdateReturn,
-          M.when('Brush', () => [
-            evo(model, {
-              grid: () => applyBrush(model, x, y),
-              undoStack: () => pushHistory(model.undoStack, model.grid),
-              redoStack: () => [],
-              isDrawing: () => true,
-            }),
-            [],
-          ]),
-          M.when('Fill', () => {
-            const nextModel = evo(model, {
-              grid: () => applyFill(model, x, y),
-              undoStack: () => pushHistory(model.undoStack, model.grid),
-              redoStack: () => [],
-            })
-            return [nextModel, [saveCanvas(nextModel)]]
+import { type Update } from 'foldkit'
+
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    PressedCell: ({ x, y }) =>
+      M.value(model.tool).pipe(
+        withUpdateReturn,
+        M.when('Brush', () => ({
+          model: evo(model, {
+            grid: () => applyBrush(model, x, y),
+            undoStack: () => pushHistory(model.undoStack, model.grid),
+            redoStack: () => [],
+            isDrawing: () => true,
           }),
-          // ...
-        ),
-      ClickedUndo: () =>
-        Array.match(model.undoStack, {
-          onEmpty: () => [model, []],
-          onNonEmpty: nonEmptyUndoStack => {
-            const nextModel = evo(model, {
-              grid: () => Array.lastNonEmpty(nonEmptyUndoStack),
-              undoStack: () => Array.initNonEmpty(nonEmptyUndoStack),
-              redoStack: () => [...model.redoStack, model.grid],
-            })
-            return [nextModel, [saveCanvas(nextModel)]]
-          },
+        })),
+        M.when('Fill', () => {
+          const nextModel = evo(model, {
+            grid: () => applyFill(model, x, y),
+            undoStack: () => pushHistory(model.undoStack, model.grid),
+            redoStack: () => [],
+          })
+          return { model: nextModel, commands: [saveCanvas(nextModel)] }
         }),
-      // ... 23 more handlers
-    }),
-  )
+        // ...
+      ),
+    ClickedUndo: () =>
+      Array.match(model.undoStack, {
+        onEmpty: () => ({ model }),
+        onNonEmpty: nonEmptyUndoStack => {
+          const nextModel = evo(model, {
+            grid: () => Array.lastNonEmpty(nonEmptyUndoStack),
+            undoStack: () => Array.initNonEmpty(nonEmptyUndoStack),
+            redoStack: Array.append(model.grid),
+          })
+          return { model: nextModel, commands: [saveCanvas(nextModel)] }
+        },
+      }),
+    // ... 23 more handlers
+  })
 ```
 
-`M.tagsExhaustive` requires a handler for every Message variant. `evo` preserves references for unchanged fields, which supports view memoization. A handler such as `ClickedUndo` returns the next Model and a `SaveCanvas` Command together.
+`Message.match` requires a handler for every Message variant. `evo` preserves references for unchanged fields, which supports view memoization. A handler such as `ClickedUndo` returns the next Model and a `SaveCanvas` Command together.
 
 What update answers
 
@@ -638,45 +592,13 @@ test('painting persists canvas to localStorage', async () => {
 
 It renders `App` in jsdom, simulates a stroke, spies on localStorage, and waits for the Effect. That test exercises the connection between the reducer state and `useLocalStorage`, which the reducer test cannot see.
 
-Foldkit Story
-
-React tests in this application
-
-State transition
-
-Model after Messages
-
-State after Actions
-
-Event-driven effect
-
-Inspect or resolve returned Commands
-
-Exercise the handler or Hook at component boundary
-
-Persistence assertion
-
-Resolve
-
-`SaveCanvas`
-
-Spy on localStorage and wait for the Effect
-
-Infrastructure
-
-`foldkit/story`
-
-, no DOM
-
-Vitest, React Testing Library, and jsdom
-
-Timing in examples
-
-Synchronous Command resolution
-
-`waitFor`
-
-for the Effect-based persistence test
+|  | Foldkit Story | React tests in this application |
+| --- | --- | --- |
+| State transition | Model after Messages | State after Actions |
+| Event-driven effect | Inspect or resolve returned Commands | Exercise the handler or Hook at component boundary |
+| Persistence assertion | Resolve `SaveCanvas` | Spy on localStorage and wait for the Effect |
+| Infrastructure | `foldkit/story`, no DOM | Vitest, React Testing Library, and jsdom |
+| Timing in examples | Synchronous Command resolution | `waitFor` for the Effect-based persistence test |
 
 ## Interaction Testing Without a DOM
 
@@ -687,6 +609,8 @@ for the Effect-based persistence test
 The Scene test clicks Export, resolves the resulting Commands, and dismisses the Dialog:
 
 ```
+import { Message as DialogMessage } from '@foldkit/ui/dialog'
+
 test('failed export shows error dialog that can be dismissed', () => {
   scene(
     { update, view },
@@ -699,7 +623,7 @@ test('failed export shows error dialog that can be dismissed', () => {
       ExportPng,
       FailedExportPng({ error: 'Canvas 2D context not available' }),
     ),
-    Command.resolve(Dialog.ShowDialog, Dialog.CompletedShowDialog()),
+    Command.resolve(Dialog.ShowDialog, DialogMessage.SucceededShowDialog()),
     // The error dialog is open. Find elements by role and text content:
     // no CSS selectors, no test IDs, no DOM.
     expect(text('Export Failed')).toExist(),
@@ -709,7 +633,7 @@ test('failed export shows error dialog that can be dismissed', () => {
     click(role('button', { name: 'Dismiss' })),
     // The update function returned a CloseDialog Command. Resolve it
     // the same way a story test does: synchronously, inline.
-    Command.resolve(Dialog.CloseDialog, Dialog.CompletedCloseDialog()),
+    Command.resolve(Dialog.CloseDialog, DialogMessage.CompletedCloseDialog()),
     // After the Command resolves, the dialog is gone.
     expect(text('Export Failed')).toBeAbsent(),
   )
@@ -748,53 +672,13 @@ This is a broader integration test. It reaches `handleExport` and the export imp
 
 The two tests make different trade-offs. Scene can assert separately that a click requested a Command and that each possible result produces the right UI. The React test covers the handler-to-browser-API path in one flow, but it needs a browser-API substitute in jsdom.
 
-Foldkit Scene
-
-React Testing Library in this example
-
-Render target
-
-Virtual DOM
-
-jsdom
-
-Queries
-
-`role()`
-
-,
-
-`text()`
-
-,
-
-`label()`
-
-`screen.getByRole()`
-
-,
-
-`findByText()`
-
-Side effects
-
-Commands inspected or resolved
-
-Handler and Effect execute
-
-Browser API
-
-Not exercised by this Scene
-
-Canvas boundary mocked
-
-Timing
-
-Synchronous in this test
-
-Async user events and
-
-`findByText`
+|  | Foldkit Scene | React Testing Library in this example |
+| --- | --- | --- |
+| Render target | Virtual DOM | jsdom |
+| Queries | `role()`, `text()`, `label()` | `screen.getByRole()`, `findByText()` |
+| Side effects | Commands inspected or resolved | Handler and Effect execute |
+| Browser API | Not exercised by this Scene | Canvas boundary mocked |
+| Timing | Synchronous in this test | Async user events and `findByText` |
 
 ## Streams vs Hooks
 
@@ -884,45 +768,13 @@ const useMouseRelease = (
 
 Both applications use controlled values for selections and Dialog visibility. They differ in where transient component interaction state lives.
 
-Foldkit UI
-
-React + Headless UI
-
-Selected values / open state
-
-Parent Model
-
-Reducer state passed through controlled props
-
-Transient interaction state
-
-Child Models inside the application Model
-
-Encapsulated inside Headless UI components
-
-Events
-
-Child Messages and OutMessages folded through parent update
-
-Callback props such as
-
-`onChange`
-
-and
-
-`onClose`
-
-Accessibility behavior
-
-Implemented by Foldkit UI
-
-Implemented by Headless UI
-
-Debugging
-
-Parent and child Models appear in Foldkit DevTools
-
-App state and component internals use React’s tools
+|  | Foldkit UI | React + Headless UI |
+| --- | --- | --- |
+| Selected values / open state | Parent Model | Reducer state passed through controlled props |
+| Transient interaction state | Child Models inside the application Model | Encapsulated inside Headless UI components |
+| Events | Child Messages and OutMessages folded through parent update | Callback props such as `onChange` and `onClose` |
+| Accessibility behavior | Implemented by Foldkit UI | Implemented by Headless UI |
+| Debugging | Parent and child Models appear in Foldkit DevTools | App state and component internals use React’s tools |
 
 Foldkit exposes more of the component state as application data. Headless UI deliberately hides more implementation state behind its component API. Neither choice changes who owns the selected palette theme or whether a Dialog is open in these two applications.
 
@@ -1115,7 +967,7 @@ React’s Action union provides the same property for this reducer. It does not 
 
 ### Safe evolution under type pressure
 
-Both versions can exhaustively handle a new union variant in their transition function. Foldkit extends that check across the Runtime channel because every parent state transition uses a Message. Adding a Message makes `M.tagsExhaustive` fail until update handles it.
+Both versions can exhaustively handle a new union variant in their transition function. Foldkit extends that check across the Runtime channel because every parent state transition uses a Message. Adding a Message makes `Message.match` fail until update handles it.
 
 Exhaustiveness catches an omitted branch, not an incorrect branch or a forgotten product requirement. Tests still have to establish what the new case should do.
 
@@ -1128,8 +980,6 @@ A Command has a name, arguments, result Messages, and identity in DevTools and t
 Foldkit DevTools records Messages and Model snapshots. Because Foldkit UI Submodels live in the Model, their interaction state participates in that history.
 
 React DevTools inspects component state, and reducer-oriented tools can add action history for application state. Headless UI’s internal Hook state is not part of the pixel editor reducer, so it does not appear in a reducer replay.
-
-### Tests share the runtime’s pipeline
 
 Story calls update with Messages and handles the Commands update returns. Scene adds the actual Foldkit view and event attributes. The same values cross those boundaries in production and tests.
 

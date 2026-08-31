@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-combobox
 title: "Ui/Combobox"
 description: "API documentation for the Ui/Combobox module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Ui/Combobox
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/single.ts#L163)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/single.ts#L144)
 
 ```
 /**
@@ -32,7 +32,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/single.ts#L38)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/single.ts#L33)
 
 ```
 /** Creates an initial single-select combobox model from a config. Defaults to closed with no active item and an empty input. */
@@ -59,7 +59,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L293)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L198)
 
 ```
 /**
@@ -78,7 +78,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L47)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L44)
 
 ```
 /** Schema for the activation trigger: whether the user interacted via mouse or keyboard. */
@@ -89,19 +89,19 @@ type ActivationTrigger = Literals<readonly ["Pointer", "Keyboard"]>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L874)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L766)
 
 ```
 /**
  * Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field.
  * 
  *  The Combobox emits a `Selected({ value })` OutMessage on commit.
- *  Consumers pattern-match this in their `GotComboboxMessage` handler:
- *  single-select stores the value, multi-select toggles the value's
- *  membership. `restingInputValue` is the text the input returns to on
+ *  Fold it in the Combobox's `Update.foldChild` config: single-select
+ *  stores the value, while multi-select toggles the value's membership.
+ *  `restingInputValue` is the text the input returns to on
  *  close (the selection's display text for single-select, empty for
- *  multi-select). Everything here except the selection itself; each
- *  variant composes its own selection field on top.
+ *  multi-select). The selection is not part of this shared shape. Each
+ *  variant adds its own selection field.
  */
 type BaseViewInputsCommon = Readonly<{
   anchor: AnchorConfig
@@ -152,7 +152,7 @@ type BaseViewInputsCommon = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/single.ts#L121)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/single.ts#L126)
 
 ```
 /**
@@ -163,10 +163,10 @@ type
  *  itself.
  */
 type Bundle = Readonly<{
-  close: (model: Model, restingInputValue: string) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Item>>]
-  open: (model: Model) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Item>>]
-  selectItem: (model: Model, item: Item, displayText: string) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Item>>]
-  update: (model: Model, message: Message) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Item>>]
+  close: (model: Model, restingInputValue: string) => BundleUpdateReturn<Item>
+  open: (model: Model) => BundleUpdateReturn<Item>
+  selectItem: (model: Model, item: Item, displayText: string) => BundleUpdateReturn<Item>
+  update: (model: Model, message: Message) => BundleUpdateReturn<Item>
   view: SubmodelView<Model, Message, ViewInputs<Item>>
 }>
 ```
@@ -175,7 +175,7 @@ type Bundle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L860)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L752)
 
 ```
 /** Configuration for a group heading rendered above a group of items. */
@@ -189,7 +189,7 @@ type GroupHeading = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/single.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/single.ts#L30)
 
 ```
 /** Configuration for creating a single-select combobox model with `init`. `isAnimated` enables CSS transition coordination (default `false`). `isModal` locks page scroll and inerts other elements when open (default `false`). */
@@ -200,7 +200,7 @@ type InitConfig = BaseInitConfig
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L854)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L746)
 
 ```
 /** Configuration for an individual combobox item's appearance. */
@@ -214,7 +214,7 @@ type ItemConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L276)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L179)
 
 ```
 /**
@@ -230,10 +230,9 @@ type OutMessage = Selected<Value> | ClearedSelection
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L261)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L171)
 
 ```
-/** Sent when the user activates an item. Carries the neutral fact that the item was activated; the parent owns the selection and decides what it means (single-select stores the value, nullable single-select toggles it, multi-select toggles the value's membership). Generic over `Value extends string`: the runtime schema stores `value: string`, but the type-level OutMessage exposes `value: Value` so consumers who supply `items: ReadonlyArray<MyUnion>` receive `value: MyUnion` from the factory's `update` without casting. */
 type Selected = Readonly<{
   _tag: "Selected"
   value: Value
@@ -244,7 +243,7 @@ type Selected = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/single.ts#L105)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/single.ts#L104)
 
 ```
 /** Per-render view inputs passed to the view via `h.submodel`'s `viewInputs` field. */
@@ -255,28 +254,11 @@ type ViewInputs = BaseViewInputsCommon<Item> & Readonly<{
 
 ## Constants
 
-### ActivatedItem
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L117)
-
-```
-/** Sent when an item is highlighted via arrow keys or mouse hover. Includes activation trigger and optional immediate selection info. */
-const ActivatedItem: CallableTaggedStruct<"ActivatedItem", {
-  activationTrigger: Literals<readonly ["Pointer", "Keyboard"]>
-  index: Number
-  maybeImmediateSelection: Option<Struct<{
-    item: String
-  }>>
-}>
-```
-
 ### AnchorCombobox
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L748)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L640)
 
 ```
 /**
@@ -316,7 +298,7 @@ const AnchorCombobox: MountDefinitionWithArgs<"AnchorCombobox", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L786)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L675)
 
 ```
 /**
@@ -334,7 +316,7 @@ const AttachComboboxPreventBlur: MountDefinitionNoArgs<"AttachComboboxPreventBlu
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L813)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L704)
 
 ```
 /**
@@ -347,36 +329,11 @@ const AttachComboboxSelectOnFocus: MountDefinitionNoArgs<"AttachComboboxSelectOn
 }>
 ```
 
-### BlurredInput
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L112)
-
-```
-/** Sent when the combobox input loses focus. `restingInputValue` is what the input returns to on close (the parent-owned selection's display text, or empty), computed by the view from `ViewInputs.restingInputValue`. `isClearable` carries whether this close may emit `ClearedSelection`, which a read-only combobox denies. */
-const BlurredInput: CallableTaggedStruct<"BlurredInput", {
-  isClearable: Boolean
-  restingInputValue: String
-}>
-```
-
-### ClearedSelection
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L271)
-
-```
-/** Sent when a nullable combobox closes with an empty input, meaning the user cleared it. The parent clears the selection it owns. */
-const ClearedSelection: CallableTaggedStruct<"ClearedSelection", {}>
-```
-
 ### ClickItem
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L377)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L283)
 
 ```
 /** Programmatically clicks the active combobox item's DOM element. */
@@ -388,157 +345,11 @@ const ClickItem: CommandDefinitionWithArgs<"ClickItem", {
 }, never, never>>
 ```
 
-### Closed
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L107)
-
-```
-/** Sent when the combobox closes via Escape key or backdrop click. `restingInputValue` is what the input returns to on close (the parent-owned selection's display text, or empty), computed by the view from `ViewInputs.restingInputValue`. `isClearable` carries whether this close may emit `ClearedSelection`, which a read-only combobox denies; the view holds `isReadOnly` and the update does not. */
-const Closed: CallableTaggedStruct<"Closed", {
-  isClearable: Boolean
-  restingInputValue: String
-}>
-```
-
-### CompletedAnchorCombobox
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L157)
-
-```
-/** Sent when the items panel mounts and Floating UI has positioned it. Update no-ops; surfaces the positioning side effect for DevTools. */
-const CompletedAnchorCombobox: CallableTaggedStruct<"CompletedAnchorCombobox", {}>
-```
-
-### CompletedAttachComboboxPreventBlur
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L159)
-
-```
-/** Sent when the items panel mounts and the capture-phase pointerdown listener is attached (with or without anchor). Update no-ops; surfaces the listener-attach side effect for DevTools. */
-const CompletedAttachComboboxPreventBlur: CallableTaggedStruct<"CompletedAttachComboboxPreventBlur", {}>
-```
-
-### CompletedAttachComboboxSelectOnFocus
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L163)
-
-```
-/** Sent when the input mounts and the focus listener that auto-selects on focus is attached. Update no-ops; surfaces the listener-attach side effect for DevTools. */
-const CompletedAttachComboboxSelectOnFocus: CallableTaggedStruct<"CompletedAttachComboboxSelectOnFocus", {}>
-```
-
-### CompletedClickItem
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L155)
-
-```
-/** Sent when the programmatic item click command completes. */
-const CompletedClickItem: CallableTaggedStruct<"CompletedClickItem", {}>
-```
-
-### CompletedFocusInput
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L151)
-
-```
-/** Sent when the focus-input command completes. */
-const CompletedFocusInput: CallableTaggedStruct<"CompletedFocusInput", {}>
-```
-
-### CompletedInertOthers
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L147)
-
-```
-/** Sent when the inert-others command completes. */
-const CompletedInertOthers: CallableTaggedStruct<"CompletedInertOthers", {}>
-```
-
-### CompletedLockScroll
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L143)
-
-```
-/** Sent when the scroll lock command completes. */
-const CompletedLockScroll: CallableTaggedStruct<"CompletedLockScroll", {}>
-```
-
-### CompletedPortalComboboxBackdrop
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L167)
-
-```
-/** Sent when the combobox backdrop mounts and is portaled to the document body. Update no-ops; surfaces the portal side effect for DevTools. */
-const CompletedPortalComboboxBackdrop: CallableTaggedStruct<"CompletedPortalComboboxBackdrop", {}>
-```
-
-### CompletedRestoreInert
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L149)
-
-```
-/** Sent when the restore-inert command completes. */
-const CompletedRestoreInert: CallableTaggedStruct<"CompletedRestoreInert", {}>
-```
-
-### CompletedScrollIntoView
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L153)
-
-```
-/** Sent when the scroll-into-view command completes after keyboard activation. */
-const CompletedScrollIntoView: CallableTaggedStruct<"CompletedScrollIntoView", {}>
-```
-
-### CompletedUnlockScroll
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L145)
-
-```
-/** Sent when the scroll unlock command completes. */
-const CompletedUnlockScroll: CallableTaggedStruct<"CompletedUnlockScroll", {}>
-```
-
-### DeactivatedItem
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L123)
-
-```
-/** Sent when the mouse leaves an enabled item. */
-const DeactivatedItem: CallableTaggedStruct<"DeactivatedItem", {}>
-```
-
 ### DetectMovementOrAnimationEnd
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L387)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L293)
 
 ```
 /** Detects whether the combobox input wrapper moved or the leave animation ended. Whichever comes first; both outcomes signal the Animation submodel that leave is complete. */
@@ -562,7 +373,7 @@ const DetectMovementOrAnimationEnd: CommandDefinitionWithArgs<"DetectMovementOrA
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L357)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L263)
 
 ```
 /** Moves focus to the combobox input after selection or close. */
@@ -573,24 +384,11 @@ const FocusInput: CommandDefinitionWithArgs<"FocusInput", {
 }, never, never>>
 ```
 
-### GotAnimationMessage
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L171)
-
-```
-/** Wraps an Animation submodel message for delegation. */
-const GotAnimationMessage: CallableTaggedStruct<"GotAnimationMessage", {
-  message: Union<[CallableTaggedStruct<"Showed", {}>, CallableTaggedStruct<"Hid", {}>, CallableTaggedStruct<"CompletedWaitForPaint", {}>, CallableTaggedStruct<"EndedAnimation", {}>]>
-}>
-```
-
 ### InertOthers
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L341)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L247)
 
 ```
 /** Marks all elements outside the combobox as inert for modal behavior. */
@@ -605,7 +403,7 @@ const InertOthers: CommandDefinitionWithArgs<"InertOthers", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L331)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L237)
 
 ```
 /** Prevents page scrolling while the combobox popup is open in modal mode. */
@@ -618,18 +416,78 @@ const LockScroll: CommandDefinitionNoArgs<"LockScroll", Effect<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L185)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L100)
 
 ```
 /** Union of all messages the combobox component can produce. */
-const Message: S.Union<[typeof Opened, typeof Closed, typeof BlurredInput, typeof ActivatedItem, typeof DeactivatedItem, typeof SelectedItem, typeof MovedPointerOverItem, typeof RequestedItemClick, typeof SuppressedItemCommit, typeof CompletedLockScroll, typeof CompletedUnlockScroll, typeof CompletedInertOthers, typeof CompletedRestoreInert, typeof CompletedFocusInput, typeof CompletedScrollIntoView, typeof CompletedClickItem, typeof CompletedAnchorCombobox, typeof CompletedAttachComboboxPreventBlur, typeof CompletedAttachComboboxSelectOnFocus, typeof CompletedPortalComboboxBackdrop, typeof GotAnimationMessage, typeof UpdatedInputValue, typeof PressedToggleButton]>
+const Message: MessageUnion<{
+  ActivatedItem: {
+    activationTrigger: Literals<readonly ["Pointer", "Keyboard"]>
+    index: Number
+    maybeImmediateSelection: Option<Struct<{
+      item: String
+    }>>
+  }
+  BlurredInput: {
+    isClearable: Boolean
+    restingInputValue: String
+  }
+  Closed: {
+    isClearable: Boolean
+    restingInputValue: String
+  }
+  CompletedAnchorCombobox: {}
+  CompletedAttachComboboxPreventBlur: {}
+  CompletedAttachComboboxSelectOnFocus: {}
+  CompletedClickItem: {}
+  CompletedFocusInput: {}
+  CompletedInertOthers: {}
+  CompletedLockScroll: {}
+  CompletedPortalComboboxBackdrop: {}
+  CompletedRestoreInert: {}
+  CompletedScrollIntoView: {}
+  CompletedUnlockScroll: {}
+  DeactivatedItem: {}
+  GotAnimationMessage: {
+    message: MessageUnion<{
+      CompletedWaitForPaint: {}
+      EndedAnimation: {}
+      Hid: {}
+      Showed: {}
+    }>
+  }
+  MovedPointerOverItem: {
+    index: Number
+    screenX: Number
+    screenY: Number
+  }
+  Opened: {
+    maybeActiveItemIndex: Option<Number>
+  }
+  PressedToggleButton: {
+    isClearable: Boolean
+    restingInputValue: String
+  }
+  RequestedItemClick: {
+    index: Number
+  }
+  SelectedItem: {
+    displayText: String
+    item: String
+    wasSelected: Boolean
+  }
+  SuppressedItemCommit: {}
+  UpdatedInputValue: {
+    value: String
+  }
+}>
 ```
 
 ### Model
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/single.ts#L26)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/single.ts#L21)
 
 ```
 /** Schema for the single-select combobox's private interaction state (open/closed status, active item, activation trigger, typed input value). The selection is owned by the parent and passed in via `ViewInputs.maybeSelectedValue`. */
@@ -656,55 +514,27 @@ const Model: Struct<{
 }>
 ```
 
-### MovedPointerOverItem
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L131)
-
-```
-/** Sent when the pointer moves over a combobox item. */
-const MovedPointerOverItem: CallableTaggedStruct<"MovedPointerOverItem", {
-  index: Number
-  screenX: Number
-  screenY: Number
-}>
-```
-
-### Opened
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L103)
-
-```
-/** Sent when the combobox popup opens. Contains an optional initial active item index. */
-const Opened: CallableTaggedStruct<"Opened", {
-  maybeActiveItemIndex: Option<Number>
-}>
-```
-
 ### OutMessage
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L276)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L179)
 
 ```
 /** Union of out-messages the combobox component can produce. The parent folds `Selected` into the selection it owns and clears that selection on `ClearedSelection`. */
-const OutMessage: Union<readonly [
-  CallableTaggedStruct<"Selected", {
+const OutMessage: MessageUnion<{
+  ClearedSelection: {}
+  Selected: {
     value: String
-  }>,
-  CallableTaggedStruct<"ClearedSelection", {}>
-]>
+  }
+}>
 ```
 
 ### PortalComboboxBackdrop
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L838)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L731)
 
 ```
 /**
@@ -717,38 +547,11 @@ const PortalComboboxBackdrop: MountDefinitionNoArgs<"PortalComboboxBackdrop", {
 }>
 ```
 
-### PressedToggleButton
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L179)
-
-```
-/** Sent when the optional toggle button is clicked. `restingInputValue` is what the input returns to when the press closes the combobox (the parent-owned selection's display text, or empty), computed by the view from `ViewInputs.restingInputValue`. `isClearable` carries whether a close from this press may emit `ClearedSelection`, which a read-only combobox denies. */
-const PressedToggleButton: CallableTaggedStruct<"PressedToggleButton", {
-  isClearable: Boolean
-  restingInputValue: String
-}>
-```
-
-### RequestedItemClick
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L137)
-
-```
-/** Sent when Enter or Space is pressed on the active item, triggering a programmatic click. */
-const RequestedItemClick: CallableTaggedStruct<"RequestedItemClick", {
-  index: Number
-}>
-```
-
 ### RestoreInert
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L350)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L256)
 
 ```
 /** Removes the inert attribute from elements outside the combobox. */
@@ -763,7 +566,7 @@ const RestoreInert: CommandDefinitionWithArgs<"RestoreInert", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L367)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L273)
 
 ```
 /** Scrolls the active combobox item into view after keyboard navigation. */
@@ -775,67 +578,15 @@ const ScrollIntoView: CommandDefinitionWithArgs<"ScrollIntoView", {
 }, never, never>>
 ```
 
-### Selected
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L261)
-
-```
-/** Sent when the user activates an item. Carries the neutral fact that the item was activated; the parent owns the selection and decides what it means (single-select stores the value, nullable single-select toggles it, multi-select toggles the value's membership). Generic over `Value extends string`: the runtime schema stores `value: string`, but the type-level OutMessage exposes `value: Value` so consumers who supply `items: ReadonlyArray<MyUnion>` receive `value: MyUnion` from the factory's `update` without casting. */
-const Selected: CallableTaggedStruct<"Selected", {
-  value: String
-}>
-```
-
-### SelectedItem
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L125)
-
-```
-/** Sent when an item is selected via Enter or click. `displayText` is the item's resting input text, and `wasSelected` reports whether the item was already in the parent-owned selection when activated, so nullable deselect logic works without the Model knowing the selection. */
-const SelectedItem: CallableTaggedStruct<"SelectedItem", {
-  displayText: String
-  item: String
-  wasSelected: Boolean
-}>
-```
-
-### SuppressedItemCommit
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L141)
-
-```
-/** Sent when Enter is pressed on the active item of a read-only combobox. Update no-ops; the Message exists so the keydown handler returns `Option.some` and calls `preventDefault`, which stops a surrounding form from submitting, and so the keypress stays visible for DevTools. */
-const SuppressedItemCommit: CallableTaggedStruct<"SuppressedItemCommit", {}>
-```
-
 ### UnlockScroll
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L336)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/combobox/shared.ts#L242)
 
 ```
 /** Re-enables page scrolling after the combobox popup closes. */
 const UnlockScroll: CommandDefinitionNoArgs<"UnlockScroll", Effect<{
   _tag: "CompletedUnlockScroll"
 }, never, never>>
-```
-
-### UpdatedInputValue
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/combobox/shared.ts#L175)
-
-```
-/** Sent when the user types in the input. */
-const UpdatedInputValue: CallableTaggedStruct<"UpdatedInputValue", {
-  value: String
-}>
 ```

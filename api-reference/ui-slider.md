@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-slider
 title: "Ui/Slider"
 description: "API documentation for the Ui/Slider module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Ui/Slider
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L174)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L144)
 
 ```
 /**
@@ -32,7 +32,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L129)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L99)
 
 ```
 /**
@@ -46,7 +46,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L162)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L132)
 
 ```
 /**
@@ -66,44 +66,13 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L382)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L342)
 
 ### update
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L232)
-
-```
-/**
- * Processes a slider message and returns the next model, commands, and an
- *  optional out-message for the parent. The value lives in the parent Model:
- *  the view supplies the current value on the messages that need it, and value
- *  changes surface as `ChangedValue` rather than mutating this Model.
- */
-(
-  model: Slider.Model,
-  message: {
-    _tag: "CancelledDrag"
-  } | {
-    _tag: "PressedThumb"
-    originValue: number
-  } | {
-    _tag: "PressedPointer"
-    originValue: number
-    value: number
-  } | {
-    _tag: "MovedDragPointer"
-    value: number
-  } | {
-    _tag: "ReleasedDragPointer"
-  } | {
-    _tag: "PressedKeyboardNavigation"
-    direction: "Max" | "Min" | "StepDecrement" | "StepIncrement" | "PageDecrement" | "PageIncrement"
-    value: number
-  }
-): UpdateReturn
-```
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L206)
 
 ## Types
 
@@ -111,7 +80,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L120)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L90)
 
 ```
 /** Configuration for creating a slider model with `init`. */
@@ -127,7 +96,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L508)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L472)
 
 ```
 /**
@@ -150,7 +119,7 @@ type SliderAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L518)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L482)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -169,33 +138,39 @@ type ViewInputs = Readonly<{
 
 ## Constants
 
-### CancelledDrag
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L63)
-
-```
-/** Escape was pressed during a drag. Restores the value from the drag origin. */
-const CancelledDrag: CallableTaggedStruct<"CancelledDrag", {}>
-```
-
 ### Message
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L79)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L47)
 
 ```
 /** Union of all messages the slider component can produce. */
-const Message: S.Union<[typeof PressedThumb, typeof PressedPointer, typeof MovedDragPointer, typeof ReleasedDragPointer, typeof CancelledDrag, typeof PressedKeyboardNavigation]>
+const Message: MessageUnion<{
+  CancelledDrag: {}
+  MovedDragPointer: {
+    value: Number
+  }
+  PressedKeyboardNavigation: {
+    direction: Literals<readonly ["StepDecrement", "StepIncrement", "PageDecrement", "PageIncrement", "Min", "Max"]>
+    value: Number
+  }
+  PressedPointer: {
+    originValue: Number
+    value: Number
+  }
+  PressedThumb: {
+    originValue: Number
+  }
+  ReleasedDragPointer: {}
+}>
 ```
 
 ### Model
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L34)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L34)
 
 ```
 /**
@@ -206,12 +181,12 @@ const
  *  drag phase and captures the pre-drag value so Escape can restore it.
  */
 const Model: Struct<{
-  dragState: Union<readonly [
-    CallableTaggedStruct<"Idle", {}>,
-    CallableTaggedStruct<"Dragging", {
+  dragState: TaggedUnion<{
+    Dragging: {
       originValue: Number
-    }>
-  ]>
+    }
+    Idle: {}
+  }>
   id: String
   max: Number
   min: Number
@@ -219,105 +194,26 @@ const Model: Struct<{
 }>
 ```
 
-### MovedDragPointer
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L59)
-
-```
-/**
- * The pointer moved during a drag, producing a new snapped value from the
- *  cursor position within the track.
- */
-const MovedDragPointer: CallableTaggedStruct<"MovedDragPointer", {
-  value: Number
-}>
-```
-
 ### OutMessage
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L114)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L82)
 
 ```
 /** Union of all out-messages the slider component can emit to its parent. */
-const OutMessage: Union<readonly [
-  CallableTaggedStruct<"ChangedValue", {
+const OutMessage: MessageUnion<{
+  ChangedValue: {
     value: Number
-  }>
-]>
-```
-
-### PressedKeyboardNavigation
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L66)
-
-```
-/**
- * The user pressed a keyboard navigation key on the focused thumb. The view
- *  supplies `value`, the current value, to compute the next one from.
- */
-const PressedKeyboardNavigation: CallableTaggedStruct<"PressedKeyboardNavigation", {
-  direction: Literals<readonly ["StepDecrement", "StepIncrement", "PageDecrement", "PageIncrement", "Min", "Max"]>
-  value: Number
+  }
 }>
-```
-
-### PressedPointer
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L53)
-
-```
-/**
- * The user pressed the track. Starts a drag and snaps the value to the
- *  cursor position. Ignored while already dragging, which absorbs the bubble
- *  from a thumb press so the value is not shifted. `originValue` is the current
- *  value the drag restores to on Escape.
- */
-const PressedPointer: CallableTaggedStruct<"PressedPointer", {
-  originValue: Number
-  value: Number
-}>
-```
-
-### PressedThumb
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L48)
-
-```
-/**
- * The user pressed the thumb. Starts a drag without changing the value. The
- *  view supplies `originValue`, the current value, so Escape can restore it.
- */
-const PressedThumb: CallableTaggedStruct<"PressedThumb", {
-  originValue: Number
-}>
-```
-
-### ReleasedDragPointer
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L61)
-
-```
-/** The pointer was released during a drag. Commits the current value. */
-const ReleasedDragPointer: CallableTaggedStruct<"ReleasedDragPointer", {}>
 ```
 
 ### reflectRange
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L330)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L290)
 
 ```
 /**
@@ -336,7 +232,7 @@ const reflectRange: Reflect<Model, Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L479)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L439)
 
 ```
 /** Default drag subscriptions, with the track looked up via `document`. */
@@ -393,7 +289,7 @@ const subscriptions: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/slider/index.ts#L554)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L518)
 
 ```
 /**

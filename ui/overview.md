@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/overview
 title: "Foldkit UI"
 description: "Choose between stateful Submodels and stateless render helpers in Foldkit’s headless UI package. Covers accessibility, styling, installation, and the component catalog."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Foldkit UI
@@ -16,7 +16,7 @@ Foldkit UI is a set of headless, accessible UI components. You provide markup an
 
 `@foldkit/ui` is a separate package from `foldkit`. Projects scaffolded by `create-foldkit-app` from an example that uses UI components already include it. Its peer dependencies are `foldkit` and `effect`, which every Foldkit project already has. Add it to any other project with:
 
-```sh
+```
 npm install @foldkit/ui
 ```
 
@@ -169,6 +169,12 @@ Input paired with a popover Calendar. Inherits the calendar’s constraint and k
 Submodel
 
 Coordinates CSS enter/leave animations via a state machine and data attributes. Works with both CSS transitions and CSS keyframe animations. Sends an OutMessage when the leave animation completes.
+
+[Hover Intent](https://foldkit.dev/ui/hover-intent)
+
+Submodel
+
+Headless hover and focus behavior for a trigger and panel, with delayed pointer opening and a closing grace period. The consumer owns semantics, positioning, and styling.
 
 Underneath the floating components sits [Anchor](https://foldkit.dev/ui/anchor), the positioning runtime Listbox, Combobox, Menu, Popover, Tooltip, and Date Picker share. It is neither a helper nor a Submodel, so it has no row above. Reach for it directly only when you are building an anchored component none of those cover.
 

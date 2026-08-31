@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/managed-resources
 title: "Managed Resources"
 description: "Acquire a stateful handle while a Model condition holds, expose it to Commands, and release it when dependencies change. Covers Layers and Submodel lifting."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Managed Resources
@@ -157,7 +157,7 @@ When setup and teardown are already packaged as an Effect `Layer`, keep that lif
 import { Context, Effect, Layer, Option, Schema as S } from 'effect'
 import { ManagedResource } from 'foldkit'
 
-// A heavy engine whose init and teardown are packaged as an Effect Layer.
+// A FEN string is a text description of a chess position.
 interface ChessEngine {
   readonly bestMove: (fen: string) => Effect.Effect<string>
 }
@@ -167,7 +167,25 @@ class ChessEngineService extends Context.Service<
   ChessEngine
 >()('ChessEngineService') {}
 
-declare const engineLayer: Layer.Layer<ChessEngineService>
+// A heavy engine whose init and teardown are packaged as an Effect Layer.
+// Building the Layer spawns the worker, and the finalizer registered by
+// acquireRelease terminates it.
+const engineLayer: Layer.Layer<ChessEngineService> = Layer.effect(
+  ChessEngineService,
+  Effect.gen(function* () {
+    const worker = yield* Effect.acquireRelease(
+      Effect.sync(() => new Worker('/chess-engine-worker.js')),
+      worker => Effect.sync(() => worker.terminate()),
+    )
+
+    return {
+      bestMove: (fen: string): Effect.Effect<string> => {
+        // Your engine protocol goes here: post the FEN to the worker and
+        // resolve with its best-move reply.
+      },
+    }
+  }),
+)
 
 // 1. The Managed Resource holds the bare service value, with no wrapper.
 const Engine = ManagedResource.tag<ChessEngine>()('ChessEngine')

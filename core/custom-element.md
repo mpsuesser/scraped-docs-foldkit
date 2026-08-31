@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/custom-element
 title: "CustomElement"
 description: "Create typed Foldkit builders for native custom elements by declaring their properties and CustomEvents with Schema."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # CustomElement
@@ -30,7 +30,7 @@ Inside a view, call `.withMessage(h)` on the spec. The view builder acts as a ty
 import { Schema as S } from 'effect'
 import { CustomElement } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import 'vanilla-colorful/hex-color-picker.js'
 
 import '@shoelace-style/shoelace/dist/components/qr-code/qr-code.js'
@@ -66,9 +66,9 @@ const qrCode = CustomElement.define({
   events: {},
 })
 
-const ChangedFillColor = m('ChangedFillColor', { value: S.String })
-
-const Message = S.Union([ChangedFillColor])
+const Message = defineMessageUnion({
+  ChangedFillColor: { value: S.String },
+})
 type Message = typeof Message.Type
 
 // Inside a view, mint typed builders with `withMessage(h)`. The view's
@@ -93,7 +93,7 @@ export const designerView = (
       fillPicker([
         fillPicker.Color(model.fillColor),
         fillPicker.OnColorChanged(detail =>
-          ChangedFillColor({ value: detail.value }),
+          Message.ChangedFillColor({ value: detail.value }),
         ),
       ]),
       qr([

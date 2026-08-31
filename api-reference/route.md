@@ -2,19 +2,50 @@
 url: https://foldkit.dev/api-reference/route
 title: "Route"
 description: "API documentation for the Route module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Route
 
 ## Functions
 
+### defineRouteUnion
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/schema/index.ts#L461)
+
+```
+/**
+ * Declares every application Route in one object. Each key is a tag, and its
+ * value lists the fields parsed from the URL.
+ * 
+ * The result is both a Schema and the `AppRoute` namespace. Each variant is a
+ * callable Schema, so `AppRoute.Person` works with `mapTo` and
+ * `parseUrlWithFallback`, while `AppRoute.Person({ personId: 42 })` constructs
+ * a value.
+ * 
+ * Use `match` to handle every Route, `guards` or `isAnyOf` to check selected
+ * tags, and `subset` when another Schema accepts only some Routes. A subset
+ * includes only the tags named in the call. Adding a Route to `AppRoute` does
+ * not change an existing subset.
+ * 
+ * Routers remain separate. A Route is the parsed value; a Router describes the
+ * URL that produces it.
+ * 
+ * A tag cannot use a name already owned by the union, such as `make`, `match`,
+ * `cases`, `ast`, `members`, or `subset`. TypeScript rejects these names, and
+ * untyped calls throw an error.
+ */
+<CasesByTag extends Record<string, Fields>>(casesByTag: CasesByTag & ValidateVariantNames<CasesByTag>): RouteUnion<CasesByTag>
+```
+
 ### int
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L201)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L201)
 
 ```
 /**
@@ -29,7 +60,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L105)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L105)
 
 ```
 /** Creates a parser that matches an exact URL path segment. */
@@ -40,7 +71,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L514)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L514)
 
 ```
 /**
@@ -61,7 +92,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L143)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L143)
 
 ```
 /** Creates a parser for a dynamic URL segment with custom parse and print functions. */
@@ -88,7 +119,7 @@ print
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L723)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L723)
 
 ```
 /**
@@ -117,7 +148,7 @@ notFoundRouteConstructor
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L633)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L633)
 
 ```
 /**
@@ -133,30 +164,11 @@ schema
 
 : An Effect Schema describing the expected query parameters.
 
-### r
-
-function
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/schema/index.ts#L72)
-
-```
-/**
- * Wraps `Schema.TaggedStruct` to create a route variant you can call directly as a constructor.
- * Use `r` for route types — enabling `Home()` instead of `Home.make()`.
- */
-<Tag extends string>(tag: Tag): CallableTaggedStruct<Tag, {}>
-
-<Tag extends string, Fields extends Fields>(
-  tag: Tag,
-  fields: Fields
-): CallableTaggedStruct<Tag, Fields>
-```
-
 ### rest
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L360)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L360)
 
 ```
 /**
@@ -180,7 +192,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L427)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L427)
 
 ```
 /**
@@ -213,7 +225,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L265)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L265)
 
 ```
 /**
@@ -247,7 +259,7 @@ schema
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L181)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L181)
 
 ```
 /** Creates a parser that captures a URL segment as a named string field. */
@@ -260,7 +272,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L43)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L43)
 
 ```
 /**
@@ -277,7 +289,7 @@ type Biparser = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L86)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L86)
 
 ```
 /**
@@ -295,7 +307,7 @@ type ExtendableBiparser = Biparser<A> & {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L32)
 
 ```
 /** The result of parsing: a tuple of the parsed value and remaining URL segments. */
@@ -306,7 +318,7 @@ type ParseResult = [A, ReadonlyArray<string>]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L476)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L476)
 
 ```
 /**
@@ -320,11 +332,25 @@ type Parser = {
 }
 ```
 
+### RouteUnion
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/schema/index.ts#L280)
+
+```
+/**
+ * The Schema returned by `defineRouteUnion`. It has the same constructors and
+ * helpers as `TaggedUnion`, with a Route-specific name for public signatures.
+ */
+type RouteUnion = TaggedUnion<CasesByTag>
+```
+
 ### Router
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L67)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L67)
 
 ```
 /**
@@ -347,7 +373,7 @@ type Router = BuildFn<A> & {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L79)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L79)
 
 ```
 /**
@@ -365,7 +391,7 @@ type TerminalParser = Biparser<A> & {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L546)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L546)
 
 ```
 /**
@@ -384,7 +410,7 @@ const mapTo: (appRouteConstructor: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L323)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L323)
 
 ```
 /**
@@ -399,7 +425,7 @@ const root: Biparser<{}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/route/parser.ts#L586)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/route/parser.ts#L586)
 
 ```
 /**

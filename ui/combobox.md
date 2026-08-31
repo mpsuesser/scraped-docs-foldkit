@@ -2,17 +2,17 @@
 url: https://foldkit.dev/ui/combobox
 title: "Combobox"
 description: "A searchable selection Submodel with parent-controlled filtering, single-select and multi-select modes, and anchored positioning."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Overview
 
 A searchable select with input filtering, keyboard navigation, and anchor positioning. Unlike Listbox (which uses a button trigger), Combobox has a text input for searching. You control the filtering logic: read `model.inputValue` and pass the filtered items array. The parent owns the selection: it passes the chosen value in as `maybeSelectedValue` (multi-select passes `selectedValues`) along with `restingInputValue` (the text the input rests at when closed), and folds the `Selected` and `ClearedSelection` OutMessages into its own state (single-select stores the value, multi-select toggles the value in its array).
 
-Embed Combobox via the [`create<Item>()` factory](https://foldkit.dev/ui/selection-submodels) at module scope: `const CityCombobox = Combobox.create<City>()`. The factory binds the view, update, and imperative helpers to the same `Item` type so the selected value flows through the OutMessage, typed end-to-end. Combobox constrains `Item extends string`.
+Embed Combobox via the [`create<Item>()` factory](https://foldkit.dev/ui/selection-submodels) at module scope: `const CityCombobox = Combobox.create<City>()`. The factory binds the view, update, and programmatic helpers to the same `Item` type, so the `Selected` OutMessage carries a `City`. Combobox constrains `Item extends string`.
 
-For programmatic control in update functions, use `CityCombobox.open(model)`, `CityCombobox.close(model, restingInputValue)`, and `CityCombobox.selectItem(model, item, displayText)`. Each returns `[Model, Commands, Option<OutMessage>]` directly. Single-select `close` takes the resting input text (the selected display text, or empty); `Combobox.Multi` closes with `close(model)` since the multi-select input always rests empty.
+Programmatic helpers are child entry points. Fold `CityCombobox.open` with `Update.foldChildStep`. Fold `CityCombobox.close` and `CityCombobox.selectItem` with `Update.foldChild` because they take additional input. Single-select `close` takes the resting input text (the selected display text, or empty); `Combobox.Multi.close` takes no additional input and uses `Update.foldChildStep` because the multi-select input always rests empty.
 
 What the factory returns is typed [`Combobox.Bundle<Item>`](https://foldkit.dev/ui/selection-submodels#bundle-type) (`Combobox.Multi.Bundle` for the multi-select variant), for the cases where a created bundle has to be named rather than called directly.
 
@@ -30,10 +30,10 @@ Pass `itemToValue` and `itemToDisplayText` to control how items map to values an
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Array, Match as M, Option } from 'effect'
+import { Array, Match as M, Option, Schema as S } from 'effect'
 import { Update } from 'foldkit'
 import { type HtmlBuilder, childAttributes } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Combobox } from '@foldkit/ui'
@@ -54,18 +54,17 @@ const Model = S.Struct({
 })
 
 // In your init function, initialize the Combobox Submodel with a unique id:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     maybeCity: Option.none(),
     combobox: Combobox.init({ id: 'city' }),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Wrap Combobox's Messages so they can flow through your update:
-const GotComboboxMessage = m('GotComboboxMessage', {
-  message: Combobox.Message,
+const Message = defineMessageUnion({
+  GotComboboxMessage: { message: Combobox.Message },
 })
 
 // At module scope, fold the OutMessage into your own Model. \`Selected\`
@@ -79,8 +78,8 @@ const foldComboboxOutMessage = M.type<Combobox.OutMessage<City>>().pipe(
   M.tagsExhaustive({
     Selected:
       ({ value }) =>
-      model => [evo(model, { maybeCity: () => Option.some(value) }), []],
-    ClearedSelection: () => model => [model, []],
+      model => ({ model: evo(model, { maybeCity: () => Option.some(value) }) }),
+    ClearedSelection: () => model => ({ model }),
   }),
 )
 
@@ -92,11 +91,11 @@ const foldCombobox = Update.foldChild({
   update: CityCombobox.update,
   read: (model: Model) => Option.some(model.combobox),
   write: (model, nextCombobox) => evo(model, { combobox: () => nextCombobox }),
-  toParentMessage: message => GotComboboxMessage({ message }),
+  toParentMessage: message => Message.GotComboboxMessage({ message }),
   foldOutMessage: foldComboboxOutMessage,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), call the fold:
+// In the corresponding Message.match handler, call the fold:
 GotComboboxMessage: ({ message }) => foldCombobox(model, message)
 
 const cities: ReadonlyArray<City> = [
@@ -159,7 +158,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) => {
           backdropAttributes: childAttributes([h.Class('fixed inset-0')]),
           anchor: { placement: 'bottom-start', gap: 8, padding: 8 },
         },
-        toParentMessage: message => GotComboboxMessage({ message }),
+        toParentMessage: message => Message.GotComboboxMessage({ message }),
       }),
     ],
   )
@@ -192,10 +191,10 @@ No selection
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Array, Match as M, Option } from 'effect'
+import { Array, Match as M, Option, Schema as S } from 'effect'
 import { Update } from 'foldkit'
 import { type HtmlBuilder, childAttributes } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Combobox } from '@foldkit/ui'
@@ -216,18 +215,17 @@ const Model = S.Struct({
 })
 
 // In your init function, initialize the Combobox Submodel with a unique id:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     selectedCities: [],
     comboboxMulti: Combobox.Multi.init({ id: 'cities-multi' }),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Wrap Combobox's Messages so they can flow through your update:
-const GotComboboxMultiMessage = m('GotComboboxMultiMessage', {
-  message: Combobox.Message,
+const Message = defineMessageUnion({
+  GotComboboxMultiMessage: { message: Combobox.Message },
 })
 
 // At module scope, fold the OutMessage into your own Model. Each \`Selected\`
@@ -241,16 +239,15 @@ const foldComboboxMultiOutMessage = M.type<Combobox.OutMessage<City>>().pipe(
   M.tagsExhaustive({
     Selected:
       ({ value }) =>
-      model => [
-        evo(model, {
+      model => ({
+        model: evo(model, {
           selectedCities: () =>
             Array.contains(model.selectedCities, value)
               ? Array.filter(model.selectedCities, city => city !== value)
               : Array.append(model.selectedCities, value),
         }),
-        [],
-      ],
-    ClearedSelection: () => model => [model, []],
+      }),
+    ClearedSelection: () => model => ({ model }),
   }),
 )
 
@@ -263,11 +260,11 @@ const foldComboboxMulti = Update.foldChild({
   read: (model: Model) => Option.some(model.comboboxMulti),
   write: (model, nextComboboxMulti) =>
     evo(model, { comboboxMulti: () => nextComboboxMulti }),
-  toParentMessage: message => GotComboboxMultiMessage({ message }),
+  toParentMessage: message => Message.GotComboboxMultiMessage({ message }),
   foldOutMessage: foldComboboxMultiOutMessage,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), call the fold:
+// In the corresponding Message.match handler, call the fold:
 GotComboboxMultiMessage: ({ message }) => foldComboboxMulti(model, message)
 
 const cities: ReadonlyArray<City> = [
@@ -336,7 +333,8 @@ const view = (model: Model, h: HtmlBuilder<Message>) => {
           backdropAttributes: childAttributes([h.Class('fixed inset-0')]),
           anchor: { placement: 'bottom-start', gap: 8, padding: 8 },
         },
-        toParentMessage: message => GotComboboxMultiMessage({ message }),
+        toParentMessage: message =>
+          Message.GotComboboxMultiMessage({ message }),
       }),
     ],
   )
@@ -450,7 +448,7 @@ Configuration object passed to `CityCombobox.view`.
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config. The same shape applies to the update returned by `Combobox.Multi.create()`, as in `CitiesCombobox.update`.
+Messages emitted to the parent through the optional `outMessage` field. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config. The same shape applies to the update returned by `Combobox.Multi.create()`, as in `CitiesCombobox.update`.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |

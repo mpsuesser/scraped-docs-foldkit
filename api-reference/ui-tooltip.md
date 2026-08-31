@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-tooltip
 title: "Ui/Tooltip"
 description: "API documentation for the Ui/Tooltip module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Ui/Tooltip
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/tooltip.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/tooltip.ts#L61)
 
 ```
 /** Creates an initial tooltip model from a config. Defaults to hidden. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/tooltip.ts#L57)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/tooltip.ts#L46)
 
 ```
 /**
@@ -41,12 +41,12 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/tooltip.ts#L258)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/tooltip.ts#L224)
 
 ```
 /**
- * Processes a tooltip message and returns the next model, commands, and
- *  an optional OutMessage. `Shown`/`Hidden` fire only on `isOpen`
+ * Processes a Tooltip Message and returns the next Model, optional Commands,
+ *  and an optional OutMessage. `Shown`/`Hidden` fire only on `isOpen`
  *  transitions, so consumers don't get spurious events for messages that
  *  only update hover/focus/delay state without changing visibility.
  */
@@ -71,7 +71,7 @@ function
   } | {
     _tag: "CompletedAnchorTooltip"
   }
-): UpdateReturn
+): Update.ReturnWithOutMessage<Model, Message, OutMessage>
 ```
 
 ## Types
@@ -80,7 +80,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/tooltip.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/tooltip.ts#L55)
 
 ```
 /** Configuration for creating a tooltip model with `init`. */
@@ -94,7 +94,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/tooltip.ts#L288)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/tooltip.ts#L258)
 
 ```
 /**
@@ -120,7 +120,7 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/tooltip.ts#L295)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/tooltip.ts#L265)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -139,7 +139,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/tooltip.ts#L106)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/tooltip.ts#L89)
 
 ```
 /** The anchor-positioning Mount this Tooltip renders on its panel. */
@@ -166,101 +166,35 @@ const AnchorTooltip: MountDefinitionWithArgs<"AnchorTooltip", {
 }>
 ```
 
-### BlurredTrigger
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/message.ts#L13)
-
-```
-/** Sent when focus leaves the trigger. */
-const BlurredTrigger: CallableTaggedStruct<"BlurredTrigger", {}>
-```
-
-### CompletedAnchorTooltip
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/message.ts#L27)
-
-```
-/** Sent when the tooltip panel mounts and Floating UI has positioned it. */
-const CompletedAnchorTooltip: CallableTaggedStruct<"CompletedAnchorTooltip", {}>
-```
-
-### CompletedWaitBeforeShowing
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/message.ts#L23)
-
-```
-/** Sent when the show-delay timer fires. */
-const CompletedWaitBeforeShowing: CallableTaggedStruct<"CompletedWaitBeforeShowing", {
-  version: Number
-}>
-```
-
-### EnteredTrigger
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/message.ts#L7)
-
-```
-/** Sent when the pointer enters the tooltip trigger. */
-const EnteredTrigger: CallableTaggedStruct<"EnteredTrigger", {}>
-```
-
-### FocusedTrigger
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/message.ts#L11)
-
-```
-/** Sent when focus enters the trigger. */
-const FocusedTrigger: CallableTaggedStruct<"FocusedTrigger", {}>
-```
-
-### Hidden
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/message.ts#L69)
-
-```
-/** Emitted once the tooltip transitions to hidden (`isOpen` becomes false). */
-const Hidden: CallableTaggedStruct<"Hidden", {}>
-```
-
-### LeftTrigger
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/message.ts#L9)
-
-```
-/** Sent when the pointer leaves the tooltip trigger. */
-const LeftTrigger: CallableTaggedStruct<"LeftTrigger", {}>
-```
-
 ### Message
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/message.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/message.ts#L7)
 
 ```
 /** Union of all messages the tooltip component can produce. */
-const Message: S.Union<[typeof EnteredTrigger, typeof LeftTrigger, typeof FocusedTrigger, typeof BlurredTrigger, typeof PressedEscape, typeof PressedPointerOnTrigger, typeof CompletedWaitBeforeShowing, typeof CompletedAnchorTooltip]>
+const Message: MessageUnion<{
+  BlurredTrigger: {}
+  CompletedAnchorTooltip: {}
+  CompletedWaitBeforeShowing: {
+    version: Number
+  }
+  EnteredTrigger: {}
+  FocusedTrigger: {}
+  LeftTrigger: {}
+  PressedEscape: {}
+  PressedPointerOnTrigger: {
+    pointerType: String
+  }
+}>
 ```
 
 ### Model
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/tooltip.ts#L38)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/tooltip.ts#L27)
 
 ```
 /** Schema for the tooltip component's state. `isOpen` is visibility; `isHovered` tracks pointer on trigger; `isFocused` tracks tooltip-affirming focus on the trigger (focus arriving without a preceding mouse press, like keyboard, touch, or pen; mouse-click-induced focus is excluded since it doesn't affirm the user wants the tooltip visible); `isDismissed` suppresses re-opening after the user dismissed the tooltip (via Escape) until they disengage (leave or blur). `showDelay` is the hover-to-show duration. `maybeLastPointerType` records the most recent pointer type that pressed the trigger, so a mouse-click-induced focus can be distinguished from other focus. */
@@ -280,61 +214,21 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/message.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/message.ts#L31)
 
 ```
 /** Union of out-messages the tooltip component can produce. */
-const OutMessage: Union<readonly [CallableTaggedStruct<"Shown", {}>, CallableTaggedStruct<"Hidden", {}>]>
-```
-
-### PressedEscape
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/message.ts#L15)
-
-```
-/** Sent when Escape is pressed while the tooltip is visible. */
-const PressedEscape: CallableTaggedStruct<"PressedEscape", {}>
-```
-
-### PressedPointerOnTrigger
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/message.ts#L19)
-
-```
-/**
- * Sent when a pointer presses the trigger. Recorded so the focus that
- *  follows a mouse press can be told apart from focus that affirms the
- *  tooltip (keyboard, touch, or pen).
- */
-const PressedPointerOnTrigger: CallableTaggedStruct<"PressedPointerOnTrigger", {
-  pointerType: String
+const OutMessage: MessageUnion<{
+  Hidden: {}
+  Shown: {}
 }>
-```
-
-### Shown
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/message.ts#L66)
-
-```
-/**
- * Emitted once the tooltip transitions to visible (`isOpen` becomes true).
- *  Consumers typically use this for analytics, instrumentation, or to
- *  coordinate with other transient UI.
- */
-const Shown: CallableTaggedStruct<"Shown", {}>
 ```
 
 ### WaitBeforeShowing
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/tooltip.ts#L96)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/tooltip.ts#L79)
 
 ```
 /**
@@ -354,11 +248,11 @@ const WaitBeforeShowing: CommandDefinitionWithArgs<"WaitBeforeShowing", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/tooltip.ts#L270)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/tooltip.ts#L240)
 
 ```
 /**
- * Reflects an externally-sourced hover show-delay onto the model without
+ * Reflects an externally-sourced hover show-delay onto the Model without
  *  emitting an OutMessage. Use to mirror an external config value (a user
  *  preference, a restored setting) onto the tooltip.
  */
@@ -369,7 +263,7 @@ const reflectShowDelay: Reflect<Model, Duration.Input>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/tooltip/tooltip.ts#L306)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/tooltip/tooltip.ts#L276)
 
 ```
 /**

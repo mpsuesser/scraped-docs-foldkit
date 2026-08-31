@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ai/overview
 title: "AI"
 description: "How Foldkit’s explicit architecture gives coding agents stable boundaries, plus the source, skills, and DevTools MCP references available to them."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # AI
@@ -22,19 +22,25 @@ Architecture is only half of the context. APIs and conventions change, so the ag
 
 Vendor the Foldkit repository into your project as a git subtree:
 
-```sh
+```
 git subtree add --prefix=repos/foldkit https://github.com/foldkit/foldkit.git main --squash
 ```
 
 The subtree gives an agent local access to the framework source, runnable examples, this documentation site, and the production apps built with Foldkit. Treat it as read-only reference material. Application imports should still come from the installed npm packages.
 
-Unlike a submodule, a subtree is committed with your repository. Teammates, CI runners, and cloud agents receive the reference source with a normal clone. Projects created with `create-foldkit-app` include an `AGENTS.md` that points agents to these references and a `.ignore` file that keeps `repos/` out of the editor file tree.
+Unlike a submodule, a subtree is committed with your repository. Teammates, CI runners, and cloud agents receive the reference source with a normal clone. Projects created with `create-foldkit-app` include a `FOLDKIT.md` that points agents to these references, an `AGENTS.md` for your own instructions, and a `.ignore` file that keeps `repos/` out of the editor file tree.
 
 Refresh the subtree when you want the latest source and examples:
 
-```sh
+```
 git subtree pull --prefix=repos/foldkit https://github.com/foldkit/foldkit.git main --squash
 ```
+
+## Keeping FOLDKIT.md Current
+
+`create-foldkit-app` writes `FOLDKIT.md` when it creates the project, and the conventions in it change with the framework. A stale copy can steer an agent toward APIs the installed packages no longer export.
+
+Replace the whole file when you upgrade Foldkit. If you vendor the repository, copy `repos/foldkit/packages/create-foldkit-app/templates/base/FOLDKIT.md` over it. Otherwise take the [current template on GitHub](https://github.com/foldkit/foldkit/blob/main/packages/create-foldkit-app/templates/base/FOLDKIT.md). There is nothing to merge, because your own instructions live in `AGENTS.md`, which the upgrade leaves alone.
 
 ## Foldkit Skills
 
@@ -43,3 +49,9 @@ Foldkit ships [agent skills](https://foldkit.dev/ai/skills) for Claude Code, Cod
 ## DevTools MCP
 
 Skills and source help an agent understand the code. The [DevTools MCP server](https://foldkit.dev/ai/mcp) exposes an application that is currently running. An agent can inspect the current or historical Model, query Message history, compare states, replay the UI, and dispatch Schema-validated Messages.
+
+## Reading This Site as Data
+
+An agent does not have to scrape these pages. Every page is available as Markdown by appending `.md` to its URL or by requesting it with `Accept: text/markdown`, [llms.txt](https://foldkit.dev/llms.txt) indexes the whole site, and [llms-full.txt](https://foldkit.dev/llms-full.txt) is every page in one file.
+
+For structured access there is a read-only JSON [Content API](https://foldkit.dev/api): the page index, one document per page with its Markdown, the documentation sections, the example applications, and the blog. It is versioned, has a published deprecation policy, advertises its rate limit on every response, and answers failures as RFC 9457 problem documents. Every endpoint is described with a typed schema in [openapi.json](https://foldkit.dev/openapi.json), which is what an agent needs to call it as a tool.

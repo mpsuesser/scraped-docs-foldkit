@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/coming-from-tanstack-query
 title: "Coming from TanStack Query"
 description: "Foldkit has no useQuery. AsyncData models remote values, while caching, refetching, invalidation, deduplication, and request races remain visible application policy."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 TanStack Query is excellent at what it does. It combines remote data, a keyed cache, and fetching policy behind hooks and a `QueryClient`. Foldkit has no `useQuery`, and it does not need one.
@@ -52,19 +52,19 @@ const Model = S.Struct({
 
 // MESSAGE
 
-const EnteredPostsRoute = m('EnteredPostsRoute')
-const SettledFetchPosts = m('SettledFetchPosts', {
-  result: S.Result(S.Array(Post), S.String),
+const Message = defineMessageUnion({
+  EnteredPostsRoute: {},
+  SettledFetchPosts: { result: S.Result(S.Array(Post), S.String) },
 })
 
 // COMMAND
 
 const FetchPosts = Command.define('FetchPosts', {
-  messages: [SettledFetchPosts],
+  messages: [Message.SettledFetchPosts],
   execute: pipe(
     fetchPosts,
     Effect.result,
-    Effect.map(result => SettledFetchPosts({ result })),
+    Effect.map(result => Message.SettledFetchPosts({ result })),
   ),
 })
 
@@ -73,17 +73,16 @@ const FetchPosts = Command.define('FetchPosts', {
 M.tagsExhaustive({
   EnteredPostsRoute: () =>
     Option.match(AsyncData.revalidateOrLoad(model.posts), {
-      onNone: () => [model, []],
-      onSome: nextPosts => [
-        evo(model, { posts: () => nextPosts }),
-        [FetchPosts()],
-      ],
+      onNone: () => ({ model }),
+      onSome: nextPosts => ({
+        model: evo(model, { posts: () => nextPosts }),
+        commands: [FetchPosts()],
+      }),
     }),
 
-  SettledFetchPosts: ({ result }) => [
-    evo(model, { posts: AsyncData.settle(result) }),
-    [],
-  ],
+  SettledFetchPosts: ({ result }) => ({
+    model: evo(model, { posts: AsyncData.settle(result) }),
+  }),
 })
 ```
 
@@ -121,10 +120,10 @@ Imagine a search starts a request for A, then starts a request for B before A re
 Foldkit does not automatically cancel or order independent Commands. Thread the query through the Command into its result Message, then compare it with the current Model before accepting the result:
 
 ```
-import { Effect, Match as M, Schema as S, pipe } from 'effect'
+import { Effect, Schema as S, pipe } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
-import { AsyncData, Command, Http } from 'foldkit'
-import { m } from 'foldkit/message'
+import { AsyncData, Command, Http, type Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 const SearchResult = S.Struct({ id: S.String, title: S.String })
@@ -141,20 +140,20 @@ type Model = typeof Model.Type
 
 // MESSAGE
 
-const UpdatedQuery = m('UpdatedQuery', { query: S.String })
-const SettledSearch = m('SettledSearch', {
-  query: S.String,
-  result: S.Result(S.Array(SearchResult), S.String),
+const Message = defineMessageUnion({
+  UpdatedQuery: { query: S.String },
+  SettledSearch: {
+    query: S.String,
+    result: S.Result(S.Array(SearchResult), S.String),
+  },
 })
-
-const Message = S.Union([UpdatedQuery, SettledSearch])
 type Message = typeof Message.Type
 
 // COMMAND
 
 const Search = Command.define('Search', {
   args: { query: S.String },
-  messages: [SettledSearch],
+  messages: [Message.SettledSearch],
   execute: ({ query }) =>
     pipe(
       Effect.gen(function* () {
@@ -169,38 +168,30 @@ const Search = Command.define('Search', {
       }),
       Effect.mapError(error => String(error)),
       Effect.result,
-      Effect.map(result => SettledSearch({ query, result })),
+      Effect.map(result => Message.SettledSearch({ query, result })),
       Effect.provide(Http.layer),
     ),
 })
 
 // UPDATE
 
-const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.withReturnType<
-      readonly [Model, ReadonlyArray<Command.Command<Message>>]
-    >(),
-    M.tagsExhaustive({
-      UpdatedQuery: ({ query }) => [
-        evo(model, {
-          queryInput: () => query,
-          searchResults: () => SearchResultsData.Loading(),
-        }),
-        [Search({ query })],
-      ],
-
-      SettledSearch: ({ query, result }) => {
-        if (query !== model.queryInput) {
-          return [model, []]
-        }
-        return [evo(model, { searchResults: AsyncData.settle(result) }), []]
-      },
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    UpdatedQuery: ({ query }) => ({
+      model: evo(model, {
+        queryInput: () => query,
+        searchResults: () => SearchResultsData.Loading(),
+      }),
+      commands: [Search({ query })],
     }),
-  )
+
+    SettledSearch: ({ query, result }) => {
+      if (query !== model.queryInput) {
+        return { model }
+      }
+      return { model: evo(model, { searchResults: AsyncData.settle(result) }) }
+    },
+  })
 ```
 
 The late response for A sees that its `query` no longer matches `queryInput`, so `update` leaves the Model unchanged. The comparison uses the context the application already cares about. The same pattern works for a search request launched after every keystroke: accept the result only if it still belongs to the current query.

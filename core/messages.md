@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/messages
 title: "Messages"
 description: "Define the facts update can handle as a Schema-backed Message union, with naming conventions for user actions, Command results, and Submodel wrappers."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Messages
@@ -18,22 +18,23 @@ The counter has three Messages:
 
 ```
 import { Schema as S } from 'effect'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 // MESSAGE
 
-// m() gives you a Message type with a callable constructor
-const ClickedDecrement = m('ClickedDecrement')
-const ClickedIncrement = m('ClickedIncrement')
-const ClickedReset = m('ClickedReset')
+// defineMessageUnion() declares the union and its callable constructors together
 
-const Message = S.Union([ClickedDecrement, ClickedIncrement, ClickedReset])
+const Message = defineMessageUnion({
+  ClickedDecrement: {},
+  ClickedIncrement: {},
+  ClickedReset: {},
+})
 type Message = typeof Message.Type
 ```
 
 Messages use verb-first, past-tense names such as `ClickedIncrement`, not `Increment` or `ADD_COUNT`. Prefixes make their causes easy to scan. `Clicked*` records clicks, and `Updated*` records input changes. Command results use `Succeeded*` or `Failed*` when the distinction matters, and `Completed*` otherwise. `Got*` is reserved for results lifted from a child [Submodel](https://foldkit.dev/core/submodel).
 
-The `m()` helper creates a Schema-backed tagged struct with a callable constructor. `m('ClickedIncrement')` provides both the tag that update can match and the `ClickedIncrement()` constructor that creates the Message. `S.Union` then collects every variant into the application’s closed `Message` union.
+The `defineMessageUnion()` helper declares the whole union in one place. Each key becomes a callable constructor on the union, so `Message.ClickedIncrement()` creates the value and `Message.match(message, handlers)` handles every variant exhaustively. Do not destructure the constructors. Keeping `Message` or `OutMessage` at the call site makes the owning domain explicit.
 
 Name the cause
 

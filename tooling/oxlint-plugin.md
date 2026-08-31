@@ -2,8 +2,8 @@
 url: https://foldkit.dev/tooling/oxlint-plugin
 title: "Oxlint Plugin"
 description: "Install and configure @foldkit/oxlint-plugin, then see what each Foldkit-specific rule accepts and rejects."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Oxlint Plugin
@@ -14,7 +14,7 @@ Foldkit projects use `oxlint` for general linting and `@foldkit/oxlint-plugin` f
 
 ## Scaffolded Projects
 
-[Create Foldkit app](https://foldkit.dev/get-started/getting-started) includes `.oxlintrc.json`, a `lint` script, `oxlint`, and `@foldkit/oxlint-plugin`. Generated projects enable a starter set of Foldkit rules:
+[Create Foldkit app](https://foldkit.dev/get-started/getting-started) includes `.oxlintrc.json`, a `lint` script, `oxlint`, and `@foldkit/oxlint-plugin`. Generated projects extend the recommended Foldkit preset:
 
 ```
 {
@@ -48,8 +48,9 @@ Foldkit projects use `oxlint` for general linting and `@foldkit/oxlint-plugin` f
     ],
     "foldkit/no-noop-message": "error",
     "foldkit/got-submodel-message-name": "error",
-    "foldkit/message-binding-matches-tag": "error",
     "foldkit/got-prefix-requires-submodel-payload": "error",
+    "foldkit/no-empty-commands-array": "error",
+    "foldkit/no-empty-to-parent-out-message": "error",
     "foldkit/no-empty-object-tagged-call": "error",
     "foldkit/prefer-callable-message-constructor": "error",
     "foldkit/command-binding-matches-name": "error",
@@ -68,7 +69,19 @@ Foldkit projects use `oxlint` for general linting and `@foldkit/oxlint-plugin` f
 }
 ```
 
-The rest of the plugin's rules are opt-in. Enable one by adding `"foldkit/<rule-name>": "error"` to the `rules` block. The complete rule set is grouped by the part of the architecture it protects below.
+Override an individual rule in the project's `rules` block when an application needs a narrower policy. The complete rule set is grouped by the part of the architecture it protects below.
+
+## Server Portability
+
+### foldkit/no-nonportable-server-globals
+
+The recommended and all presets enable this rule in `entry.server.ts`, `entry.server.tsx`, TypeScript files under a `server` directory, and `prerender.ts` or `prerender.tsx`. Files ending in `.test.ts`, `.test.tsx`, `.spec.ts`, or `.spec.tsx` are excluded.
+
+The rule catches direct runtime reads of common browser-only globals: `document`, `window`, `navigator`, `localStorage`, `sessionStorage`, `history`, `location`, `alert`, `confirm`, `prompt`, `requestAnimationFrame`, `cancelAnimationFrame`, `requestIdleCallback`, `cancelIdleCallback`, `getComputedStyle`, `matchMedia`, `customElements`, `screen`, `IntersectionObserver`, `ResizeObserver`, and `MutationObserver`. It also catches static property reads and destructuring from the global `globalThis` object.
+
+Local bindings, parameters, and type-only `typeof` queries remain valid. `Request`, `Response`, `Headers`, `fetch`, and `URL` remain available for host code. A host-specific file can use an Oxlint disable comment or a narrower config override when it deliberately depends on one deployment target.
+
+This rule is a portability guardrail, not a security boundary or an exhaustive catalog of browser APIs. It does not follow aliases, resolve dynamic property names, inspect dependencies, or match filenames outside the patterns above.
 
 ## Message Naming and Construction
 
@@ -77,43 +90,36 @@ The rest of the plugin's rules are opt-in. Enable one by adding `"foldkit/<rule-
 Rejects catch-all Messages that make update branches and traces less meaningful. Name the event that happened instead.
 
 ```
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 // ❌ Bad
-const NoOp = m('NoOp')
+const BadMessage = defineMessageUnion({
+  NoOp: {},
+})
 
 // ✅ Good
-const ClickedSave = m('ClickedSave')
-```
-
-### foldkit/message-binding-matches-tag
-
-Keeps a Message binding and its m() tag identical, so renames do not leave misleading traces behind.
-
-```
-import { m } from 'foldkit/message'
-
-// ❌ Bad
-const ClickedSave = m('ClickedSubmit')
-
-// ✅ Good
-const ClickedSubmit = m('ClickedSubmit')
+const Message = defineMessageUnion({
+  ClickedSave: {},
+})
 ```
 
 ### foldkit/no-empty-object-tagged-call
 
-Catches empty-object calls to no-field Message constructors. A no-field Message should be called with no arguments.
+Catches no-field variants called with an unnecessary empty object. The rule recognizes namespaces whose names end in Message, Route, or State, plus unions declared in the same file with Foldkit's union helpers. Call those constructors with no arguments.
 
 ```
-import { m } from 'foldkit/message'
+import { defineTaggedUnion } from 'foldkit/schema'
 
-const ClickedSave = m('ClickedSave')
+const Submission = defineTaggedUnion({
+  NotSubmitted: {},
+  Submitting: {},
+})
 
 // ❌ Bad
-const badMessage = ClickedSave({})
+const badSubmission = Submission.NotSubmitted({})
 
 // ✅ Good
-const goodMessage = ClickedSave()
+const goodSubmission = Submission.NotSubmitted()
 ```
 
 ### foldkit/prefer-callable-message-constructor
@@ -122,10 +128,11 @@ Prevents constructing Messages by typing or casting object literals. Use the cal
 
 ```
 import { Schema as S } from 'effect'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
-const ClickedSave = m('ClickedSave')
-const Message = S.Union([ClickedSave])
+const Message = defineMessageUnion({
+  ClickedSave: {},
+})
 type Message = typeof Message.Type
 
 // ❌ Bad
@@ -134,7 +141,7 @@ const badMessage: Message = {
 }
 
 // ✅ Good
-const goodMessage = ClickedSave()
+const goodMessage = Message.ClickedSave()
 ```
 
 ## Command Shape
@@ -146,20 +153,22 @@ Keeps a Command binding name in sync with the name passed to Command.define.
 ```
 import { Effect } from 'effect'
 import { Command } from 'foldkit'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
-const CompletedFetchUser = m('CompletedFetchUser')
+const Message = defineMessageUnion({
+  CompletedFetchUser: {},
+})
 
 // ❌ Bad
 const SaveUser = Command.define('FetchUser', {
-  messages: [CompletedFetchUser],
-  execute: Effect.succeed(CompletedFetchUser()),
+  messages: [Message.CompletedFetchUser],
+  execute: Effect.succeed(Message.CompletedFetchUser()),
 })
 
 // ✅ Good
 const FetchUser = Command.define('FetchUser', {
-  messages: [CompletedFetchUser],
-  execute: Effect.succeed(CompletedFetchUser()),
+  messages: [Message.CompletedFetchUser],
+  execute: Effect.succeed(Message.CompletedFetchUser()),
 })
 ```
 
@@ -207,6 +216,33 @@ const FetchWeather = Command.define('FetchWeather', {
 ```
 
 ## Model Updates
+
+### foldkit/no-empty-commands-array
+
+Catches a literal empty array assigned to `commands`. An ordinary update, init, boot, or component helper omits `commands` when it statically has no Commands. Computed collections remain valid, as does `commands: optionalCommands ?? []` where the next operation requires an array.
+
+The rule can remove the property when doing so will not disturb comments, spreads, or duplicate `commands` keys. It still reports the unsafe cases without a fix.
+
+This is a syntax-only rule. It flags any literal property named `commands`, even when the object is unrelated to an update result. If `commands: []` is genuine domain data, suppress the rule on that property with `// oxlint-disable-next-line foldkit/no-empty-commands-array`.
+
+```
+declare const model: Model
+declare const commands: ReadonlyArray<Command<Message>>
+declare const optionalCommands: ReadonlyArray<Command<Message>> | undefined
+declare const buildCommands: (model: Model) => ReadonlyArray<Command<Message>>
+
+// ❌ Bad
+// A producer that statically creates no Commands omits the field.
+const noCommands = { model, commands: [] }
+
+// ✅ Good
+const omittedCommands = { model }
+const existingCommands = { model, commands }
+const computedCommands = { model, commands: buildCommands(model) }
+
+// Code that spreads, concatenates, executes, or asserts on Commands needs an array.
+const normalizedCommands = { model, commands: optionalCommands ?? [] }
+```
 
 ### foldkit/no-spread-in-evo
 
@@ -381,6 +417,71 @@ const goodRows = (tags: ReadonlyArray<Tag>, h: HtmlBuilder<Message>) =>
 
 ## Purity Boundaries
 
+### foldkit/no-impure-call-at-decision-time
+
+Flags these direct calls unless they appear inside a recognized callback that Effect or a Foldkit lifecycle primitive defers until execution:
+
+- `Date.now()`
+- `Date()` (which ignores its arguments)
+- zero-argument `new Date()`
+- `Math.random()`
+- `performance.now()`
+- `crypto.randomUUID()`
+- `crypto.getRandomValues()`
+
+The rule reports the call wherever it is written. Assigning its result to a local variable before passing that variable to a Command does not defer it. Neither does writing the call directly in the Command args. JavaScript obtains the value before constructing the Command in both cases.
+
+Obtain time or randomness inside the Command's `execute` callback instead. Use `Clock` or `Random` for time and ordinary randomness. For UUIDs and cryptographic randomness, use the `Crypto.Crypto` service with the platform's Crypto layer. Return the value in the result Message.
+
+The rule recognizes the deferred callback positions in Effect and Stream. It also recognizes these Foldkit lifecycle callbacks when they are declared inline:
+
+- `execute` in `Command.define`, `Mount.define`, and `Mount.defineStream`
+- `dependenciesToStream` in `Subscription.make`
+- `acquire` and `release` in `ManagedResource.make`
+
+Not every function passed to Effect is deferred. The rule still checks functions stored as Effect values, `Effect.fromOption`'s `onNone`, callbacks passed to `Effect.run*`, transform callbacks after the body of `Effect.fn` or `Effect.fnUntraced`, and callbacks passed to Effect APIs whose names end in `Eager`. It also checks the surrounding lifecycle builders and their synchronous Model projections. For example, `Subscription.make`'s builder and `modelToDependencies` are not execution callbacks.
+
+The recommended and all presets disable this rule in runtime entry files (`entry.ts`, `entry.tsx`, `entry.client.ts`, `entry.client.tsx`, `entry.server.ts`, and `entry.server.tsx`), where Flags and host integrations obtain outside values. The `.tsx` forms support JSX hosts, such as a React application that embeds Foldkit; Foldkit views still use the Html builder.
+
+The presets also disable the rule in TypeScript files under a `server` directory and in `prerender.ts` or `prerender.tsx`. Those files belong to the host rather than the Foldkit application state machine, so their request handlers and build scripts do not return values through Messages. Test files remain excluded with the rest of the Foldkit rules.
+
+This direct-call catalog does not prove that a file is pure. It recognizes static global member paths and ignores locally shadowed globals. It does not follow a method alias such as `const now = Date.now` to a later `now()` call, nor does it inspect a helper's call graph.
+
+```
+import { Crypto, Effect, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+
+import { BrowserCrypto } from '@effect/platform-browser'
+
+const SaveDraftWithId = Command.define('SaveDraftWithId', {
+  args: { body: S.String, draftId: S.String },
+  messages: [Message.CompletedSaveDraftWithId],
+  execute: ({ draftId }) =>
+    Effect.succeed(Message.CompletedSaveDraftWithId({ draftId })),
+})
+
+// ❌ Bad: assigning the UUID first does not defer the call.
+const saveBad = (body: string) => {
+  const draftId = crypto.randomUUID()
+
+  return SaveDraftWithId({ body, draftId })
+}
+
+// ✅ Good: the runtime obtains the UUID when it executes the Command.
+const SaveDraft = Command.define('SaveDraft', {
+  args: { body: S.String },
+  messages: [Message.CompletedSaveDraft],
+  execute: ({ body: _body }) =>
+    Effect.gen(function* () {
+      const crypto = yield* Crypto.Crypto
+      const draftId = yield* Effect.orDie(crypto.randomUUIDv4)
+      return Message.CompletedSaveDraft({ draftId })
+    }).pipe(Effect.provide(BrowserCrypto.layer)),
+})
+
+const saveGood = (body: string) => SaveDraft({ body })
+```
+
 ### foldkit/no-module-level-mutable-state
 
 Rejects module-level let and var bindings, which hold state outside the Model. Move the data into the Model, or scope a live handle to a lifecycle primitive like Mount or ManagedResource.
@@ -424,23 +525,61 @@ const goodApp = Runtime.makeApplication({ Model, init, update, view })
 
 ## Submodel Wiring
 
+### foldkit/no-empty-to-parent-out-message
+
+Flags an inline `toParentOutMessage` mapper that directly returns `undefined`. That mapper forwards nothing to the parent, so omit the property.
+
+Partial forwarding is valid. Match every child OutMessage variant. Return a parent OutMessage for each variant you want to forward, and return `undefined` for each variant that stops at this Submodel.
+
+The rule fixes straightforward object literals. If removal could disturb a comment, spread, dynamic computed property, or duplicate `toParentOutMessage` key, it reports the problem without changing the code. It does not inspect async functions, generators, getters, setters, or mappers referenced by name.
+
+```
+import { Option } from 'effect'
+import { Update } from 'foldkit'
+import { evo } from 'foldkit/struct'
+
+import * as Settings from './settings'
+
+// ❌ Bad
+const badFoldSettings = Update.foldChild({
+  update: Settings.setTheme,
+  read: (model: Model) => Option.some(model.settings),
+  write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
+  toParentMessage: message => Message.GotSettingsMessage({ message }),
+  foldOutMessage: foldSettingsOutMessage,
+  // This mapper directly returns undefined, so it forwards no OutMessage.
+  toParentOutMessage: () => undefined,
+})
+
+// ✅ Good
+// This fold emits no parent OutMessage. Other branches in the same update may
+// still emit an OutMessage.
+const foldSettings = Update.foldChild({
+  update: Settings.setTheme,
+  read: (model: Model) => Option.some(model.settings),
+  write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
+  toParentMessage: message => Message.GotSettingsMessage({ message }),
+  foldOutMessage: foldSettingsOutMessage,
+})
+```
+
 ### foldkit/got-submodel-message-name
 
 Requires wrapper Messages around Submodel Messages to use the Got*Message convention.
 
 ```
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as Child from './child'
 
 // ❌ Bad
-const ChildChanged = m('ChildChanged', {
-  message: Child.Message,
+const BadMessage = defineMessageUnion({
+  ChildChanged: { message: Child.Message },
 })
 
 // ✅ Good
-const GotChildMessage = m('GotChildMessage', {
-  message: Child.Message,
+const Message = defineMessageUnion({
+  GotChildMessage: { message: Child.Message },
 })
 ```
 
@@ -450,36 +589,38 @@ Reserves the Got* prefix for Submodel wrappers. Any Got-prefixed Message must in
 
 ```
 import { Schema as S } from 'effect'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as Child from './child'
 
 {
   // ❌ Bad: Got is reserved for Submodel wrappers.
-  const GotWeather = m('GotWeather', {
-    temperature: S.Number,
+  const Message = defineMessageUnion({
+    GotWeather: { temperature: S.Number },
   })
 }
 
 {
   // ✅ Good: use a name that does not start with Got for Command results.
-  const ReceivedWeather = m('ReceivedWeather', {
-    temperature: S.Number,
+  const Message = defineMessageUnion({
+    ReceivedWeather: { temperature: S.Number },
   })
 }
 
 {
   // ❌ Bad: Got-prefixed wrappers must carry child Messages.
-  const GotChildMessage = m('GotChildMessage', {
-    id: S.String,
+  const Message = defineMessageUnion({
+    GotChildMessage: { id: S.String },
   })
 }
 
 {
   // ✅ Good: Got wraps a child Message.
-  const GotChildMessage = m('GotChildMessage', {
-    id: S.String,
-    message: Child.Message,
+  const Message = defineMessageUnion({
+    GotChildMessage: {
+      id: S.String,
+      message: Child.Message,
+    },
   })
 }
 ```
@@ -510,21 +651,25 @@ Keeps a Got wrapper payload to the child Message plus routing keys: message, id,
 
 ```
 import { Schema as S } from 'effect'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 // ❌ Bad
 // A Got wrapper carries the child Message plus routing context only. Extra
 // payload like timestamp belongs on the child Message or a parent Message.
-const GotSettingsMessage = m('GotSettingsMessage', {
-  message: Settings.Message,
-  timestamp: S.Number,
+const BadMessage = defineMessageUnion({
+  GotSettingsMessage: {
+    message: Settings.Message,
+    timestamp: S.Number,
+  },
 })
 
 // ✅ Good
 // message plus routing keys (id, or keys ending in Id) only.
-const GotCounterMessage = m('GotCounterMessage', {
-  id: S.String,
-  message: Counter.Message,
+const Message = defineMessageUnion({
+  GotCounterMessage: {
+    id: S.String,
+    message: Counter.Message,
+  },
 })
 ```
 
@@ -570,27 +715,25 @@ const goodUpdate = (model: Model, message: Message) =>
 
 ### foldkit/mount-factory-must-use-element
 
-Requires a Mount factory to read or write its element. If it never touches the element, the cause was misidentified and Mount is the wrong primitive.
+Requires a Mount's `execute` to read or write its element. If it never touches the element, the cause was misidentified and Mount is the wrong primitive.
 
 ```
 import { Effect } from 'effect'
 import { Mount } from 'foldkit'
 
 // ❌ Bad
-// The factory never reads its element, so Mount is the wrong primitive here.
-const MountAnalytics = Mount.define(
-  'MountAnalytics',
-  {},
-  CompletedMountAnalytics,
-)(() => () => Effect.sync(() => startAnalytics()))
+// execute never reads its element, so Mount is the wrong primitive here.
+const MountAnalytics = Mount.define('MountAnalytics', {
+  messages: [CompletedMountAnalytics],
+  execute: () => Effect.sync(() => startAnalytics()),
+})
 
 // ✅ Good
-// The factory reads its element to wire the observer.
-const MountResize = Mount.define(
-  'MountResize',
-  {},
-  CompletedMountResize,
-)(() => element => Effect.sync(() => resizeObserver.observe(element)))
+// execute reads its element to wire the observer.
+const MountResize = Mount.define('MountResize', {
+  messages: [CompletedMountResize],
+  execute: ({ element }) => Effect.sync(() => resizeObserver.observe(element)),
+})
 ```
 
 ### foldkit/no-duplicate-onmount-per-element

@@ -2,11 +2,9 @@
 url: https://foldkit.dev/elm/foldkit-vs-elm-side-by-side
 title: "Foldkit vs Elm: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and Elm. Same architecture, different host: ports vs Commands, decoders vs Schema, and what each side gives up."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
-
-# Foldkit vs Elm: Side by Side
 
 ## Overview
 
@@ -24,69 +22,16 @@ The Foldkit version is in the [examples gallery](https://foldkit.dev/example-app
 
 Most concepts translate directly:
 
-Elm
-
-Foldkit
-
-State
-
-`Model`
-
-Model declared with Schema
-
-Events
-
-`Msg`
-
-custom type
-
-Message Schema union
-
-Transitions
-
-`update : Msg -> Model -> ( Model, Cmd Msg )`
-
-`update(model, message): [Model, Command[]]`
-
-Side effects
-
-`Cmd Msg`
-
-Command for Message-driven work, plus other lifecycle primitives
-
-Event streams
-
-`Sub Msg`
-
-Subscription backed by an Effect Stream
-
-Boot data
-
-Flags decoded or accepted by
-
-`init`
-
-[Flags](https://foldkit.dev/core/init-and-flags)
-
-Schema supplied at boot
-
-JS interop
-
-Flags, ports, and custom elements
-
-Direct JavaScript APIs,
-
-[Mount](https://foldkit.dev/core/mount)
-
-, and CustomElement
-
-Nested state
-
-Nested Elm Architecture composition
-
-[Submodel](https://foldkit.dev/core/submodel)
-
-helpers for the same pattern
+|  | Elm | Foldkit |
+| --- | --- | --- |
+| State | `Model` | Model declared with Schema |
+| Events | `Msg` custom type | Message Schema union |
+| Transitions | `update : Msg -> Model -> ( Model, Cmd Msg )` | `update(model, message): Update.Return<Model, Message>` |
+| Side effects | `Cmd Msg` | Command for Message-driven work, plus other lifecycle primitives |
+| Event streams | `Sub Msg` | Subscription backed by an Effect Stream |
+| Boot data | Flags decoded or accepted by `init` | [Flags](https://foldkit.dev/core/init-and-flags) Schema supplied at boot |
+| JS interop | Flags, ports, and custom elements | Direct JavaScript APIs, [Mount](https://foldkit.dev/core/mount), and CustomElement |
+| Nested state | Nested Elm Architecture composition | [Submodel](https://foldkit.dev/core/submodel) helpers for the same pattern |
 
 ### Elm Msg
 
@@ -122,71 +67,33 @@ type Msg
 The current Foldkit application has 25 parent Messages:
 
 ```
-const PressedCell = m('PressedCell', { x: S.Number, y: S.Number })
-const EnteredCell = m('EnteredCell', { x: S.Number, y: S.Number })
-const LeftCanvas = m('LeftCanvas')
-const ReleasedMouse = m('ReleasedMouse')
-const SelectedColor = m('SelectedColor', { colorIndex: PaletteIndex })
-const SelectedTool = m('SelectedTool', { tool: Tool })
-const SelectedGridSize = m('SelectedGridSize', { size: S.Number })
-const ToggledMirrorHorizontal = m('ToggledMirrorHorizontal')
-const ToggledMirrorVertical = m('ToggledMirrorVertical')
-const ClickedUndo = m('ClickedUndo')
-const ClickedRedo = m('ClickedRedo')
-const ClickedHistoryStep = m('ClickedHistoryStep', { stepIndex: S.Number })
-const ClickedRedoStep = m('ClickedRedoStep', { stepIndex: S.Number })
-const ClickedClear = m('ClickedClear')
-const ClickedExport = m('ClickedExport')
-const SucceededExportPng = m('SucceededExportPng')
-const FailedExportPng = m('FailedExportPng', { error: S.String })
-const GotErrorDialogMessage = m('GotErrorDialogMessage', {
-  message: Dialog.Message,
+const Message = defineMessageUnion({
+  PressedCell: { x: S.Number, y: S.Number },
+  EnteredCell: { x: S.Number, y: S.Number },
+  LeftCanvas: {},
+  ReleasedMouse: {},
+  SelectedColor: { colorIndex: PaletteIndex },
+  SelectedTool: { tool: Tool },
+  SelectedGridSize: { size: S.Number },
+  ToggledMirrorHorizontal: {},
+  ToggledMirrorVertical: {},
+  ClickedUndo: {},
+  ClickedRedo: {},
+  ClickedHistoryStep: { stepIndex: S.Number },
+  ClickedRedoStep: { stepIndex: S.Number },
+  ClickedClear: {},
+  ClickedExport: {},
+  SucceededExportPng: {},
+  FailedExportPng: { error: S.String },
+  GotErrorDialogMessage: { message: Dialog.Message },
+  GotThemeListboxMessage: { message: Listbox.Message },
+  GotToolRadioGroupMessage: { message: RadioGroup.Message },
+  GotGridSizeRadioGroupMessage: { message: RadioGroup.Message },
+  GotPaletteRadioGroupMessage: { message: RadioGroup.Message },
+  ConfirmedGridSizeChange: {},
+  GotGridSizeConfirmDialogMessage: { message: Dialog.Message },
+  CompletedSaveCanvas: {},
 })
-const ConfirmedGridSizeChange = m('ConfirmedGridSizeChange')
-const GotGridSizeConfirmDialogMessage = m('GotGridSizeConfirmDialogMessage', {
-  message: Dialog.Message,
-})
-const GotThemeListboxMessage = m('GotThemeListboxMessage', {
-  message: Listbox.Message,
-})
-const GotToolRadioGroupMessage = m('GotToolRadioGroupMessage', {
-  message: RadioGroup.Message,
-})
-const GotGridSizeRadioGroupMessage = m('GotGridSizeRadioGroupMessage', {
-  message: RadioGroup.Message,
-})
-const GotPaletteRadioGroupMessage = m('GotPaletteRadioGroupMessage', {
-  message: RadioGroup.Message,
-})
-const CompletedSaveCanvas = m('CompletedSaveCanvas')
-
-const Message = S.Union([
-  PressedCell,
-  EnteredCell,
-  LeftCanvas,
-  ReleasedMouse,
-  SelectedColor,
-  SelectedTool,
-  SelectedGridSize,
-  ToggledMirrorHorizontal,
-  ToggledMirrorVertical,
-  ClickedUndo,
-  ClickedRedo,
-  ClickedHistoryStep,
-  ClickedRedoStep,
-  ClickedClear,
-  ClickedExport,
-  SucceededExportPng,
-  FailedExportPng,
-  GotErrorDialogMessage,
-  GotThemeListboxMessage,
-  GotToolRadioGroupMessage,
-  GotGridSizeRadioGroupMessage,
-  GotPaletteRadioGroupMessage,
-  ConfirmedGridSizeChange,
-  GotGridSizeConfirmDialogMessage,
-  CompletedSaveCanvas,
-])
 type Message = typeof Message.Type
 ```
 
@@ -251,55 +158,50 @@ withSave model =
 ### Foldkit update
 
 ```
-export const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    withUpdateReturn,
-    M.tagsExhaustive({
-      PressedCell: ({ x, y }) =>
-        M.value(model.tool).pipe(
-          withUpdateReturn,
-          M.when('Brush', () => [
-            evo(model, {
-              grid: () => applyBrush(model, x, y),
-              undoStack: () => pushHistory(model.undoStack, model.grid),
-              redoStack: () => [],
-              isDrawing: () => true,
-            }),
-            [],
-          ]),
-          M.when('Fill', () => {
-            const nextModel = evo(model, {
-              grid: () => applyFill(model, x, y),
-              undoStack: () => pushHistory(model.undoStack, model.grid),
-              redoStack: () => [],
-            })
-            return [nextModel, [saveCanvas(nextModel)]]
+import { type Update } from 'foldkit'
+
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    PressedCell: ({ x, y }) =>
+      M.value(model.tool).pipe(
+        withUpdateReturn,
+        M.when('Brush', () => ({
+          model: evo(model, {
+            grid: () => applyBrush(model, x, y),
+            undoStack: () => pushHistory(model.undoStack, model.grid),
+            redoStack: () => [],
+            isDrawing: () => true,
           }),
-          // ...
-        ),
-      ClickedUndo: () =>
-        Array.match(model.undoStack, {
-          onEmpty: () => [model, []],
-          onNonEmpty: nonEmptyUndoStack => {
-            const nextModel = evo(model, {
-              grid: () => Array.lastNonEmpty(nonEmptyUndoStack),
-              undoStack: () => Array.initNonEmpty(nonEmptyUndoStack),
-              redoStack: () => [...model.redoStack, model.grid],
-            })
-            return [nextModel, [saveCanvas(nextModel)]]
-          },
+        })),
+        M.when('Fill', () => {
+          const nextModel = evo(model, {
+            grid: () => applyFill(model, x, y),
+            undoStack: () => pushHistory(model.undoStack, model.grid),
+            redoStack: () => [],
+          })
+          return { model: nextModel, commands: [saveCanvas(nextModel)] }
         }),
-      // ... 23 more handlers
-    }),
-  )
+        // ...
+      ),
+    ClickedUndo: () =>
+      Array.match(model.undoStack, {
+        onEmpty: () => ({ model }),
+        onNonEmpty: nonEmptyUndoStack => {
+          const nextModel = evo(model, {
+            grid: () => Array.lastNonEmpty(nonEmptyUndoStack),
+            undoStack: () => Array.initNonEmpty(nonEmptyUndoStack),
+            redoStack: Array.append(model.grid),
+          })
+          return { model: nextModel, commands: [saveCanvas(nextModel)] }
+        },
+      }),
+    // ... 23 more handlers
+  })
 ```
 
-`case msg of` becomes `M.tagsExhaustive`. Elm record updates become `evo` transformations. `( model, Cmd.none )` becomes `[model, []]`.
+`case msg of` becomes `Message.match`. Elm record updates become `evo` transformations. `( model, Cmd.none )` becomes `{ model }`.
 
-Elm enforces exhaustive pattern matching as part of the language. Foldkit obtains the same compile-time failure at a match written with `M.tagsExhaustive`. That is the required Foldkit update style, but TypeScript itself does not prevent someone from writing a non-exhaustive alternative.
+Elm enforces exhaustive pattern matching as part of the language. Foldkit obtains the same compile-time failure at a match written with `Message.match`. That is the required Foldkit update style, but TypeScript itself does not prevent someone from writing a non-exhaustive alternative.
 
 Elm record updates and `evo` both preserve references to unchanged nested values. The rendering section shows how each application uses that reference stability.
 
@@ -808,41 +710,13 @@ The Elm version implements its Dialogs, RadioGroups, switches, and theme picker 
 
 The Foldkit version uses [Foldkit UI](https://foldkit.dev/ui/overview). Its Dialogs, RadioGroups, and Listbox are Submodels, while Switch is a controlled render helper. Selected values remain in the parent Model. Each stateful component reports changes through OutMessages that the parent folds into its own update.
 
-Elm application
-
-Foldkit application
-
-Dialog, RadioGroup, Switch, Listbox
-
-Implemented in the application
-
-Dialog, Listbox, and RadioGroup Submodels; controlled Switch helper
-
-Accessibility behavior
-
-Implemented and tested by the application
-
-Implemented and tested by Foldkit UI
-
-Selected values
-
-Parent Model
-
-Parent Model
-
-Transient interaction state
-
-Parent Model and view logic
-
-Child Models in the application Model
-
-Composition
-
-Nested architecture written by the app
-
-[Submodel](https://foldkit.dev/core/submodel)
-
-helpers standardize parent-child delegation
+|  | Elm application | Foldkit application |
+| --- | --- | --- |
+| Dialog, RadioGroup, Switch, Listbox | Implemented in the application | Dialog, Listbox, and RadioGroup Submodels; controlled Switch helper |
+| Accessibility behavior | Implemented and tested by the application | Implemented and tested by Foldkit UI |
+| Selected values | Parent Model | Parent Model |
+| Transient interaction state | Parent Model and view logic | Child Models in the application Model |
+| Composition | Nested architecture written by the app | [Submodel](https://foldkit.dev/core/submodel) helpers standardize parent-child delegation |
 
 The comparison is between the two checked-in applications, not the entire Elm package ecosystem. An Elm application can use community UI packages or organize nested state differently.
 
@@ -858,7 +732,7 @@ suite =
     test "undo restores the previous grid state" <|
         \() ->
             let
-                -- The Cmd in each returned tuple is discarded with `_`.
+                -- The Cmd in each returned tuple is discarded with \`_\`.
                 -- A Cmd is opaque: there is no way to look inside one,
                 -- so there is no way to assert that ReleasedMouse
                 -- actually triggered a save.

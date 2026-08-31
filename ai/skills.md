@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ai/skills
 title: "Skills"
 description: "Install and use Foldkit’s repository skills for architecture guidance, program generation, and application audits."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Skills
@@ -44,7 +44,7 @@ Open Skills in the app sidebar to view the skills available across your projects
 
 [OpenCode](https://opencode.ai/docs/skills/) discovers skills in `.opencode/skills/`, `.claude/skills/`, and `.agents/skills/`, walking from the current directory to the git root. Copy or symlink the Foldkit skill directories into one of those locations.
 
-OpenCode reads the `SKILL.md` frontmatter directly and ignores `agents/openai.yaml`. It also reads the `AGENTS.md` that `create-foldkit-app` includes.
+OpenCode reads the `SKILL.md` frontmatter directly and ignores `agents/openai.yaml`. It also reads the `AGENTS.md` that `create-foldkit-app` includes, which points it at `FOLDKIT.md`.
 
 ## Available Skills
 

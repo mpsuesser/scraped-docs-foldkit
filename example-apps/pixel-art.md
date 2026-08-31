@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/pixel-art
 title: "Pixel Art"
 description: "A pixel art editor with immutable undo and redo, time-travel history, Foldkit UI components, lazy views, Subscriptions, Commands that report errors as Messages, and localStorage persistence through Flags."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -73,8 +73,8 @@ export const flags: Effect.Effect<Flags> = Effect.gen(function* () {
 
 // INIT
 
-export const init: Runtime.ApplicationInit<Model, Message, Flags> = flags => [
-  {
+export const init: Runtime.ApplicationInit<Model, Message, Flags> = flags => ({
+  model: {
     grid: Option.match(flags.maybeSavedCanvas, {
       onNone: () => createEmptyGrid(DEFAULT_GRID_SIZE),
       onSome: ({ grid }) => grid,
@@ -106,8 +106,7 @@ export const init: Runtime.ApplicationInit<Model, Message, Flags> = flags => [
     gridSizeRadioGroup: RadioGroup.init({ id: GRID_SIZE_RADIO_GROUP_ID }),
     paletteRadioGroup: RadioGroup.init({ id: PALETTE_RADIO_GROUP_ID }),
   },
-  [],
-]
+})
 
 export { Message, Model, subscriptions, update, view }
 ```

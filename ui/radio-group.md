@@ -2,15 +2,15 @@
 url: https://foldkit.dev/ui/radio-group
 title: "Radio Group"
 description: "A selection Submodel for radio options, with roving tabindex, keyboard navigation, and read-only behavior."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Overview
 
 A single-selection component with roving tabindex keyboard navigation. Arrow keys simultaneously move focus and select the option. There is no separate focus-then-select step.
 
-RadioGroup is a Submodel that keeps its own keyboard-focus state, but the parent owns the selection. Store the selected value in your Model, pass it in as `selectedValue`, and fold the `Selected` OutMessage back into that field in your `GotRadioGroupMessage` handler. Both vertical and horizontal orientation are supported.
+RadioGroup is a Submodel that keeps its own keyboard-focus state, but the parent owns the selection. Store the selected value in your Model, pass it in as `selectedValue`, and fold the `Selected` OutMessage back into that field through [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child). Both vertical and horizontal orientation are supported.
 
 What `RadioGroup.create<Value>()` returns is typed [`RadioGroup.Bundle<Value>`](https://foldkit.dev/ui/selection-submodels#bundle-type), for the cases where a created bundle has to be named rather than called directly.
 
@@ -24,7 +24,7 @@ Check out how RadioGroup is wired up in a [real Foldkit app](https://github.com/
 
 Declare the radio group once at module scope with `RadioGroup.create<Value>()` to lift the option type through `view` and `update` without casting. Read the current selection from your Model into `selectedValue`, pass the typed `options` array, and provide a `toView` callback that receives one `OptionInfo<Value>` per option (with attribute bundles for the option, label, and description).
 
-In your `GotRadioGroupMessage` handler, delegate to the bundle's `update` and store the value the `Selected` OutMessage carries. Moving focus onto the newly-selected option is the radio group's own concern: it returns a `FocusOption` Command from its `update`, so the parent only has to pass the mapped Commands along.
+Pass the bundle's `update` to `Update.foldChild`, then store the value from the `Selected` OutMessage in `foldOutMessage`. Moving focus onto the newly selected option is the radio group's own concern. The fold maps the `FocusOption` Command into the parent Message type.
 
 Startup
 
@@ -51,7 +51,7 @@ $160/mo
 import { Match as M, Option, Schema as S } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { RadioGroup } from '@foldkit/ui'
@@ -71,20 +71,20 @@ type Model = typeof Model.Type
 
 // In your init function, initialize the RadioGroup Submodel with a unique
 // id and start with nothing selected:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     planRadioGroup: RadioGroup.init({ id: 'plan' }),
     maybePlan: Option.none(),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Embed the RadioGroup Message in your parent Message:
-const GotPlanRadioGroupMessage = m('GotPlanRadioGroupMessage', {
-  message: RadioGroup.Message,
+const Message = defineMessageUnion({
+  GotPlanRadioGroupMessage: { message: RadioGroup.Message },
 })
-type Message = typeof GotPlanRadioGroupMessage.Type // ...united with your others
+
+type Message = typeof Message.Type // ...united with your others
 
 // Declare a typed RadioGroup factory once at module scope. The Value
 // generic types option.value in toView so the consumer can switch on it
@@ -108,7 +108,7 @@ const foldPlanRadioGroupOutMessage = M.type<RadioGroup.OutMessage<Plan>>().pipe(
   M.tagsExhaustive({
     Selected:
       ({ value }) =>
-      model => [evo(model, { maybePlan: () => Option.some(value) }), []],
+      model => ({ model: evo(model, { maybePlan: () => Option.some(value) }) }),
   }),
 )
 
@@ -120,11 +120,11 @@ const foldPlanRadioGroup = Update.foldChild({
   read: (model: Model) => Option.some(model.planRadioGroup),
   write: (model, nextPlanRadioGroup) =>
     evo(model, { planRadioGroup: () => nextPlanRadioGroup }),
-  toParentMessage: message => GotPlanRadioGroupMessage({ message }),
+  toParentMessage: message => Message.GotPlanRadioGroupMessage({ message }),
   foldOutMessage: foldPlanRadioGroupOutMessage,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), call the fold:
+// In the corresponding Message.match handler, call the fold:
 GotPlanRadioGroupMessage: ({ message }) => foldPlanRadioGroup(model, message)
 
 // Inside your view function, embed the radio group via h.submodel and pass
@@ -164,7 +164,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
           }),
         ),
     },
-    toParentMessage: message => GotPlanRadioGroupMessage({ message }),
+    toParentMessage: message => Message.GotPlanRadioGroupMessage({ message }),
   })
 ```
 
@@ -240,7 +240,7 @@ Configuration object passed to the view returned by `RadioGroup.create<Value>()`
 | `model` | `RadioGroup.Model` | — | The radio group state from your parent Model. |
 | `toParentMessage` | `(childMessage: RadioGroup.Message) => ParentMessage` | — | Wraps RadioGroup Messages in your parent Message type for Submodel delegation. |
 | `options` | `ReadonlyArray<Value>` | — | The list of option values, in display order. When the radio group is declared via `RadioGroup.create<MyUnion>()`, `Value` is your union type and each `OptionInfo.value` is typed as `MyUnion`. |
-| `selectedValue` | `Option<Value>` | — | The current selection, owned by the parent Model and passed back in on each render. `aria-checked` and the `data-checked` marker derive from it, as does the roving tabindex whenever focus has not diverged. Update it by folding the `Selected` OutMessage in your `GotRadioGroupMessage` handler. `Option.none()` renders with nothing selected. |
+| `selectedValue` | `Option<Value>` | — | The current selection, owned by the parent Model and passed back in on each render. `aria-checked` and the `data-checked` marker derive from it, as does the roving tabindex whenever focus has not diverged. Update it in the `foldOutMessage` of your RadioGroup fold. `Option.none()` renders with nothing selected. |
 | `ariaLabel` | `string` | — | Accessible label for the radio group. |
 | `toView` | `(render: RenderInfo<Value>) => Html` | — | Callback that receives the `group` attribute bundle, one `OptionInfo<Value>` per option, the current `selectedValue`, and the `hiddenInput` attributes. Returns the composed layout. |
 | `orientation` | `'Vertical' \| 'Horizontal'` | `'Vertical'` | Layout orientation. Controls arrow key direction and `aria-orientation`. |
@@ -278,8 +278,8 @@ Each entry in `RenderInfo.options`. Carries the value, derived state flags, and 
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler.
+Messages emitted to the parent through the optional `outMessage` field. Match on the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `Selected` | `{ value: Value; index: number }` | — | Emitted when an option is committed via click or keyboard. Carries both the option's value (typed as your `Value` union via `RadioGroup.create<Value>()`) and its index. A read-only group never emits it. Pattern-match the third tuple element of the bundle's `update` in your `GotRadioGroupMessage` handler. |
+| `Selected` | `{ value: Value; index: number }` | — | Emitted when an option is committed via click or keyboard. Carries both the option's value (typed as your `Value` union via `RadioGroup.create<Value>()`) and its index. A read-only group never emits it. Match it in the `foldOutMessage` of your RadioGroup fold. |

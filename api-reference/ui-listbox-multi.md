@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-listbox-multi
 title: "Ui/Listbox/Multi"
 description: "API documentation for the Ui/Listbox/Multi module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Ui/Listbox/Multi
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/multi.ts#L120)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/multi.ts#L99)
 
 ```
 /**
@@ -33,7 +33,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/multi.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/multi.ts#L31)
 
 ```
 /** Creates an initial multi-select listbox model from a config. Defaults to closed with no active item. */
@@ -62,7 +62,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/multi.ts#L78)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/multi.ts#L83)
 
 ```
 /**
@@ -73,10 +73,10 @@ type
  *  rather than calling `create` itself.
  */
 type Bundle = Readonly<{
-  close: (model: Model) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Value>>]
-  open: (model: Model) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Value>>]
-  selectItem: (model: Model, item: Value) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Value>>]
-  update: (model: Model, message: Message) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Value>>]
+  close: (model: Model) => BundleUpdateReturn<Value>
+  open: (model: Model) => BundleUpdateReturn<Value>
+  selectItem: (model: Model, item: Value) => BundleUpdateReturn<Value>
+  update: (model: Model, message: Message) => BundleUpdateReturn<Value>
   view: SubmodelView<Model, Message, ViewInputs<Item, Value>>
 }>
 ```
@@ -85,7 +85,7 @@ type Bundle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/multi.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/multi.ts#L28)
 
 ```
 /** Configuration for creating a multi-select listbox model with `init`. `isAnimated` enables CSS transition coordination (default `false`). `isModal` locks page scroll and inerts other elements when open (default `false`). */
@@ -96,7 +96,7 @@ type InitConfig = BaseInitConfig
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/multi.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/multi.ts#L65)
 
 ```
 /** Per-render view inputs passed to the view via `h.submodel`'s `viewInputs` field. */
@@ -109,7 +109,7 @@ type ViewInputs = BaseViewInputs<Item, Value>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/multi.ts#L23)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/multi.ts#L19)
 
 ```
 /** Schema for the multi-select listbox's private interaction state (open/closed status, active item, activation trigger, typeahead search). The selection is owned by the parent and passed in via `ViewInputs.selectedValues`. */

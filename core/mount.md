@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/mount
 title: "Mount"
 description: "Run DOM work while a specific rendered element exists. Mount supplies the live Element, emits declared result Messages, and keeps setup paired with cleanup."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Overview
@@ -12,7 +12,7 @@ Most Foldkit code is declarative. The [view](https://foldkit.dev/core/view) is a
 
 Mount is the escape hatch for work whose cause is a particular element existing in the DOM. `OnMount` supplies the live `Element`, starts the work when that element enters the DOM, and tears it down when the element leaves.
 
-Use `Mount.define` for work that produces one Message when it starts. The returned `Effect<Message>` emits that Message, then its scope remains open until unmount so cleanup registered with `Effect.acquireRelease` runs at the right time. Use `Mount.defineStream` when listeners or observers on the element must emit a continuing `Stream<Message>`.
+Use `Mount.define` for work that produces one Message when it starts. Its `execute` receives the live element and returns an `Effect<Message>` that emits that Message, then its scope remains open until unmount so cleanup registered with `Effect.acquireRelease` runs at the right time. Use `Mount.defineStream` when listeners or observers on the element must emit a continuing `Stream<Message>`.
 
 Both forms require at least one declared result Message. When no result needs to change the Model, return a descriptive `Completed*` Message and leave the Model unchanged in update. The Message keeps the effect visible to DevTools, Scene tests, and replay.
 
@@ -50,9 +50,11 @@ Portal-to-body is a small example. When an overlay enters the DOM, its Mount mov
 import { Effect } from 'effect'
 import { Mount } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
-const CompletedPortalToBody = m('CompletedPortalToBody')
+const Message = defineMessageUnion({
+  CompletedPortalToBody: {},
+})
 
 // Portal-to-body is a per-instance lifecycle effect that uses the element
 // directly. The Effect's acquireRelease moves the element to document.body
@@ -60,18 +62,17 @@ const CompletedPortalToBody = m('CompletedPortalToBody')
 // the element Mount provides, idempotent and safe to re-run during
 // DevTools time-travel.
 
-const PortalToBody = Mount.define(
-  'PortalToBody',
-  CompletedPortalToBody,
-)(element =>
-  Effect.gen(function* () {
-    yield* Effect.acquireRelease(
-      Effect.sync(() => document.body.appendChild(element)),
-      () => Effect.sync(() => element.remove()),
-    )
-    return CompletedPortalToBody()
-  }),
-)
+const PortalToBody = Mount.define('PortalToBody', {
+  messages: [Message.CompletedPortalToBody],
+  execute: ({ element }) =>
+    Effect.gen(function* () {
+      yield* Effect.acquireRelease(
+        Effect.sync(() => document.body.appendChild(element)),
+        () => Effect.sync(() => element.remove()),
+      )
+      return Message.CompletedPortalToBody()
+    }),
+})
 
 const overlayView = (h: HtmlBuilder<Message>): Html =>
   h.div([h.Class('fixed inset-0 bg-black/50'), h.OnMount(PortalToBody())])
@@ -79,7 +80,7 @@ const overlayView = (h: HtmlBuilder<Message>): Html =>
 
 Two rules for Mount work
 
-First, the factory must use the live element. If it does not read or write that element, a Message or Model condition is probably the real cause. Second, the work must be safe to repeat whenever that element is inserted again. DOM measurement, paired DOM manipulation, observers, and element-owned library instances fit these rules.
+First, `execute` must use the live element. If it does not read or write that element, a Message or Model condition is probably the real cause. Second, the work must be safe to repeat whenever that element is inserted again. DOM measurement, paired DOM manipulation, observers, and element-owned library instances fit these rules.
 
 Attach one Mount per element
 
@@ -91,15 +92,19 @@ DevTools re-renders historical Models. Elements inserted during replay run their
 
 ## Per-Instance Args
 
-Mount factories often need an input that differs by element instance, such as an initial scroll position, chart data, or a stable host id. Declare a Schema record of `args` with the same shape used by [Commands](https://foldkit.dev/core/commands):
+A Mount often needs an input that differs by element instance, such as an initial scroll position, chart data, or a stable host id. Declare those under `args`, using the same Schema record shape a [Command](https://foldkit.dev/core/commands) takes. `args`, `messages`, and `execute` are all named fields on one config object. `execute` receives the live element as `element` alongside the declared args, so an args field named `element` is rejected where you declare it:
 
-```ts
-Mount.define(name, args, ...results)(args => element => Effect<Message>)
+```
+Mount.define(name, {
+  args: argSchemas,
+  messages: [ResultMessage],
+  execute: ({ element, ...argValues }) => Effect<Message>,
+})
 ```
 
-Calling the Definition with an args record creates the MountAction passed to `OnMount`. `Mount.defineStream` supports the same overload and returns a `Stream<Message>` from its factory instead.
+Calling the Definition with an args record creates the MountAction passed to `OnMount`. That call never runs `execute`. The runtime calls it when the element enters the DOM, so nothing `execute` does happens inside the pure view that built the action. `Mount.defineStream` takes the same fields, and its `execute` returns a `Stream<Message>` instead.
 
-Args are only per-instance inputs. Module constants stay in lexical scope, app-wide services come from Foldkit `Resources`, Model-owned handles come from `ManagedResources`, and Effect services remain available through `yield*` inside the factory.
+Args are only per-instance inputs. Module constants stay in lexical scope, app-wide services come from Foldkit `Resources`, Model-owned handles come from `ManagedResources`, and Effect services remain available through `yield*` inside `execute`.
 
 Args surface in DevTools and tests
 
@@ -107,7 +112,7 @@ DevTools shows the args beside the Mount name. Scene tests can target one instan
 
 Args are captured at mount
 
-The factory receives the args from the render that inserts the element. Later renders create new MountActions, but a reused DOM node does not run the factory again. Name values for that lifecycle, such as `initialScroll` or `seedValue`, rather than implying that they stay current.
+`execute` receives the args from the render that inserts the element. Later renders create new MountActions, but a reused DOM node does not run `execute` again. Name values for that lifecycle, such as `initialScroll` or `seedValue`, rather than implying that they stay current.
 
 When a later Message changes the Model and should trigger new DOM work, return a Command from that Message's update handler. A Subscription is appropriate when a Model dependency controls the lifetime of an external stream or a paired DOM state, or when a browser event must be handled synchronously, such as calling `preventDefault` inside its listener. Mount args are not reactive properties for either case.
 
@@ -121,46 +126,44 @@ Construct the handle in an acquire Effect, return the Mount's result Message, an
 import { Effect, Schema as S } from 'effect'
 import { Mount } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
-const SucceededMountChart = m('SucceededMountChart')
-const FailedMountChart = m('FailedMountChart', { reason: S.String })
+const Message = defineMessageUnion({
+  SucceededMountChart: {},
+  FailedMountChart: { reason: S.String },
+})
 
 // Mount.define gives the action a name and constrains what Messages it can
 // produce, plus an args record so the chart's per-instance data flows through
-// declared values rather than a closure. The runtime invokes the bound factory
-// on insert, runs the Effect to produce one Message, dispatches it, and closes
-// the scope on destroy (firing any acquireRelease finalizers).
+// declared values rather than a closure. The runtime calls execute with the
+// live element on insert, runs the Effect to produce one Message, dispatches
+// it, and closes the scope on destroy (firing any acquireRelease finalizers).
 
 const ChartData = S.Array(S.Number)
 type ChartData = typeof ChartData.Type
 
-const MountChart = Mount.define(
-  'MountChart',
-  { data: ChartData },
-  SucceededMountChart,
-  FailedMountChart,
-)(
-  ({ data }) =>
-    element =>
-      Effect.gen(function* () {
-        yield* Effect.acquireRelease(
-          Effect.tryPromise(() => import('some-chart-library')).pipe(
-            Effect.map(({ Chart }) => new Chart(element, { data })),
-          ),
-          chart => Effect.sync(() => chart.destroy()),
-        )
-        return SucceededMountChart()
-      }).pipe(
-        Effect.catch(error =>
-          Effect.succeed(
-            FailedMountChart({
-              reason: error instanceof Error ? error.message : String(error),
-            }),
-          ),
+const MountChart = Mount.define('MountChart', {
+  args: { data: ChartData },
+  messages: [Message.SucceededMountChart, Message.FailedMountChart],
+  execute: ({ element, data }) =>
+    Effect.gen(function* () {
+      yield* Effect.acquireRelease(
+        Effect.tryPromise(() => import('some-chart-library')).pipe(
+          Effect.map(({ Chart }) => new Chart(element, { data })),
+        ),
+        chart => Effect.sync(() => chart.destroy()),
+      )
+      return Message.SucceededMountChart()
+    }).pipe(
+      Effect.catch(error =>
+        Effect.succeed(
+          Message.FailedMountChart({
+            reason: error instanceof Error ? error.message : String(error),
+          }),
         ),
       ),
-)
+    ),
+})
 
 const chartView = (data: ChartData, h: HtmlBuilder<Message>): Html =>
   h.div([h.Class('w-[480px] h-[320px]'), h.OnMount(MountChart({ data }))])

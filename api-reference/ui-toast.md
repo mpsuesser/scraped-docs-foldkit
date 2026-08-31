@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-toast
 title: "Ui/Toast"
 description: "API documentation for the Ui/Toast module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Ui/Toast
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/index.ts#L147)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/toast/index.ts#L136)
 
 ## Types
 
@@ -22,7 +22,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/index.ts#L111)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/toast/index.ts#L100)
 
 ```
 /**
@@ -41,7 +41,7 @@ type EntryHandlers = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/schema.ts#L134)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/toast/schema.ts#L120)
 
 ```
 /**
@@ -60,7 +60,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/update.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/toast/update.ts#L42)
 
 ```
 /**
@@ -78,94 +78,38 @@ type ShowInput = Readonly<{
 
 ## Constants
 
-### CompletedWaitBeforeDismissal
+### Message
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/schema.ts#L76)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/toast/schema.ts#L69)
 
 ```
-/**
- * Sent when an entry's auto-dismiss timer fires. Carries a version echoed
- *  from the scheduling moment so stale timers (from hover or manual dismiss)
- *  are discarded.
- */
-const CompletedWaitBeforeDismissal: CallableTaggedStruct<"CompletedWaitBeforeDismissal", {
-  entryId: String
-  version: Number
-}>
-```
-
-### Dismissed
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/schema.ts#L70)
-
-```
-/**
- * Sent when an entry should begin dismissing. Starts the leave animation;
- *  the entry is removed from the stack when `TransitionedOut` fires.
- */
-const Dismissed: CallableTaggedStruct<"Dismissed", {
-  entryId: String
-}>
-```
-
-### DismissedAll
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/schema.ts#L72)
-
-```
-/** Sent when every currently-visible entry should begin dismissing. */
-const DismissedAll: CallableTaggedStruct<"DismissedAll", {}>
-```
-
-### GotAnimationMessage
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/schema.ts#L87)
-
-```
-/** Wraps a single entry's Animation submodel message for delegation. */
-const GotAnimationMessage: CallableTaggedStruct<"GotAnimationMessage", {
-  entryId: String
-  message: Union<[CallableTaggedStruct<"Showed", {}>, CallableTaggedStruct<"Hid", {}>, CallableTaggedStruct<"CompletedWaitForPaint", {}>, CallableTaggedStruct<"EndedAnimation", {}>]>
-}>
-```
-
-### HoveredEntry
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/schema.ts#L82)
-
-```
-/**
- * Sent when the pointer enters an entry. Pauses the auto-dismiss timer by
- *  advancing the entry's version.
- */
-const HoveredEntry: CallableTaggedStruct<"HoveredEntry", {
-  entryId: String
-}>
-```
-
-### LeftEntry
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/schema.ts#L85)
-
-```
-/**
- * Sent when the pointer leaves an entry. Restarts the auto-dismiss timer
- *  with the entry's full duration.
- */
-const LeftEntry: CallableTaggedStruct<"LeftEntry", {
-  entryId: String
+/** Payload-independent Message variants shared by every bound Toast module. */
+const Message: MessageUnion<{
+  CompletedWaitBeforeDismissal: {
+    entryId: String
+    version: Number
+  }
+  Dismissed: {
+    entryId: String
+  }
+  DismissedAll: {}
+  GotAnimationMessage: {
+    entryId: String
+    message: MessageUnion<{
+      CompletedWaitForPaint: {}
+      EndedAnimation: {}
+      Hid: {}
+      Showed: {}
+    }>
+  }
+  HoveredEntry: {
+    entryId: String
+  }
+  LeftEntry: {
+    entryId: String
+  }
 }>
 ```
 
@@ -173,7 +117,7 @@ const LeftEntry: CallableTaggedStruct<"LeftEntry", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/schema.ts#L22)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/toast/schema.ts#L22)
 
 ```
 /** Where the toast viewport is anchored on the screen and how entries stack. */
@@ -184,7 +128,7 @@ const Position: Literals<readonly ["TopLeft", "TopCenter", "TopRight", "BottomLe
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/schema.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/toast/schema.ts#L16)
 
 ```
 /**
@@ -201,7 +145,7 @@ const Variant: Literals<readonly ["Info", "Success", "Warning", "Error"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/toast/update.ts#L59)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/toast/update.ts#L53)
 
 ```
 /**

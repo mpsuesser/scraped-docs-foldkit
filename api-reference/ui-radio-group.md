@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-radio-group
 title: "Ui/RadioGroup"
 description: "API documentation for the Ui/RadioGroup module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Ui/RadioGroup
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L471)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L454)
 
 ```
 /**
@@ -29,8 +29,8 @@ function
  *  // In view (selectedValue is the parent-owned selection):
  *  h.submodel({ view: PlanRadioGroup.view, viewInputs: { selectedValue, ... }, ... })
  * 
- *  // In update, fold the Selected OutMessage into your Model:
- *  const [next, commands, maybeOutMessage] = PlanRadioGroup.update(model, message)
+ *  // In the parent update, pass PlanRadioGroup.update to Update.foldChild
+ *  // and fold the Selected OutMessage into your Model.
  *  ```
  * 
  *  The internal view stays typed `ReadonlyArray<string>`; consumers can
@@ -44,7 +44,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L95)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L89)
 
 ```
 /**
@@ -61,7 +61,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L441)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L428)
 
 ```
 /**
@@ -71,7 +71,7 @@ type
  *  the bundle rather than calling `create` itself.
  */
 type Bundle = Readonly<{
-  update: (model: Model, message: Message) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Value>>]
+  update: (model: Model, message: Message) => Update.ReturnWithOutMessage<Model, Message, OutMessage<Value>>
   view: SubmodelView<Model, Message, ViewInputs<Value>>
 }>
 ```
@@ -80,7 +80,7 @@ type Bundle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L88)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L82)
 
 ```
 /** Configuration for creating a radio group model with `init`. */
@@ -93,7 +93,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L161)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L147)
 
 ```
 /**
@@ -125,7 +125,7 @@ type OptionInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L78)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L67)
 
 ```
 /**
@@ -140,7 +140,7 @@ type OutMessage = Selected<Value>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L185)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L171)
 
 ```
 /**
@@ -169,10 +169,9 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L59)
 
 ```
-/** Sent to the parent when an option is committed via click or keyboard. Carries both the option's value (typed as `Value` via `RadioGroup.create<Value>()`) and its index. Generic at the type level; the schema stores `value: string` and the factory's fenced cast types it as `Value`. */
 type Selected = Readonly<{
   _tag: "Selected"
   index: number
@@ -184,7 +183,7 @@ type Selected = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L205)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L191)
 
 ```
 /**
@@ -217,22 +216,11 @@ type ViewInputs = Readonly<{
 
 ## Constants
 
-### CompletedFocusOption
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L51)
-
-```
-/** Sent when the focus-option command completes. */
-const CompletedFocusOption: CallableTaggedStruct<"CompletedFocusOption", {}>
-```
-
 ### FocusOption
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L111)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L105)
 
 ```
 /** Moves focus to the option at the given index. */
@@ -244,38 +232,31 @@ const FocusOption: CommandDefinitionWithArgs<"FocusOption", {
 }, never, never>>
 ```
 
-### FocusedOption
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L49)
-
-```
-/**
- * Sent when an option receives keyboard focus without being committed, which
- *  is how a read-only group navigates.
- */
-const FocusedOption: CallableTaggedStruct<"FocusedOption", {
-  index: Number
-}>
-```
-
 ### Message
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L54)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L43)
 
 ```
 /** Union of all messages the radio group can produce. */
-const Message: S.Union<[typeof SelectedOption, typeof FocusedOption, typeof CompletedFocusOption]>
+const Message: MessageUnion<{
+  CompletedFocusOption: {}
+  FocusedOption: {
+    index: Number
+  }
+  SelectedOption: {
+    index: Number
+    value: String
+  }
+}>
 ```
 
 ### Model
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L33)
 
 ```
 /**
@@ -295,7 +276,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L24)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L25)
 
 ```
 /** Controls the radio group layout direction and which arrow keys navigate between options. */
@@ -306,45 +287,17 @@ const Orientation: Literals<readonly ["Horizontal", "Vertical"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L78)
-
-```
-/** Union of out-messages the radio group can produce. Surfaced as the third element of `update`'s return tuple and pattern-matched by the parent. */
-const OutMessage: Union<readonly [
-  CallableTaggedStruct<"Selected", {
-    index: Number
-    value: String
-  }>
-]>
-```
-
-### Selected
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L66)
-
-```
-/** Sent to the parent when an option is committed via click or keyboard. Carries both the option's value (typed as `Value` via `RadioGroup.create<Value>()`) and its index. Generic at the type level; the schema stores `value: string` and the factory's fenced cast types it as `Value`. */
-const Selected: CallableTaggedStruct<"Selected", {
-  index: Number
-  value: String
-}>
-```
-
-### SelectedOption
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/radioGroup/index.ts#L43)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/radioGroup/index.ts#L67)
 
 ```
 /**
- * Sent when an option is committed via click or keyboard. Commits the option
- *  as the new selection and moves focus onto it.
+ * Union of OutMessages the radio group can produce. The parent's
+ *  `Update.foldChild` config handles them through `foldOutMessage`.
  */
-const SelectedOption: CallableTaggedStruct<"SelectedOption", {
-  index: Number
-  value: String
+const OutMessage: MessageUnion<{
+  Selected: {
+    index: Number
+    value: String
+  }
 }>
 ```

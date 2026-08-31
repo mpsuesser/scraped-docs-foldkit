@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-listbox
 title: "Ui/Listbox"
 description: "API documentation for the Ui/Listbox module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Ui/Listbox
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L289)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L196)
 
 ```
 /**
@@ -31,7 +31,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/single.ts#L157)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/single.ts#L135)
 
 ```
 /**
@@ -46,9 +46,8 @@ function
  *  // In view:
  *  h.submodel({ view: ColorListbox.view, ... })
  * 
- *  // In update:
- *  const [next, commands, maybeOutMessage] = ColorListbox.update(model, message)
- *  // maybeOutMessage: Option<Listbox.OutMessage<Color>>
+ *  // In the parent update, pass ColorListbox.update to Update.foldChild and
+ *  // handle Listbox.OutMessage<Color> in foldOutMessage.
  *  ```
  * 
  *  Two type params support object-typed items with an `itemToValue`
@@ -65,7 +64,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/single.ts#L36)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/single.ts#L32)
 
 ```
 /** Creates an initial single-select listbox model from a config. Defaults to closed with no active item. */
@@ -94,7 +93,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L54)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L52)
 
 ```
 /** Schema for the activation trigger: whether the user interacted via mouse or keyboard. */
@@ -105,15 +104,15 @@ type ActivationTrigger = Literals<readonly ["Pointer", "Keyboard"]>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L808)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L669)
 
 ```
 /**
  * Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field.
  * 
  *  The Listbox emits a `Selected({ value })` OutMessage on commit.
- *  Consumers pattern-match this in their `GotListboxMessage` handler:
- *  single-select stores the value, multi-select toggles its membership.
+ *  Fold it in the Listbox's `Update.foldChild` config: single-select stores
+ *  the value, while multi-select toggles its membership.
  */
 type BaseViewInputsCommon = Readonly<{
   anchor: AnchorConfig
@@ -158,7 +157,7 @@ type BaseViewInputsCommon = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/single.ts#L100)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/single.ts#L105)
 
 ```
 /**
@@ -169,10 +168,10 @@ type
  *  `create` itself.
  */
 type Bundle = Readonly<{
-  close: (model: Model) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Value>>]
-  open: (model: Model) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Value>>]
-  selectItem: (model: Model, item: Value) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Value>>]
-  update: (model: Model, message: Message) => readonly [Model, ReadonlyArray<Command.Command<Message>>, Option.Option<OutMessage<Value>>]
+  close: (model: Model) => BundleUpdateReturn<Value>
+  open: (model: Model) => BundleUpdateReturn<Value>
+  selectItem: (model: Model, item: Value) => BundleUpdateReturn<Value>
+  update: (model: Model, message: Message) => BundleUpdateReturn<Value>
   view: SubmodelView<Model, Message, ViewInputs<Item, Value>>
 }>
 ```
@@ -181,7 +180,7 @@ type Bundle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L798)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L659)
 
 ```
 /** Configuration for a group heading rendered above a group of items. */
@@ -195,7 +194,7 @@ type GroupHeading = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/single.ts#L33)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/single.ts#L29)
 
 ```
 /** Configuration for creating a single-select listbox model with `init`. `isAnimated` enables CSS transition coordination (default `false`). `isModal` locks page scroll and inerts other elements when open (default `false`). */
@@ -206,7 +205,7 @@ type InitConfig = BaseInitConfig
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L792)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L653)
 
 ```
 /** Configuration for an individual listbox item's appearance. */
@@ -220,7 +219,7 @@ type ItemConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L866)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L727)
 
 ```
 /**
@@ -243,7 +242,7 @@ type ItemToValueInput = [Item] extends [string]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L267)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L172)
 
 ```
 /**
@@ -259,10 +258,9 @@ type OutMessage = Selected<Value>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L257)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L166)
 
 ```
-/** Sent when the user activates an item (single-select commit or multi-select toggle). Carries the neutral fact that the item was activated; the parent owns the selection and decides what it means (single-select sets it, multi-select toggles membership). Generic over `Value extends string`: the runtime schema stores `value: string`, but the type-level OutMessage exposes `value: Value` so consumers who supply `items: ReadonlyArray<MyUnion>` receive `value: MyUnion` from `update<MyUnion>` without casting. The cast is fenced inside this module's `update` return, sound because the value was extracted from the items array the consumer supplied. */
 type Selected = Readonly<{
   _tag: "Selected"
   value: Value
@@ -273,7 +271,7 @@ type Selected = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/single.ts#L65)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/single.ts#L64)
 
 ```
 /** Per-render view inputs passed to the view via `h.submodel`'s `viewInputs` field. */
@@ -284,25 +282,11 @@ type ViewInputs = BaseViewInputsCommon<Item> & Readonly<{
 
 ## Constants
 
-### ActivatedItem
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L115)
-
-```
-/** Sent when an item is highlighted via arrow keys or mouse hover. Includes activation trigger. */
-const ActivatedItem: CallableTaggedStruct<"ActivatedItem", {
-  activationTrigger: Literals<readonly ["Pointer", "Keyboard"]>
-  index: Number
-}>
-```
-
 ### AnchorListbox
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L751)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L616)
 
 ```
 /**
@@ -344,22 +328,11 @@ const AnchorListbox: MountDefinitionWithArgs<"AnchorListbox", {
 }>
 ```
 
-### BlurredItems
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L113)
-
-```
-/** Sent when the listbox items container loses focus. */
-const BlurredItems: CallableTaggedStruct<"BlurredItems", {}>
-```
-
 ### ClickItem
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L389)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L288)
 
 ```
 /** Programmatically clicks the active listbox item's DOM element. */
@@ -371,156 +344,11 @@ const ClickItem: CommandDefinitionWithArgs<"ClickItem", {
 }, never, never>>
 ```
 
-### Closed
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L111)
-
-```
-/** Sent when the listbox closes via Escape key or backdrop click. */
-const Closed: CallableTaggedStruct<"Closed", {}>
-```
-
-### CompletedAnchorListbox
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L165)
-
-```
-/** Sent when the listbox items panel mounts and Floating UI has positioned it. Update no-ops; surfaces the positioning side effect for DevTools. */
-const CompletedAnchorListbox: CallableTaggedStruct<"CompletedAnchorListbox", {}>
-```
-
-### CompletedClickItem
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L157)
-
-```
-/** Sent when the programmatic item click command completes. */
-const CompletedClickItem: CallableTaggedStruct<"CompletedClickItem", {}>
-```
-
-### CompletedDelayClearSearch
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L133)
-
-```
-/** Sent after the search debounce period to clear the accumulated query. */
-const CompletedDelayClearSearch: CallableTaggedStruct<"CompletedDelayClearSearch", {
-  version: Number
-}>
-```
-
-### CompletedFocusButton
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L151)
-
-```
-/** Sent when the focus-button command completes after closing. */
-const CompletedFocusButton: CallableTaggedStruct<"CompletedFocusButton", {}>
-```
-
-### CompletedFocusItems
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L153)
-
-```
-/** Sent when the focus-items command completes after opening. */
-const CompletedFocusItems: CallableTaggedStruct<"CompletedFocusItems", {}>
-```
-
-### CompletedInertOthers
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L147)
-
-```
-/** Sent when the inert-others command completes. */
-const CompletedInertOthers: CallableTaggedStruct<"CompletedInertOthers", {}>
-```
-
-### CompletedLockScroll
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L143)
-
-```
-/** Sent when the scroll lock command completes. */
-const CompletedLockScroll: CallableTaggedStruct<"CompletedLockScroll", {}>
-```
-
-### CompletedPortalListboxBackdrop
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L167)
-
-```
-/** Sent when the listbox backdrop mounts and is portaled to the document body. Update no-ops; surfaces the portal side effect for DevTools. */
-const CompletedPortalListboxBackdrop: CallableTaggedStruct<"CompletedPortalListboxBackdrop", {}>
-```
-
-### CompletedRestoreInert
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L149)
-
-```
-/** Sent when the restore-inert command completes. */
-const CompletedRestoreInert: CallableTaggedStruct<"CompletedRestoreInert", {}>
-```
-
-### CompletedScrollIntoView
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L155)
-
-```
-/** Sent when the scroll-into-view command completes after keyboard activation. */
-const CompletedScrollIntoView: CallableTaggedStruct<"CompletedScrollIntoView", {}>
-```
-
-### CompletedUnlockScroll
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L145)
-
-```
-/** Sent when the scroll unlock command completes. */
-const CompletedUnlockScroll: CallableTaggedStruct<"CompletedUnlockScroll", {}>
-```
-
-### DeactivatedItem
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L120)
-
-```
-/** Sent when the mouse leaves an enabled item. */
-const DeactivatedItem: CallableTaggedStruct<"DeactivatedItem", {}>
-```
-
 ### DelayClearSearch
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L399)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L298)
 
 ```
 /** Waits for the typeahead search debounce period before clearing the query. */
@@ -536,7 +364,7 @@ const DelayClearSearch: CommandDefinitionWithArgs<"DelayClearSearch", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L408)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L307)
 
 ```
 /** Detects whether the listbox button moved or the leave animation ended. Whichever comes first; both outcomes signal the Animation submodel that leave is complete. */
@@ -560,7 +388,7 @@ const DetectMovementOrAnimationEnd: CommandDefinitionWithArgs<"DetectMovementOrA
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L359)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L258)
 
 ```
 /** Moves focus back to the listbox button after closing. */
@@ -575,7 +403,7 @@ const FocusButton: CommandDefinitionWithArgs<"FocusButton", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L369)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L268)
 
 ```
 /** Moves focus to the listbox items container after opening. */
@@ -586,35 +414,11 @@ const FocusItems: CommandDefinitionWithArgs<"FocusItems", {
 }, never, never>>
 ```
 
-### GotAnimationMessage
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L171)
-
-```
-/** Wraps an Animation submodel message for delegation. */
-const GotAnimationMessage: CallableTaggedStruct<"GotAnimationMessage", {
-  message: Union<[CallableTaggedStruct<"Showed", {}>, CallableTaggedStruct<"Hid", {}>, CallableTaggedStruct<"CompletedWaitForPaint", {}>, CallableTaggedStruct<"EndedAnimation", {}>]>
-}>
-```
-
-### IgnoredMouseClick
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L159)
-
-```
-/** Sent when a mouse click on the button is ignored because pointer-down already handled the toggle. */
-const IgnoredMouseClick: CallableTaggedStruct<"IgnoredMouseClick", {}>
-```
-
 ### InertOthers
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L343)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L242)
 
 ```
 /** Marks all elements outside the listbox as inert for modal behavior. */
@@ -629,7 +433,7 @@ const InertOthers: CommandDefinitionWithArgs<"InertOthers", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L333)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L232)
 
 ```
 /** Prevents page scrolling while the listbox is open in modal mode. */
@@ -642,18 +446,72 @@ const LockScroll: CommandDefinitionNoArgs<"LockScroll", Effect<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L181)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L105)
 
 ```
 /** Union of all messages the listbox component can produce. */
-const Message: S.Union<[typeof Opened, typeof Closed, typeof BlurredItems, typeof ActivatedItem, typeof DeactivatedItem, typeof SelectedItem, typeof MovedPointerOverItem, typeof RequestedItemClick, typeof Searched, typeof CompletedDelayClearSearch, typeof CompletedLockScroll, typeof CompletedUnlockScroll, typeof CompletedInertOthers, typeof CompletedRestoreInert, typeof CompletedFocusButton, typeof CompletedFocusItems, typeof CompletedScrollIntoView, typeof CompletedClickItem, typeof IgnoredMouseClick, typeof SuppressedSpaceScroll, typeof SuppressedItemCommit, typeof CompletedAnchorListbox, typeof CompletedPortalListboxBackdrop, typeof GotAnimationMessage, typeof PressedPointerOnButton]>
+const Message: MessageUnion<{
+  ActivatedItem: {
+    activationTrigger: Literals<readonly ["Pointer", "Keyboard"]>
+    index: Number
+  }
+  BlurredItems: {}
+  Closed: {}
+  CompletedAnchorListbox: {}
+  CompletedClickItem: {}
+  CompletedDelayClearSearch: {
+    version: Number
+  }
+  CompletedFocusButton: {}
+  CompletedFocusItems: {}
+  CompletedInertOthers: {}
+  CompletedLockScroll: {}
+  CompletedPortalListboxBackdrop: {}
+  CompletedRestoreInert: {}
+  CompletedScrollIntoView: {}
+  CompletedUnlockScroll: {}
+  DeactivatedItem: {}
+  GotAnimationMessage: {
+    message: MessageUnion<{
+      CompletedWaitForPaint: {}
+      EndedAnimation: {}
+      Hid: {}
+      Showed: {}
+    }>
+  }
+  IgnoredMouseClick: {}
+  MovedPointerOverItem: {
+    index: Number
+    screenX: Number
+    screenY: Number
+  }
+  Opened: {
+    maybeActiveItemIndex: Option<Number>
+  }
+  PressedPointerOnButton: {
+    button: Number
+    pointerType: String
+  }
+  RequestedItemClick: {
+    index: Number
+  }
+  Searched: {
+    key: String
+    maybeTargetIndex: Option<Number>
+  }
+  SelectedItem: {
+    item: String
+  }
+  SuppressedItemCommit: {}
+  SuppressedSpaceScroll: {}
+}>
 ```
 
 ### Model
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/single.ts#L24)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/single.ts#L20)
 
 ```
 /** Schema for the single-select listbox's private interaction state (open/closed status, active item, activation trigger, typeahead search). The selection is owned by the parent and passed in via `ViewInputs.maybeSelectedValue`. */
@@ -680,39 +538,11 @@ const Model: Struct<{
 }>
 ```
 
-### MovedPointerOverItem
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L137)
-
-```
-/** Sent when the pointer moves over a listbox item, carrying screen coordinates for tracked-pointer comparison. */
-const MovedPointerOverItem: CallableTaggedStruct<"MovedPointerOverItem", {
-  index: Number
-  screenX: Number
-  screenY: Number
-}>
-```
-
-### Opened
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L107)
-
-```
-/** Sent when the listbox opens via button click or keyboard. Contains an optional initial active item index: None for pointer, Some for keyboard. */
-const Opened: CallableTaggedStruct<"Opened", {
-  maybeActiveItemIndex: Option<Number>
-}>
-```
-
 ### Orientation
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L58)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L56)
 
 ```
 /** Schema for the listbox orientation: whether items flow vertically or horizontally. */
@@ -723,22 +553,22 @@ const Orientation: Literals<readonly ["Vertical", "Horizontal"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L267)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L172)
 
 ```
 /** Union of out-messages the listbox component can produce. The parent folds `Selected` into the selection it owns: single-select stores the value, multi-select toggles the value's membership. */
-const OutMessage: Union<readonly [
-  CallableTaggedStruct<"Selected", {
+const OutMessage: MessageUnion<{
+  Selected: {
     value: String
-  }>
-]>
+  }
+}>
 ```
 
 ### PortalListboxBackdrop
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L776)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L638)
 
 ```
 /**
@@ -751,38 +581,11 @@ const PortalListboxBackdrop: MountDefinitionNoArgs<"PortalListboxBackdrop", {
 }>
 ```
 
-### PressedPointerOnButton
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L175)
-
-```
-/** Sent when the user presses a pointer device on the listbox button. Records pointer type for click handling. */
-const PressedPointerOnButton: CallableTaggedStruct<"PressedPointerOnButton", {
-  button: Number
-  pointerType: String
-}>
-```
-
-### RequestedItemClick
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L124)
-
-```
-/** Sent when Enter or Space is pressed on the active item, triggering a programmatic click on the DOM element. */
-const RequestedItemClick: CallableTaggedStruct<"RequestedItemClick", {
-  index: Number
-}>
-```
-
 ### RestoreInert
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L352)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L251)
 
 ```
 /** Removes the inert attribute from elements outside the listbox. */
@@ -797,7 +600,7 @@ const RestoreInert: CommandDefinitionWithArgs<"RestoreInert", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L379)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L278)
 
 ```
 /** Scrolls the active listbox item into view after keyboard navigation. */
@@ -809,73 +612,11 @@ const ScrollIntoView: CommandDefinitionWithArgs<"ScrollIntoView", {
 }, never, never>>
 ```
 
-### Searched
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L128)
-
-```
-/** Sent when a printable character is typed for typeahead search. */
-const Searched: CallableTaggedStruct<"Searched", {
-  key: String
-  maybeTargetIndex: Option<Number>
-}>
-```
-
-### Selected
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L257)
-
-```
-/** Sent when the user activates an item (single-select commit or multi-select toggle). Carries the neutral fact that the item was activated; the parent owns the selection and decides what it means (single-select sets it, multi-select toggles membership). Generic over `Value extends string`: the runtime schema stores `value: string`, but the type-level OutMessage exposes `value: Value` so consumers who supply `items: ReadonlyArray<MyUnion>` receive `value: MyUnion` from `update<MyUnion>` without casting. The cast is fenced inside this module's `update` return, sound because the value was extracted from the items array the consumer supplied. */
-const Selected: CallableTaggedStruct<"Selected", {
-  value: String
-}>
-```
-
-### SelectedItem
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L122)
-
-```
-/** Sent when an item is selected via Enter, Space, or click. Contains the item's string value. */
-const SelectedItem: CallableTaggedStruct<"SelectedItem", {
-  item: String
-}>
-```
-
-### SuppressedItemCommit
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L163)
-
-```
-/** Sent when Enter or Space would commit the active item but the listbox is read-only. Update no-ops; the Message keeps the keypress visible and lets the view prevent the browser's default Space scroll. */
-const SuppressedItemCommit: CallableTaggedStruct<"SuppressedItemCommit", {}>
-```
-
-### SuppressedSpaceScroll
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L161)
-
-```
-/** Sent when a Space key-up is captured to prevent page scrolling. */
-const SuppressedSpaceScroll: CallableTaggedStruct<"SuppressedSpaceScroll", {}>
-```
-
 ### UnlockScroll
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/listbox/shared.ts#L338)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/listbox/shared.ts#L237)
 
 ```
 /** Re-enables page scrolling after the listbox closes. */

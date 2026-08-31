@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/dom
 title: "Dom"
 description: "API documentation for the Dom module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Dom
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/dom.ts#L473)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/dom.ts#L478)
 
 ```
 /**
@@ -31,7 +31,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/dom.ts#L329)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/dom.ts#L334)
 
 ```
 /**
@@ -45,7 +45,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/dom.ts#L246)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/dom.ts#L251)
 
 ```
 /**
@@ -53,16 +53,21 @@ function
  * Cleans up the keyboard handlers installed by `showDialog` and restores focus to
  * the element that was focused before the dialog opened (the trigger, or the
  * dialog beneath it when closing a stacked dialog).
+ * Resolves to `true` when it released the keyboard handlers, the return
+ * focus, and the stack entry.
+ * Resolves to `false` when the dialog held none, for example when the close
+ * runs before `showDialog` has installed them. A caller that unlocks page
+ * scroll after the close should unlock only when the result is `true`.
  * Fails with `ElementNotFound` if the selector does not match an `HTMLDialogElement`.
  */
-(selector: string): Effect<void, ElementNotFound>
+(selector: string): Effect<boolean, ElementNotFound>
 ```
 
 ### detectElementMovement
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/elementMovement.ts#L23)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/elementMovement.ts#L23)
 
 ```
 /**
@@ -83,7 +88,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/dom.ts#L104)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/dom.ts#L104)
 
 ```
 /**
@@ -141,7 +146,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/inert.ts#L103)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/inert.ts#L103)
 
 ```
 /**
@@ -161,7 +166,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/dom.ts#L311)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/dom.ts#L316)
 
 ```
 /**
@@ -170,9 +175,10 @@ function
  * z-index counter, and one page scroll lock. Use this as a backstop for the
  * case where a dialog's element is removed from the DOM without a purposeful
  * close, the classic example being navigation away from a route-keyed subtree
- * that contains the dialog. The normal close path (`closeDialog` plus the
- * Dialog component's `unlockScroll` Command) already releases these, so this
- * is the missing teardown when no close Message ever flows through `update`.
+ * that contains the dialog. The normal close path already releases these.
+ * That path is `closeDialog` first, then the Dialog component's scroll unlock
+ * when `closeDialog` reports a release. This function is the cleanup for the
+ * case where no close Message ever reaches `update`.
  * 
  * Addressed by the dialog's id, not a selector, because the element is
  * typically already gone from the DOM by the time this runs (that is the whole
@@ -199,7 +205,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/inert.ts#L143)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/inert.ts#L143)
 
 ```
 /**
@@ -214,7 +220,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/dom.ts#L353)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/dom.ts#L358)
 
 ```
 /**
@@ -238,7 +244,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/dom.ts#L384)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/dom.ts#L389)
 
 ```
 /**
@@ -268,7 +274,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/dom.ts#L430)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/dom.ts#L435)
 
 ```
 /**
@@ -301,7 +307,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/dom.ts#L135)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/dom.ts#L135)
 
 ```
 /**
@@ -328,7 +334,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/waitForAnimation.ts#L17)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/waitForAnimation.ts#L17)
 
 ```
 /**
@@ -349,7 +355,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/dom.ts#L462)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/dom.ts#L467)
 
 ```
 /** Direction for focus advancement: forward or backward in tab order. */
@@ -362,7 +368,7 @@ type FocusDirection = "Next" | "Previous"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/scrollLock.ts#L59)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/scrollLock.ts#L59)
 
 ```
 /**
@@ -380,7 +386,7 @@ const lockScroll: Effect.Effect<void>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/dom/scrollLock.ts#L95)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/dom/scrollLock.ts#L95)
 
 ```
 /**

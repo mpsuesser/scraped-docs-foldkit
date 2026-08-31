@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/routing-and-navigation
 title: "Routing & Navigation"
 description: "Define routes with bidirectional parser combinators that decode URLs into typed values and build URLs from Schema-validated parameters."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Routing & Navigation
@@ -16,33 +16,50 @@ Most routers make you define routes twice: once for matching URLs, and again for
 
 Foldkit’s routing is based on biparsers: parsers that work in both directions. A single route definition handles:
 
-- `/people/42` → `PersonRoute { personId: 42 }` (parsing)
-- `PersonRoute { personId: 42 }` → `/people/42` (building)
+- `/people/42` → `AppRoute.Person { personId: 42 }` (parsing)
+- `AppRoute.Person { personId: 42 }` → `/people/42` (building)
 
 This symmetry means if you can parse a URL into data, you can always build that data back into the same URL.
 
 ## Defining Routes
 
-Routes are defined as tagged unions using [Effect Schema](https://effect.website/docs/schema/introduction/). Each route variant carries the data extracted from the URL.
+`defineRouteUnion` declares every application Route together. Each key is a tag, and its value lists the fields parsed from the URL. `AppRoute` is also an [Effect Schema](https://effect.website/docs/schema/introduction/), so it can be stored in the Model and used to decode unknown values.
 
 ```
 import { Schema as S } from 'effect'
-import { r } from 'foldkit/route'
+import { defineRouteUnion } from 'foldkit/route'
 
-const HomeRoute = r('Home')
-const PeopleRoute = r('People', { searchText: S.Option(S.String) })
-const PersonRoute = r('Person', { personId: S.Number })
-const NotFoundRoute = r('NotFound', { path: S.String })
-
-const AppRoute = S.Union([HomeRoute, PeopleRoute, PersonRoute, NotFoundRoute])
+const AppRoute = defineRouteUnion({
+  Home: {},
+  People: { searchText: S.Option(S.String) },
+  Person: { personId: S.Number },
+  NotFound: { path: S.String },
+})
 
 type AppRoute = typeof AppRoute.Type
 ```
 
-- `HomeRoute`: no parameters
-- `PersonRoute`: holds a `personId: number`
-- `PeopleRoute`: holds an optional `searchText: Option<string>`
-- `NotFoundRoute`: holds the unmatched `path: string`
+- `AppRoute.Home`: no parameters
+- `AppRoute.Person`: holds a `personId: number`
+- `AppRoute.People`: holds an optional `searchText: Option<string>`
+- `AppRoute.NotFound`: holds the unmatched `path: string`
+
+Keep each variant on `AppRoute`, just as Message variants stay on `Message`. `AppRoute.Person({ personId: 42 })` constructs a Route, while `Route.mapTo(AppRoute.Person)` uses the same variant as a Schema.
+
+Use `AppRoute.match` when every Route needs a branch. Use `AppRoute.isAnyOf(['Blog', 'BlogPost'])` when one check accepts several tags.
+
+If a Model or Schema accepts only some application Routes, create that Schema with `subset`:
+
+```
+import { AppRoute } from '../route'
+
+export const TopLevelRoute = AppRoute.subset(['Home', 'Newsletter', 'NotFound'])
+export type TopLevelRoute = typeof TopLevelRoute.Type
+```
+
+`subset` includes only the tags you name. If you add a Route to `AppRoute` later, `TopLevelRoute` will not accept it until you add its tag. There is no `omit`: an exclusion list would silently accept every Route added later.
+
+If a module needs to name one variant's type, add an alias beside `AppRoute`: `export type NewsletterRoute = typeof AppRoute.Newsletter.Type`.
 
 ## Building Routers
 
@@ -54,7 +71,7 @@ import { Route } from 'foldkit'
 import { int, literal, slash } from 'foldkit/route'
 
 // Matches: /
-const homeRouter = pipe(Route.root, Route.mapTo(HomeRoute))
+const homeRouter = pipe(Route.root, Route.mapTo(AppRoute.Home))
 
 // Matches: /people or /people?searchText=alice
 const peopleRouter = pipe(
@@ -64,14 +81,14 @@ const peopleRouter = pipe(
       searchText: S.OptionFromOptional(S.String),
     }),
   ),
-  Route.mapTo(PeopleRoute),
+  Route.mapTo(AppRoute.People),
 )
 
 // Matches: /people/42
 const personRouter = pipe(
   literal('people'),
   slash(int('personId')),
-  Route.mapTo(PersonRoute),
+  Route.mapTo(AppRoute.Person),
 )
 ```
 
@@ -85,7 +102,7 @@ The primitives:
 - `restString('path')`: captures all remaining segments as one path string
 - `slash(...)`: chains path segments together
 - `Route.query(Schema)`: adds query parameter parsing
-- `Route.mapTo(RouteType)`: converts parsed data into a typed route
+- `Route.mapTo(AppRoute.Person)`: converts parsed data into a typed route
 
 ## Parsing URLs
 
@@ -104,20 +121,19 @@ const routeParser = Route.oneOf(
 )
 
 // Create a parser with a fallback for unmatched URLs
-const urlToAppRoute = Route.parseUrlWithFallback(routeParser, NotFoundRoute)
+const urlToAppRoute = Route.parseUrlWithFallback(routeParser, AppRoute.NotFound)
 
 // In your init function, parse the initial URL:
 const init: Runtime.RoutingApplicationInit<Model, Message> = (url: Url) => {
-  return [{ route: urlToAppRoute(url) }, []]
+  return { model: { route: urlToAppRoute(url) } }
 }
 
 // In your update function, handle URL changes:
-ChangedUrl: ({ url }) => [
-  evo(model, {
+ChangedUrl: ({ url }) => ({
+  model: evo(model, {
     route: () => urlToAppRoute(url),
   }),
-  [],
-]
+})
 ```
 
 A router only matches when it consumes the entire URL, so routes that share a prefix do not conflict. `/people` and `/people/:id` can appear in any order. When several routes fully match the same URL, the first one wins. That only happens when route shapes overlap, like a `literal('new')` page next to a `string('username')` profile: `/users/new` satisfies both, so list the literal route first.
@@ -172,11 +188,11 @@ const searchRouter = pipe(
       sort: S.OptionFromOptional(S.Literals(['Asc', 'Desc'])),
     }),
   ),
-  Route.mapTo(SearchRoute),
+  Route.mapTo(AppRoute.Search),
 )
 
 // Parsing /search?q=hello&page=2&sort=asc gives you:
-// → SearchRoute { q: Some('hello'), page: Some(2), sort: Some('Asc') }
+// → AppRoute.Search { q: Some('hello'), page: Some(2), sort: Some('Asc') }
 
 // Building
 const searchUrl = searchRouter({
@@ -199,23 +215,25 @@ For a complete routing example, see the [Routing example](https://foldkit.dev/ex
 ```
 import { Schema as S, pipe } from 'effect'
 import { Route } from 'foldkit'
-import { literal, r, schemaSegment, slash } from 'foldkit/route'
+import { defineRouteUnion, literal, schemaSegment, slash } from 'foldkit/route'
 
 // A branded id: structurally a number, but its own type. The brand stops it
 // from being mixed up with another number, like an OrderId or a count.
 const PersonId = S.FiniteFromString.pipe(S.brand('PersonId'))
 type PersonId = typeof PersonId.Type
 
-const PersonRoute = r('Person', { personId: PersonId })
+const AppRoute = defineRouteUnion({
+  Person: { personId: PersonId },
+})
 
 // int('personId') captures a bare number. schemaSegment decodes the segment
 // through the schema, so the route carries a PersonId instead.
 //
-// Parses: /people/42  →  PersonRoute { personId: PersonId(42) }
+// Parses: /people/42  →  AppRoute.Person { personId: PersonId(42) }
 const personRouter = pipe(
   literal('people'),
   slash(schemaSegment('personId', PersonId)),
-  Route.mapTo(PersonRoute),
+  Route.mapTo(AppRoute.Person),
 )
 
 // Builds: /people/42. The brand is required, so a bare number or a different
@@ -228,7 +246,7 @@ Whether a segment decodes is the route’s match test, and the decoded value is 
 ```
 import { Schema as S, pipe } from 'effect'
 import { Route } from 'foldkit'
-import { literal, r, schemaSegment, slash } from 'foldkit/route'
+import { defineRouteUnion, literal, schemaSegment, slash } from 'foldkit/route'
 
 // A refinement, not a transform: the value stays a string, but the route only
 // matches when the segment is actually a UUID. The brand rides along, so the
@@ -240,14 +258,16 @@ const ProductId = S.String.check(S.isPattern(UUID_PATTERN)).pipe(
 )
 type ProductId = typeof ProductId.Type
 
-const ProductRoute = r('Product', { productId: ProductId })
+const AppRoute = defineRouteUnion({
+  Product: { productId: ProductId },
+})
 
 // Matches /products/<uuid>. /products/banana does not match, so in oneOf it
 // falls through to the next route, or to not-found.
 const productRouter = pipe(
   literal('products'),
   slash(schemaSegment('productId', ProductId)),
-  Route.mapTo(ProductRoute),
+  Route.mapTo(AppRoute.Product),
 )
 
 // Building still round-trips: a ProductId prints straight back into the path.
@@ -265,27 +285,32 @@ Some routes carry a whole path as data: a file tree, a documentation page, a bre
 ```
 import { Schema as S, pipe } from 'effect'
 import { Route } from 'foldkit'
-import { literal, r, rest, slash } from 'foldkit/route'
+import { defineRouteUnion, literal, rest, slash } from 'foldkit/route'
 
-const FilesIndexRoute = r('FilesIndex')
-const FilesRoute = r('Files', { path: S.NonEmptyArray(S.String) })
+const AppRoute = defineRouteUnion({
+  FilesIndex: {},
+  Files: { path: S.NonEmptyArray(S.String) },
+})
 
 // Matches: /files
-const filesIndexRouter = pipe(literal('files'), Route.mapTo(FilesIndexRoute))
+const filesIndexRouter = pipe(
+  literal('files'),
+  Route.mapTo(AppRoute.FilesIndex),
+)
 
 // Matches: /files/documents/taxes/2024.pdf
 // path: ['documents', 'taxes', '2024.pdf']
 const filesRouter = pipe(
   literal('files'),
   slash(rest('path')),
-  Route.mapTo(FilesRoute),
+  Route.mapTo(AppRoute.Files),
 )
 
 // Builds: /files/documents/taxes
 const taxesUrl = filesRouter({ path: ['documents', 'taxes'] })
 ```
 
-`rest` requires at least one segment, so the bare prefix `/files` does not match the rest route. Give the prefix its own route, like `FilesIndexRoute` above. The two never overlap: one matches exactly `/files`, the other matches anything beneath it.
+`rest` requires at least one segment, so the bare prefix `/files` does not match the rest route. Give the prefix its own route, like `AppRoute.FilesIndex` above. The two never overlap: one matches exactly `/files`, the other matches anything beneath it.
 
 A specific route under the same prefix is different. The rest route also matches every URL that `literal('files'), slash(literal('shared'))` accepts, so in `oneOf` the specific route must come first.
 
@@ -296,20 +321,25 @@ When the path itself is the value, `restString` captures the same tail as a sing
 ```
 import { Schema as S, pipe } from 'effect'
 import { Route } from 'foldkit'
-import { literal, r, restString, slash } from 'foldkit/route'
+import { defineRouteUnion, literal, restString, slash } from 'foldkit/route'
 
-const VaultIndexRoute = r('VaultIndex')
-const VaultNoteRoute = r('VaultNote', { path: S.String })
+const AppRoute = defineRouteUnion({
+  VaultIndex: {},
+  VaultNote: { path: S.String },
+})
 
 // Matches: /vault
-const vaultIndexRouter = pipe(literal('vault'), Route.mapTo(VaultIndexRoute))
+const vaultIndexRouter = pipe(
+  literal('vault'),
+  Route.mapTo(AppRoute.VaultIndex),
+)
 
 // Matches: /vault/20-upgrade/teach/the-elm-architecture.md
 // path: '20-upgrade/teach/the-elm-architecture.md'
 const vaultNoteRouter = pipe(
   literal('vault'),
   slash(restString('path')),
-  Route.mapTo(VaultNoteRoute),
+  Route.mapTo(AppRoute.VaultNote),
 )
 
 // Builds: /vault/20-upgrade/teach/the-elm-architecture.md
@@ -327,18 +357,15 @@ The [Routing example](https://foldkit.dev/example-apps/routing) uses a rest rout
 Each route arm delegates to its own view function, and view functions are identity boundaries: the build brands the VNodes a function returns with that function’s identity, and the differ replaces a position whose identity changed instead of patching it. Navigating from one route to another therefore tears down the old page and builds the new one fresh, with no keys and no wrapper elements. The identity is stamped by `@foldkit/vite-plugin`, which `create-foldkit-app` includes by default. Do not build a Foldkit app without it:
 
 ```
-import { Match as M } from 'effect'
 import type { Document, HtmlBuilder } from 'foldkit/html'
 
 const view = (model: Model, h: HtmlBuilder<Message>): Document => {
-  const routeContent = M.value(model.route).pipe(
-    M.tagsExhaustive({
-      Products: () => productsView(model, h),
-      Cart: () => cartView(model, h),
-      Checkout: () => checkoutView(model, h),
-      NotFound: ({ path }) => notFoundView(path, h),
-    }),
-  )
+  const routeContent = AppRoute.match(model.route, {
+    Products: () => productsView(model, h),
+    Cart: () => cartView(model, h),
+    Checkout: () => checkoutView(model, h),
+    NotFound: ({ path }) => notFoundView(path, h),
+  })
 
   return {
     title: `${model.route._tag} | Shop`,
@@ -362,61 +389,56 @@ Foldkit provides navigation Commands for programmatically changing the URL. Thes
 ```
 import { Effect, Schema as S } from 'effect'
 import { Command, Navigation } from 'foldkit'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
-const CompletedNavigateInternal = m('CompletedNavigateInternal')
-const CompletedReplaceUrl = m('CompletedReplaceUrl')
-const CompletedGoBack = m('CompletedGoBack')
-const CompletedGoForward = m('CompletedGoForward')
-const CompletedLoadExternal = m('CompletedLoadExternal')
-const CompletedOpenUrl = m('CompletedOpenUrl')
-
-const Message = S.Union([
-  CompletedNavigateInternal,
-  CompletedReplaceUrl,
-  CompletedGoBack,
-  CompletedGoForward,
-  CompletedLoadExternal,
-  CompletedOpenUrl,
-])
+const Message = defineMessageUnion({
+  CompletedNavigateInternal: {},
+  CompletedReplaceUrl: {},
+  CompletedGoBack: {},
+  CompletedGoForward: {},
+  CompletedLoadExternal: {},
+  CompletedOpenUrl: {},
+})
 type Message = typeof Message.Type
 
 const NavigateInternal = Command.define('NavigateInternal', {
   args: { url: S.String },
-  messages: [CompletedNavigateInternal],
+  messages: [Message.CompletedNavigateInternal],
   execute: ({ url }) =>
-    Navigation.pushUrl(url).pipe(Effect.as(CompletedNavigateInternal())),
+    Navigation.pushUrl(url).pipe(
+      Effect.as(Message.CompletedNavigateInternal()),
+    ),
 })
 
 const ReplaceUrl = Command.define('ReplaceUrl', {
   args: { url: S.String },
-  messages: [CompletedReplaceUrl],
+  messages: [Message.CompletedReplaceUrl],
   execute: ({ url }) =>
-    Navigation.replaceUrl(url).pipe(Effect.as(CompletedReplaceUrl())),
+    Navigation.replaceUrl(url).pipe(Effect.as(Message.CompletedReplaceUrl())),
 })
 
 const GoBack = Command.define('GoBack', {
-  messages: [CompletedGoBack],
-  execute: Navigation.back().pipe(Effect.as(CompletedGoBack())),
+  messages: [Message.CompletedGoBack],
+  execute: Navigation.back().pipe(Effect.as(Message.CompletedGoBack())),
 })
 
 const GoForward = Command.define('GoForward', {
-  messages: [CompletedGoForward],
-  execute: Navigation.forward().pipe(Effect.as(CompletedGoForward())),
+  messages: [Message.CompletedGoForward],
+  execute: Navigation.forward().pipe(Effect.as(Message.CompletedGoForward())),
 })
 
 const LoadExternal = Command.define('LoadExternal', {
   args: { href: S.String },
-  messages: [CompletedLoadExternal],
+  messages: [Message.CompletedLoadExternal],
   execute: ({ href }) =>
-    Navigation.load(href).pipe(Effect.as(CompletedLoadExternal())),
+    Navigation.load(href).pipe(Effect.as(Message.CompletedLoadExternal())),
 })
 
 const OpenUrl = Command.define('OpenUrl', {
   args: { url: S.String },
-  messages: [CompletedOpenUrl],
+  messages: [Message.CompletedOpenUrl],
   execute: ({ url }) =>
-    Navigation.openUrl(url).pipe(Effect.as(CompletedOpenUrl())),
+    Navigation.openUrl(url).pipe(Effect.as(Message.CompletedOpenUrl())),
 })
 ```
 
@@ -429,28 +451,29 @@ const OpenUrl = Command.define('OpenUrl', {
 When a link is clicked in your application, the `routing.onUrlRequest` handler receives either an Internal or External request. Handle Internal links with `pushUrl` and External links with `load`:
 
 ```
-import { Effect, Match as M, Schema as S, pipe } from 'effect'
-import { Command, Navigation, Route, Url } from 'foldkit'
-import { m } from 'foldkit/message'
-import { int, literal, r, slash } from 'foldkit/route'
+import { Effect, Schema as S, pipe } from 'effect'
+import { Command, Navigation, Route, type Update, Url } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+import { defineRouteUnion, int, literal, slash } from 'foldkit/route'
 import { evo } from 'foldkit/struct'
 
 // ROUTE
 
-const HomeRoute = r('Home')
-const PersonRoute = r('Person', { personId: S.Number })
-const NotFoundRoute = r('NotFound', { path: S.String })
-const AppRoute = S.Union([HomeRoute, PersonRoute, NotFoundRoute])
+const AppRoute = defineRouteUnion({
+  Home: {},
+  Person: { personId: S.Number },
+  NotFound: { path: S.String },
+})
 type AppRoute = typeof AppRoute.Type
 
-const homeRouter = pipe(Route.root, Route.mapTo(HomeRoute))
+const homeRouter = pipe(Route.root, Route.mapTo(AppRoute.Home))
 const personRouter = pipe(
   literal('people'),
   slash(int('personId')),
-  Route.mapTo(PersonRoute),
+  Route.mapTo(AppRoute.Person),
 )
 const routeParser = Route.oneOf(personRouter, homeRouter)
-const urlToAppRoute = Route.parseUrlWithFallback(routeParser, NotFoundRoute)
+const urlToAppRoute = Route.parseUrlWithFallback(routeParser, AppRoute.NotFound)
 
 // MODEL
 
@@ -459,72 +482,59 @@ type Model = typeof Model.Type
 
 // MESSAGE
 
-const CompletedNavigateInternal = m('CompletedNavigateInternal')
-const CompletedLoadExternal = m('CompletedLoadExternal')
-const ClickedLink = m('ClickedLink', { request: Navigation.UrlRequest })
-const ChangedUrl = m('ChangedUrl', { url: Url.Url })
-
-const Message = S.Union([
-  CompletedNavigateInternal,
-  CompletedLoadExternal,
-  ClickedLink,
-  ChangedUrl,
-])
+const Message = defineMessageUnion({
+  CompletedNavigateInternal: {},
+  CompletedLoadExternal: {},
+  ClickedLink: { request: Navigation.UrlRequest },
+  ChangedUrl: { url: Url.Url },
+})
 type Message = typeof Message.Type
 
 // COMMAND
 
 const NavigateInternal = Command.define('NavigateInternal', {
   args: { url: S.String },
-  messages: [CompletedNavigateInternal],
+  messages: [Message.CompletedNavigateInternal],
   execute: ({ url }) =>
-    Navigation.pushUrl(url).pipe(Effect.as(CompletedNavigateInternal())),
+    Navigation.pushUrl(url).pipe(
+      Effect.as(Message.CompletedNavigateInternal()),
+    ),
 })
 
 const LoadExternal = Command.define('LoadExternal', {
   args: { href: S.String },
-  messages: [CompletedLoadExternal],
+  messages: [Message.CompletedLoadExternal],
   execute: ({ href }) =>
-    Navigation.load(href).pipe(Effect.as(CompletedLoadExternal())),
+    Navigation.load(href).pipe(Effect.as(Message.CompletedLoadExternal())),
 })
 
 // UPDATE
 
+type UpdateReturn = Update.Return<Model, Message>
+
 const update = (model: Model, message: Message) =>
-  M.value(message).pipe(
-    M.withReturnType<
-      readonly [Model, ReadonlyArray<Command.Command<Message>>]
-    >(),
-    M.tagsExhaustive({
-      CompletedNavigateInternal: () => [model, []],
-      CompletedLoadExternal: () => [model, []],
+  Message.match<UpdateReturn>(message, {
+    CompletedNavigateInternal: () => ({ model }),
+    CompletedLoadExternal: () => ({ model }),
 
-      ClickedLink: ({ request }) =>
-        M.value(request).pipe(
-          M.tagsExhaustive({
-            Internal: ({
-              url,
-            }): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-              model,
-              [NavigateInternal({ url: Url.toString(url) })],
-            ],
-            External: ({
-              href,
-            }): readonly [Model, ReadonlyArray<Command.Command<Message>>] => [
-              model,
-              [LoadExternal({ href })],
-            ],
-          }),
-        ),
-
-      ChangedUrl: ({ url }) => [
-        evo(model, {
-          route: () => urlToAppRoute(url),
+    ClickedLink: ({ request }) =>
+      Navigation.UrlRequest.match<UpdateReturn>(request, {
+        Internal: ({ url }) => ({
+          model,
+          commands: [NavigateInternal({ url: Url.toString(url) })],
         }),
-        [],
-      ],
+        External: ({ href }) => ({
+          model,
+          commands: [LoadExternal({ href })],
+        }),
+      }),
+
+    ChangedUrl: ({ url }) => ({
+      model: evo(model, {
+        route: () => urlToAppRoute(url),
+      }),
     }),
-  )
+  })
 ```
 
 After `pushUrl` or `replaceUrl` changes the URL, Foldkit automatically calls your `routing.onUrlChange` handler with the new URL. This is where you parse the URL into a route and update your model.
@@ -560,13 +570,16 @@ const commandsForRoute = (
 // ...which init calls for the cold load...
 const init: Runtime.RoutingApplicationInit<Model, Message> = (url: Url) => {
   const route = urlToAppRoute(url)
-  return [{ route }, commandsForRoute(route)]
+  return { model: { route }, commands: commandsForRoute(route) }
 }
 
 // ...and the ChangedUrl handler calls for in-app navigation:
 ChangedUrl: ({ url }) => {
   const route = urlToAppRoute(url)
-  return [evo(model, { route: () => route }), commandsForRoute(route)]
+  return {
+    model: evo(model, { route: () => route }),
+    commands: commandsForRoute(route),
+  }
 }
 ```
 
@@ -595,16 +608,19 @@ const commandsForTransition = (
 // ...init builds the cold load transition, which counts as an entry...
 const init: Runtime.RoutingApplicationInit<Model, Message> = (url: Url) => {
   const route = urlToAppRoute(url)
-  return [{ route }, commandsForTransition(Transition.coldLoad(route))]
+  return {
+    model: { route },
+    commands: commandsForTransition(Transition.coldLoad(route)),
+  }
 }
 
 // ...and the ChangedUrl handler transitions from the route the Model holds:
 ChangedUrl: ({ url }) => {
   const nextRoute = urlToAppRoute(url)
-  return [
-    evo(model, { route: () => nextRoute }),
-    commandsForTransition(Transition.make(model.route, nextRoute)),
-  ]
+  return {
+    model: evo(model, { route: () => nextRoute }),
+    commands: commandsForTransition(Transition.make(model.route, nextRoute)),
+  }
 }
 ```
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/counters
 title: "Counters"
 description: "Add and remove independent Counter Submodels in a dynamic list. Each row is embedded through h.submodel and routed through a wrapper Message."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -21,10 +21,10 @@ Submodels
 /
 
 ```
-import { Array, Match as M, Option, Schema as S, pipe } from 'effect'
-import { Command, Runtime, Update } from 'foldkit'
+import { Array, Option, Schema as S, pipe } from 'effect'
+import { Runtime, Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Button } from '@foldkit/ui'
@@ -47,19 +47,15 @@ export type Model = typeof Model.Type
 
 // MESSAGE
 
-export const ClickedAddRow = m('ClickedAddRow')
-export const ClickedRemoveRow = m('ClickedRemoveRow', { id: S.String })
-
-export const GotCounterMessage = m('GotCounterMessage', {
-  id: S.String,
-  message: Counter.Message,
+export const Message = defineMessageUnion({
+  ClickedAddRow: {},
+  ClickedRemoveRow: { id: S.String },
+  GotCounterMessage: {
+    id: S.String,
+    message: Counter.Message,
+  },
 })
 
-export const Message = S.Union([
-  ClickedAddRow,
-  ClickedRemoveRow,
-  GotCounterMessage,
-])
 export type Message = typeof Message.Type
 
 // UPDATE
@@ -78,42 +74,32 @@ const foldCounter = (id: string) =>
           row.id === id ? evo(row, { counter: () => nextCounter }) : row,
         ),
       }),
-    toParentMessage: message => GotCounterMessage({ id, message }),
+    toParentMessage: message => Message.GotCounterMessage({ id, message }),
   })
 
-export const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.withReturnType<
-      readonly [Model, ReadonlyArray<Command.Command<Message>>]
-    >(),
-    M.tagsExhaustive({
-      ClickedAddRow: () => [
-        evo(model, {
-          rows: Array.append({
-            id: `counter-${model.nextRowId}`,
-            counter: Counter.init,
-          }),
-          nextRowId: nextRowId => nextRowId + 1,
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedAddRow: () => ({
+      model: evo(model, {
+        rows: Array.append({
+          id: `counter-${model.nextRowId}`,
+          counter: Counter.init,
         }),
-        [],
-      ],
-      ClickedRemoveRow: ({ id }) => [
-        evo(model, {
-          rows: Array.filter(row => row.id !== id),
-        }),
-        [],
-      ],
-      GotCounterMessage: ({ id, message }) => foldCounter(id)(model, message),
+        nextRowId: nextRowId => nextRowId + 1,
+      }),
     }),
-  )
+    ClickedRemoveRow: ({ id }) => ({
+      model: evo(model, {
+        rows: Array.filter(row => row.id !== id),
+      }),
+    }),
+    GotCounterMessage: ({ id, message }) => foldCounter(id)(model, message),
+  })
 
 // INIT
 
-export const init: Runtime.ApplicationInit<Model, Message> = () => [
-  {
+export const init: Runtime.ApplicationInit<Model, Message> = () => ({
+  model: {
     rows: [
       { id: 'counter-0', counter: Counter.init },
       { id: 'counter-1', counter: Counter.init },
@@ -121,8 +107,7 @@ export const init: Runtime.ApplicationInit<Model, Message> = () => [
     ],
     nextRowId: 3,
   },
-  [],
-]
+})
 
 // VIEW
 
@@ -139,13 +124,13 @@ const rowView = (row: Row, h: HtmlBuilder<Message>): Html =>
             model: row.counter,
             view: Counter.view,
             toParentMessage: message =>
-              GotCounterMessage({ id: row.id, message }),
+              Message.GotCounterMessage({ id: row.id, message }),
           }),
         ],
       ),
       Button.view(
         {
-          onClick: ClickedRemoveRow({ id: row.id }),
+          onClick: Message.ClickedRemoveRow({ id: row.id }),
           toView: attributes =>
             h.button(
               [
@@ -184,7 +169,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
       ),
       Button.view(
         {
-          onClick: ClickedAddRow(),
+          onClick: Message.ClickedAddRow(),
           toView: attributes =>
             h.button(
               [

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/checkbox
 title: "Checkbox"
 description: "Accessible checkbox with indeterminate state support."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Overview
@@ -28,7 +28,7 @@ You agree to our Terms of Service and Privacy Policy.
 // update, and view definitions.
 import { Schema as S } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Checkbox } from '@foldkit/ui'
@@ -40,26 +40,25 @@ const Model = S.Struct({
 })
 
 // In your init function, start it unchecked:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     acceptedTerms: false,
     // ...your other fields
   },
-  [],
-]
+})
 
 // A verb-first, past-tense Message carries the new checked state:
-const ToggledTerms = m('ToggledTerms', { isChecked: S.Boolean })
 
-const Message = S.Union([ToggledTerms])
+const Message = defineMessageUnion({
+  ToggledTerms: { isChecked: S.Boolean },
+})
 
-// Inside your update function's M.tagsExhaustive({...}), store the value.
+// In the corresponding Message.match handler, store the value.
 // This is the moment to fire analytics, validate a form, or push the value
 // to a backend.
-ToggledTerms: ({ isChecked }) => [
-  evo(model, { acceptedTerms: () => isChecked }),
-  [],
-]
+ToggledTerms: ({ isChecked }) => ({
+  model: evo(model, { acceptedTerms: () => isChecked }),
+})
 
 // Inside your view function, render the checkbox with Checkbox.view. It reads
 // the checked state from your Model and calls onToggle with the new state.
@@ -68,7 +67,7 @@ const view = (model, h: HtmlBuilder<Message>) =>
     {
       id: 'accept-terms',
       isChecked: model.acceptedTerms,
-      onToggle: isChecked => ToggledTerms({ isChecked }),
+      onToggle: isChecked => Message.ToggledTerms({ isChecked }),
       toView: attributes =>
         h.div(
           [h.Class('flex flex-col gap-1')],
@@ -107,7 +106,7 @@ Pass `isIndeterminate: true` to show a mixed state. This is typically computed f
 // update, and view definitions.
 import { Schema as S } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Checkbox } from '@foldkit/ui'
@@ -120,32 +119,31 @@ const Model = S.Struct({
 })
 
 // In your init function, start each unchecked:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     optionA: false,
     optionB: false,
     // ...your other fields
   },
-  [],
-]
+})
 
 // One Message per child, plus one for the "Select All" parent. Each carries
 // the new checked state:
-const ToggledSelectAll = m('ToggledSelectAll', { isChecked: S.Boolean })
-const ToggledOptionA = m('ToggledOptionA', { isChecked: S.Boolean })
-const ToggledOptionB = m('ToggledOptionB', { isChecked: S.Boolean })
 
-const Message = S.Union([ToggledSelectAll, ToggledOptionA, ToggledOptionB])
+const Message = defineMessageUnion({
+  ToggledSelectAll: { isChecked: S.Boolean },
+  ToggledOptionA: { isChecked: S.Boolean },
+  ToggledOptionB: { isChecked: S.Boolean },
+})
 
-// Inside your update function's M.tagsExhaustive({...}), toggling "Select All"
+// In the corresponding Message.match handler, toggling "Select All"
 // writes the same value to every child:
-ToggledSelectAll: ({ isChecked }) => [
-  evo(model, {
+ToggledSelectAll: ({ isChecked }) => ({
+  model: evo(model, {
     optionA: () => isChecked,
     optionB: () => isChecked,
   }),
-  [],
-]
+})
 
 // Inside your view function, compute the parent's checked and indeterminate
 // state from the children and pass isIndeterminate straight to Checkbox.view:
@@ -169,7 +167,7 @@ const view = (model, h: HtmlBuilder<Message>) => {
       id: 'select-all',
       isChecked: isAllChecked,
       isIndeterminate,
-      onToggle: isChecked => ToggledSelectAll({ isChecked }),
+      onToggle: isChecked => Message.ToggledSelectAll({ isChecked }),
       toView: attributes =>
         h.div(
           [h.Class('flex items-center gap-2')],

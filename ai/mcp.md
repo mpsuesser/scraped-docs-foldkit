@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ai/mcp
 title: "DevTools MCP"
 description: "Connect an agent to a running Foldkit application to inspect Models and Message history, compare states, replay the UI, and dispatch Schema-validated Messages."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # DevTools MCP Server
@@ -26,7 +26,7 @@ New projects already include `@foldkit/devtools-mcp`, a `.mcp.json` entry named 
 
 Run the init command in the project root:
 
-```sh
+```
 npx @foldkit/devtools-mcp init
 ```
 
@@ -34,7 +34,7 @@ The command creates `.mcp.json`, or updates only the `foldkit-devtools` entry wh
 
 Install the server as a development dependency when you want to avoid an `npx` lookup each time the agent starts:
 
-```sh
+```
 npm install -D @foldkit/devtools-mcp
 ```
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-dialog
 title: "Ui/Dialog"
 description: "API documentation for the Ui/Dialog module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Ui/Dialog
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L353)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L328)
 
 ```
 /** Programmatically closes the dialog. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L376)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L351)
 
 ```
 /**
@@ -45,7 +45,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L142)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L99)
 
 ```
 /** Creates an initial dialog model from a config. Defaults to closed and non-animated. */
@@ -56,7 +56,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L349)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L324)
 
 ```
 /** Programmatically opens the dialog. */
@@ -67,7 +67,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L366)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L341)
 
 ```
 /**
@@ -87,38 +87,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L245)
-
-```
-/** Processes a dialog message and returns the next model and commands. */
-(
-  model: Dialog.Model,
-  message: {
-    _tag: "RequestedOpen"
-  } | {
-    _tag: "RequestedClose"
-  } | {
-    _tag: "CompletedShowDialog"
-  } | {
-    _tag: "CompletedCloseDialog"
-  } | {
-    _tag: "Unmounted"
-  } | {
-    _tag: "CompletedReleaseDialogResources"
-  } | {
-    _tag: "GotAnimationMessage"
-    message: {
-      _tag: "Showed"
-    } | {
-      _tag: "Hid"
-    } | {
-      _tag: "CompletedWaitForPaint"
-    } | {
-      _tag: "EndedAnimation"
-    }
-  }
-): UpdateReturn
-```
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L225)
 
 ## Types
 
@@ -126,7 +95,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L129)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L86)
 
 ```
 /**
@@ -152,7 +121,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L416)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L391)
 
 ```
 /**
@@ -210,7 +179,7 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L428)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L403)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -225,10 +194,19 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L191)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L157)
 
 ```
-/** Calls `close()` on the native dialog element and unlocks page scroll. */
+/**
+ * Calls `close()` on the native dialog element and unlocks page scroll when
+ *  the close released the resources `ShowDialog` installed. A close that runs
+ *  before the show has installed them leaves the lock alone. When the show
+ *  then fails, it releases the lock itself. When the show succeeds, update
+ *  closes the dialog again. If the dialog element is gone by the time the
+ *  close runs, the Command calls `Dom.releaseDialogResources` instead. That
+ *  releases the scroll lock, focus trap, return focus, and stack entry if the
+ *  dialog still holds them.
+ */
 const CloseDialog: CommandDefinitionWithArgs<"CloseDialog", {
   id: String
 }, Effect<{
@@ -236,84 +214,38 @@ const CloseDialog: CommandDefinitionWithArgs<"CloseDialog", {
 }, never, never>>
 ```
 
-### Closed
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L109)
-
-```
-/**
- * Sent once the dialog has transitioned to closed. Programmatic
- *  `Dialog.close` on an already-closed model is a no-op that does not
- *  re-emit; calling close while a leave animation is in progress is
- *  also a no-op.
- */
-const Closed: CallableTaggedStruct<"Closed", {}>
-```
-
-### CompletedCloseDialog
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L49)
-
-```
-/** Sent when the close-dialog command completes. */
-const CompletedCloseDialog: CallableTaggedStruct<"CompletedCloseDialog", {}>
-```
-
-### CompletedReleaseDialogResources
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L58)
-
-```
-/** Sent when the release-dialog-resources command completes. */
-const CompletedReleaseDialogResources: CallableTaggedStruct<"CompletedReleaseDialogResources", {}>
-```
-
-### CompletedShowDialog
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L47)
-
-```
-/** Sent when the show-dialog command completes. */
-const CompletedShowDialog: CallableTaggedStruct<"CompletedShowDialog", {}>
-```
-
-### GotAnimationMessage
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L62)
-
-```
-/** Wraps an Animation submodel message for delegation. */
-const GotAnimationMessage: CallableTaggedStruct<"GotAnimationMessage", {
-  message: Union<[CallableTaggedStruct<"Showed", {}>, CallableTaggedStruct<"Hid", {}>, CallableTaggedStruct<"CompletedWaitForPaint", {}>, CallableTaggedStruct<"EndedAnimation", {}>]>
-}>
-```
-
 ### Message
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L67)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L41)
 
 ```
 /** Union of all messages the dialog component can produce. */
-const Message: S.Union<[typeof RequestedOpen, typeof RequestedClose, typeof CompletedShowDialog, typeof CompletedCloseDialog, typeof Unmounted, typeof CompletedReleaseDialogResources, typeof GotAnimationMessage]>
+const Message: MessageUnion<{
+  CompletedCloseDialog: {}
+  CompletedReleaseDialogResources: {}
+  FailedShowDialog: {}
+  GotAnimationMessage: {
+    message: MessageUnion<{
+      CompletedWaitForPaint: {}
+      EndedAnimation: {}
+      Hid: {}
+      Showed: {}
+    }>
+  }
+  RequestedClose: {}
+  RequestedOpen: {}
+  SucceededShowDialog: {}
+  Unmounted: {}
+}>
 ```
 
 ### Model
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L28)
 
 ```
 /** Schema for the dialog component's state, tracking its unique ID, open/closed status, animation support, and animation lifecycle phase. */
@@ -330,38 +262,25 @@ const Model: Struct<{
 }>
 ```
 
-### Opened
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L103)
-
-```
-/**
- * Sent once the dialog has transitioned to open. Fires after `update`
- *  has processed `RequestedOpen` and `isOpen` reflects the new state.
- *  Programmatic `Dialog.open` on an already-open model is a no-op that
- *  does not re-emit.
- */
-const Opened: CallableTaggedStruct<"Opened", {}>
-```
-
 ### OutMessage
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L112)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L66)
 
 ```
 /** Union of out-messages the dialog component can produce. */
-const OutMessage: Union<readonly [CallableTaggedStruct<"Opened", {}>, CallableTaggedStruct<"Closed", {}>]>
+const OutMessage: MessageUnion<{
+  Closed: {}
+  Opened: {}
+}>
 ```
 
 ### ReleaseDialogResources
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L206)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L174)
 
 ```
 /**
@@ -377,33 +296,11 @@ const ReleaseDialogResources: CommandDefinitionWithArgs<"ReleaseDialogResources"
 }, never, never>>
 ```
 
-### RequestedClose
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L45)
-
-```
-/** Sent when the dialog should close (Escape key, backdrop click, or programmatic). */
-const RequestedClose: CallableTaggedStruct<"RequestedClose", {}>
-```
-
-### RequestedOpen
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L43)
-
-```
-/** Sent when the dialog should open. Triggers the ShowDialog command. */
-const RequestedOpen: CallableTaggedStruct<"RequestedOpen", {}>
-```
-
 ### ShowDialog
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L177)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L134)
 
 ```
 /**
@@ -411,39 +308,28 @@ const
  *  `Dom.showDialog`, which calls `show()` (not native `showModal()`) so other
  *  high-z-index overlays stay interactive. It layers the dialog with a high
  *  z-index, traps focus, and dispatches a `cancel` event on Esc. The Dialog
- *  component supplies its own backdrop.
+ *  component supplies its own backdrop. If the dialog element is gone by the
+ *  time the show runs, the lock is released and the Command reports
+ *  `FailedShowDialog`. A closed dialog has no `OnUnmount`, so nothing else
+ *  would release the lock. The update function then closes the Model. Without
+ *  this close, the dialog would render open with no lock and no focus trap.
+ *  The lock is also released if the Command is interrupted while it waits.
  */
 const ShowDialog: CommandDefinitionWithArgs<"ShowDialog", {
   focusSelector: String
   id: String
 }, Effect<{
-  _tag: "CompletedShowDialog"
+  _tag: "SucceededShowDialog"
+} | {
+  _tag: "FailedShowDialog"
 }, never, never>>
-```
-
-### Unmounted
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L56)
-
-```
-/**
- * Sent when the native `<dialog>` element is removed from the DOM, the classic
- *  case being navigation away from a route-keyed subtree that contains the
- *  dialog. When the dialog still holds framework resources, `update` triggers
- *  the hygiene-only `ReleaseDialogResources` command and resets the model to a
- *  clean closed state. Does not emit `Closed` or run any consumer close
- *  Commands: it is a backstop, not the purposeful close.
- */
-const Unmounted: CallableTaggedStruct<"Unmounted", {}>
 ```
 
 ### view
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/dialog/index.ts#L436)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/dialog/index.ts#L411)
 
 ```
 /**
@@ -457,7 +343,9 @@ const view: SubmodelView<Dialog.Model, {
 } | {
   _tag: "RequestedClose"
 } | {
-  _tag: "CompletedShowDialog"
+  _tag: "SucceededShowDialog"
+} | {
+  _tag: "FailedShowDialog"
 } | {
   _tag: "CompletedCloseDialog"
 } | {

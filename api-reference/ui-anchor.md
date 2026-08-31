@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-anchor
 title: "Ui/Anchor"
 description: "API documentation for the Ui/Anchor module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Ui/Anchor
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/anchor/anchor.ts#L148)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/anchor/anchor.ts#L182)
 
 ```
 /**
@@ -45,7 +45,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/anchor/anchor.ts#L97)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/anchor/anchor.ts#L98)
 
 ```
 /**
@@ -66,7 +66,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/anchor/anchor.ts#L124)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/anchor/anchor.ts#L136)
 
 ```
 /**
@@ -81,9 +81,22 @@ type
  *    resolves. Defaults to `false`.
  *  - `focusSelector`: focuses this descendant instead of the element itself.
  *    Read only when `focusAfterPosition` is true.
+ *  - `arrowId`: id of an arrow element inside the panel, resolved through the
+ *    element's own root. An id that resolves to an element outside the panel is
+ *    ignored, and any element type is accepted, so an `<svg>` arrow works. When
+ *    it resolves, the arrow's offset along the panel edge is published as
+ *    `--arrow-x` and `--arrow-y`, with the axis the placement does not use
+ *    reset to `initial`, and the panel is no longer made a scroll container,
+ *    since scrolling clips on both axes and an arrow sits half outside the
+ *    panel's box.
+ *  - `arrowPadding`: distance in pixels the arrow keeps from the panel's
+ *    corners. Defaults to `0`. Separate from `anchor.padding`, which is the
+ *    viewport padding.
  */
 type SetupConfig = Readonly<{
   anchor: AnchorConfig
+  arrowId: string
+  arrowPadding: number
   buttonId: string
   focusAfterPosition: boolean
   focusSelector: string
@@ -97,7 +110,7 @@ type SetupConfig = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/anchor/anchor.ts#L47)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/anchor/anchor.ts#L48)
 
 ```
 /** Static configuration for anchor-based positioning of a floating element relative to a button. */
@@ -123,7 +136,7 @@ const AnchorConfig: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/anchor/anchor.ts#L34)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/anchor/anchor.ts#L35)
 
 ```
 /**
@@ -145,7 +158,7 @@ const Padding: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/anchor/anchor.ts#L15)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/anchor/anchor.ts#L16)
 
 ```
 /**

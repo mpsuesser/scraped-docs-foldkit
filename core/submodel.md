@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Split a large application into child state machines while preserving parent-to-child Message flow. Covers Update.foldChild, h.submodel, OutMessages, reflection, testing, and DevTools."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## When to Create a Submodel
@@ -35,9 +35,9 @@ A child Submodel does not know which parent embeds it. This Settings Submodel ow
 
 ```
 // page/settings.ts
-import { Match as M, Schema as S } from 'effect'
-import { Command } from 'foldkit'
-import { m } from 'foldkit/message'
+import { Schema as S } from 'effect'
+import { type Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 // MODEL
@@ -58,39 +58,28 @@ export type Model = typeof Model.Type
 
 // MESSAGE
 
-export const ChangedTheme = m('ChangedTheme', { theme: Theme })
-export const ChangedFontSize = m('ChangedFontSize', { fontSize: FontSize })
-export const ToggledNotifications = m('ToggledNotifications')
+export const Message = defineMessageUnion({
+  ChangedTheme: { theme: Theme },
+  ChangedFontSize: { fontSize: FontSize },
+  ToggledNotifications: {},
+})
 
-export const Message = S.Union([
-  ChangedTheme,
-  ChangedFontSize,
-  ToggledNotifications,
-])
 export type Message = typeof Message.Type
 
 // UPDATE
 
-export const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.withReturnType<
-      readonly [Model, ReadonlyArray<Command.Command<Message>>]
-    >(),
-    M.tagsExhaustive({
-      ChangedTheme: ({ theme }) => [evo(model, { theme: () => theme }), []],
-      ChangedFontSize: ({ fontSize }) => [
-        evo(model, { fontSize: () => fontSize }),
-        [],
-      ],
-      ToggledNotifications: () => [
-        evo(model, { notificationsEnabled: enabled => !enabled }),
-        [],
-      ],
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ChangedTheme: ({ theme }) => ({
+      model: evo(model, { theme: () => theme }),
     }),
-  )
+    ChangedFontSize: ({ fontSize }) => ({
+      model: evo(model, { fontSize: () => fontSize }),
+    }),
+    ToggledNotifications: () => ({
+      model: evo(model, { notificationsEnabled: enabled => !enabled }),
+    }),
+  })
 ```
 
 ## Embedding the Submodel
@@ -122,12 +111,11 @@ The parent stores the child Model, but the child still owns it. Do not use [evo]
 // ❌ Don't reach into the child's Model from the parent's update.
 // This bypasses Settings.update, so DevTools never sees the change,
 // and any invariant Settings.update was enforcing is silently violated.
-ClickedResetSettings: () => [
-  evo(model, {
+ClickedResetSettings: () => ({
+  model: evo(model, {
     settings: settings => evo(settings, { theme: () => 'Light' }),
   }),
-  [],
-]
+})
 ```
 
 For a parent-initiated change, export a helper from the child and fold that helper with `Update.foldChild`. The parent can call `Settings.setTheme` without importing the internal `ChangedTheme` constructor.
@@ -166,15 +154,14 @@ Every Message eventually reaches the root update. Each parent therefore declares
 
 ```
 import { Schema as S } from 'effect'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import * as Settings from './page/settings'
 
-export const GotSettingsMessage = m('GotSettingsMessage', {
-  message: Settings.Message,
+export const Message = defineMessageUnion({
+  GotSettingsMessage: { message: Settings.Message },
 })
 
-export const Message = S.Union([GotSettingsMessage])
 export type Message = typeof Message.Type
 ```
 
@@ -195,8 +182,8 @@ A wrapper carries routing information only. It holds the child `message` and, fo
 The resulting fold reads the child, runs its update, writes it back, and lifts its Commands through `toParentMessage`.
 
 ```
-import { Match as M, Option } from 'effect'
-import { Command, Update } from 'foldkit'
+import { Option } from 'effect'
+import { Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
 const foldSettings = Update.foldChild({
@@ -206,22 +193,41 @@ const foldSettings = Update.foldChild({
   toParentMessage: message => GotSettingsMessage({ message }),
 })
 
-export const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.tagsExhaustive({
-      GotSettingsMessage: ({ message }) => foldSettings(model, message),
-    }),
-  )
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    GotSettingsMessage: ({ message }) => foldSettings(model, message),
+  })
 ```
 
 `read` returns an `Option` because a routed page or keyed child may no longer exist when its Message arrives. `None` makes the fold a no-op. An always-present child returns `Option.some(model.settings)`.
 
-The fold is dual. `foldSettings(model, message)` runs it immediately. `foldSettings(message)` returns an `Update.Step` for `Update.combine`. Close over per-dispatch context in the `update` field, and apply route gates before calling the fold.
+The fold is dual. `foldSettings(model, message)` runs it immediately. `foldSettings(message)` returns an `Update.Step<ParentModel, ParentMessage>` for `Update.combine`. Close over per-dispatch context in the `update` field, and apply route gates before calling the fold.
 
-Use `Update.foldChildStep` for an entry point that takes only the child Model, such as `Dialog.close`. It accepts the same boundary fields and returns an `Update.Step` directly.
+Use `Update.foldChildStep` for an entry point that takes only the child Model, such as `Dialog.close`. It accepts the same fields and returns an `Update.Step<ParentModel, ParentMessage>`. Add `toParentOutMessage` when at least one child OutMessage should continue to the current Submodel's parent. The fold then returns an `Update.StepWithOutMessage<ParentModel, ParentMessage, ParentOutMessage>`.
+
+```
+import { Match as M, Option } from 'effect'
+import { Update } from 'foldkit'
+import { evo } from 'foldkit/struct'
+
+const toParentDialogOutMessage = M.type<Dialog.OutMessage>().pipe(
+  M.withReturnType<OutMessage | undefined>(),
+  M.tagsExhaustive({
+    Opened: () => undefined,
+    Closed: () => OutMessage.ClosedDialog(),
+  }),
+)
+
+const foldDialogClose = Update.foldChildStep({
+  update: Dialog.close,
+  read: (model: Model) => Option.some(model.dialog),
+  write: (model, nextDialog) => evo(model, { dialog: () => nextDialog }),
+  toParentMessage: message => Message.GotDialogMessage({ message }),
+  toParentOutMessage: toParentDialogOutMessage,
+})
+
+export const closeDialog = (model: Model) => foldDialogClose(model)
+```
 
 ### Wiring the View with h.submodel
 
@@ -568,39 +574,34 @@ h.submodel({
 Add a third `context` argument when child update needs the current parent value while processing a Message. Close over that value when constructing the fold.
 
 ```
-import { Match as M, Option } from 'effect'
-import { type Command, Update } from 'foldkit'
+import { Option } from 'effect'
+import { Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
-import { GotSettingsMessage } from '../../message'
+import { Message } from '../../message'
 import type { Model as AppModel } from '../../model'
 import type { User } from '../user'
-import { PersistSettings, type Message as SettingsMessage } from './message'
+import { PersistSettings, Message as SettingsMessage } from './message'
 import type { Model as SettingsModel } from './model'
 
 type Context = Readonly<{
   currentUser: User
 }>
 
-type UpdateReturn = readonly [
-  SettingsModel,
-  ReadonlyArray<Command.Command<SettingsMessage>>,
-]
-
 export const update = (
   model: SettingsModel,
   message: SettingsMessage,
   context: Context,
-): UpdateReturn =>
-  M.value(message).pipe(
-    M.withReturnType<UpdateReturn>(),
-    M.tagsExhaustive({
-      ChangedTheme: ({ theme }) => [
-        evo(model, { theme: () => theme }),
-        [PersistSettings({ userId: context.currentUser.id, theme })],
-      ],
+) =>
+  SettingsMessage.match<Update.Return<SettingsModel, SettingsMessage>>(
+    message,
+    {
+      ChangedTheme: ({ theme }) => ({
+        model: evo(model, { theme: () => theme }),
+        commands: [PersistSettings({ userId: context.currentUser.id, theme })],
+      }),
       // ...other arms
-    }),
+    },
   )
 
 // PARENT UPDATE
@@ -612,7 +613,7 @@ const foldSettings = (currentUser: User) =>
     read: (model: AppModel) => Option.some(model.settings),
     write: (model, nextSettings) =>
       evo(model, { settings: () => nextSettings }),
-    toParentMessage: message => GotSettingsMessage({ message }),
+    toParentMessage: message => Message.GotSettingsMessage({ message }),
   })
 
 GotSettingsMessage: ({ message }) =>
@@ -627,7 +628,7 @@ Context does not notify the child when a value changes. If the child must react 
 
 Wrapper Messages route child work back into the child update. An OutMessage reports a fact the parent may need to act on, such as a committed date, selected tab, or completed login.
 
-The child update returns `Option<OutMessage>` as a third tuple element. The child describes what happened, and the parent decides the consequence. A Login Submodel can emit `SucceededLogin` without knowing how the root stores a session or changes the URL.
+The child update can include an OutMessage in its optional `outMessage` field. The child describes what happened, and the parent decides the consequence. A Login Submodel can emit `SucceededLogin` without knowing how the root stores a session or changes the URL.
 
 ### Defining OutMessages
 
@@ -635,57 +636,46 @@ Define OutMessages beside the child Message. Name them as past-tense facts: `Suc
 
 ```
 import { Schema as S } from 'effect'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 // MESSAGE
 
-export const SubmittedLoginForm = m('SubmittedLoginForm')
-export const SucceededAuthenticate = m('SucceededAuthenticate', {
-  sessionId: S.String,
+export const Message = defineMessageUnion({
+  SubmittedLoginForm: {},
+  SucceededAuthenticate: { sessionId: S.String },
 })
 
-export const Message = S.Union([SubmittedLoginForm, SucceededAuthenticate])
 export type Message = typeof Message.Type
 
 // OUT MESSAGE
 
-export const SucceededLogin = m('SucceededLogin', {
-  sessionId: S.String,
+export const OutMessage = defineMessageUnion({
+  SucceededLogin: { sessionId: S.String },
 })
 
-export const OutMessage = S.Union([SucceededLogin])
 export type OutMessage = typeof OutMessage.Type
 ```
 
 ### Emitting from the Child
 
-The child update returns its Model, Commands, and an `Option<OutMessage>`. Most branches return `Option.none()`. A branch returns `Option.some(...)` only when it has a fact to surface.
+The child update returns its Model, optional Commands, and an optional OutMessage. Most branches omit `outMessage`. A branch includes it only when it has a fact to surface.
 
 ```
-import { Match as M, Option } from 'effect'
-import { Command } from 'foldkit'
+import { type Update } from 'foldkit'
 
-export const update = (
-  model: Model,
-  message: Message,
-): readonly [
-  Model,
-  ReadonlyArray<Command.Command<Message>>,
-  Option.Option<OutMessage>,
-] =>
-  M.value(message).pipe(
-    M.tagsExhaustive({
-      SubmittedLoginForm: () => [
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.ReturnWithOutMessage<Model, Message, OutMessage>>(
+    message,
+    {
+      SubmittedLoginForm: () => ({
         model,
-        [Authenticate(model.email, model.password)],
-        Option.none(),
-      ],
-      SucceededAuthenticate: ({ sessionId }) => [
+        commands: [Authenticate(model.email, model.password)],
+      }),
+      SucceededAuthenticate: ({ sessionId }) => ({
         model,
-        [],
-        Option.some(SucceededLogin({ sessionId })),
-      ],
-    }),
+        outMessage: OutMessage.SucceededLogin({ sessionId }),
+      }),
+    },
   )
 ```
 
@@ -693,11 +683,13 @@ export const update = (
 
 ### Handling in the Parent
 
-Handle the OutMessage through `foldOutMessage` on [Update.foldChild](#fold-child). Bind the fold as a standalone `fold<Child>OutMessage` value and match on every OutMessage tag. The returned `Update.Step` receives the parent Model after the updated child has been written back.
+Handle the OutMessage through `foldOutMessage` on [Update.foldChild](#fold-child). Bind the fold as a standalone `fold<Child>OutMessage` value and match on every OutMessage tag. The returned `Update.Step<ParentModel, ParentMessage>` receives the parent Model after the updated child has been written back.
+
+Do not unpack a child update or helper result by hand. Destructuring `model` and `commands` can leave its `outMessage` behind without a type error. Dot access can still ignore an OutMessage, but an operation-named value keeps all three returned fields visible together. Use `Update.foldChild` or `Update.foldChildStep` so the child Model, lifted Commands, and OutMessage remain part of one fold.
 
 ```
 import { Match as M, Option } from 'effect'
-import { Command, Update } from 'foldkit'
+import { Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
 const foldLoginOutMessage = M.type<Login.OutMessage>().pipe(
@@ -705,7 +697,10 @@ const foldLoginOutMessage = M.type<Login.OutMessage>().pipe(
   M.tagsExhaustive({
     SucceededLogin:
       ({ sessionId }) =>
-      () => [LoggedIn({ sessionId }), [SaveSession(sessionId)]],
+      () => ({
+        model: LoggedIn({ sessionId }),
+        commands: [SaveSession(sessionId)],
+      }),
   }),
 )
 
@@ -717,15 +712,10 @@ const foldLogin = Update.foldChild({
   foldOutMessage: foldLoginOutMessage,
 })
 
-export const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.tagsExhaustive({
-      GotLoginMessage: ({ message }) => foldLogin(model, message),
-    }),
-  )
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    GotLoginMessage: ({ message }) => foldLogin(model, message),
+  })
 ```
 
 The fold appends the Step's Commands after the child's lifted Commands. If the Step returns a child Command, use `liftCommand` or `liftCommands` from `Update.FoldContext`. The lifter wraps the Command's result Message with the same `toParentMessage` used by the child fold.
@@ -733,33 +723,35 @@ The fold appends the Step's Commands after the child's lifted Commands. If the S
 In this example, only the parent knows the redirect Route for `Login.SendMagicLink`. The child emits `RequestedMagicLink`, and the parent fills in the Route while keeping the Command result inside the Login boundary.
 
 ```
-import { Match as M } from 'effect'
 import { Update } from 'foldkit'
 
 const foldLoginOutMessage = (
   outMessage: Login.OutMessage,
   { liftCommand }: Update.FoldContext<Login.Message, Message>,
 ) =>
-  M.value(outMessage).pipe(
-    M.withReturnType<Update.Step<Model, Message>>(),
-    M.tagsExhaustive({
-      RequestedMagicLink:
-        ({ email }) =>
-        model => [
-          model,
-          [
-            liftCommand(
-              Login.SendMagicLink({ email, redirectRoute: model.route }),
-            ),
-          ],
+  Login.OutMessage.match<Update.Step<Model, Message>>(outMessage, {
+    RequestedMagicLink:
+      ({ email }) =>
+      model => ({
+        model,
+        commands: [
+          liftCommand(
+            Login.SendMagicLink({ email, redirectRoute: model.route }),
+          ),
         ],
-    }),
-  )
+      }),
+  })
 ```
 
-[Update.foldChildStep](#fold-child) supplies the same fold context for no-argument child entry points.
+[Update.foldChildStep](#fold-child) supplies the same fold context for no-argument child entry points. It also accepts `toParentOutMessage` when the current Submodel forwards a child OutMessage to its parent.
 
-A parent that is itself a Submodel adds `toParentOutMessage`. Match the child OutMessage and return `Option.some(parentOutMessage)` when the fact should continue upward, or `Option.none()` when it stops at that level. The [Auth example](https://foldkit.dev/example-apps/auth) carries a successful login through two Submodel levels to the root.
+A parent Submodel adds `toParentOutMessage` only when it passes at least one child OutMessage up to its own parent. Match every child variant. Return the parent's OutMessage for each variant that should continue upward. Return `undefined` for each variant that stops at this Submodel. The [Auth example](https://foldkit.dev/example-apps/auth) forwards a successful login through two Submodel levels to the root.
+
+If every child OutMessage stops at this Submodel, omit `toParentOutMessage`. Any `foldOutMessage` handling still runs. A forwarded OutMessage also runs through `foldOutMessage`, so the same event can update this Submodel before it continues upward. Do not add `toParentOutMessage: () => undefined` just to change the fold's return type.
+
+`toParentOutMessage` passes the child's fact upward one to one. When the parent's fact is derived instead, annotate the fold's return type as `Update.StepWithOutMessage` and return the parent OutMessage in `outMessage`. For example, a picker child emits `SelectedDate`, and the parent applies it to its own Model and emits `CompletedRange` only once both dates are set. This path needs no `toParentOutMessage` adapter.
+
+When a fold both derives a parent OutMessage and has a one-to-one lift, the derived OutMessage replaces the lift for that dispatch. If the Step omits `outMessage`, the lift still runs. `Update.foldChildStep` follows the same rule for no-argument child entry points.
 
 ## Reflecting External State
 
@@ -770,8 +762,8 @@ A `reflect*` helper returns the child Model directly. It does not return Command
 Define reflect helpers with `Function.dual` so they work point-free in [evo](https://foldkit.dev/best-practices/immutability#immutable-updates). Here the URL owns the price range, and the parent reflects that range onto a Slider.
 
 ```
-ChangedUrl: ({ route }) => [
-  evo(model, {
+ChangedUrl: ({ route }) => ({
+  model: evo(model, {
     // The URL owns the price bounds, so reflect them onto the Slider. reflectRange
     // returns Model (point-free in evo) and emits nothing, so it can't echo the
     // route back and loop.
@@ -780,8 +772,7 @@ ChangedUrl: ({ route }) => [
       max: route.maxPrice,
     }),
   }),
-  [],
-]
+})
 ```
 
 Only the owner calls a child's `reflect*` helper. User interactions still go through the child update and may emit OutMessages.

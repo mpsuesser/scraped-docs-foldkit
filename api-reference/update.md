@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/update
 title: "Update"
 description: "API documentation for the Update module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Update
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L135)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L197)
 
 ```
 /**
@@ -22,9 +22,9 @@ function
  *  cache: read the entry, ask `revalidate` whether it should transition,
  *  and only when it says yes write the transitioned state and emit the
  *  load Command. When `revalidate` returns `None` (a missing entry, or a
- *  state with nothing to revalidate) the step returns `[model, []]`: same
- *  Model, no Command. That one rule is what makes blanket revalidation
- *  safe, because only the caches that actually hold data reload.
+ *  state with nothing to revalidate) the step returns `{ model }`: same
+ *  Model, no Command. A handler can list every affected cache, and only the
+ *  caches that currently hold data reload.
  * 
  *  ```ts
  *  const refreshAllNotes = refresh({
@@ -44,12 +44,12 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L163)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L228)
 
 ```
 /**
  * The four capabilities that fold one child Submodel's update into the
- *  parent, for a child without an OutMessage channel.
+ *  parent, for a child whose update cannot emit an OutMessage.
  * 
  *  - `update`: the child update function to run.
  *  - `read`: the getter half of the lens onto the child: reads the child
@@ -71,11 +71,35 @@ type ChildFold = Readonly<{
 }>
 ```
 
+### ChildFoldWithDerivedParentOutMessage
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L344)
+
+```
+/**
+ * ChildFoldWithOutMessage for a parent that derives its own
+ *  OutMessage while folding the child's. The returned
+ *  StepWithOutMessage receives the parent Model with the child already
+ *  written back. Use this shape when no child OutMessage is forwarded one to
+ *  one, so the fold needs no `toParentOutMessage` adapter.
+ */
+type ChildFoldWithDerivedParentOutMessage = Readonly<{
+  foldOutMessage: (outMessage: ChildOutMessage, context: FoldContext<ChildMessage, ParentMessage>) => StepWithOutMessage<NoInfer<ParentModel>, OutMessageStepMessage, ParentOutMessage, OutMessageStepRequirements>
+  read: (model: ParentModel) => Option.Option<ChildModel>
+  toParentMessage: (message: ChildMessage) => ParentMessage
+  toParentOutMessage: never
+  update: (childModel: ChildModel, input: Input) => ReturnWithOutMessage<ChildModel, ChildMessage, ChildOutMessage, ChildRequirements>
+  write: (model: ParentModel, nextChildModel: ChildModel) => ParentModel
+}>
+```
+
 ### ChildFoldWithOutMessage
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L237)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L306)
 
 ```
 /**
@@ -89,13 +113,16 @@ type
  *    (`M.tagsExhaustive`), and build a multi-step fold with
  *    combine. Takes an optional second parameter, a
  *    FoldContext of lifters bound to `toParentMessage`, for a
- *    Command the Step returns whose result is the child's Message.
+ *    Command the Step returns whose result is the child's Message. Parent Model
+ *    inference comes from `read` and `write`; the child wrapper and OutMessage
+ *    Step infer their Message and service requirements independently, and the
+ *    resulting Fold requires their unions.
  */
 type ChildFoldWithOutMessage = Readonly<{
-  foldOutMessage: (outMessage: ChildOutMessage, context: FoldContext<ChildMessage, ParentMessage>) => Step<ParentModel, ParentMessage, R>
+  foldOutMessage: (outMessage: ChildOutMessage, context: FoldContext<ChildMessage, ParentMessage>) => Step<NoInfer<ParentModel>, OutMessageStepMessage, OutMessageStepRequirements>
   read: (model: ParentModel) => Option.Option<ChildModel>
   toParentMessage: (message: ChildMessage) => ParentMessage
-  update: (childModel: ChildModel, input: Input) => ReturnWithOutMessage<ChildModel, ChildMessage, ChildOutMessage, R>
+  update: (childModel: ChildModel, input: Input) => ReturnWithOutMessage<ChildModel, ChildMessage, ChildOutMessage, ChildRequirements>
   write: (model: ParentModel, nextChildModel: ChildModel) => ParentModel
 }>
 ```
@@ -104,30 +131,36 @@ type ChildFoldWithOutMessage = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L272)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L399)
 
 ```
 /**
  * ChildFoldWithOutMessage for a parent that is itself a
- *  Submodel, so the fold's result carries the parent's own OutMessage
- *  channel as a third tuple element. Adds:
+ *  Submodel, so the fold can return the parent's own OutMessage. Adds:
  * 
  *  - `toParentOutMessage`: lifts the child's OutMessage into the
- *    parent's own OutMessage; `None` passes nothing upward. When the
- *    child returns no OutMessage the fold's third element is `None`.
+ *    parent's own OutMessage. Return `undefined` for a named child variant
+ *    that stops at this parent. When the child returns no OutMessage, the fold
+ *    omits `outMessage`.
  *  - `foldOutMessage` stays available for a parent that also updates
  *    its own state from the child's OutMessage, and is optional here.
+ *    It may emit a derived parent OutMessage. That OutMessage replaces the
+ *    one-to-one lift for the dispatch. When the Step emits nothing, the lift
+ *    runs as usual.
  * 
- *  A parent Submodel embedding a child with no OutMessage channel needs
- *  no config at all: spread the plain fold into its return,
- *  `[...foldStartDate(model, message), Option.none()]`.
+ *  Use this shape only when at least one child OutMessage should continue to
+ *  the current Submodel's parent. If every child OutMessage stops here, use
+ *  ChildFoldWithDerivedParentOutMessage when the fold derives its own
+ *  OutMessage, or ChildFoldWithOutMessage when it does not. When
+ *  provided, `foldOutMessage` still handles each variant locally, including
+ *  variants that continue upward.
  */
 type ChildFoldWithParentOutMessage = Readonly<{
-  foldOutMessage: (outMessage: ChildOutMessage, context: FoldContext<ChildMessage, ParentMessage>) => Step<ParentModel, ParentMessage, R>
+  foldOutMessage: (outMessage: ChildOutMessage, context: FoldContext<ChildMessage, ParentMessage>) => StepWithOutMessage<NoInfer<ParentModel>, OutMessageStepMessage, DerivedParentOutMessage, OutMessageStepRequirements>
   read: (model: ParentModel) => Option.Option<ChildModel>
   toParentMessage: (message: ChildMessage) => ParentMessage
-  toParentOutMessage: (outMessage: ChildOutMessage) => Option.Option<ParentOutMessage>
-  update: (childModel: ChildModel, input: Input) => ReturnWithOutMessage<ChildModel, ChildMessage, ChildOutMessage, R>
+  toParentOutMessage: (outMessage: ChildOutMessage) => ParentOutMessage | undefined
+  update: (childModel: ChildModel, input: Input) => ReturnWithOutMessage<ChildModel, ChildMessage, ChildOutMessage, ChildRequirements>
   write: (model: ParentModel, nextChildModel: ChildModel) => ParentModel
 }>
 ```
@@ -136,7 +169,7 @@ type ChildFoldWithParentOutMessage = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L532)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L726)
 
 ```
 /**
@@ -154,24 +187,80 @@ type ChildStepFold = Readonly<{
 }>
 ```
 
+### ChildStepFoldWithDerivedParentOutMessage
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L778)
+
+```
+/**
+ * ChildStepFoldWithOutMessage for a parent that derives its own
+ *  OutMessage while folding the child's. This is the no-argument counterpart
+ *  to ChildFoldWithDerivedParentOutMessage.
+ */
+type ChildStepFoldWithDerivedParentOutMessage = Readonly<{
+  foldOutMessage: (outMessage: ChildOutMessage, context: FoldContext<ChildMessage, ParentMessage>) => StepWithOutMessage<NoInfer<ParentModel>, OutMessageStepMessage, ParentOutMessage, OutMessageStepRequirements>
+  read: (model: ParentModel) => Option.Option<ChildModel>
+  toParentMessage: (message: ChildMessage) => ParentMessage
+  toParentOutMessage: never
+  update: (childModel: ChildModel) => ReturnWithOutMessage<ChildModel, ChildMessage, ChildOutMessage, ChildRequirements>
+  write: (model: ParentModel, nextChildModel: ChildModel) => ParentModel
+}>
+```
+
 ### ChildStepFoldWithOutMessage
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L549)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L744)
 
 ```
 /**
  * ChildStepFold for an entry point whose return carries the child's
  *  OutMessage channel, adding `foldOutMessage`. It behaves exactly as it does
  *  in ChildFoldWithOutMessage, down to the optional second parameter,
- *  a FoldContext of lifters bound to `toParentMessage`.
+ *  a FoldContext of lifters bound to `toParentMessage`, and combines
+ *  the child update and OutMessage Step Message and service requirements.
  */
 type ChildStepFoldWithOutMessage = Readonly<{
-  foldOutMessage: (outMessage: ChildOutMessage, context: FoldContext<ChildMessage, ParentMessage>) => Step<ParentModel, ParentMessage, R>
+  foldOutMessage: (outMessage: ChildOutMessage, context: FoldContext<ChildMessage, ParentMessage>) => Step<NoInfer<ParentModel>, OutMessageStepMessage, OutMessageStepRequirements>
   read: (model: ParentModel) => Option.Option<ChildModel>
   toParentMessage: (message: ChildMessage) => ParentMessage
-  update: (childModel: ChildModel) => ReturnWithOutMessage<ChildModel, ChildMessage, ChildOutMessage, R>
+  update: (childModel: ChildModel) => ReturnWithOutMessage<ChildModel, ChildMessage, ChildOutMessage, ChildRequirements>
+  write: (model: ParentModel, nextChildModel: ChildModel) => ParentModel
+}>
+```
+
+### ChildStepFoldWithParentOutMessage
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L826)
+
+```
+/**
+ * ChildStepFoldWithOutMessage for a parent that is itself a
+ *  Submodel. `toParentOutMessage` turns the child's OutMessage into the
+ *  parent's OutMessage. Return `undefined` for a named child variant that
+ *  stops at this parent. `foldOutMessage` remains available when the parent
+ *  also updates its own state from the child's OutMessage. A derived
+ *  OutMessage from that Step replaces the one-to-one lift for the dispatch.
+ *  When the Step emits nothing, the lift runs as usual.
+ * 
+ *  Use this shape only when at least one child OutMessage should continue to
+ *  the current Submodel's parent. If every child OutMessage stops here, use
+ *  ChildStepFoldWithDerivedParentOutMessage when the fold derives its
+ *  own OutMessage, or ChildStepFoldWithOutMessage when it does not.
+ *  When provided, `foldOutMessage` still handles each variant locally,
+ *  including variants that continue upward.
+ */
+type ChildStepFoldWithParentOutMessage = Readonly<{
+  foldOutMessage: (outMessage: ChildOutMessage, context: FoldContext<ChildMessage, ParentMessage>) => StepWithOutMessage<NoInfer<ParentModel>, OutMessageStepMessage, DerivedParentOutMessage, OutMessageStepRequirements>
+  read: (model: ParentModel) => Option.Option<ChildModel>
+  toParentMessage: (message: ChildMessage) => ParentMessage
+  toParentOutMessage: (outMessage: ChildOutMessage) => ParentOutMessage | undefined
+  update: (childModel: ChildModel) => ReturnWithOutMessage<ChildModel, ChildMessage, ChildOutMessage, ChildRequirements>
   write: (model: ParentModel, nextChildModel: ChildModel) => ParentModel
 }>
 ```
@@ -180,16 +269,16 @@ type ChildStepFoldWithOutMessage = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L16)
 
 ```
 /**
- * The Commands half of an update return: every Command the update wants
- *  the runtime to run, in order. `R` is the services the Commands need
- *  and defaults to `never` for applications without resources.
+ * The Commands collection an update return may include. The collection keeps
+ *  the order in which the update returned them, but the runtime forks the
+ *  Commands independently. `R` is the services the Commands need and defaults
+ *  to `never` for applications without resources.
  * 
- *  Each update module pins its concrete types once and uses the alias
- *  throughout; the root update and every Submodel define their own:
+ *  Name an alias when a module reuses the same Message and service types:
  * 
  *  ```ts
  *  export type Commands = Update.Commands<Message, AppServices>
@@ -202,7 +291,7 @@ type Commands = ReadonlyArray<Command<Message, never, R>>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L329)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L464)
 
 ```
 /**
@@ -218,44 +307,45 @@ type Fold = (model: ParentModel, input: Input) => Return<ParentModel, ParentMess
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L217)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L283)
 
 ```
 /**
  * The lifters a `foldOutMessage` receives as its second parameter,
  *  already bound to the fold config's `toParentMessage`.
  * 
- *  The fold lifts the Commands the child's `update` returns on its own.
- *  This covers the other case: a Command the parent returns on the
- *  child's behalf from the OutMessage Step, whose result Message is the
- *  child's and therefore still needs wrapping, such as a parent handling
- *  a child's `Requested*` fact by returning the child's Command that
- *  fulfills it, built with context only the parent holds.
+ *  The fold already lifts the Commands returned by the child's `update`.
+ *  Use these lifters for a Command returned by the parent's OutMessage Step
+ *  when that Command still produces the child's Message. For example, the
+ *  parent may handle a child's `Requested*` fact by returning a child Command
+ *  built with routing context only the parent holds.
  * 
  *  The lifters apply the same lift the fold gives the child's own
  *  Commands, so the Step writes no `Command.mapMessage` call and keeps
  *  no second copy of the wrapper, and the mapping stays recorded on the
  *  Command for `Story.Command.resolve` and `Scene.Command.resolve`.
  * 
- *  The annotated standalone const takes both parameters, so the match
- *  moves from `M.type` to `M.value` on the OutMessage:
+ *  The annotated standalone const takes both parameters, so match the
+ *  OutMessage value directly:
  * 
  *  ```ts
- *  const foldLoginOutMessage: (
+ *  const foldLoginOutMessage = (
  *    outMessage: Login.OutMessage,
- *    context: Update.FoldContext<Login.Message, Message>,
- *  ) => Update.Step<Model, Message> = (outMessage, { liftCommand }) =>
+ *    { liftCommand }: Update.FoldContext<Login.Message, Message>,
+ *  ) =>
  *    M.value(outMessage).pipe(
  *      M.withReturnType<Update.Step<Model, Message>>(),
  *      M.tagsExhaustive({
- *        RequestedMagicLink: ({ email }) => model => [
- *          model,
- *          [
- *            liftCommand(
- *              Login.SendMagicLink({ email, redirectRoute: model.route }),
- *            ),
- *          ],
- *        ],
+ *        RequestedMagicLink:
+ *          ({ email }) =>
+ *          model => ({
+ *            model,
+ *            commands: [
+ *              liftCommand(
+ *                Login.SendMagicLink({ email, redirectRoute: model.route }),
+ *              ),
+ *            ],
+ *          }),
  *      }),
  *    )
  *  ```
@@ -270,7 +360,7 @@ type FoldContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L338)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L473)
 
 ```
 /**
@@ -286,7 +376,7 @@ type FoldWithOutMessage = (model: ParentModel, input: Input) => ReturnWithOutMes
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L112)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L174)
 
 ```
 /**
@@ -314,52 +404,68 @@ type Refreshable = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L37)
 
 ```
 /**
- * The pair every update function returns: the next Model and the
- *  Commands to run.
+ * The record an update returns when it cannot emit an OutMessage: the next
+ *  Model and any Commands to run.
  * 
- *  Each update module pins its concrete types once and aliases the
- *  result, the root update and every Submodel alike:
+ *  Inline the type when a matcher is its only use:
  * 
  *  ```ts
- *  export type UpdateReturn = Update.Return<Model, Message>
- *  export const withUpdateReturn = M.withReturnType<UpdateReturn>()
+ *  export const update = (model: Model, message: Message) =>
+ *    Message.match<Update.Return<Model, Message>>(message, {
+ *      ClickedSave: () => ({ model, commands: [Save()] }),
+ *      SucceededSave: ({ note }) => ({
+ *        model: evo(model, { note: () => note }),
+ *      }),
+ *    })
  *  ```
+ * 
+ *  Give it a local `UpdateReturn` alias when another matcher or helper in the
+ *  module needs the same type.
  */
-type Return = readonly [Model, Commands<Message, R>]
+type Return = Readonly<{
+  commands: Commands<Message, R>
+  model: Model
+  outMessage: never
+}>
 ```
 
 ### ReturnWithOutMessage
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L40)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L51)
 
 ```
 /**
- * The return shape of an update that also surfaces an OutMessage to its
- *  parent. The third element is an `Option`: the update always returns
- *  the channel, and `None` means there is nothing for the parent this
- *  time. Named for the shape, not the caller: a Submodel without an
- *  OutMessage channel returns a plain Return.
+ * The return shape of an update that can also surface an OutMessage to its
+ *  parent. Omit `commands` when the update statically creates none. Return a
+ *  computed Commands collection directly, even when it may be empty. Omit
+ *  `outMessage` when the update emitted nothing. A Submodel that cannot emit
+ *  an OutMessage returns Return instead.
  */
-type ReturnWithOutMessage = readonly [Model, Commands<Message, R>, Option.Option<OutMessage>]
+type ReturnWithOutMessage = Readonly<{
+  commands: Commands<Message, R>
+  model: Model
+  outMessage: OutMessage
+}>
 ```
 
 ### Step
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L50)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L104)
 
 ```
 /**
  * One self-contained edit to the Model paired with the Commands to run:
  *  the unit combine composes. A step that needs arguments is a
- *  function returning a Step (`(noteId: NoteId) => Step<...>`).
+ *  function returning a Step
+ *  (`(noteId: NoteId) => Update.Step<Model, Message>`).
  */
 type Step = (model: Model) => Return<Model, Message, R>
 ```
@@ -368,7 +474,7 @@ type Step = (model: Model) => Return<Model, Message, R>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L321)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L111)
 
 ```
 /**
@@ -385,7 +491,7 @@ type StepWithOutMessage = (model: Model) => ReturnWithOutMessage<Model, Message,
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L79)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L140)
 
 ```
 /**
@@ -401,7 +507,7 @@ const
  *  Steps only ever accumulate Commands; a step cannot cancel or replace
  *  another step's Commands, and no Command runs during the fold. The
  *  runtime runs the batch after update returns. `combine([])` returns
- *  `[model, []]`.
+ *  `{ model }`.
  * 
  *  ```ts
  *  SucceededUpdateNote: ({ note }) =>
@@ -422,7 +528,7 @@ const combine: (steps: readonly Array<Step<Model, Message, R>>) => Step<Model, M
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L412)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L550)
 
 ```
 /**
@@ -447,7 +553,7 @@ const
  *  The fold runs `update` against the child Model `read` returns, writes
  *  the child back, and lifts the child's Commands through
  *  `toParentMessage`. When `read` returns `None` the fold returns
- *  `[model, []]`: a Message for an unmounted child is a no-op. When the
+ *  `{ model }`: a Message for an unmounted child is a no-op. When the
  *  child's update returns an OutMessage, `foldOutMessage` runs against
  *  the Model with the child already written back, and its Commands
  *  follow the child's in the returned batch.
@@ -458,10 +564,13 @@ const
  *  Command that produces the child's Message, such as an animating
  *  component's overridable leave Command.
  * 
- *  A parent that is itself a Submodel passes a
- *  ChildFoldWithParentOutMessage and receives a
- *  FoldWithOutMessage, whose results carry the parent's own
- *  OutMessage channel as a third element.
+ *  A parent that is itself a Submodel receives a
+ *  FoldWithOutMessage when `foldOutMessage` emits a derived parent
+ *  OutMessage. Add `toParentOutMessage` only when at least one child OutMessage
+ *  should continue to the current Submodel's parent. When provided,
+ *  `foldOutMessage` still handles forwarded variants locally. A derived
+ *  OutMessage replaces the one-to-one lift for the dispatch. When the Step
+ *  emits nothing, the lift runs as usual.
  * 
  *  An entry point that takes nothing but the child Model, such as
  *  `Dialog.close`, has no input to pass: fold it with
@@ -474,7 +583,7 @@ const
  *  ```ts
  *  const enterJoinedRoom = (roomId: string, player: Player): UpdateStep =>
  *    Update.combine([
- *      model => [model, [NavigateToRoom({ roomId })]],
+ *      model => ({ model, commands: [NavigateToRoom({ roomId })] }),
  *      Update.foldChild({
  *        update: (room: Room.Model, joinedPlayer: Player) =>
  *          Room.informJoined(room, joinedPlayer, { roomId }),
@@ -485,14 +594,14 @@ const
  *    ])
  *  ```
  */
-const foldChild: (childFold: ChildFoldWithParentOutMessage<ParentModel, ParentMessage, ChildModel, Input, ChildMessage, ChildOutMessage, ParentOutMessage, R>) => FoldWithOutMessage<ParentModel, ParentMessage, Input, ParentOutMessage, R>
+const foldChild: (childFold: ChildFoldWithParentOutMessage<ParentModel, ParentMessage, ChildModel, Input, ChildMessage, ChildOutMessage, ParentOutMessage, ChildRequirements, OutMessageStepRequirements, OutMessageStepMessage, DerivedParentOutMessage>) => FoldWithOutMessage<ParentModel, ParentMessage | OutMessageStepMessage, Input, ParentOutMessage | DerivedParentOutMessage, ChildRequirements | OutMessageStepRequirements>
 ```
 
 ### foldChildStep
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/update/update.ts#L616)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L914)
 
 ```
 /**
@@ -520,13 +629,49 @@ const
  *  Update.combine(model, [writeRouteFields, foldMobileMenuDialogClose])
  *  ```
  * 
- *  `foldOutMessage` takes the same optional second parameter `foldChild`'s
- *  does, a FoldContext carrying `liftCommand` and `liftCommands` bound
- *  to this config's `toParentMessage`, for a Command the Step returns whose
- *  result is the child's Message.
+ *  `foldOutMessage` takes the same optional second parameter as
+ *  foldChild: a FoldContext carrying `liftCommand` and
+ *  `liftCommands` bound to this config's `toParentMessage`, for a Command the
+ *  Step returns whose result is the child's Message.
  * 
- *  A parent that is itself a Submodel, and so needs its own OutMessage
- *  channel on the result, uses foldChild.
+ *  A parent that is itself a Submodel receives a
+ *  StepWithOutMessage when `foldOutMessage` emits a derived parent
+ *  OutMessage. Add `toParentOutMessage` only when at least one child OutMessage
+ *  should continue to the current Submodel's parent. When provided,
+ *  `foldOutMessage` still handles forwarded variants locally. A derived
+ *  OutMessage replaces the one-to-one lift for the dispatch. When the Step
+ *  emits nothing, the lift runs as usual.
  */
-const foldChildStep: (childFold: ChildStepFoldWithOutMessage<ParentModel, ParentMessage, ChildModel, ChildMessage, ChildOutMessage, R>) => Step<ParentModel, ParentMessage, R>
+const foldChildStep: (childFold: ChildStepFoldWithParentOutMessage<ParentModel, ParentMessage, ChildModel, ChildMessage, ChildOutMessage, ParentOutMessage, ChildRequirements, OutMessageStepRequirements, OutMessageStepMessage, DerivedParentOutMessage>) => StepWithOutMessage<ParentModel, ParentMessage | OutMessageStepMessage, ParentOutMessage | DerivedParentOutMessage, ChildRequirements | OutMessageStepRequirements>
+```
+
+### withOutMessage
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/update/update.ts#L81)
+
+```
+/**
+ * Adds a known or optional OutMessage to a plain update return while
+ *  preserving its Model and Commands. Use this helper when attaching to an
+ *  existing return or when the value has the type `OutMessage | undefined`.
+ *  `undefined` means that the operation emitted no OutMessage, so the returned
+ *  record omits the property.
+ * 
+ *  The input must be a Return, so this helper cannot replace an
+ *  OutMessage that an update already emitted.
+ * 
+ *  ```ts
+ *  const editorSave = Update.combine(model, [writeDraft, clearErrors])
+ * 
+ *  return pipe(editorSave, Update.withOutMessage(outMessage))
+ *  ```
+ * 
+ *  When the OutMessage is already known while constructing a new result,
+ *  include it directly: `{ model, commands, outMessage }`. If the OutMessage
+ *  may be `undefined`, pass the new result first:
+ *  `Update.withOutMessage({ model, commands }, outMessage)`.
+ */
+const withOutMessage: (outMessage: OutMessage | undefined) => (updateReturn: Return<Model, Message, R>) => ReturnWithOutMessage<Model, Message, OutMessage, R>
 ```

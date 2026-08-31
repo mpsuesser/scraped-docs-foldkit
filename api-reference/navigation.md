@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/navigation
 title: "Navigation"
 description: "API documentation for the Navigation module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Navigation
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/navigation/index.ts#L20)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/navigation/index.ts#L20)
 
 ```
 /** Navigates back in browser history. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/navigation/index.ts#L24)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/navigation/index.ts#L24)
 
 ```
 /** Navigates forward in browser history. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/navigation/index.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/navigation/index.ts#L28)
 
 ```
 /** Performs a full page navigation to the given href. */
@@ -47,7 +47,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/navigation/index.ts#L33)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/navigation/index.ts#L33)
 
 ```
 /**
@@ -61,7 +61,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/navigation/index.ts#L6)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/navigation/index.ts#L6)
 
 ```
 /** Pushes a new URL to browser history and triggers Foldkit's URL change handling. */
@@ -72,7 +72,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/navigation/index.ts#L13)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/navigation/index.ts#L13)
 
 ```
 /** Replaces the current URL in browser history and triggers Foldkit's URL change handling. */
@@ -81,49 +81,19 @@ function
 
 ## Constants
 
-### External
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/navigation/urlRequest.ts#L14)
-
-```
-/** A URL request to an external page (different origin). */
-const External: CallableTaggedStruct<"External", {
-  href: String
-}>
-```
-
-### Internal
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/navigation/urlRequest.ts#L7)
-
-```
-/** A URL request to a page within the application (same origin). */
-const Internal: CallableTaggedStruct<"Internal", {
-  url: Struct<{
-    hash: Option<String>
-    host: String
-    pathname: String
-    port: Option<String>
-    protocol: String
-    search: Option<String>
-  }>
-}>
-```
-
 ### UrlRequest
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/navigation/urlRequest.ts#L21)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/navigation/urlRequest.ts#L7)
 
 ```
 /** Union of `Internal` and `External` URL request types. */
-const UrlRequest: Union<readonly [
-  CallableTaggedStruct<"Internal", {
+const UrlRequest: TaggedUnion<{
+  External: {
+    href: String
+  }
+  Internal: {
     url: Struct<{
       hash: Option<String>
       host: String
@@ -132,9 +102,6 @@ const UrlRequest: Union<readonly [
       protocol: String
       search: Option<String>
     }>
-  }>,
-  CallableTaggedStruct<"External", {
-    href: String
-  }>
-]>
+  }
+}>
 ```

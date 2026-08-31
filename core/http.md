@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/http
 title: "Http"
 description: "Provide a Fetch-backed HttpClient to Commands while keeping browser requests CORS-simple by disabling trace header propagation unless it is required."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Http
@@ -29,24 +29,22 @@ Provide `Http.layer` at the edge of the Command's Effect with `Effect.provide`. 
 The Command remains responsible for status checks, response decoding, and converting failures into declared Messages.
 
 ```
-import { Effect, Match as M, Schema as S } from 'effect'
+import { Effect, Schema as S } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
-import { Command, Http } from 'foldkit'
-import { m } from 'foldkit/message'
+import { Command, Http, type Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
-const ClickedFetchCount = m('ClickedFetchCount')
-const SucceededFetchCount = m('SucceededFetchCount', {
-  count: S.Number,
-})
-const FailedFetchCount = m('FailedFetchCount', {
-  error: S.String,
+const Message = defineMessageUnion({
+  ClickedFetchCount: {},
+  SucceededFetchCount: { count: S.Number },
+  FailedFetchCount: { error: S.String },
 })
 
 const CountResponse = S.Struct({ count: S.Number })
 
 const FetchCount = Command.define('FetchCount', {
-  messages: [SucceededFetchCount, FailedFetchCount],
+  messages: [Message.SucceededFetchCount, Message.FailedFetchCount],
   execute: Effect.gen(function* () {
     const client = yield* HttpClient.HttpClient
     const response = yield* client.execute(HttpClientRequest.get('/api/count'))
@@ -58,32 +56,23 @@ const FetchCount = Command.define('FetchCount', {
     const { count } = yield* S.decodeUnknownEffect(CountResponse)(
       yield* response.json,
     )
-    return SucceededFetchCount({ count })
+    return Message.SucceededFetchCount({ count })
   }).pipe(
     Effect.catch(error =>
-      Effect.succeed(FailedFetchCount({ error: String(error) })),
+      Effect.succeed(Message.FailedFetchCount({ error: String(error) })),
     ),
     Effect.provide(Http.layer),
   ),
 })
 
-const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.withReturnType<
-      readonly [Model, ReadonlyArray<Command.Command<Message>>]
-    >(),
-    M.tagsExhaustive({
-      ClickedFetchCount: () => [model, [FetchCount()]],
-      SucceededFetchCount: ({ count }) => [
-        evo(model, { count: () => count }),
-        [],
-      ],
-      FailedFetchCount: () => [model, []],
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedFetchCount: () => ({ model, commands: [FetchCount()] }),
+    SucceededFetchCount: ({ count }) => ({
+      model: evo(model, { count: () => count }),
     }),
-  )
+    FailedFetchCount: () => ({ model }),
+  })
 ```
 
 ## Customizing the Client

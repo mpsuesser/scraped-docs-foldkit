@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/charting
 title: "Charting"
 description: "A live dashboard for public Foldkit telemetry from GitHub and npm. Demonstrates HTTP Commands, asynchronous state, an ECharts Mount adapter, and a Subscription that turns chart clicks into Messages."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -29,24 +29,22 @@ Third-Party Library
 /
 
 ```
-import type { EChartsType } from 'echarts/core'
-import { Option } from 'effect'
+import { defineConfig } from 'vite'
 
-const chartsByHostId = new Map<string, EChartsType>()
+import { foldkit } from '@foldkit/vite-plugin'
+import tailwindcss from '@tailwindcss/vite'
 
-export const setChart = (hostId: string, chart: EChartsType): void => {
-  chartsByHostId.set(hostId, chart)
-}
+import { foldkitAliases } from '../vite.aliases'
 
-export const getChart = (hostId: string): Option.Option<EChartsType> =>
-  Option.fromNullishOr(chartsByHostId.get(hostId))
-
-export const removeChart = (hostId: string): void => {
-  const maybeChart = getChart(hostId)
-
-  if (Option.isSome(maybeChart)) {
-    maybeChart.value.dispose()
-    chartsByHostId.delete(hostId)
-  }
-}
+export default defineConfig({
+  plugins: [tailwindcss(), foldkit({ devToolsMcpPort: 9988 })],
+  resolve: {
+    alias: foldkitAliases(__dirname),
+  },
+  server: {
+    fs: {
+      allow: ['../../'],
+    },
+  },
+})
 ```

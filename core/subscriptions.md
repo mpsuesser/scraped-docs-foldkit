@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/subscriptions
 title: "Subscriptions"
 description: "Run ongoing Streams whose lifetime follows Model-derived dependencies. Covers restart behavior, timers, browser events, live dependency reads, and Submodel lifting."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Ongoing Work with a Model-Driven Lifetime
@@ -66,15 +66,15 @@ Commands describe one-shot work that produces one result. Subscriptions describe
 ```
 import { Duration, Effect, Schema as S, Stream } from 'effect'
 import { Subscription } from 'foldkit'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 // MESSAGE
 
-const ClickedIncrement = m('ClickedIncrement')
-const ToggledAutoCounting = m('ToggledAutoCounting')
-const Ticked = m('Ticked')
-
-const Message = S.Union([ClickedIncrement, ToggledAutoCounting, Ticked])
+const Message = defineMessageUnion({
+  ClickedIncrement: {},
+  ToggledAutoCounting: {},
+  Ticked: {},
+})
 type Message = typeof Message.Type
 
 // MODEL
@@ -97,7 +97,7 @@ const subscriptions = Subscription.make<Model, Message>()(entry => ({
       }),
       dependenciesToStream: ({ isAutoCounting }) =>
         Stream.when(
-          Stream.tick(Duration.seconds(1)).pipe(Stream.map(Ticked)),
+          Stream.tick(Duration.seconds(1)).pipe(Stream.map(Message.Ticked)),
           Effect.sync(() => isAutoCounting),
         ),
     },
@@ -144,14 +144,14 @@ The helper returns a complete entry with `{ isActive: boolean }` dependencies. P
 ```
 import { Schema as S } from 'effect'
 import { Subscription } from 'foldkit'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 // MESSAGE
 
-const TickedFrame = m('TickedFrame', { deltaTime: S.Number })
-const ClickedTogglePlay = m('ClickedTogglePlay')
-
-const Message = S.Union([TickedFrame, ClickedTogglePlay])
+const Message = defineMessageUnion({
+  TickedFrame: { deltaTime: S.Number },
+  ClickedTogglePlay: {},
+})
 type Message = typeof Message.Type
 
 // MODEL
@@ -168,7 +168,7 @@ type Model = typeof Model.Type
 const subscriptions = Subscription.make<Model, Message>()(_entry => ({
   frame: Subscription.animationFrame({
     isActive: model => model.isPlaying,
-    toMessage: deltaTime => TickedFrame({ deltaTime }),
+    toMessage: deltaTime => Message.TickedFrame({ deltaTime }),
   }),
 }))
 ```
@@ -186,13 +186,13 @@ The helper returns a Stream, not a complete entry. Wrap it in `Stream.when` insi
 ```
 import { Effect, Schema as S, Stream } from 'effect'
 import { Subscription } from 'foldkit'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 // MESSAGE
 
-const PressedKey = m('PressedKey', { key: S.String })
-
-const Message = S.Union([PressedKey])
+const Message = defineMessageUnion({
+  PressedKey: { key: S.String },
+})
 type Message = typeof Message.Type
 
 // MODEL
@@ -215,7 +215,7 @@ const subscriptions = Subscription.make<Model, Message>()(entry => ({
           Subscription.fromEvent<KeyboardEvent, Message>({
             target: window,
             type: 'keydown',
-            toMessage: event => PressedKey({ key: event.key }),
+            toMessage: event => Message.PressedKey({ key: event.key }),
           }),
           Effect.sync(() => isListening),
         ),
@@ -237,11 +237,11 @@ Auto-scroll during drag and drop is one example. `isDragging` should start and s
 ```
 import { Effect, Equivalence, Queue, Schema as S, Stream } from 'effect'
 import { Subscription } from 'foldkit'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
-const AdvancedAutoScrollFrame = m('AdvancedAutoScrollFrame')
-
-const Message = S.Union([AdvancedAutoScrollFrame])
+const Message = defineMessageUnion({
+  AdvancedAutoScrollFrame: {},
+})
 type Message = typeof Message.Type
 
 const Model = S.Struct({
@@ -272,14 +272,14 @@ const subscriptions = Subscription.make<Model, Message>()(entry => ({
       // The rAF loop calls readDependencies() each frame to get the current clientY.
       dependenciesToStream: ({ isDragging }, readDependencies) =>
         Stream.when(
-          Stream.callback<typeof AdvancedAutoScrollFrame.Type>(queue =>
+          Stream.callback<typeof Message.AdvancedAutoScrollFrame.Type>(queue =>
             Effect.acquireRelease(
               Effect.sync(() => {
                 const animationFrameIdRef = { current: 0 }
                 const step = () => {
                   const { clientY } = readDependencies()
                   window.scrollBy(0, clientY > window.innerHeight - 40 ? 5 : 0)
-                  Queue.offerUnsafe(queue, AdvancedAutoScrollFrame())
+                  Queue.offerUnsafe(queue, Message.AdvancedAutoScrollFrame())
                   animationFrameIdRef.current = requestAnimationFrame(step)
                 }
                 animationFrameIdRef.current = requestAnimationFrame(step)

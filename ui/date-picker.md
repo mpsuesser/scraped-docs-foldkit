@@ -2,15 +2,19 @@
 url: https://foldkit.dev/ui/date-picker
 title: "Date Picker"
 description: "An accessible Date Picker that wraps Calendar in a Popover, with focus management, click-outside dismissal, and a hidden input for native form submission."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Overview
 
 An accessible date picker that wraps `Calendar` in a `Popover`. Consumers provide the trigger button face and the calendar grid layout. DatePicker handles focus choreography (opening focuses the grid, closing returns focus to the trigger), open/close state, and an optional hidden form input for native form submission.
 
-DatePicker uses the Submodel pattern: initialize with `DatePicker.init()`, store the Model in your parent, wire Messages through [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child), and render with `DatePicker.view()`. The update function returns `[Model, Commands, Option<OutMessage>]`. The [OutMessage](https://foldkit.dev/core/submodel#surfacing-facts) carries `SelectedDate({ date })` when the user commits a date, `ClearedDate` when the user clears it, and `ChangedViewMonth` when navigation shifts the visible month. The parent owns the selected date: store it in your Model, pass it back as `maybeSelectedDate`, and fold `SelectedDate` and `ClearedDate` into that field from the fold's `foldOutMessage`. For programmatic control in update functions, use `DatePicker.open(model)` and `DatePicker.close(model)` which return `[Model, Commands]` directly.
+DatePicker is a Submodel. Initialize it with `DatePicker.init()`, store its Model in the parent, wire its Messages through [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child), and render it with `DatePicker.view()`.
+
+The parent owns the selected date. Store it in the parent Model, pass it to the view as `maybeSelectedDate`, and handle `SelectedDate` and `ClearedDate` in the fold's `foldOutMessage`. DatePicker can also emit `ChangedViewMonth` when navigation changes the visible month.
+
+For programmatic control in a parent update, fold `DatePicker.open` and `DatePicker.close` with `Update.foldChildStep`. Both helpers can emit an OutMessage that reports whether the DatePicker opened or closed.
 
 The calendar heading inside the popover is a button: clicking it switches the day grid into a 3x4 months grid; clicking the year heading from there switches into a paged 3x4 years grid. Selecting a year drills back to the months grid for that year; selecting a month drills back to the days grid for that month. Re-opening the popover always shows the day grid.
 
@@ -26,10 +30,10 @@ A date picker constrained to a one-year window around today via `minDate` and `m
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Effect, Match as M, Option } from 'effect'
+import { Effect, Match as M, Option, Schema as S } from 'effect'
 import { Calendar, Update } from 'foldkit'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { DatePicker, Calendar as UiCalendar } from '@foldkit/ui'
@@ -56,8 +60,8 @@ const flags = Effect.gen(function* () {
 
 // In your init function, pass the flags-resolved today into DatePicker.init.
 // Optional: constrain the selectable range with minDate / maxDate.
-const init = (flags: Flags) => [
-  {
+const init = (flags: Flags) => ({
+  model: {
     datePickerDemo: DatePicker.init({
       id: 'date-picker-demo',
       today: flags.today,
@@ -67,13 +71,12 @@ const init = (flags: Flags) => [
     maybeSelectedDate: Option.none(),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Embed the DatePicker Message in your parent Message. DatePicker handles
 // Calendar + Popover routing internally. You only need one wrapper:
-const GotDatePickerMessage = m('GotDatePickerMessage', {
-  message: DatePicker.Message,
+const Message = defineMessageUnion({
+  GotDatePickerMessage: { message: DatePicker.Message },
 })
 
 // At module scope, fold the OutMessage into your own Model. \`SelectedDate\`
@@ -92,16 +95,17 @@ const foldDatePickerOutMessage = M.type<DatePicker.OutMessage>().pipe(
     // source of truth for the selection.
     SelectedDate:
       ({ date }) =>
-      model => [evo(model, { maybeSelectedDate: () => Option.some(date) }), []],
+      model => ({
+        model: evo(model, { maybeSelectedDate: () => Option.some(date) }),
+      }),
     // The user cleared the selection. Reset the parent's field.
-    ClearedDate: () => model => [
-      evo(model, { maybeSelectedDate: () => Option.none() }),
-      [],
-    ],
+    ClearedDate: () => model => ({
+      model: evo(model, { maybeSelectedDate: () => Option.none() }),
+    }),
     // The child has emitted \`ChangedViewMonth\`. In this arm the parent can
     // update its own state or dispatch its own Commands, for example
     // prefetch month data, fire analytics, or trigger a downstream Command.
-    ChangedViewMonth: () => model => [model, []],
+    ChangedViewMonth: () => model => ({ model }),
   }),
 )
 
@@ -114,11 +118,11 @@ const foldDatePicker = Update.foldChild({
   read: (model: Model) => Option.some(model.datePickerDemo),
   write: (model, nextDatePickerDemo) =>
     evo(model, { datePickerDemo: () => nextDatePickerDemo }),
-  toParentMessage: message => GotDatePickerMessage({ message }),
+  toParentMessage: message => Message.GotDatePickerMessage({ message }),
   foldOutMessage: foldDatePickerOutMessage,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), call the fold:
+// In the corresponding Message.match handler, call the fold:
 GotDatePickerMessage: ({ message }) => foldDatePicker(model, message)
 
 // Class names live at module scope, and each view mode gets its own view
@@ -341,7 +345,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) => {
           // Optional: enable hidden form input for native <form> submission:
           name: 'appointment-date',
         },
-        toParentMessage: message => GotDatePickerMessage({ message }),
+        toParentMessage: message => Message.GotDatePickerMessage({ message }),
       }),
     ],
   )
@@ -439,7 +443,7 @@ The discriminated union passed to `toCalendarView`. Pattern-match on `_tag` (`'D
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
+Messages emitted to the parent through the optional `outMessage` field. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -449,18 +453,18 @@ Messages emitted to the parent through the third element of `[Model, Commands, O
 
 ### Programmatic Helpers
 
-Helpers you call from your own update handlers to drive the date picker imperatively: for writing back the selection in controlled mode, opening/closing on domain events, or updating constraints when they derive from other Model state.
+These child entry points let an update commit a controlled selection, open or close the DatePicker after a domain event, or reflect constraints derived from other Model state.
 
 The four `reflect*` helpers are how you implement cross-field date validation. Constraints are set at init time and updated via these helpers. They do not live on ViewConfig, because the update function needs them for keyboard-navigation disabled-skipping and commit-time validation. For an end date that must be on or after a start date, call `reflectMinDate(endDatePicker, maybeStartDate)` in the handler that processes the start date change, where `endDatePicker` is the end date picker's own `DatePicker.Model` and `maybeStartDate` is the parent-owned start-date field.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `selectDate` | `(model: Model, date: CalendarDate) => [Model, Commands, Option<OutMessage>]` | — | Commits the given date and closes the popover, emitting SelectedDate. Use for a programmatic selection equivalent to a user pick. To move the embedded calendar onto a date without selecting it (opening onto an externally-sourced value), use focusDate. |
-| `focusDate` | `(model: Model, date: CalendarDate) => Model` | — | Moves the embedded calendar view and cursor to a date without changing the selection (which the parent owns). Use it to navigate the picker onto a known date, for example after the parent sets its value externally (a URL, a saved draft) so opening the picker shows that month. Returns the model directly: no Command, no OutMessage. |
-| `clear` | `(model: Model) => [Model, Commands, Option<OutMessage>]` | — | Clears the selected date, emitting ClearedDate so the parent resets its own field. Does not close the popover. |
-| `open` | `(model: Model) => [Model, Commands]` | — | Programmatically opens the popover. Use from domain-event handlers when the date picker should open in response to something other than a trigger click. |
-| `close` | `(model: Model) => [Model, Commands]` | — | Programmatically closes the popover. |
-| `reflectMinDate` | `(model: Model, maybeMinDate: Option<CalendarDate>) => Model` | — | Updates the minimum selectable date. Pass Option.none() to remove the minimum. Use for cross-field validation, e.g. an end date picker whose minimum tracks a start date picker's selection. Does not reconcile the current selection if it falls below the new minimum. |
+| `selectDate` | `(model: Model, date: CalendarDate) => Update.ReturnWithOutMessage<Model, Message, OutMessage>` | — | Commits the given date and closes the popover, emitting SelectedDate. Use for a programmatic selection equivalent to a user pick. To move the embedded calendar onto a date without selecting it (opening onto an externally-sourced value), use focusDate. |
+| `focusDate` | `(model: Model, date: CalendarDate) => Model` | — | Moves the embedded calendar view and cursor to a date without changing the selection, which the parent owns. Use it after the parent sets its value from an external source such as a URL or saved draft, so opening the picker shows that month. Returns the Model directly with no Command or OutMessage. |
+| `clear` | `(model: Model) => Update.ReturnWithOutMessage<Model, Message, OutMessage>` | — | Clears the selected date, emitting ClearedDate so the parent resets its own field. Does not close the popover. |
+| `open` | `(model: Model) => Update.ReturnWithOutMessage<Model, Message, OutMessage>` | — | Programmatically opens the popover and can emit Opened. Use from domain-event handlers when the date picker should open in response to something other than a trigger click. |
+| `close` | `(model: Model) => Update.ReturnWithOutMessage<Model, Message, OutMessage>` | — | Programmatically closes the popover and can emit Closed. |
+| `reflectMinDate` | `(model: Model, maybeMinDate: Option<CalendarDate>) => Model` | — | Updates the minimum selectable date. Pass `Option.none()` to remove the minimum. Use it for cross-field validation, for example when an end date picker's minimum tracks a start date picker's selection. It does not reconcile the current selection if it falls below the new minimum. |
 | `reflectMaxDate` | `(model: Model, maybeMaxDate: Option<CalendarDate>) => Model` | — | Updates the maximum selectable date. Pass Option.none() to remove the maximum. Does not reconcile the current selection. |
-| `reflectDisabledDates` | `(model: Model, disabledDates: ReadonlyArray<CalendarDate>) => Model` | — | Replaces the list of individually-disabled dates (e.g. holidays). Pass an empty array to clear. |
-| `reflectDisabledDaysOfWeek` | `(model: Model, disabledDaysOfWeek: ReadonlyArray<DayOfWeek>) => Model` | — | Replaces the list of disabled days of the week (e.g. \["Saturday", "Sunday"\]). Pass an empty array to clear. |
+| `reflectDisabledDates` | `(model: Model, disabledDates: ReadonlyArray<CalendarDate>) => Model` | — | Replaces the list of individually disabled dates, such as holidays. Pass an empty array to clear it. |
+| `reflectDisabledDaysOfWeek` | `(model: Model, disabledDaysOfWeek: ReadonlyArray<DayOfWeek>) => Model` | — | Replaces the list of disabled days of the week. For example: `["Saturday", "Sunday"]`. Pass an empty array to clear it. |

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/managed-resource
 title: "ManagedResource"
 description: "API documentation for the ManagedResource module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # ManagedResource
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/managedResource/managedResource.ts#L403)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/managedResource/managedResource.ts#L405)
 
 ```
 /**
@@ -29,7 +29,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/managedResource/managedResource.ts#L340)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/managedResource/managedResource.ts#L342)
 
 ```
 /**
@@ -58,7 +58,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/managedResource/managedResource.ts#L292)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/managedResource/managedResource.ts#L294)
 
 ```
 /**
@@ -111,11 +111,13 @@ function
  *   `Layer`-built resource therefore needs only `release: () => Effect.void`:
  *   the `Layer` finalizers run automatically when the scope closes.
  * - `release` — Tears down the resource. Errors thrown here are silently
- *   swallowed: release must not block cleanup. Resources that register their
- *   teardown as scope finalizers in `acquire` leave this as `() => Effect.void`.
+ *   swallowed, but the runtime still clears the resource reference and
+ *   dispatches `onReleased()` so bookkeeping completes. Resources that
+ *   register their teardown as scope finalizers in `acquire` leave this as
+ *   `() => Effect.void`.
  * - `onAcquired` — Message dispatched when `acquire` succeeds.
  * - `onAcquireError` — Message dispatched when `acquire` fails.
- * - `onReleased` — Message dispatched after `release` completes.
+ * - `onReleased` — Message dispatched after `release` is attempted.
  */
 <Model, Message>(): (build: (entry: EntryBuilder<Model, Message>) => Entries) => Entries
 ```
@@ -124,7 +126,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/managedResource/managedResource.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/managedResource/managedResource.ts#L48)
 
 ```
 /** Creates a managed resource identity with a `.get` accessor for use in commands. */
@@ -137,7 +139,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/managedResource/managedResource.ts#L133)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/managedResource/managedResource.ts#L133)
 
 ```
 /**
@@ -175,7 +177,7 @@ type Entry = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/managedResource/managedResource.ts#L83)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/managedResource/managedResource.ts#L83)
 
 ```
 /** Internal configuration for a single Managed Resource, used by the runtime. */
@@ -195,7 +197,7 @@ type ManagedResourceConfig = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/managedResource/managedResource.ts#L95)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/managedResource/managedResource.ts#L95)
 
 ```
 /** A record of named Managed Resource configurations, keyed by resource name. */
@@ -208,7 +210,7 @@ type ManagedResources = Record<string, ManagedResourceConfig<Model, Message>> & 
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/managedResource/managedResource.ts#L80)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/managedResource/managedResource.ts#L80)
 
 ```
 /** Type-level utility to extract the service identity type from a ManagedResource. */
@@ -221,7 +223,7 @@ type ServiceOf = T extends ManagedResource<any, infer S>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/managedResource/managedResource.ts#L154)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/managedResource/managedResource.ts#L154)
 
 ```
 /** Type-level utility to extract the service union from a Managed Resources record. */
@@ -238,7 +240,7 @@ type ServicesOf = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/managedResource/managedResource.ts#L77)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/managedResource/managedResource.ts#L77)
 
 ```
 /** Type-level utility to extract the value type from a ManagedResource. */
@@ -253,7 +255,7 @@ type Value = T extends ManagedResource<infer V, any>
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/managedResource/managedResource.ts#L39)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/managedResource/managedResource.ts#L39)
 
 ```
 /**
@@ -274,7 +276,7 @@ interface ManagedResource {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/foldkit/src/managedResource/managedResource.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/managedResource/managedResource.ts#L28)
 
 ```
 /** Branded identity type for a managed resource, used in the Effect R channel. */

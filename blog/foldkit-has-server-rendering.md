@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-has-server-rendering
 title: "Foldkit Has Server Rendering"
 description: "Your Foldkit application can now render to HTML at build time or per request, then hydrate on the client."
-access_date: 2026-08-18T16:38:52.332Z
-current_date: 2026-08-18T16:38:52.332Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
@@ -97,7 +97,7 @@ There are no server components, no `'use client'` or `'use server'` boundaries, 
 
 Scaffold a Foldkit SSR application:
 
-```sh
+```
 npx create-foldkit-app@latest --rendering ssr
 ```
 

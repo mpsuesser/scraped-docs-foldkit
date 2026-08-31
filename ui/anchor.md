@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/anchor
 title: "Anchor"
 description: "Position and portal floating panels with the same Floating UI runtime used by Listbox, Combobox, Menu, Popover, Tooltip, and Date Picker."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Anchor
@@ -14,7 +14,7 @@ Anchor is the positioning runtime the floating components are built on. [Listbox
 
 It is exported so you can build an anchored component Foldkit does not ship. If one of the six above fits, use it. Reach for this module when the panel you need differs structurally from all of them, for example a virtualized list with group headers, or a multi-select that stages changes against an open-time baseline and commits them with a Done action.
 
-```ts
+```
 import {
   AnchorConfig,
   Padding,
@@ -29,7 +29,7 @@ The module is also exported from the root barrel, as `import { Anchor } from '@f
 
 ## Positioning a Panel
 
-`anchorSetup` is a plain DOM function. It takes the element and a config, and returns a cleanup. An element exists in the rendered tree and the factory uses that element to do DOM work, so [Mount](https://foldkit.dev/core/mount) is the primitive that owns it. `Mount.define` covers the one-shot acquire-with-cleanup shape.
+`anchorSetup` is a plain DOM function. It takes the element and a config, and returns a cleanup. An element exists in the rendered tree and `execute` uses that element to do DOM work, so [Mount](https://foldkit.dev/core/mount) is the primitive that owns it. `Mount.define` covers the one-shot acquire-with-cleanup shape.
 
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
@@ -38,35 +38,35 @@ The module is also exported from the root barrel, as `import { Anchor } from '@f
 import { Effect, Schema as S } from 'effect'
 import { Mount } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import { AnchorConfig, anchorSetup } from '@foldkit/ui/anchor'
 
 // Every Mount Definition declares at least one result Message. Name it after
 // the Definition, the way a Command's result Message is named after the
 // Command:
-const CompletedAnchorPanel = m('CompletedAnchorPanel')
+const Message = defineMessageUnion({
+  CompletedAnchorPanel: {},
+})
 
-// Mount.define takes the Definition name, a Schema for the args captured at
-// mount, and the result Message. anchorSetup is a plain DOM function that
+// Mount.define takes the Definition name and a config: a Schema for the args
+// captured at mount, the result Messages, and execute. execute receives the
+// live element alongside those args. anchorSetup is a plain DOM function that
 // returns a cleanup, so it goes inside Effect.sync and the cleanup is
 // registered with Effect.acquireRelease. Construct the resource inside the
 // acquire body, never before it, or it leaks on interruption:
-const AnchorPanel = Mount.define(
-  'AnchorPanel',
-  { buttonId: S.String, anchor: AnchorConfig },
-  CompletedAnchorPanel,
-)(
-  ({ buttonId, anchor }) =>
-    element =>
-      Effect.gen(function* () {
-        yield* Effect.acquireRelease(
-          Effect.sync(() => anchorSetup(element, { buttonId, anchor })),
-          cleanup => Effect.sync(cleanup),
-        )
-        return CompletedAnchorPanel()
-      }),
-)
+const AnchorPanel = Mount.define('AnchorPanel', {
+  args: { buttonId: S.String, anchor: AnchorConfig },
+  messages: [Message.CompletedAnchorPanel],
+  execute: ({ element, buttonId, anchor }) =>
+    Effect.gen(function* () {
+      yield* Effect.acquireRelease(
+        Effect.sync(() => anchorSetup(element, { buttonId, anchor })),
+        cleanup => Effect.sync(cleanup),
+      )
+      return Message.CompletedAnchorPanel()
+    }),
+})
 
 // The trigger needs a stable id, because that is what anchorSetup resolves
 // the button by. Render the panel only while it is open, and spread the Mount
@@ -130,7 +130,7 @@ The containing root is the shadow root when the app is mounted inside one, and `
 
 ## What Anchor Writes to Your Element
 
-Anchor writes the following while the Mount is alive. Except where a row says otherwise, whatever you set is overwritten. Only `data-placement` is cleaned up on unmount; the inline styles are left on the element, which is normally invisible because the element unmounts with the Mount.
+Anchor writes the following while the Mount is alive. Except where a row says otherwise, whatever you set is overwritten. `data-placement`, `overflow-y`, `overscroll-behavior`, `--arrow-x`, and `--arrow-y` are removed on unmount; the other inline styles are left on the element, which is normally invisible because the element unmounts with the Mount.
 
 Property
 
@@ -154,7 +154,11 @@ Cleared once the first position resolves. Render the element at
 
 `max-height`
 
-The height available in the viewport, so a long panel scrolls instead of overflowing.
+The height available in the viewport, so a long panel scrolls instead of overflowing. Always written, including when
+
+`arrowId`
+
+resolves and the panel scrolls through a container of your own.
 
 `overflow-y`
 
@@ -170,11 +174,31 @@ and
 
 `none`
 
-, so a scrolled panel does not chain its scroll to the page.
+, so a scrolled panel does not chain its scroll to the page. Neither is written once
+
+`arrowId`
+
+resolves, because a scrolling panel clips on both axes and would erase the arrow. Both are removed on cleanup.
 
 `--button-width`
 
 The trigger's width as a custom property. Use it to match panel width to trigger width in CSS.
+
+`--arrow-x`
+
+/
+
+`--arrow-y`
+
+The arrow's offset along the panel edge, published only when
+
+`arrowId`
+
+resolves. One axis per placement; the other is reset to
+
+`initial`
+
+, so an ancestor's value cannot inherit into the arrow. Both are removed on cleanup.
 
 `position`
 
@@ -347,6 +371,38 @@ Focuses a descendant matching this selector instead of the panel itself, for exa
 `focusAfterPosition`
 
 is true.
+
+`arrowId`
+
+`string`
+
+—
+
+Id of an arrow element inside the panel, resolved through the element's own root. When it resolves, Anchor computes the arrow's offset along the panel edge, publishes it as
+
+`--arrow-x`
+
+and
+
+`--arrow-y`
+
+, and stops making the panel a scroll container. Any element type works, including
+
+`<svg>`
+
+. With no id, an id that resolves to nothing, or an id that resolves to an element outside the panel, no arrow work happens at all.
+
+`arrowPadding`
+
+`number`
+
+`0`
+
+Distance in pixels the arrow keeps from the panel's corners. Separate from
+
+`anchor.padding`
+
+, which is the viewport padding that flip, shift, and the height calculation consume.
 
 ### portalToContainingRoot
 

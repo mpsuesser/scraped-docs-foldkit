@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/embedding
 title: "Embedding"
 description: "Embed a Foldkit widget in another application through a Schema-typed handle. Covers initial Flags, inbound and outbound Ports, disposal, and React integration."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Embedding
@@ -107,7 +107,10 @@ export const ReportCount = Command.define('ReportCount', {
 // In update, emitting is just returning the Command:
 const handleAdvance = (model: Model): UpdateReturn => {
   const count = model.count + model.step
-  return [evo(model, { count: () => count }), [ReportCount({ count })]]
+  return {
+    model: evo(model, { count: () => count }),
+    commands: [ReportCount({ count })],
+  }
 }
 ```
 

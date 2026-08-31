@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/auth
 title: "Auth"
 description: "An authentication flow with Submodels, OutMessage, protected routes, and session management."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -29,16 +29,16 @@ OutMessage
 ```
 import { Effect, Match as M, Option, Schema as S } from 'effect'
 import { KeyValueStore } from 'effect/unstable/persistence'
-import { Command, Runtime } from 'foldkit'
+import { Runtime, type Update } from 'foldkit'
 import { Url } from 'foldkit/url'
 
 import { BrowserKeyValueStore } from '@effect/platform-browser'
 
 import { SESSION_STORAGE_KEY } from './constant'
-import { Session } from './domain/session'
+import { Session, SessionJsonString } from './domain/session'
 import { Message } from './message'
 import { LoggedIn, LoggedOut, Model } from './model'
-import { DashboardRoute, LoginRoute, urlToAppRoute } from './route'
+import { AppRoute, urlToAppRoute } from './route'
 import { RedirectToDashboard, RedirectToLogin } from './update'
 
 // FLAGS
@@ -53,7 +53,7 @@ export const flags: Effect.Effect<Flags> = Effect.gen(function* () {
     Option.fromNullishOr(yield* store.get(SESSION_STORAGE_KEY)),
   )
 
-  const decodeSession = S.decodeEffect(S.fromJsonString(Session))
+  const decodeSession = S.decodeEffect(SessionJsonString)
   const session = yield* decodeSession(sessionJson)
 
   return Flags.make({ maybeSession: Option.some(session) })
@@ -68,7 +68,7 @@ export type Flags = typeof Flags.Type
 
 // INIT
 
-type InitReturn = [Model, ReadonlyArray<Command.Command<Message>>]
+type InitReturn = Update.Return<Model, Message>
 const withInitReturn = M.withReturnType<InitReturn>()
 
 export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
@@ -81,24 +81,25 @@ export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
     onNone: () =>
       M.value(route).pipe(
         withInitReturn,
-        M.tag('Home', 'Login', 'NotFound', route => [
-          LoggedOut.init(route),
-          [],
-        ]),
-        M.orElse(() => [LoggedOut.init(LoginRoute()), [RedirectToLogin()]]),
+        M.tag('Home', 'Login', 'NotFound', route => ({
+          model: LoggedOut.init(route),
+        })),
+        M.orElse(() => ({
+          model: LoggedOut.init(AppRoute.Login()),
+          commands: [RedirectToLogin()],
+        })),
       ),
 
     onSome: session =>
       M.value(route).pipe(
         withInitReturn,
-        M.tag('Dashboard', 'Settings', 'NotFound', route => [
-          LoggedIn.init(route, session),
-          [],
-        ]),
-        M.orElse(() => [
-          LoggedIn.init(DashboardRoute(), session),
-          [RedirectToDashboard()],
-        ]),
+        M.tag('Dashboard', 'Settings', 'NotFound', route => ({
+          model: LoggedIn.init(route, session),
+        })),
+        M.orElse(() => ({
+          model: LoggedIn.init(AppRoute.Dashboard(), session),
+          commands: [RedirectToDashboard()],
+        })),
       ),
   })
 }

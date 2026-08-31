@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/file-drop
 title: "File Drop"
 description: "Headless file drop zone that accepts drag-and-drop plus click-to-browse via a hidden native file input."
-access_date: 2026-08-11T02:16:28.996Z
-current_date: 2026-08-11T02:16:28.996Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## FileDrop
@@ -12,7 +12,7 @@ current_date: 2026-08-11T02:16:28.996Z
 
 A file drop zone that accepts files via both drag-and-drop and a hidden `<input type="file">`. FileDrop is headless. The component owns drag state and file-arrival events; your `toView` callback owns the visual.
 
-FileDrop uses the Submodel pattern: initialize with `FileDrop.init()`, wire Messages through [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) in your parent update, and render with `FileDrop.view()`. The update function returns `[Model, Commands, Option<OutMessage>]`. `ReceivedFiles` fires when files arrive with a guaranteed non-empty list; `RejectedNonFiles` fires when a drop or change event produced no files (e.g. a drag of non-file data). Match both in the fold's `foldOutMessage`.
+FileDrop uses the Submodel pattern: initialize with `FileDrop.init()`, wire Messages through [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) in your parent update, and render with `FileDrop.view()`. The update function returns `Update.ReturnWithOutMessage<Model, Message, OutMessage>`. `ReceivedFiles` fires when files arrive with a guaranteed non-empty list. `RejectedNonFiles` fires when a drop or change event produced no files, for example when someone drags non-file data. Match both in the fold's `foldOutMessage`.
 
 See it in an app
 
@@ -26,10 +26,10 @@ A multi-file drop zone. Drag files on or click to browse. The component exposes 
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Effect, Match as M, Option } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { File, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { FileDrop } from '@foldkit/ui'
@@ -42,18 +42,17 @@ const Model = S.Struct({
 })
 
 // Initialize both fields:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     uploader: FileDrop.init({ id: 'uploader' }),
     uploadedFiles: [],
     // ...your other fields
   },
-  [],
-]
+})
 
 // Embed FileDrop's Message in your parent Message:
-const GotFileDropMessage = m('GotFileDropMessage', {
-  message: FileDrop.Message,
+const Message = defineMessageUnion({
+  GotFileDropMessage: { message: FileDrop.Message },
 })
 
 // At module scope, fold the OutMessage FileDrop emits when files arrive (via
@@ -65,15 +64,14 @@ const foldFileDropOutMessage = M.type<FileDrop.OutMessage>().pipe(
   M.tagsExhaustive({
     ReceivedFiles:
       ({ files }) =>
-      model => [
-        evo(model, {
+      model => ({
+        model: evo(model, {
           uploadedFiles: () => [...model.uploadedFiles, ...files],
         }),
-        [],
-      ],
+      }),
     // Fires when something is dropped but no files came through (e.g.
     // a drag of text or a URL). Ignore, or show a hint to the user.
-    RejectedNonFiles: () => model => [model, []],
+    RejectedNonFiles: () => model => ({ model }),
   }),
 )
 
@@ -84,11 +82,11 @@ const foldFileDrop = Update.foldChild({
   update: FileDrop.update,
   read: (model: Model) => Option.some(model.uploader),
   write: (model, nextUploader) => evo(model, { uploader: () => nextUploader }),
-  toParentMessage: message => GotFileDropMessage({ message }),
+  toParentMessage: message => Message.GotFileDropMessage({ message }),
   foldOutMessage: foldFileDropOutMessage,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), call the fold:
+// In the corresponding Message.match handler, call the fold:
 GotFileDropMessage: ({ message }) => foldFileDrop(model, message)
 
 // Render the drop zone. The \`toView\` callback receives attribute groups.
@@ -118,7 +116,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
           ],
         ),
     },
-    toParentMessage: message => GotFileDropMessage({ message }),
+    toParentMessage: message => Message.GotFileDropMessage({ message }),
   })
 ```
 
@@ -169,7 +167,7 @@ Attribute groups provided to the `toView` callback.
 
 ### OutMessage
 
-The third element of the update tuple (`[Model, Commands, Option<OutMessage>]`). Fold it in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config to process arriving files.
+The optional `outMessage` field of the update record. Fold it in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config to process arriving files.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |

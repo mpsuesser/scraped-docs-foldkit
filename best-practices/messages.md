@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/messages
 title: "Messages"
 description: "Name Messages as verb-first, past-tense facts, and name Command result Messages after the Command that produced them."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Messages
@@ -70,6 +70,6 @@ The exception is a Message with more than one cause. Name that Message for the s
 
 ## Descriptive Results
 
-Never use a generic `NoOp` Message. A Command result still records a fact when its update handler leaves the Model unchanged. For example: `CompletedFocusSearchInput` confirms that `FocusSearchInput` finished, even when the handler returns `[model, []]`.
+Never use a generic `NoOp` Message. A Command result still records a fact when its update handler leaves the Model unchanged. For example: `CompletedFocusSearchInput` confirms that `FocusSearchInput` finished, even when the handler returns `{ model }`.
 
 Descriptive results keep DevTools and tests readable. A timeline containing `OpenedDialog`, `CompletedFocusSearchInput`, and `CompletedLockScroll` shows which work finished without requiring a reader to inspect the Command definitions.

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/counter-example
 title: "Counter Example"
 description: "Build and trace a minimal Counter through its Model, Message Schema, update, view, init, and Runtime wiring."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # A Simple Counter Example
@@ -15,10 +15,10 @@ This counter puts the core loop from [Architecture](https://foldkit.dev/core/arc
 The example uses two files. `src/main.ts` holds the pure application definitions: Model, Messages, update, init, and view. Larger applications can split those definitions into focused modules. `src/entry.ts` remains the runtime boundary, so tests can import the application without starting it as a side effect.
 
 ```
-import { Match as M, Schema as S } from 'effect'
-import { Command, Runtime } from 'foldkit'
+import { Schema as S } from 'effect'
+import { Runtime, type Update } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 // MODEL
@@ -30,40 +30,31 @@ export type Model = typeof Model.Type
 
 // MESSAGE
 
-const ClickedDecrement = m('ClickedDecrement')
-const ClickedIncrement = m('ClickedIncrement')
-const ClickedReset = m('ClickedReset')
-
-export const Message = S.Union([
-  ClickedDecrement,
-  ClickedIncrement,
-  ClickedReset,
-])
+export const Message = defineMessageUnion({
+  ClickedDecrement: {},
+  ClickedIncrement: {},
+  ClickedReset: {},
+})
 export type Message = typeof Message.Type
 
 // UPDATE
 
-export const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.withReturnType<
-      readonly [Model, ReadonlyArray<Command.Command<Message>>]
-    >(),
-    M.tagsExhaustive({
-      ClickedDecrement: () => [evo(model, { count: count => count - 1 }), []],
-      ClickedIncrement: () => [evo(model, { count: count => count + 1 }), []],
-      ClickedReset: () => [evo(model, { count: () => 0 }), []],
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedDecrement: () => ({
+      model: evo(model, { count: count => count - 1 }),
     }),
-  )
+    ClickedIncrement: () => ({
+      model: evo(model, { count: count => count + 1 }),
+    }),
+    ClickedReset: () => ({ model: evo(model, { count: () => 0 }) }),
+  })
 
 // INIT
 
-export const init: Runtime.ApplicationInit<Model, Message> = () => [
-  { count: 0 },
-  [],
-]
+export const init: Runtime.ApplicationInit<Model, Message> = () => ({
+  model: { count: 0 },
+})
 
 // VIEW
 
@@ -84,15 +75,15 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
         [h.Class('flex flex-wrap justify-center gap-4')],
         [
           h.button(
-            [h.OnClick(ClickedDecrement()), h.Class(buttonStyle)],
+            [h.OnClick(Message.ClickedDecrement()), h.Class(buttonStyle)],
             ['-'],
           ),
           h.button(
-            [h.OnClick(ClickedReset()), h.Class(buttonStyle)],
+            [h.OnClick(Message.ClickedReset()), h.Class(buttonStyle)],
             ['Reset'],
           ),
           h.button(
-            [h.OnClick(ClickedIncrement()), h.Class(buttonStyle)],
+            [h.OnClick(Message.ClickedIncrement()), h.Class(buttonStyle)],
             ['+'],
           ),
         ],

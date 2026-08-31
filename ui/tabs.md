@@ -2,15 +2,15 @@
 url: https://foldkit.dev/ui/tabs
 title: "Tabs"
 description: "A selection Submodel for tab panels, with roving tabindex, horizontal and vertical orientation, and automatic or manual activation."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Overview
 
 Tab panel navigation with roving tabindex keyboard support, horizontal and vertical orientation, and automatic or manual activation modes. Tabs renders a tab list with buttons and corresponding panels. Only the active panel is visible.
 
-Tabs is a Submodel that keeps its own keyboard-focus state, but the parent owns the active tab. Store the active value in your Model, pass it in as `selectedValue`, and fold the `Selected` OutMessage back into that field in your `GotTabsMessage` handler.
+Tabs is a Submodel that keeps its own keyboard-focus state, but the parent owns the active tab. Store the active value in your Model, pass it in as `selectedValue`, and fold the `Selected` OutMessage back into that field through [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child).
 
 What `Tabs.create<Value>()` returns is typed [`Tabs.Bundle<Value>`](https://foldkit.dev/ui/selection-submodels#bundle-type), for the cases where a created bundle has to be named rather than called directly.
 
@@ -32,10 +32,10 @@ Declare the tabs component once at module scope with `Tabs.create<Value>()` to l
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option } from 'effect'
+import { Match as M, Option, Schema as S } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Tabs } from '@foldkit/ui'
@@ -54,18 +54,17 @@ const Model = S.Struct({
 
 // In your init function, initialize the Tabs Submodel with a unique id and
 // pick the starting active tab:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     tabs: Tabs.init({ id: 'framework-tabs' }),
     activeFramework: 'Foldkit',
     // ...your other fields
   },
-  [],
-]
+})
 
 // Embed the Tabs Message in your parent Message:
-const GotTabsMessage = m('GotTabsMessage', {
-  message: Tabs.Message,
+const Message = defineMessageUnion({
+  GotTabsMessage: { message: Tabs.Message },
 })
 
 // Declare a typed Tabs factory once at module scope. The Value generic
@@ -95,7 +94,7 @@ const foldTabsOutMessage = M.type<Tabs.OutMessage<Framework>>().pipe(
     // selection, or trigger a panel content fetch.
     Selected:
       ({ value }) =>
-      model => [evo(model, { activeFramework: () => value }), []],
+      model => ({ model: evo(model, { activeFramework: () => value }) }),
   }),
 )
 
@@ -107,11 +106,11 @@ const foldTabs = Update.foldChild({
   update: FrameworkTabs.update,
   read: (model: Model) => Option.some(model.tabs),
   write: (model, nextTabs) => evo(model, { tabs: () => nextTabs }),
-  toParentMessage: message => GotTabsMessage({ message }),
+  toParentMessage: message => Message.GotTabsMessage({ message }),
   foldOutMessage: foldTabsOutMessage,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), call the fold:
+// In the corresponding Message.match handler, call the fold:
 GotTabsMessage: ({ message }) => foldTabs(model, message)
 
 // Inside your view function, embed the tabs via h.submodel and pass the
@@ -154,7 +153,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
           ],
         ),
     },
-    toParentMessage: message => GotTabsMessage({ message }),
+    toParentMessage: message => Message.GotTabsMessage({ message }),
   })
 ```
 
@@ -167,12 +166,12 @@ Pass `orientation: 'Vertical'` to switch to up/down arrow navigation.
 // as the basic tabs; only the view config changes to set orientation and
 // use flex + flex-col for layout.
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import { Tabs } from '@foldkit/ui'
 
-const GotTabsMessage = m('GotTabsMessage', {
-  message: Tabs.Message,
+const Message = defineMessageUnion({
+  GotTabsMessage: { message: Tabs.Message },
 })
 
 const Framework = S.Literals(['Foldkit', 'React', 'Elm'])
@@ -228,7 +227,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
           ],
         ),
     },
-    toParentMessage: message => GotTabsMessage({ message }),
+    toParentMessage: message => Message.GotTabsMessage({ message }),
   })
 ```
 
@@ -277,7 +276,7 @@ Configuration object passed to the view returned by `Tabs.create<Value>()`.
 | `model` | `Tabs.Model` | — | The tabs state from your parent Model. |
 | `toParentMessage` | `(childMessage: Tabs.Message) => ParentMessage` | — | Wraps Tabs Messages in your parent Message type for Submodel delegation. |
 | `tabs` | `ReadonlyArray<Value>` | — | The list of tab values, in display order. When the tabs component is declared via `Tabs.create<MyUnion>()`, `Value` is your union type and each `TabInfo.value` is typed as `MyUnion`. |
-| `selectedValue` | `Value` | — | The active tab, owned by the parent Model and passed back in on each render. `aria-selected`, the `data-selected` marker, the active panel, and `RenderInfo.activeIndex` all derive from it. Update it by folding the `Selected` OutMessage in your `GotTabsMessage` handler. |
+| `selectedValue` | `Value` | — | The active tab, owned by the parent Model and passed back in on each render. `aria-selected`, the `data-selected` marker, the active panel, and `RenderInfo.activeIndex` all derive from it. Update it in the `foldOutMessage` of your Tabs fold. |
 | `ariaLabel` | `string` | — | Accessible label for the tab list. |
 | `toView` | `(render: RenderInfo<Value>) => Html` | — | Callback that receives the `tablist` attribute bundle, one `TabInfo<Value>` per tab, and the current `activeIndex`. Returns the composed layout. |
 | `isTabDisabled` | `(value: Value, index: number) => boolean` | — | Disables individual tabs. |
@@ -309,7 +308,7 @@ Each entry in `RenderInfo.tabs`. Carries the value, derived state flags, and att
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
+Messages emitted to the parent through the optional `outMessage` field. Fold the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |

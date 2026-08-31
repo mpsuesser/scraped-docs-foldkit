@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/field-validation
 title: "Field Validation"
 description: "Model each field as NotValidated, Validating, Invalid, or Valid. Compose synchronous and asynchronous Rules, cross-field checks, and form-level validation."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Field Validation
@@ -101,23 +101,20 @@ const validateCompanyName = (
 Call `validate(rules)(value)` to validate a value against a bundle of rules. It returns one of the four `Field` variants, failing fast at the first rule that fails. Use it in your update function with `evo` to set the field state.
 
 ```
-import { Match as M } from 'effect'
+import { Update } from 'foldkit'
 import { validate } from 'foldkit/fieldValidation'
 import { evo } from 'foldkit/struct'
 
 const validateUsername = validate(usernameRules)
 
 const update = (model: Model, message: Message) =>
-  M.value(message).pipe(
-    M.tagsExhaustive({
-      ChangedUsername: ({ value }) => [
-        evo(model, {
-          username: () => validateUsername(value),
-        }),
-        [],
-      ],
+  Message.match<Update.Return<Model, Message>>(message, {
+    ChangedUsername: ({ value }) => ({
+      model: evo(model, {
+        username: () => validateUsername(value),
+      }),
     }),
-  )
+  })
 ```
 
 Empty values follow the bundle’s requiredness before any rules run. An empty required value becomes `Invalid` with the required message; an empty optional value becomes `NotValidated`. A non-empty value becomes `Valid` when every rule passes or `Invalid` when one fails.
@@ -126,34 +123,31 @@ Use `validateAll(rules)` when you want to collect every failing rule into the `e
 
 ## Displaying Validation State
 
-Match exhaustively on the four tags to derive border colors, status indicators, and error messages. For a single-field submit gate, use `isValid(rules)(state)`. If the rules are required, only `Valid` passes; if they are optional, `NotValidated` also passes. `Validating` and `Invalid` never pass.
+Use `FieldValidation.match` to handle the four states and derive border colors, status indicators, and error messages. Each handler receives the state's `value`, and `onInvalid` also receives the `errors`. For a single-field submit gate, use `isValid(rules)(state)`. If the rules are required, only `Valid` passes; if they are optional, `NotValidated` also passes. `Validating` and `Invalid` never pass.
 
 For a form-level gate, pass `[state, rules]` pairs to `allValid`. A single call gates fields of one value type, so a form that mixes types calls `allValid` per type and combines the results with `&&`.
 
 ```
-import { Array, Match as M } from 'effect'
+import { Array } from 'effect'
+import { FieldValidation } from 'foldkit'
 import { type Field, allValid } from 'foldkit/fieldValidation'
 import type { HtmlBuilder } from 'foldkit/html'
 
 const borderClass = (field: Field<string>) =>
-  M.value(field).pipe(
-    M.tagsExhaustive({
-      NotValidated: () => 'border-gray-300',
-      Validating: () => 'border-accent-300',
-      Valid: () => 'border-accent-500',
-      Invalid: () => 'border-red-500',
-    }),
-  )
+  FieldValidation.match(field, {
+    onNotValidated: () => 'border-gray-300',
+    onValidating: () => 'border-accent-300',
+    onValid: () => 'border-accent-500',
+    onInvalid: () => 'border-red-500',
+  })
 
 const statusIndicator = (field: Field<string>, h: HtmlBuilder<Message>) =>
-  M.value(field).pipe(
-    M.tagsExhaustive({
-      NotValidated: () => h.empty,
-      Validating: () => h.span([], ['Checking...']),
-      Valid: () => h.span([], ['✓']),
-      Invalid: ({ errors }) => h.div([], [Array.headNonEmpty(errors)]),
-    }),
-  )
+  FieldValidation.match(field, {
+    onNotValidated: () => h.empty,
+    onValidating: () => h.span([], ['Checking...']),
+    onValid: () => h.span([], ['✓']),
+    onInvalid: ({ errors }) => h.div([], [Array.headNonEmpty(errors)]),
+  })
 
 // `allValid` gates fields of one value type per call; required rules demand
 // `Valid`, optional rules also accept `NotValidated`. For a form that mixes
@@ -165,7 +159,7 @@ const isFormValid = (model: Model): boolean =>
   ])
 ```
 
-Because `Field` is a discriminated union, the exhaustive match ensures you handle every state.
+`FieldValidation.match` requires a handler for every state, so no rendering path can forget one. Reach for Effect `Match` only when a partial match with a fallback reads better, as in the async example below.
 
 Use `isInvalid(state)` or `anyInvalid(states)` when you specifically need to know whether validation has produced errors. They check for the `Invalid` tag. A required `NotValidated` field and a `Validating` field are not invalid, but they still fail an `isValid` submit gate.
 
@@ -175,7 +169,7 @@ For server-side checks like “Is this email taken?”, use the `Validating` sta
 
 ```
 import { Effect, Match as M, Number, Schema as S } from 'effect'
-import { Command } from 'foldkit'
+import { Command, Update } from 'foldkit'
 import { Invalid, Valid, Validating, validate } from 'foldkit/fieldValidation'
 import { evo } from 'foldkit/struct'
 
@@ -212,39 +206,36 @@ const CheckEmailAvailable = Command.define('CheckEmailAvailable', {
 })
 
 const update = (model: Model, message: Message) =>
-  M.value(message).pipe(
-    M.tagsExhaustive({
-      ChangedEmail: ({ value }) => {
-        const syncResult = validateEmail(value)
-        const validationId = Number.increment(model.emailValidationId)
+  Message.match<Update.Return<Model, Message>>(message, {
+    ChangedEmail: ({ value }) => {
+      const syncResult = validateEmail(value)
+      const validationId = Number.increment(model.emailValidationId)
 
-        return M.value(syncResult).pipe(
-          M.tag('Valid', () => [
-            evo(model, {
-              email: () => Validating({ value }),
-              emailValidationId: () => validationId,
-            }),
-            [CheckEmailAvailable({ email: value, validationId })],
-          ]),
-          M.orElse(() => [
-            evo(model, {
-              email: () => syncResult,
-              emailValidationId: () => validationId,
-            }),
-            [],
-          ]),
-        )
-      },
+      return M.value(syncResult).pipe(
+        M.tag('Valid', () => ({
+          model: evo(model, {
+            email: () => Validating({ value }),
+            emailValidationId: () => validationId,
+          }),
+          commands: [CheckEmailAvailable({ email: value, validationId })],
+        })),
+        M.orElse(() => ({
+          model: evo(model, {
+            email: () => syncResult,
+            emailValidationId: () => validationId,
+          }),
+        })),
+      )
+    },
 
-      CompletedCheckEmailAvailable: ({ validationId, field }) => {
-        if (validationId === model.emailValidationId) {
-          return [evo(model, { email: () => field }), []]
-        } else {
-          return [model, []]
-        }
-      },
-    }),
-  )
+    CompletedCheckEmailAvailable: ({ validationId, field }) => {
+      if (validationId === model.emailValidationId) {
+        return { model: evo(model, { email: () => field }) }
+      } else {
+        return { model }
+      }
+    },
+  })
 ```
 
 The `validationId` pattern prevents race conditions. Each keystroke increments the ID, and the result handler only applies if the ID still matches. Responses from superseded requests are silently discarded.
@@ -280,7 +271,7 @@ Custom rules compose with built-in ones in the same `rules` array.
 A `Rule` only sees a single value. For checks that compare fields against each other (like “confirm password must match password”), handle the logic directly in your update function where you have access to the full model.
 
 ```
-import { Match as M } from 'effect'
+import { Update } from 'foldkit'
 import {
   type Field,
   Invalid,
@@ -312,28 +303,24 @@ const validateConfirmPassword = (
 }
 
 const update = (model: Model, message: Message) =>
-  M.value(message).pipe(
-    M.tagsExhaustive({
-      ChangedPassword: ({ value }) => [
-        evo(model, {
-          password: () => validatePassword(value),
-          confirmPassword: confirmPassword =>
-            confirmPassword._tag === 'NotValidated'
-              ? confirmPassword
-              : validateConfirmPassword(value, confirmPassword.value),
-        }),
-        [],
-      ],
-
-      ChangedConfirmPassword: ({ value }) => [
-        evo(model, {
-          confirmPassword: () =>
-            validateConfirmPassword(model.password.value, value),
-        }),
-        [],
-      ],
+  Message.match<Update.Return<Model, Message>>(message, {
+    ChangedPassword: ({ value }) => ({
+      model: evo(model, {
+        password: () => validatePassword(value),
+        confirmPassword: confirmPassword =>
+          confirmPassword._tag === 'NotValidated'
+            ? confirmPassword
+            : validateConfirmPassword(value, confirmPassword.value),
+      }),
     }),
-  )
+
+    ChangedConfirmPassword: ({ value }) => ({
+      model: evo(model, {
+        confirmPassword: () =>
+          validateConfirmPassword(model.password.value, value),
+      }),
+    }),
+  })
 ```
 
 Keep cross-field logic in update only when the check genuinely needs more than one value. Anything expressible as `[predicate, errorMessage]` over a single value fits better as a [custom rule](#custom-rules).

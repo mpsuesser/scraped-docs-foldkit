@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/informing-submodels
 title: "Informing Submodels"
 description: "Relay a change a Submodel does not own (a URL, a server push, an auth change) through a helper it exposes, so it can update its own state in response."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Informing Submodels
@@ -31,9 +31,9 @@ Update copies the route query into the input, records it in recent searches, and
 `informRouteChanged` is the public entry point. It calls `update(model, ChangedRoute({ route }))`, keeping the Message constructor private.
 
 ```
-import { Match as M, Option, Schema as S, String } from 'effect'
-import { Command } from 'foldkit'
-import { m } from 'foldkit/message'
+import { Option, Schema as S, String } from 'effect'
+import { type Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { PeopleRoute } from '../route'
@@ -42,69 +42,57 @@ import { PeopleRoute } from '../route'
 
 const Person = S.Struct({ id: S.Number, name: S.String, role: S.String })
 
-const ChangedSearchInput = m('ChangedSearchInput', { value: S.String })
-const SubmittedSearch = m('SubmittedSearch')
-const ChangedRoute = m('ChangedRoute', { route: PeopleRoute })
-const SucceededFetchPeople = m('SucceededFetchPeople', {
-  query: S.String,
-  people: S.Array(Person),
+export const Message = defineMessageUnion({
+  ChangedSearchInput: { value: S.String },
+  SubmittedSearch: {},
+  ChangedRoute: { route: PeopleRoute },
+  SucceededFetchPeople: {
+    query: S.String,
+    people: S.Array(Person),
+  },
 })
-
-export const Message = S.Union([
-  ChangedSearchInput,
-  SubmittedSearch,
-  ChangedRoute,
-  SucceededFetchPeople,
-])
 export type Message = typeof Message.Type
 
 // UPDATE
 
-export const update = (
-  model: Model,
-  message: Message,
-): readonly [Model, ReadonlyArray<Command.Command<Message>>] =>
-  M.value(message).pipe(
-    M.tagsExhaustive({
-      ChangedSearchInput: ({ value }) => [
-        evo(model, { searchInput: () => value }),
-        [],
-      ],
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ChangedSearchInput: ({ value }) => ({
+      model: evo(model, { searchInput: () => value }),
+    }),
 
-      SubmittedSearch: () => [
-        model,
-        [
-          PushSearchUrl({
-            searchText: Option.liftPredicate(
-              model.searchInput,
-              String.isNonEmpty,
-            ),
-          }),
-        ],
-      ],
-
-      ChangedRoute: ({ route }) => {
-        const searchText = Option.getOrElse(route.searchText, () => '')
-        return [
-          evo(model, {
-            searchInput: () => searchText,
-            searchHistory: searchHistory =>
-              addSearchToHistory(searchHistory, searchText),
-            results: () => SearchLoading(),
-          }),
-          [FetchPeople({ searchText })],
-        ]
-      },
-
-      SucceededFetchPeople: ({ query, people }) => [
-        evo(model, { results: () => SearchLoaded({ query, people }) }),
-        [],
+    SubmittedSearch: () => ({
+      model,
+      commands: [
+        PushSearchUrl({
+          searchText: Option.liftPredicate(
+            model.searchInput,
+            String.isNonEmpty,
+          ),
+        }),
       ],
     }),
-  )
+
+    ChangedRoute: ({ route }) => {
+      const searchText = Option.getOrElse(route.searchText, () => '')
+      return {
+        model: evo(model, {
+          searchInput: () => searchText,
+          searchHistory: searchHistory =>
+            addSearchToHistory(searchHistory, searchText),
+          results: () => SearchLoading(),
+        }),
+        commands: [FetchPeople({ searchText })],
+      }
+    },
+
+    SucceededFetchPeople: ({ query, people }) => ({
+      model: evo(model, { results: () => SearchLoaded({ query, people }) }),
+    }),
+  })
 
 export const informRouteChanged = (model: Model, route: PeopleRoute) =>
-  update(model, ChangedRoute({ route }))
+  update(model, Message.ChangedRoute({ route }))
 ```
 
 Not an OutMessage
@@ -127,7 +115,7 @@ const foldPeople = Update.foldChild({
   read: (model: Model) => Option.some(model.peoplePage),
   write: (model, nextPeoplePage) =>
     evo(model, { peoplePage: () => nextPeoplePage }),
-  toParentMessage: message => GotPeopleMessage({ message }),
+  toParentMessage: message => Message.GotPeopleMessage({ message }),
 })
 
 const foldPeopleRouteChanged = Update.foldChild({
@@ -135,31 +123,29 @@ const foldPeopleRouteChanged = Update.foldChild({
   read: (model: Model) => Option.some(model.peoplePage),
   write: (model, nextPeoplePage) =>
     evo(model, { peoplePage: () => nextPeoplePage }),
-  toParentMessage: message => GotPeopleMessage({ message }),
+  toParentMessage: message => Message.GotPeopleMessage({ message }),
 })
 
 const setRoute =
   (nextRoute: AppRoute): Update.Step<Model, Message> =>
-  model => [evo(model, { route: () => nextRoute }), []]
+  model => ({ model: evo(model, { route: () => nextRoute }) })
 
-export const update = (model: Model, message: Message): UpdateReturn =>
-  M.value(message).pipe(
-    M.tagsExhaustive({
-      ChangedUrl: ({ url }) => {
-        const nextRoute = urlToAppRoute(url)
+export const update = (model: Model, message: Message) =>
+  Message.match<UpdateReturn>(message, {
+    ChangedUrl: ({ url }) => {
+      const nextRoute = urlToAppRoute(url)
 
-        const routeSteps = M.value(nextRoute).pipe(
-          M.withReturnType<ReadonlyArray<Update.Step<Model, Message>>>(),
-          M.tag('People', peopleRoute => [foldPeopleRouteChanged(peopleRoute)]),
-          M.orElse(() => []),
-        )
+      const routeSteps = M.value(nextRoute).pipe(
+        M.withReturnType<ReadonlyArray<Update.Step<Model, Message>>>(),
+        M.tag('People', peopleRoute => [foldPeopleRouteChanged(peopleRoute)]),
+        M.orElse(() => []),
+      )
 
-        return Update.combine(model, [setRoute(nextRoute), ...routeSteps])
-      },
+      return Update.combine(model, [setRoute(nextRoute), ...routeSteps])
+    },
 
-      GotPeopleMessage: ({ message }) => foldPeople(model, message),
-    }),
-  )
+    GotPeopleMessage: ({ message }) => foldPeople(model, message),
+  })
 ```
 
 Multiple Submodels

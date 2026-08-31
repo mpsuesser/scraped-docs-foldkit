@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-animation
 title: "Ui/Animation"
 description: "API documentation for the Ui/Animation module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Ui/Animation
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/update.ts#L124)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/update.ts#L117)
 
 ```
 /** Creates the standard leave-phase command that waits for CSS animations on the element to settle. Use this when handling the `StartedLeaveAnimating` OutMessage for components that don't need custom leave behavior. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/schema.ts#L71)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/schema.ts#L58)
 
 ```
 /** Creates an initial animation model from a config. Defaults to hidden. */
@@ -36,10 +36,24 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/update.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/update.ts#L46)
 
 ```
-/** Processes an animation message and returns the next model, commands, and optional OutMessage. */
+/**
+ * Processes an Animation Message and returns the next Model, optional
+ *  Commands, and an optional OutMessage. `Showed` and `Hid` start a transition
+ *  but cannot finish one, so direct calls with either Message return a plain
+ *  update result.
+ */
+(
+  model: Animation.Model,
+  message: {
+    _tag: "Showed"
+  } | {
+    _tag: "Hid"
+  }
+): Update.Return<Model, Message>
+
 (
   model: Animation.Model,
   message: {
@@ -60,7 +74,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/schema.ts#L65)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/schema.ts#L52)
 
 ```
 /** Configuration for creating an animation model with `init`. */
@@ -74,7 +88,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/index.ts#L45)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/index.ts#L21)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -89,55 +103,27 @@ type ViewInputs = Readonly<{
 
 ## Constants
 
-### CompletedWaitForPaint
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/schema.ts#L34)
-
-```
-/** Sent internally when a double-rAF completes, advancing the lifecycle to its animating phase. */
-const CompletedWaitForPaint: CallableTaggedStruct<"CompletedWaitForPaint", {}>
-```
-
-### EndedAnimation
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/schema.ts#L36)
-
-```
-/** Sent internally when all CSS animations on the element have settled. Covers both CSS transitions and CSS keyframe animations. */
-const EndedAnimation: CallableTaggedStruct<"EndedAnimation", {}>
-```
-
-### Hid
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/schema.ts#L32)
-
-```
-/** Sent when the animation should leave (become hidden). Starts the leave sequence. */
-const Hid: CallableTaggedStruct<"Hid", {}>
-```
-
 ### Message
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/schema.ts#L39)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/schema.ts#L30)
 
 ```
 /** Union of all messages the animation component can produce. */
-const Message: S.Union<[typeof Showed, typeof Hid, typeof CompletedWaitForPaint, typeof EndedAnimation]>
+const Message: MessageUnion<{
+  CompletedWaitForPaint: {}
+  EndedAnimation: {}
+  Hid: {}
+  Showed: {}
+}>
 ```
 
 ### Model
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/schema.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/schema.ts#L19)
 
 ```
 /** Schema for the animation component's state, tracking its unique ID, visibility intent, and lifecycle phase. */
@@ -152,61 +138,31 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/schema.ts#L59)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/schema.ts#L43)
 
 ```
-const OutMessage: Union<readonly [CallableTaggedStruct<"StartedLeaveAnimating", {}>, CallableTaggedStruct<"TransitionedOut", {}>]>
-```
-
-### Showed
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/schema.ts#L30)
-
-```
-/** Sent when the animation should enter (become visible). Starts the enter sequence. */
-const Showed: CallableTaggedStruct<"Showed", {}>
-```
-
-### StartedLeaveAnimating
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/schema.ts#L55)
-
-```
-/** Sent to the parent when the leave sequence advances to LeaveAnimating. The parent is responsible for providing the command that detects when the leave animation completes (e.g. WaitForAnimationSettled or a racing command). Use `defaultLeaveCommand` for the standard behavior. */
-const StartedLeaveAnimating: CallableTaggedStruct<"StartedLeaveAnimating", {}>
+const OutMessage: MessageUnion<{
+  StartedLeaveAnimating: {}
+  TransitionedOut: {}
+}>
 ```
 
 ### TransitionState
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/schema.ts#L7)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/schema.ts#L7)
 
 ```
 /** Schema for the animation lifecycle state, tracking enter/leave phases. */
 const TransitionState: Literals<readonly ["Idle", "EnterStart", "EnterAnimating", "LeaveStart", "LeaveAnimating"]>
 ```
 
-### TransitionedOut
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/schema.ts#L57)
-
-```
-/** Sent to the parent when the leave animation completes. The parent can use this to unmount content or update its own state. */
-const TransitionedOut: CallableTaggedStruct<"TransitionedOut", {}>
-```
-
 ### WaitForAnimationSettled
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/update.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/update.ts#L30)
 
 ```
 /** Waits for all CSS animations on the element to settle. Covers both CSS transitions and CSS keyframe animations. */
@@ -221,7 +177,7 @@ const WaitForAnimationSettled: CommandDefinitionWithArgs<"WaitForAnimationSettle
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/update.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/update.ts#L25)
 
 ```
 /** Waits for paint via double-rAF before the enter/leave lifecycle advances. */
@@ -234,7 +190,7 @@ const WaitForPaint: CommandDefinitionNoArgs<"WaitForPaint", Effect<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/animation/index.ts#L65)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/index.ts#L41)
 
 ```
 /**

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/calendar
 title: "Calendar"
 description: "Accessible inline calendar grid with 2D keyboard navigation, locale-aware headers, and min/max/disabled-date constraints."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## An Inline Calendar You Render
@@ -24,7 +24,7 @@ Calendar owns navigation state, including the visible month, active grid, and ke
 
 Initialize the Calendar with `Calendar.init()`, store its Model in your parent Model, and delegate its Messages with [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child). Render it through `h.submodel` with `Calendar.view`.
 
-Pass the parent-owned selection into `viewInputs.maybeSelectedDate` on every render. When Calendar emits `SelectedDate`, fold that OutMessage into the parent's selected-date field. `Calendar.update` returns `[Model, Commands, Option<OutMessage>]`, so the same fold can handle `ChangedViewMonth` when your application needs month-scoped data.
+Pass the parent-owned selection into `viewInputs.maybeSelectedDate` on every render. When Calendar emits `SelectedDate`, fold that OutMessage into the parent's selected-date field. `Calendar.update` returns `Update.ReturnWithOutMessage<Model, Message, OutMessage>`, so the same fold can handle `ChangedViewMonth` when your application needs month-scoped data.
 
 See it in an app
 
@@ -52,10 +52,10 @@ Sat
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Effect, Match as M, Option } from 'effect'
+import { Effect, Match as M, Option, Schema as S } from 'effect'
 import { Calendar, Update } from 'foldkit'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Calendar as UiCalendar } from '@foldkit/ui'
@@ -83,8 +83,8 @@ const flags = Effect.gen(function* () {
 // In your init function, pass the flags-resolved today into UiCalendar.init.
 // \`initialViewDate\` seeds the month the calendar opens onto (pass your
 // initial selection to open on it). The parent owns the selection itself:
-const init = (flags: Flags) => [
-  {
+const init = (flags: Flags) => ({
+  model: {
     calendarDemo: UiCalendar.init({
       id: 'calendar-demo',
       today: flags.today,
@@ -93,13 +93,12 @@ const init = (flags: Flags) => [
     maybeSelectedDate: Option.none(),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Embed the Calendar Message in your parent Message for navigation and
 // keyboard routing:
-const GotCalendarMessage = m('GotCalendarMessage', {
-  message: UiCalendar.Message,
+const Message = defineMessageUnion({
+  GotCalendarMessage: { message: UiCalendar.Message },
 })
 
 // At module scope, fold the OutMessage into your own Model. When the user
@@ -116,11 +115,13 @@ const foldCalendarOutMessage = M.type<UiCalendar.OutMessage>().pipe(
     // source of truth for the selection.
     SelectedDate:
       ({ date }) =>
-      model => [evo(model, { maybeSelectedDate: () => Option.some(date) }), []],
+      model => ({
+        model: evo(model, { maybeSelectedDate: () => Option.some(date) }),
+      }),
     // The child has emitted \`ChangedViewMonth\`. In this arm the parent can
     // update its own state or dispatch its own Commands, for example
     // prefetch month data, fire analytics, or trigger a downstream Command.
-    ChangedViewMonth: () => model => [model, []],
+    ChangedViewMonth: () => model => ({ model }),
   }),
 )
 
@@ -133,11 +134,11 @@ const foldCalendar = Update.foldChild({
   read: (model: Model) => Option.some(model.calendarDemo),
   write: (model, nextCalendarDemo) =>
     evo(model, { calendarDemo: () => nextCalendarDemo }),
-  toParentMessage: message => GotCalendarMessage({ message }),
+  toParentMessage: message => Message.GotCalendarMessage({ message }),
   foldOutMessage: foldCalendarOutMessage,
 })
 
-// Inside your update function's M.tagsExhaustive({...}), call the fold:
+// In the corresponding Message.match handler, call the fold:
 GotCalendarMessage: ({ message }) => foldCalendar(model, message)
 
 // Class names live at module scope, and each view mode gets its own view
@@ -332,7 +333,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
         }),
       ),
     },
-    toParentMessage: message => GotCalendarMessage({ message }),
+    toParentMessage: message => Message.GotCalendarMessage({ message }),
   })
 ```
 
@@ -469,7 +470,7 @@ Month cells expose `isSelected`, `isFocused`, `isCurrentMonth`, and `isDisabled`
 
 ### OutMessage
 
-Calendar returns an optional OutMessage as the third element of `[Model, Commands, Option<OutMessage>]`. Match on its tag in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) configuration.
+Calendar returns an optional OutMessage in the `outMessage` field. Match on its tag in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) configuration.
 
 | Name | Payload | Emitted when |
 | --- | --- | --- |
@@ -480,11 +481,11 @@ Use `SelectedDate` to update the parent-owned selection. Use `ChangedViewMonth` 
 
 ### Programmatic Helpers
 
-Call these helpers from parent update handlers when a domain event needs to drive Calendar state.
+`selectDate` is a child entry point. Fold it into the parent with `Update.foldChild` because it takes a date as input. The Model-only helpers make silent state adjustments and can be used as point-free `evo` setters.
 
 | Name | Type | Behavior |
 | --- | --- | --- |
-| `selectDate` | `(model: Model, date: CalendarDate) => [Model, Commands, Option<OutMessage>]` | Moves the view and cursor to the date and emits `SelectedDate`. Fold the OutMessage to update the parent-owned selection. |
+| `selectDate` | `(model: Model, date: CalendarDate) => Update.ReturnWithOutMessage<Model, Message, OutMessage>` | Moves the view and cursor to the date and emits `SelectedDate`. Fold the OutMessage to update the parent-owned selection. |
 | `focusDate` | `(model: Model, date: CalendarDate) => Model` | Moves the view and cursor without selecting. Use it when an external value should determine which month opens. |
 | `FocusGrid` | `(args: { id: string }) => Command` | Focuses the Calendar grid. A parent such as DatePicker can dispatch it after opening. |
 | `dropToDays` | `(model: Model) => Model` | Returns to Days mode and reconciles the cursor with the visible month. |

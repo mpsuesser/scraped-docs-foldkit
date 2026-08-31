@@ -2,8 +2,8 @@
 url: https://foldkit.dev/faq/why-no-jsx
 title: "Why no JSX?"
 description: "Why Foldkit uses a typed function-call DSL instead of JSX, with side-by-side comparisons of buttons, inputs, and conditional rendering."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 Foldkit views use plain TypeScript function calls instead of JSX. They do not need a JSX transform or a JSX runtime. Foldkit applications do still use the required `@foldkit/vite-plugin`, which transforms application functions to assign view identity and provides Model-preserving hot reload. The choice on this page is about the view authoring syntax, not whether application code passes through build tooling.
@@ -53,16 +53,16 @@ The same button in the Foldkit DSL:
 ```
 import { Schema as S } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
-const ClickedSave = m('ClickedSave')
-
-const Message = S.Union([ClickedSave])
+const Message = defineMessageUnion({
+  ClickedSave: {},
+})
 type Message = typeof Message.Type
 
 const saveButton = (isSaving: boolean, h: HtmlBuilder<Message>) =>
   h.button(
-    [h.Type('button'), h.Disabled(isSaving), h.OnClick(ClickedSave())],
+    [h.Type('button'), h.Disabled(isSaving), h.OnClick(Message.ClickedSave())],
     ['Save'],
   )
 ```
@@ -97,11 +97,11 @@ The same input in the DSL:
 ```
 import { Schema as S } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
-const InputtedEmail = m('InputtedEmail', { value: S.String })
-
-const Message = S.Union([InputtedEmail])
+const Message = defineMessageUnion({
+  InputtedEmail: { value: S.String },
+})
 type Message = typeof Message.Type
 
 const emailInput = (email: string, h: HtmlBuilder<Message>) =>
@@ -109,7 +109,7 @@ const emailInput = (email: string, h: HtmlBuilder<Message>) =>
     h.Type('email'),
     h.Value(email),
     h.Placeholder('you@example.com'),
-    h.OnInput(value => InputtedEmail({ value })),
+    h.OnInput(value => Message.InputtedEmail({ value })),
   ])
 ```
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/get-started/getting-started
 title: "Getting Started"
 description: "Create a Foldkit project from a starter, inspect the generated structure, or add Foldkit to an existing Vite application."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Getting Started
@@ -16,7 +16,7 @@ Before you begin, install Node.js 22.22.2 or newer and make sure the package man
 
 Run the scaffolder:
 
-```sh
+```
 npx create-foldkit-app@latest
 ```
 
@@ -28,7 +28,7 @@ The CLI asks for a project name, a rendering mode, and a package manager. If you
 
 The scaffolder creates the project and installs its dependencies. Move into the new directory, then start the development server with the package manager you selected:
 
-```sh
+```
 cd your-project
 ```
 
@@ -51,7 +51,8 @@ The exact files depend on the rendering mode and starter example. A small browse
 - `tsconfig.json`: TypeScript configuration
 - `.oxlintrc.json`: Oxlint configuration
 - `.prettierrc`: Prettier configuration
-- `AGENTS.md`: conventions for AI coding assistants working on the project
+- `AGENTS.md`: your instructions for AI coding assistants working on the project
+- `FOLDKIT.md`: Foldkit's own conventions for those assistants, [replaced from the current template when you upgrade Foldkit](https://foldkit.dev/ai/overview)
 
 In a small starter, `src/main.ts` holds the Model, Messages, update, init, and view. Larger examples move those definitions into focused modules as the application grows.
 
@@ -63,18 +64,18 @@ The generated project also includes `lint` and `format` scripts. Run them with y
 
 Skip this section if you used `create-foldkit-app`. Scaffolded projects already receive compatible package versions.
 
-Foldkit currently uses the Effect v4 release candidate and pins its `effect` peer dependency to an exact version: `effect@4.0.0-rc.109`. Stable Effect v3 does not satisfy that pin. Adding Foldkit to an Effect v3 project produces peer dependency conflicts. When Foldkit moves to a new release candidate, an existing project may need to upgrade Effect at the same time.
+Foldkit currently uses the Effect v4 release candidate and pins its `effect` peer dependency to an exact version: `effect@4.0.0-rc.112`. Stable Effect v3 does not satisfy that pin. Adding Foldkit to an Effect v3 project produces peer dependency conflicts. When Foldkit moves to a new release candidate, an existing project may need to upgrade Effect at the same time.
 
 Install Foldkit together with its pinned peer dependency:
 
-```sh
-npm install foldkit effect@4.0.0-rc.109
+```
+npm install foldkit effect@4.0.0-rc.112
 ```
 
 `@effect/platform-browser` is a separate package pinned to the same version. Install it when you use `@foldkit/devtools`, which declares it as a peer dependency, or when you need Effect browser services such as `BrowserKeyValueStore` and `BrowserCrypto`:
 
-```sh
-npm install @effect/platform-browser@4.0.0-rc.109
+```
+npm install @effect/platform-browser@4.0.0-rc.112
 ```
 
 ## Where to Go Next

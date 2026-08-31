@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/dialog
 title: "Dialog"
 description: "A modal dialog backed by the native dialog element with focus trapping and scroll locking."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 ## Overview
@@ -18,15 +18,16 @@ Check out how Dialog is wired up in a [real Foldkit app](https://github.com/fold
 
 ### Basic
 
-Open the dialog from a trigger by dispatching your own Message and calling `Dialog.open(model)` in your update. Spread the `closeButton` bundle onto a Cancel button to dismiss it, or call `Dialog.close(model)` directly. Both return `[Model, Commands, Option<OutMessage>]`. Spread `...title` onto a heading element so the dialog is labeled for screen readers.
+Open the Dialog from a trigger by dispatching your own Message. Fold `Dialog.open` and `Dialog.close` into the parent with `Update.foldChildStep`; both are no-argument child entry points. Spread the `closeButton` bundle onto a Cancel button to dismiss it. Spread `...title` onto a heading element so the Dialog is labeled for screen readers.
 
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Command } from 'foldkit'
+import { Match as M, Option, Schema as S } from 'effect'
+import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Dialog } from '@foldkit/ui'
@@ -36,46 +37,59 @@ const Model = S.Struct({
   dialog: Dialog.Model,
   // ...your other fields
 })
+type Model = typeof Model.Type
 
 // In your init function, initialize the Dialog Submodel with a unique id:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     dialog: Dialog.init({ id: 'confirm' }),
     // ...your other fields
   },
-  [],
-]
+})
 
 // A fact for the trigger, plus the Dialog Message embedded in your parent
 // Message for the submodel delegation:
-const ClickedOpenDialog = m('ClickedOpenDialog')
-const GotDialogMessage = m('GotDialogMessage', {
-  message: Dialog.Message,
+const Message = defineMessageUnion({
+  ClickedOpenDialog: {},
+  GotDialogMessage: { message: Dialog.Message },
+})
+type Message = typeof Message.Type
+
+// One boundary handles Dialog Messages, Commands, and OutMessages. Replace
+// either no-op arm with the parent transition that should follow that event.
+const foldDialogOutMessage = M.type<Dialog.OutMessage>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    Opened: () => model => ({ model }),
+    Closed: () => model => ({ model }),
+  }),
+)
+
+const readDialog = (model: Model) => Option.some(model.dialog)
+const writeDialog = (model: Model, dialog: Dialog.Model): Model =>
+  evo(model, { dialog: () => dialog })
+const toGotDialogMessage = (message: Dialog.Message): Message =>
+  Message.GotDialogMessage({ message })
+
+const foldDialog = Update.foldChild({
+  update: Dialog.update,
+  read: readDialog,
+  write: writeDialog,
+  toParentMessage: toGotDialogMessage,
+  foldOutMessage: foldDialogOutMessage,
 })
 
-// Open the dialog from your update with Dialog.open. Escape, the backdrop,
-// and the closeButton bundle all flow back through GotDialogMessage, where you
-// delegate to Dialog.update. (Both return an Option<OutMessage> as the
-// third element; match Opened/Closed there to react to the transitions.)
-ClickedOpenDialog: () => {
-  const [nextDialog, dialogCommands] = Dialog.open(model.dialog)
-  return [
-    evo(model, { dialog: () => nextDialog }),
-    Command.mapMessages(dialogCommands, message =>
-      GotDialogMessage({ message }),
-    ),
-  ]
-}
+const foldDialogOpen = Update.foldChildStep({
+  update: Dialog.open,
+  read: readDialog,
+  write: writeDialog,
+  toParentMessage: toGotDialogMessage,
+  foldOutMessage: foldDialogOutMessage,
+})
 
-GotDialogMessage: ({ message }) => {
-  const [nextDialog, dialogCommands] = Dialog.update(model.dialog, message)
-  return [
-    evo(model, { dialog: () => nextDialog }),
-    Command.mapMessages(dialogCommands, message =>
-      GotDialogMessage({ message }),
-    ),
-  ]
-}
+// In the corresponding Message.match handler:
+ClickedOpenDialog: () => foldDialogOpen(model)
+GotDialogMessage: ({ message }) => foldDialog(model, message)
 
 // In your view, open from a trigger with the fact, and dismiss from a Cancel
 // button by spreading the \`closeButton\` bundle, no parent message needed:
@@ -83,7 +97,7 @@ const view = (h: HtmlBuilder<Message>) =>
   h.div(
     [],
     [
-      h.button([h.OnClick(ClickedOpenDialog())], ['Open Dialog']),
+      h.button([h.OnClick(Message.ClickedOpenDialog())], ['Open Dialog']),
       h.submodel({
         slotId: model.dialog.id,
         model: model.dialog,
@@ -127,7 +141,7 @@ const view = (h: HtmlBuilder<Message>) =>
                 : [],
             ),
         },
-        toParentMessage: message => GotDialogMessage({ message }),
+        toParentMessage: message => Message.GotDialogMessage({ message }),
       }),
     ],
   )
@@ -141,9 +155,10 @@ Pass `isAnimated: true` at init to coordinate animations. The component manages 
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Command } from 'foldkit'
+import { Match as M, Option, Schema as S } from 'effect'
+import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Dialog } from '@foldkit/ui'
@@ -153,32 +168,41 @@ const Model = S.Struct({
   dialog: Dialog.Model,
   // ...your other fields
 })
+type Model = typeof Model.Type
 
 // In your init function, set isAnimated: true to coordinate CSS transitions:
-const init = () => [
-  {
+const init = () => ({
+  model: {
     dialog: Dialog.init({ id: 'confirm', isAnimated: true }),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Embed the Dialog Message in your parent Message and delegate to
 // Dialog.update (open from a trigger with a fact and Dialog.open, as in
 // the basic Dialog example):
-const GotDialogMessage = m('GotDialogMessage', {
-  message: Dialog.Message,
+const Message = defineMessageUnion({
+  GotDialogMessage: { message: Dialog.Message },
+})
+type Message = typeof Message.Type
+
+const foldDialogOutMessage = M.type<Dialog.OutMessage>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    Opened: () => model => ({ model }),
+    Closed: () => model => ({ model }),
+  }),
+)
+
+const foldDialog = Update.foldChild({
+  update: Dialog.update,
+  read: (model: Model) => Option.some(model.dialog),
+  write: (model, nextDialog) => evo(model, { dialog: () => nextDialog }),
+  toParentMessage: message => Message.GotDialogMessage({ message }),
+  foldOutMessage: foldDialogOutMessage,
 })
 
-GotDialogMessage: ({ message }) => {
-  const [nextDialog, dialogCommands] = Dialog.update(model.dialog, message)
-  return [
-    evo(model, { dialog: () => nextDialog }),
-    Command.mapMessages(dialogCommands, message =>
-      GotDialogMessage({ message }),
-    ),
-  ]
-}
+GotDialogMessage: ({ message }) => foldDialog(model, message)
 
 // Inside your view function, use data-[closed] for enter/leave transitions and
 // spread the \`closeButton\` bundle onto your dismiss buttons:
@@ -250,7 +274,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
             : [],
         ),
     },
-    toParentMessage: message => GotDialogMessage({ message }),
+    toParentMessage: message => Message.GotDialogMessage({ message }),
   })
 ```
 
@@ -262,9 +286,9 @@ A field inside a dialog can open its own overlay, like a Combobox or DatePicker.
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Option } from 'effect'
+import { Option, Schema as S } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 
 import { Combobox, Dialog } from '@foldkit/ui'
 
@@ -278,21 +302,20 @@ const Model = S.Struct({
   // ...your other fields
 })
 
-const init = () => [
-  {
+const init = () => ({
+  model: {
     dialog: Dialog.init({ id: 'edit-filters' }),
     combobox: Combobox.init({ id: 'city' }),
     maybeCity: Option.none(),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Embed each submodel's Message in your parent Message and delegate both to
 // their own update (see the Dialog and Combobox examples for the delegation).
-const GotDialogMessage = m('GotDialogMessage', { message: Dialog.Message })
-const GotComboboxMessage = m('GotComboboxMessage', {
-  message: Combobox.Message,
+const Message = defineMessageUnion({
+  GotDialogMessage: { message: Dialog.Message },
+  GotComboboxMessage: { message: Combobox.Message },
 })
 
 // Render the overlay inside the dialog panel. The key is \`portal: false\` on
@@ -332,7 +355,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
                         anchor: { placement: 'bottom-start', portal: false },
                       },
                       toParentMessage: message =>
-                        GotComboboxMessage({ message }),
+                        Message.GotComboboxMessage({ message }),
                     }),
                   ],
                 ),
@@ -340,7 +363,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
             : [],
         ),
     },
-    toParentMessage: message => GotDialogMessage({ message }),
+    toParentMessage: message => Message.GotDialogMessage({ message }),
   })
 ```
 
@@ -352,9 +375,10 @@ Use a separate Dialog Model for each level and open the second from a button in 
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Command } from 'foldkit'
+import { Match as M, Option, Schema as S } from 'effect'
+import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
-import { m } from 'foldkit/message'
+import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Dialog } from '@foldkit/ui'
@@ -365,63 +389,72 @@ const Model = S.Struct({
   confirmDialog: Dialog.Model,
   // ...your other fields
 })
+type Model = typeof Model.Type
 
-const init = () => [
-  {
+const init = () => ({
+  model: {
     settingsDialog: Dialog.init({ id: 'settings' }),
     confirmDialog: Dialog.init({ id: 'confirm-delete' }),
     // ...your other fields
   },
-  [],
-]
+})
 
 // Embed each Dialog Message in your parent Message and delegate each to its
 // own Dialog.update (see the basic Dialog example for the delegation).
-const GotSettingsDialogMessage = m('GotSettingsDialogMessage', {
-  message: Dialog.Message,
+const Message = defineMessageUnion({
+  GotSettingsDialogMessage: { message: Dialog.Message },
+  GotConfirmDialogMessage: { message: Dialog.Message },
+  ClickedDeleteProject: {},
+  ConfirmedDeleteProject: {},
 })
-const GotConfirmDialogMessage = m('GotConfirmDialogMessage', {
-  message: Dialog.Message,
+type Message = typeof Message.Type
+
+const foldConfirmDialogOutMessage = M.type<Dialog.OutMessage>().pipe(
+  M.withReturnType<Update.Step<Model, Message>>(),
+  M.tagsExhaustive({
+    Opened: () => model => ({ model }),
+    Closed: () => model => ({ model }),
+  }),
+)
+
+const readConfirmDialog = (model: Model) => Option.some(model.confirmDialog)
+const writeConfirmDialog = (model: Model, confirmDialog: Dialog.Model): Model =>
+  evo(model, { confirmDialog: () => confirmDialog })
+const toGotConfirmDialogMessage = (message: Dialog.Message): Message =>
+  Message.GotConfirmDialogMessage({ message })
+
+const foldConfirmDialogOpen = Update.foldChildStep({
+  update: Dialog.open,
+  read: readConfirmDialog,
+  write: writeConfirmDialog,
+  toParentMessage: toGotConfirmDialogMessage,
+  foldOutMessage: foldConfirmDialogOutMessage,
+})
+
+const foldConfirmDialogClose = Update.foldChildStep({
+  update: Dialog.close,
+  read: readConfirmDialog,
+  write: writeConfirmDialog,
+  toParentMessage: toGotConfirmDialogMessage,
+  foldOutMessage: foldConfirmDialogOutMessage,
 })
 
 // Opening the confirmation is a parent fact, not a hand-wrapped child message.
 // The button dispatches ClickedDeleteProject; the update opens the confirmation
 // through Dialog.open, keeping Got* for genuine child results.
-const ClickedDeleteProject = m('ClickedDeleteProject')
-const ConfirmedDeleteProject = m('ConfirmedDeleteProject')
 
-// ...in your update's M.tagsExhaustive({...}):
-ClickedDeleteProject: () => {
-  const [nextConfirmDialog, confirmDialogCommands] = Dialog.open(
-    model.confirmDialog,
-  )
-  return [
-    evo(model, { confirmDialog: () => nextConfirmDialog }),
-    Command.mapMessages(confirmDialogCommands, message =>
-      GotConfirmDialogMessage({ message }),
-    ),
-  ]
-}
+// In the corresponding Message.match handler:
+ClickedDeleteProject: () => foldConfirmDialogOpen(model)
 
 // Confirming runs the deletion, then closes the confirmation through
 // Dialog.close, the same API the opening fact used.
-ConfirmedDeleteProject: () => {
-  // ...run the deletion here, then:
-  const [nextConfirmDialog, confirmDialogCommands] = Dialog.close(
-    model.confirmDialog,
-  )
-  return [
-    evo(model, { confirmDialog: () => nextConfirmDialog }),
-    Command.mapMessages(confirmDialogCommands, message =>
-      GotConfirmDialogMessage({ message }),
-    ),
-  ]
-}
+// Add the deletion as another Update.combine step when implementing it.
+ConfirmedDeleteProject: () => foldConfirmDialogClose(model)
 
 // Each dialog is its own submodel; the framework stacks them by z-index, traps
 // focus in the topmost, and Escape closes the topmost before the one beneath
-// it. Cancel dismisses the confirmation by spreading the \`closeButton\` bundle; Delete
-// dispatches a fact that runs the work and closes through Dialog.close.
+// it. Cancel dismisses the confirmation through the \`closeButton\` bundle.
+// Delete dispatches a fact that runs the work and closes through Dialog.close.
 const view = (h: HtmlBuilder<Message>) => {
   const confirmDialog = h.submodel({
     slotId: model.confirmDialog.id,
@@ -442,14 +475,17 @@ const view = (h: HtmlBuilder<Message>) => {
                   [
                     h.h2([...title], ['Delete project?']),
                     h.button([...closeButton], ['Cancel']),
-                    h.button([h.OnClick(ConfirmedDeleteProject())], ['Delete']),
+                    h.button(
+                      [h.OnClick(Message.ConfirmedDeleteProject())],
+                      ['Delete'],
+                    ),
                   ],
                 ),
               ]
             : [],
         ),
     },
-    toParentMessage: message => GotConfirmDialogMessage({ message }),
+    toParentMessage: message => Message.GotConfirmDialogMessage({ message }),
   })
 
   const settingsDialog = h.submodel({
@@ -471,7 +507,7 @@ const view = (h: HtmlBuilder<Message>) => {
                   [
                     h.h2([...title], ['Project settings']),
                     h.button(
-                      [h.OnClick(ClickedDeleteProject())],
+                      [h.OnClick(Message.ClickedDeleteProject())],
                       ['Delete project'],
                     ),
                   ],
@@ -480,7 +516,7 @@ const view = (h: HtmlBuilder<Message>) => {
             : [],
         ),
     },
-    toParentMessage: message => GotSettingsDialogMessage({ message }),
+    toParentMessage: message => Message.GotSettingsDialogMessage({ message }),
   })
 
   return h.div([], [settingsDialog, confirmDialog])
@@ -554,7 +590,7 @@ Payload delivered to the `toView` callback each render.
 
 ### OutMessage
 
-Messages emitted to the parent through the third element of `[Model, Commands, Option<OutMessage>]`. Pattern-match on the OutMessage in your update handler.
+Messages emitted to the parent through the optional `outMessage` field. Match on the OutMessage in the `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |

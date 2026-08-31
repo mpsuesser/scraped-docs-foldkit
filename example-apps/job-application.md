@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/job-application
 title: "Job Application"
 description: "A multi-step form with asynchronous email validation, cross-field date constraints, file uploads, and per-step error indicators."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -32,7 +32,7 @@ import { BrowserCrypto } from '@effect/platform-browser'
 import { Menu, Tabs } from '@foldkit/ui'
 
 import { Message } from './message'
-import { Model, NotSubmitted } from './model'
+import { Model, Submission } from './model'
 import {
   Attachments,
   CoverLetter,
@@ -75,8 +75,8 @@ export const init: Runtime.ApplicationInit<Model, Message, Flags> = ({
   initialWorkHistoryEntryId,
   initialEducationEntryId,
   initialSkillsEntryId,
-}) => [
-  {
+}) => ({
+  model: {
     currentStep: 'PersonalInfo',
     personalInfo: PersonalInfo.init(today),
     workHistory: WorkHistory.init(today, initialWorkHistoryEntryId),
@@ -85,13 +85,12 @@ export const init: Runtime.ApplicationInit<Model, Message, Flags> = ({
     coverLetter: CoverLetter.init(),
     attachments: Attachments.init(),
     isPreviewVisible: false,
-    submission: NotSubmitted(),
+    submission: Submission.NotSubmitted(),
     stepMenu: Menu.init({ id: 'step-menu' }),
     stepTabs: Tabs.init({ id: 'step-tabs' }),
     isSubmitAttempted: false,
   },
-  [],
-]
+})
 
 export { Message, Model, update, view }
 ```

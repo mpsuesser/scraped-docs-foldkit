@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-virtual-list
 title: "Ui/VirtualList"
 description: "API documentation for the Ui/VirtualList module."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Ui/VirtualList
@@ -14,7 +14,7 @@ current_date: 2026-08-21T01:47:37.174Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L105)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L84)
 
 ```
 /**
@@ -29,12 +29,12 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L223)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L199)
 
 ```
 /**
  * Programmatically scrolls the container so the row at `index` is visible.
- *  Returns the next model and a Command that mutates `element.scrollTop`. The
+ *  Returns the next Model and a Command that mutates `element.scrollTop`. The
  *  natural scroll event then flows back through `ScrolledContainer` and the
  *  component re-renders the new visible slice.
  * 
@@ -43,7 +43,7 @@ function
  *  previous in-flight scroll) is ignored when its version no longer matches.
  * 
  *  Should be called after the container has rendered. If the container is not
- *  yet in the DOM the Command silently no-ops (the model still transitions
+ *  yet in the DOM the Command silently no-ops (the Model still transitions
  *  through `ScrollingToIndex` → `Idle` via the version-matched completion).
  * 
  *  Assumes uniform row heights: target scroll position is computed as
@@ -53,31 +53,14 @@ function
 (
   model: VirtualList.Model,
   index: number
-): readonly [
-  VirtualList.Model,
-  readonly Array<Readonly<{
-    args: Record<string, unknown>
-    effect: Effect<{
-      _tag: "ScrolledContainer"
-      scrollTop: number
-    } | {
-      _tag: "MeasuredContainer"
-      containerHeight: number
-    } | {
-      _tag: "CompletedApplyScroll"
-      version: number
-    }, never, never>
-    key: string
-    name: string
-  }>>
-]
+): ScrollReturn
 ```
 
 ### scrollToIndexVariable
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L242)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L215)
 
 ```
 /**
@@ -100,37 +83,50 @@ function
   items: readonly Array<Item>,
   itemToRowHeightPx: (item: Item, index: number) => number,
   index: number
-): readonly [
-  VirtualList.Model,
-  readonly Array<Readonly<{
-    args: Record<string, unknown>
-    effect: Effect<{
-      _tag: "ScrolledContainer"
-      scrollTop: number
-    } | {
-      _tag: "MeasuredContainer"
-      containerHeight: number
-    } | {
-      _tag: "CompletedApplyScroll"
-      version: number
-    }, never, never>
-    key: string
-    name: string
-  }>>
-]
+): ScrollReturn
 ```
 
 ### update
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L130)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L109)
+
+```
+/** Processes a VirtualList Message and returns the next Model and optional Commands. */
+(
+  model: VirtualList.Model,
+  message: {
+    _tag: "ScrolledContainer"
+    scrollTop: number
+  } | {
+    _tag: "MeasuredContainer"
+    containerHeight: number
+  } | {
+    _tag: "CompletedApplyScroll"
+    version: number
+  }
+): Readonly<{
+  commands: Commands<{
+    _tag: "ScrolledContainer"
+    scrollTop: number
+  } | {
+    _tag: "MeasuredContainer"
+    containerHeight: number
+  } | {
+    _tag: "CompletedApplyScroll"
+    version: number
+  }, never>
+  model: VirtualList.Model
+  outMessage: undefined
+}>
+```
 
 ### view
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L566)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L531)
 
 ```
 <Item>(): ViewForItem<Item>
@@ -140,7 +136,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L296)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L269)
 
 ```
 /**
@@ -170,7 +166,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L340)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L308)
 
 ```
 /**
@@ -205,7 +201,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L96)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L75)
 
 ```
 /** Configuration for creating a virtual list model with `init`. */
@@ -220,7 +216,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L545)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L510)
 
 ```
 /**
@@ -248,7 +244,7 @@ type ViewInputs = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L262)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L235)
 
 ```
 /**
@@ -266,54 +262,32 @@ type VisibleWindow = Readonly<{
 
 ## Constants
 
-### CompletedApplyScroll
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L75)
-
-```
-/**
- * Sent when a `scrollToIndex` Command completes. Carries the version it was
- *  issued with so the update can ignore stale completions.
- */
-const CompletedApplyScroll: CallableTaggedStruct<"CompletedApplyScroll", {
-  version: Number
-}>
-```
-
-### MeasuredContainer
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L70)
-
-```
-/**
- * Sent when the container resizes. Carries the new container height read
- *  from the `ResizeObserver` entry.
- */
-const MeasuredContainer: CallableTaggedStruct<"MeasuredContainer", {
-  containerHeight: Number
-}>
-```
-
 ### Message
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L80)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L61)
 
 ```
 /** Union of all messages the virtual list component can produce. */
-const Message: S.Union<[typeof ScrolledContainer, typeof MeasuredContainer, typeof CompletedApplyScroll]>
+const Message: MessageUnion<{
+  CompletedApplyScroll: {
+    version: Number
+  }
+  MeasuredContainer: {
+    containerHeight: Number
+  }
+  ScrolledContainer: {
+    scrollTop: Number
+  }
+}>
 ```
 
 ### Model
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L50)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L47)
 
 ```
 /**
@@ -322,37 +296,21 @@ const
  */
 const Model: Struct<{
   id: String
-  measurement: Union<readonly [
-    CallableTaggedStruct<"Unmeasured", {}>,
-    CallableTaggedStruct<"Measured", {
+  measurement: TaggedUnion<{
+    Measured: {
       containerHeight: Number
-    }>
-  ]>
-  pendingScroll: Union<readonly [
-    CallableTaggedStruct<"Idle", {}>,
-    CallableTaggedStruct<"ScrollingToIndex", {
+    }
+    Unmeasured: {}
+  }>
+  pendingScroll: TaggedUnion<{
+    Idle: {}
+    ScrollingToIndex: {
       index: Number
       version: Number
-    }>
-  ]>
+    }
+  }>
   pendingScrollVersion: Number
   rowHeightPx: Number
-  scrollTop: Number
-}>
-```
-
-### ScrolledContainer
-
-const
-
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L65)
-
-```
-/**
- * Sent when the user scrolls the container. Carries the new scroll position
- *  read from the scroll event.
- */
-const ScrolledContainer: CallableTaggedStruct<"ScrolledContainer", {
   scrollTop: Number
 }>
 ```
@@ -361,7 +319,7 @@ const ScrolledContainer: CallableTaggedStruct<"ScrolledContainer", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/eeac54aa1c9797d3ecb29d363167e21af2d2e4f0/packages/ui/src/virtualList/index.ts#L422)
+[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/virtualList/index.ts#L387)
 
 ```
 /**

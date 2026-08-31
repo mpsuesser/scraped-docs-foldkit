@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/side-effects-and-purity
 title: "Side Effects & Purity"
 description: "Keep update and view deterministic by confining outside work to Commands, Subscriptions, Mounts, ManagedResources, and other Runtime-managed boundaries."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-08-31T07:29:25.100Z
+current_date: 2026-08-31T07:29:25.100Z
 ---
 
 # Side Effects and Purity
@@ -89,59 +89,48 @@ const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 Update reads the current Model and one Message. It returns a new Model plus descriptions of any work that should follow. It does not mutate the Model, touch the DOM, or execute a Command.
 
 ```
-import { Match as M } from 'effect'
-import { type Command } from 'foldkit'
+import { type Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
-import type { Message } from './message'
+import { Message } from './message'
 import type { Model } from './model'
-
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 
 // ❌ Don't do this in update
 const update = (model: Model, message: Message) =>
-  M.value(message).pipe(
-    M.withReturnType<UpdateReturn>(),
-    M.tagsExhaustive({
-      OpenedDialog: () => {
-        document.querySelector<HTMLInputElement>('#search-input')?.focus()
-        return [evo(model, { dialogState: () => 'Open' }), []]
-      },
-    }),
-  )
+  Message.match<Update.Return<Model, Message>>(message, {
+    OpenedDialog: () => {
+      document.querySelector<HTMLInputElement>('#search-input')?.focus()
+      return { model: evo(model, { dialogState: () => 'Open' }) }
+    },
+  })
 ```
 
 ```
-import { Effect, Match as M } from 'effect'
-import { Command } from 'foldkit'
+import { Effect } from 'effect'
+import { Command, type Update } from 'foldkit'
 import * as Dom from 'foldkit/dom'
 import { evo } from 'foldkit/struct'
 
-import { CompletedFocusSearchInput, type Message } from './message'
+import { Message } from './message'
 import type { Model } from './model'
 
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
-
 const FocusSearchInput = Command.define('FocusSearchInput', {
-  messages: [CompletedFocusSearchInput],
+  messages: [Message.CompletedFocusSearchInput],
   execute: Dom.focus('#search-input').pipe(
     Effect.ignore,
-    Effect.as(CompletedFocusSearchInput()),
+    Effect.as(Message.CompletedFocusSearchInput()),
   ),
 })
 
 // ✅ Return the next Model and a Command
 const update = (model: Model, message: Message) =>
-  M.value(message).pipe(
-    M.withReturnType<UpdateReturn>(),
-    M.tagsExhaustive({
-      OpenedDialog: () => [
-        evo(model, { dialogState: () => 'Open' }),
-        [FocusSearchInput()],
-      ],
-      CompletedFocusSearchInput: () => [model, []],
+  Message.match<Update.Return<Model, Message>>(message, {
+    OpenedDialog: () => ({
+      model: evo(model, { dialogState: () => 'Open' }),
+      commands: [FocusSearchInput()],
     }),
-  )
+    CompletedFocusSearchInput: () => ({ model }),
+  })
 ```
 
 The [Testing](https://foldkit.dev/testing) guide shows how Story drives update and resolves Commands without a DOM, while Scene exercises the effect boundaries exposed by a rendered view.
@@ -153,64 +142,52 @@ Randomness, clocks, storage, and browser APIs produce values that are not alread
 This version generates a different position each time update receives the same inputs:
 
 ```
-import { Match as M } from 'effect'
-import { type Command } from 'foldkit'
+import { type Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
 import { GRID_SIZE } from './constants'
-import type { Message } from './message'
+import { Message } from './message'
 import type { Model } from './model'
-
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 
 // ❌ Don't call random directly in update
 const update = (model: Model, message: Message) =>
-  M.value(message).pipe(
-    M.withReturnType<UpdateReturn>(),
-    M.tagsExhaustive({
-      RequestedApple: () => {
-        const x = Math.floor(Math.random() * GRID_SIZE)
-        const y = Math.floor(Math.random() * GRID_SIZE)
-        return [evo(model, { apple: () => ({ x, y }) }), []]
-      },
-    }),
-  )
+  Message.match<Update.Return<Model, Message>>(message, {
+    RequestedApple: () => {
+      const x = Math.floor(Math.random() * GRID_SIZE)
+      const y = Math.floor(Math.random() * GRID_SIZE)
+      return { model: evo(model, { apple: () => ({ x, y }) }) }
+    },
+  })
 ```
 
 The pure version returns `GenerateApplePosition`. Its Effect generates the coordinates and sends them back in `CompletedGenerateApplePosition`:
 
 ```
-import { Effect, Match as M, Random } from 'effect'
-import { Command } from 'foldkit'
+import { Effect, Random } from 'effect'
+import { Command, type Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
 import { GRID_SIZE } from './constants'
-import { CompletedGenerateApplePosition, type Message } from './message'
+import { Message } from './message'
 import type { Model } from './model'
-
-type UpdateReturn = readonly [Model, ReadonlyArray<Command.Command<Message>>]
 
 // ✅ Run random work in a Command
 const GenerateApplePosition = Command.define('GenerateApplePosition', {
-  messages: [CompletedGenerateApplePosition],
+  messages: [Message.CompletedGenerateApplePosition],
   execute: Effect.gen(function* () {
     const x = yield* Random.nextIntBetween(0, GRID_SIZE, { halfOpen: true })
     const y = yield* Random.nextIntBetween(0, GRID_SIZE, { halfOpen: true })
-    return CompletedGenerateApplePosition({ position: { x, y } })
+    return Message.CompletedGenerateApplePosition({ position: { x, y } })
   }),
 })
 
 const update = (model: Model, message: Message) =>
-  M.value(message).pipe(
-    M.withReturnType<UpdateReturn>(),
-    M.tagsExhaustive({
-      RequestedApple: () => [model, [GenerateApplePosition()]],
-      CompletedGenerateApplePosition: ({ position }) => [
-        evo(model, { apple: () => position }),
-        [],
-      ],
+  Message.match<Update.Return<Model, Message>>(message, {
+    RequestedApple: () => ({ model, commands: [GenerateApplePosition()] }),
+    CompletedGenerateApplePosition: ({ position }) => ({
+      model: evo(model, { apple: () => position }),
     }),
-  )
+  })
 ```
 
 `RequestedApple` now returns the same Model and Command every time. Only the result handler writes the generated position into the Model.
