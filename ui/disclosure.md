@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/disclosure
 title: "Disclosure"
 description: "A stateless, controlled show-and-hide helper for inline content, with disclosure semantics and keyboard behavior."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
@@ -22,7 +22,7 @@ Provide a `toView` callback that receives the `button` and `panel` attribute bun
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -30,8 +30,8 @@ import { evo } from 'foldkit/struct'
 import { Disclosure } from '@foldkit/ui'
 
 // Store the open state as a plain boolean field in your Model:
-const Model = S.Struct({
-  isFaqOpen: S.Boolean,
+const Model = Schema.Struct({
+  isFaqOpen: Schema.Boolean,
   // ...your other fields
 })
 
@@ -46,7 +46,7 @@ const init = () => ({
 // A verb-first, past-tense Message carries the new open state:
 
 const Message = defineMessageUnion({
-  ToggledFaq: { isOpen: S.Boolean },
+  ToggledFaq: { isOpen: Schema.Boolean },
 })
 
 // In the corresponding Message.match handler, store the value.

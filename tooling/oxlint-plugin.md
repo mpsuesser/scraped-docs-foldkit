@@ -2,8 +2,8 @@
 url: https://foldkit.dev/tooling/oxlint-plugin
 title: "Oxlint Plugin"
 description: "Install and configure @foldkit/oxlint-plugin, then see what each Foldkit-specific rule accepts and rejects."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Oxlint Plugin
@@ -71,6 +71,26 @@ Foldkit projects use `oxlint` for general linting and `@foldkit/oxlint-plugin` f
 
 Override an individual rule in the project's `rules` block when an application needs a narrower policy. The complete rule set is grouped by the part of the architecture it protects below.
 
+## Effect Imports
+
+### foldkit/prefer-effect-module-names
+
+The recommended and all presets require PascalCase modules imported from `effect` to keep their exported names. Write `import { Match, Schema, String } from 'effect'`, not abbreviated or trailing-underscore aliases such as `Match as M`, `Schema as S`, or `String as String_`.
+
+When an Effect module shares a name with a JavaScript or TypeScript global, keep the Effect import unchanged and qualify the global through `globalThis`, such as `globalThis.String`, `globalThis.Array`, or `globalThis.Record`. If an existing local or public binding must retain the module name, give the Effect import an explicit prefix such as `Order as EffectOrder`. Aliases for lowercase functions and type-only imports remain valid.
+
+The rule safely fixes a binding and its references when the exported name is available. It reports without fixing when a rename could change binding resolution, compete with another alias for the same exported name, change an object shorthand key or named re-export, or discard a comment in the import specifier.
+
+Disable the rule when a project deliberately keeps Effect module aliases:
+
+```json
+{
+  "rules": {
+    "foldkit/prefer-effect-module-names": "off"
+  }
+}
+```
+
 ## Server Portability
 
 ### foldkit/no-nonportable-server-globals
@@ -127,7 +147,7 @@ const goodSubmission = Submission.NotSubmitted()
 Prevents constructing Messages by typing or casting object literals. Use the callable Schema constructor instead.
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 
 const Message = defineMessageUnion({
@@ -448,13 +468,13 @@ The presets also disable the rule in TypeScript files under a `server` directory
 This direct-call catalog does not prove that a file is pure. It recognizes static global member paths and ignores locally shadowed globals. It does not follow a method alias such as `const now = Date.now` to a later `now()` call, nor does it inspect a helper's call graph.
 
 ```
-import { Crypto, Effect, Schema as S } from 'effect'
+import { Crypto, Effect, Schema } from 'effect'
 import { Command } from 'foldkit'
 
 import { BrowserCrypto } from '@effect/platform-browser'
 
 const SaveDraftWithId = Command.define('SaveDraftWithId', {
-  args: { body: S.String, draftId: S.String },
+  args: { body: Schema.String, draftId: Schema.String },
   messages: [Message.CompletedSaveDraftWithId],
   execute: ({ draftId }) =>
     Effect.succeed(Message.CompletedSaveDraftWithId({ draftId })),
@@ -469,7 +489,7 @@ const saveBad = (body: string) => {
 
 // ✅ Good: the runtime obtains the UUID when it executes the Command.
 const SaveDraft = Command.define('SaveDraft', {
-  args: { body: S.String },
+  args: { body: Schema.String },
   messages: [Message.CompletedSaveDraft],
   execute: ({ body: _body }) =>
     Effect.gen(function* () {
@@ -487,16 +507,15 @@ const saveGood = (body: string) => SaveDraft({ body })
 Rejects module-level let and var bindings, which hold state outside the Model. Move the data into the Model, or scope a live handle to a lifecycle primitive like Mount or ManagedResource.
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 
 // ❌ Bad
 let requestCount = 0
 
 // ✅ Good
-export const Model = S.Struct({
-  requestCount: S.Number,
+export const Model = Schema.Struct({
+  requestCount: Schema.Number,
 })
-
 export type Model = typeof Model.Type
 ```
 
@@ -588,7 +607,7 @@ const Message = defineMessageUnion({
 Reserves the Got* prefix for Submodel wrappers. Any Got-prefixed Message must include a child Message payload named message.
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as Child from './child'
@@ -596,21 +615,21 @@ import * as Child from './child'
 {
   // ❌ Bad: Got is reserved for Submodel wrappers.
   const Message = defineMessageUnion({
-    GotWeather: { temperature: S.Number },
+    GotWeather: { temperature: Schema.Number },
   })
 }
 
 {
   // ✅ Good: use a name that does not start with Got for Command results.
   const Message = defineMessageUnion({
-    ReceivedWeather: { temperature: S.Number },
+    ReceivedWeather: { temperature: Schema.Number },
   })
 }
 
 {
   // ❌ Bad: Got-prefixed wrappers must carry child Messages.
   const Message = defineMessageUnion({
-    GotChildMessage: { id: S.String },
+    GotChildMessage: { id: Schema.String },
   })
 }
 
@@ -618,7 +637,7 @@ import * as Child from './child'
   // ✅ Good: Got wraps a child Message.
   const Message = defineMessageUnion({
     GotChildMessage: {
-      id: S.String,
+      id: Schema.String,
       message: Child.Message,
     },
   })
@@ -650,7 +669,7 @@ const goodCommands = Command.mapMessages(childCommands, message =>
 Keeps a Got wrapper payload to the child Message plus routing keys: message, id, or keys ending in Id.
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 
 // ❌ Bad
@@ -659,7 +678,7 @@ import { defineMessageUnion } from 'foldkit/message'
 const BadMessage = defineMessageUnion({
   GotSettingsMessage: {
     message: Settings.Message,
-    timestamp: S.Number,
+    timestamp: Schema.Number,
   },
 })
 
@@ -667,7 +686,7 @@ const BadMessage = defineMessageUnion({
 // message plus routing keys (id, or keys ending in Id) only.
 const Message = defineMessageUnion({
   GotCounterMessage: {
-    id: S.String,
+    id: Schema.String,
     message: Counter.Message,
   },
 })
@@ -675,7 +694,7 @@ const Message = defineMessageUnion({
 
 ### foldkit/no-child-message-construction-in-root
 
-Rejects constructing a child Message variant from outside the child. Call a child-exported helper and route its output through the wrapper.
+Rejects constructing a child Message variant from a parent. Expose a child-owned update capability that applies the internal fact, then integrate it with `Update.foldChild` or `Update.foldChildStep`. A child-owned view, Command, or Subscription may still construct that child's Messages; the boundary is ownership, not file spelling. See [Informing Submodels](https://foldkit.dev/patterns/informing-submodels) for the complete pattern.
 
 ```
 // ❌ Bad
@@ -684,8 +703,16 @@ const badRouting = () =>
   GotChildMessage({ message: Child.Message.ClickedSave() })
 
 // ✅ Good
-// The child exports a helper; the root routes its output through the wrapper.
-const goodRouting = () => GotChildMessage({ message: Child.clickedSave() })
+// The child exports an update capability. The parent folds the complete child
+// result without importing or constructing its internal Message.
+const foldChildSave = Update.foldChildStep({
+  update: Child.save,
+  read: model => Option.some(model.child),
+  write: (model, nextChild) => evo(model, { child: () => nextChild }),
+  toParentMessage: message => GotChildMessage({ message }),
+})
+
+const goodRouting = model => foldChildSave(model)
 ```
 
 ### foldkit/selection-submodel-factory-at-module-scope

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/about
 title: "About Foldkit"
 description: "What Foldkit is, who builds it, how changes are developed and released, and where the project stands before 1.0."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # About Foldkit
@@ -39,5 +39,5 @@ The site is also built to be read by agents. Every page is available as Markdown
 ## Where to Go Next
 
 - [Getting Started](https://foldkit.dev/get-started/getting-started) creates a project and walks through the generated structure.
-- [Manifesto](https://foldkit.dev/get-started/manifesto) explains why Foldkit exists and the principles behind its design.
+- [Why Foldkit](https://foldkit.dev/get-started/why-foldkit) explains why Foldkit exists and the principles behind its design.
 - [Contact](https://foldkit.dev/contact) lists the ways to reach the project.

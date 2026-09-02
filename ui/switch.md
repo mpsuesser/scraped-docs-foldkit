@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/switch
 title: "Switch"
 description: "A stateless, controlled toggle for immediate on-and-off actions, with keyboard behavior and switch semantics."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
@@ -24,7 +24,7 @@ Get notified when something important happens.
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -32,8 +32,8 @@ import { evo } from 'foldkit/struct'
 import { Switch } from '@foldkit/ui'
 
 // Store the on/off state as a plain boolean field in your Model:
-const Model = S.Struct({
-  notificationsEnabled: S.Boolean,
+const Model = Schema.Struct({
+  notificationsEnabled: Schema.Boolean,
   // ...your other fields
 })
 
@@ -48,7 +48,7 @@ const init = () => ({
 // A verb-first, past-tense Message carries the new checked state:
 
 const Message = defineMessageUnion({
-  ToggledNotifications: { isChecked: S.Boolean },
+  ToggledNotifications: { isChecked: Schema.Boolean },
 })
 
 // In the corresponding Message.match handler, store the value.

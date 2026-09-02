@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/embedding
 title: "Embedding"
 description: "Embed a Foldkit widget in another application through a Schema-typed handle. Covers initial Flags, inbound and outbound Ports, disposal, and React integration."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Embedding
@@ -23,7 +23,7 @@ Embedded apps are usually built with `makeElement`: the view returns `Html` and 
 Ports are declared with `Port.inbound` and `Port.outbound`, grouped in a record, and registered on the program config. The record keys name the ports on the handle:
 
 ```
-import { Effect, Schema as S } from 'effect'
+import { Effect, Schema } from 'effect'
 import { Port, Runtime } from 'foldkit'
 
 // Each Port carries a Schema. The host works with the Schema's Encoded
@@ -31,8 +31,8 @@ import { Port, Runtime } from 'foldkit'
 // handle. Name ports subject-first like DOM event names (stepChanged);
 // the app wraps each value into its own verb-first Message (ChangedStep).
 export const ports = {
-  inbound: { stepChanged: Port.inbound(S.Number) },
-  outbound: { countChanged: Port.outbound(S.Number) },
+  inbound: { stepChanged: Port.inbound(Schema.Number) },
+  outbound: { countChanged: Port.outbound(Schema.Number) },
 }
 
 export const makeElement = (container: HTMLElement, flags: Flags) =>
@@ -85,7 +85,7 @@ For a Model-gated entry, build one from `Port.stream` inside `Subscription.make`
 Values the app announces to the host leave through an outbound Port, written from a Command. `Port.emit` is an Effect that encodes the value and delivers it to every subscribed host listener; it composes into the app’s own Commands like any other Effect:
 
 ```
-import { Effect, Schema as S } from 'effect'
+import { Effect, Schema } from 'effect'
 import { Command, Port } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
@@ -96,7 +96,7 @@ import { ports } from './ports'
 // and delivers it to every host listener; the Command acknowledges with a
 // Completed* Message like any other fire-and-forget Command.
 export const ReportCount = Command.define('ReportCount', {
-  args: { count: S.Number },
+  args: { count: Schema.Number },
   messages: [CompletedReportCount],
   execute: ({ count }) =>
     Port.emit(ports.outbound.countChanged, count).pipe(

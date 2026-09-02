@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/canvas-art
 title: "Canvas Art"
 description: "Click the canvas to spawn bouncing balls. Demonstrates declarative 2D rendering with Canvas.view, animation-frame Subscriptions, and pointer events translated to canvas-local coordinates."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -25,15 +25,7 @@ Subscriptions
 /
 
 ```
-import {
-  Array,
-  Effect,
-  Number,
-  Option,
-  Random,
-  Schema as S,
-  pipe,
-} from 'effect'
+import { Array, Effect, Number, Option, Random, Schema, pipe } from 'effect'
 import { Canvas, Command, Runtime, Subscription, type Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -63,36 +55,36 @@ const PALETTE: ReadonlyArray<string> = [
 ]
 const FALLBACK_COLOR = '#ffffff'
 
-const Ball = S.Struct({
-  id: S.Number,
-  x: S.Number,
-  y: S.Number,
-  vx: S.Number,
-  vy: S.Number,
-  radius: S.Number,
-  color: S.String,
+const Ball = Schema.Struct({
+  id: Schema.Number,
+  x: Schema.Number,
+  y: Schema.Number,
+  vx: Schema.Number,
+  vy: Schema.Number,
+  radius: Schema.Number,
+  color: Schema.String,
 })
 type Ball = typeof Ball.Type
 
-export const Model = S.Struct({
-  balls: S.Array(Ball),
-  nextId: S.Number,
-  isRunning: S.Boolean,
+export const Model = Schema.Struct({
+  balls: Schema.Array(Ball),
+  nextId: Schema.Number,
+  isRunning: Schema.Boolean,
 })
 export type Model = typeof Model.Type
 
 // MESSAGE
 
 export const Message = defineMessageUnion({
-  TickedFrame: { deltaTime: S.Number },
-  ClickedCanvas: { x: S.Number, y: S.Number },
+  TickedFrame: { deltaTime: Schema.Number },
+  ClickedCanvas: { x: Schema.Number, y: Schema.Number },
   CompletedGenerateBall: {
-    x: S.Number,
-    y: S.Number,
-    vx: S.Number,
-    vy: S.Number,
-    radius: S.Number,
-    color: S.String,
+    x: Schema.Number,
+    y: Schema.Number,
+    vx: Schema.Number,
+    vy: Schema.Number,
+    radius: Schema.Number,
+    color: Schema.String,
   },
   ClickedClear: {},
   ClickedTogglePlay: {},
@@ -109,7 +101,7 @@ export const init: Runtime.ApplicationInit<Model, Message> = () => ({
 // COMMAND
 
 export const GenerateBall = Command.define('GenerateBall', {
-  args: { x: S.Number, y: S.Number },
+  args: { x: Schema.Number, y: Schema.Number },
   messages: [Message.CompletedGenerateBall],
   execute: ({ x, y }) =>
     Effect.gen(function* () {

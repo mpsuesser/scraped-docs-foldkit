@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/coming-from-react
 title: "Coming from React"
 description: "See how Foldkit replaces component-owned state and Effects with one Model, Messages, update, Commands, Subscriptions, and Submodels."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Coming from React
@@ -38,7 +38,7 @@ function Counter() {
 The Foldkit version separates state, events, transitions, and rendering:
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { type Update } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -46,8 +46,8 @@ import { evo } from 'foldkit/struct'
 
 // MODEL - Your entire application state
 
-const Model = S.Struct({
-  count: S.Number,
+const Model = Schema.Struct({
+  count: Schema.Number,
 })
 type Model = typeof Model.Type
 
@@ -135,7 +135,7 @@ The Effect starts the interval when auto-counting is active and returns the clea
 Foldkit adds a Subscription and a `Ticked` Message:
 
 ```
-import { Duration, Effect, Schema as S, Stream } from 'effect'
+import { Duration, Effect, Schema, Stream } from 'effect'
 import { Subscription, type Update } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -145,9 +145,9 @@ const TICK_INTERVAL_MS = 1000
 
 // MODEL
 
-const Model = S.Struct({
-  count: S.Number,
-  isAutoCounting: S.Boolean,
+const Model = Schema.Struct({
+  count: Schema.Number,
+  isAutoCounting: Schema.Boolean,
 })
 type Model = typeof Model.Type
 
@@ -164,7 +164,7 @@ type Message = typeof Message.Type
 
 const subscriptions = Subscription.make<Model, Message>()(entry => ({
   tick: entry(
-    { isAutoCounting: S.Boolean },
+    { isAutoCounting: Schema.Boolean },
     {
       modelToDependencies: model => ({
         isAutoCounting: model.isAutoCounting,
@@ -278,7 +278,7 @@ The distinction is meaningful in React. `isAutoCounting` controls whether the ex
 The Foldkit version adds `step` to the Model and handles `ChangedStep`:
 
 ```
-import { Duration, Effect, Schema as S, Stream } from 'effect'
+import { Duration, Effect, Schema, Stream } from 'effect'
 import { Subscription, type Update } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -288,10 +288,10 @@ const TICK_INTERVAL_MS = 1000
 
 // MODEL
 
-const Model = S.Struct({
-  count: S.Number,
-  step: S.Number,
-  isAutoCounting: S.Boolean,
+const Model = Schema.Struct({
+  count: Schema.Number,
+  step: Schema.Number,
+  isAutoCounting: Schema.Boolean,
 })
 type Model = typeof Model.Type
 
@@ -300,7 +300,7 @@ type Model = typeof Model.Type
 const Message = defineMessageUnion({
   ClickedIncrement: {},
   ClickedToggleAutoCount: {},
-  ChangedStep: { step: S.Number },
+  ChangedStep: { step: Schema.Number },
   Ticked: {},
 })
 type Message = typeof Message.Type
@@ -309,7 +309,7 @@ type Message = typeof Message.Type
 
 const subscriptions = Subscription.make<Model, Message>()(entry => ({
   tick: entry(
-    { isAutoCounting: S.Boolean },
+    { isAutoCounting: Schema.Boolean },
     {
       modelToDependencies: model => ({
         isAutoCounting: model.isAutoCounting,

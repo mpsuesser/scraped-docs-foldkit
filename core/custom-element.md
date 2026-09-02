@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/custom-element
 title: "CustomElement"
 description: "Create typed Foldkit builders for native custom elements by declaring their properties and CustomEvents with Schema."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # CustomElement
@@ -27,7 +27,7 @@ Foldkit defines the typed binding, but the browser still needs the element's cla
 Inside a view, call `.withMessage(h)` on the spec. The view builder acts as a type witness that binds event handlers to the current Message universe. The runtime builder is reusable after that binding.
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { CustomElement } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -48,26 +48,26 @@ import '@shoelace-style/shoelace/dist/components/qr-code/qr-code.js'
 const hexColorPicker = CustomElement.define({
   tag: 'hex-color-picker',
   properties: {
-    color: S.String,
+    color: Schema.String,
   },
   events: {
-    'color-changed': S.Struct({ value: S.String }),
+    'color-changed': Schema.Struct({ value: Schema.String }),
   },
 })
 
 const qrCode = CustomElement.define({
   tag: 'sl-qr-code',
   properties: {
-    value: S.String,
-    fill: S.String,
-    background: S.String,
-    size: S.Number,
+    value: Schema.String,
+    fill: Schema.String,
+    background: Schema.String,
+    size: Schema.Number,
   },
   events: {},
 })
 
 const Message = defineMessageUnion({
-  ChangedFillColor: { value: S.String },
+  ChangedFillColor: { value: Schema.String },
 })
 type Message = typeof Message.Type
 

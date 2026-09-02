@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/subscriptions
 title: "Subscriptions"
 description: "Run ongoing Streams whose lifetime follows Model-derived dependencies. Covers restart behavior, timers, browser events, live dependency reads, and Submodel lifting."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Ongoing Work with a Model-Driven Lifetime
@@ -64,7 +64,7 @@ Subscription callbacks can perform synchronous browser work when the event requi
 Commands describe one-shot work that produces one result. Subscriptions describe ongoing work. In the counter, a Subscription emits `Ticked` once per second while `isAutoCounting` is `true` and stops when it becomes `false`.
 
 ```
-import { Duration, Effect, Schema as S, Stream } from 'effect'
+import { Duration, Effect, Schema, Stream } from 'effect'
 import { Subscription } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 
@@ -79,18 +79,17 @@ type Message = typeof Message.Type
 
 // MODEL
 
-const Model = S.Struct({
-  count: S.Number,
-  isAutoCounting: S.Boolean,
+const Model = Schema.Struct({
+  count: Schema.Number,
+  isAutoCounting: Schema.Boolean,
 })
-
 type Model = typeof Model.Type
 
 // SUBSCRIPTION
 
 const subscriptions = Subscription.make<Model, Message>()(entry => ({
   tick: entry(
-    { isAutoCounting: S.Boolean },
+    { isAutoCounting: Schema.Boolean },
     {
       modelToDependencies: model => ({
         isAutoCounting: model.isAutoCounting,
@@ -107,7 +106,7 @@ const subscriptions = Subscription.make<Model, Message>()(entry => ({
 
 `Subscription.make<Model, Message>()` receives a function that builds a named record of entries. Each call to `entry` takes two arguments:
 
-- A field map defining the dependency Schema, in the same shape passed to `S.Struct`.
+- A field map defining the dependency Schema, in the same shape passed to `Schema.Struct`.
 - An object containing `modelToDependencies` and `dependenciesToStream`.
 
 `modelToDependencies` extracts the values that control the entry. `dependenciesToStream` creates its Stream. Foldkit compares the extracted record structurally by default, so unrelated Model updates do not restart the timer.
@@ -142,25 +141,24 @@ The [websocket-chat example](https://foldkit.dev/example-apps/websocket-chat) sh
 The helper returns a complete entry with `{ isActive: boolean }` dependencies. Place it directly in the record passed to `Subscription.make`:
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { Subscription } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 
 // MESSAGE
 
 const Message = defineMessageUnion({
-  TickedFrame: { deltaTime: S.Number },
+  TickedFrame: { deltaTime: Schema.Number },
   ClickedTogglePlay: {},
 })
 type Message = typeof Message.Type
 
 // MODEL
 
-const Model = S.Struct({
-  isPlaying: S.Boolean,
-  angle: S.Number,
+const Model = Schema.Struct({
+  isPlaying: Schema.Boolean,
+  angle: Schema.Number,
 })
-
 type Model = typeof Model.Type
 
 // SUBSCRIPTION
@@ -184,30 +182,29 @@ Use `Stream.tick` for discrete wall-clock steps that should occur every N millis
 The helper returns a Stream, not a complete entry. Wrap it in `Stream.when` inside an entry to gate it on the Model, or pass it to `Subscription.persistent` for a listener that lives with the whole Subscriptions record.
 
 ```
-import { Effect, Schema as S, Stream } from 'effect'
+import { Effect, Schema, Stream } from 'effect'
 import { Subscription } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 
 // MESSAGE
 
 const Message = defineMessageUnion({
-  PressedKey: { key: S.String },
+  PressedKey: { key: Schema.String },
 })
 type Message = typeof Message.Type
 
 // MODEL
 
-const Model = S.Struct({
-  isListening: S.Boolean,
+const Model = Schema.Struct({
+  isListening: Schema.Boolean,
 })
-
 type Model = typeof Model.Type
 
 // SUBSCRIPTION
 
 const subscriptions = Subscription.make<Model, Message>()(entry => ({
   shortcut: entry(
-    { isListening: S.Boolean },
+    { isListening: Schema.Boolean },
     {
       modelToDependencies: model => ({ isListening: model.isListening }),
       dependenciesToStream: ({ isListening }) =>
@@ -235,7 +232,7 @@ The default structural comparison restarts an entry whenever any dependency chan
 Auto-scroll during drag and drop is one example. `isDragging` should start and stop the animation loop. `clientY` changes with every pointer movement, but restarting the loop for every pixel would destroy and recreate it continuously.
 
 ```
-import { Effect, Equivalence, Queue, Schema as S, Stream } from 'effect'
+import { Effect, Equivalence, Queue, Schema, Stream } from 'effect'
 import { Subscription } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 
@@ -244,18 +241,17 @@ const Message = defineMessageUnion({
 })
 type Message = typeof Message.Type
 
-const Model = S.Struct({
-  isDragging: S.Boolean,
-  clientY: S.Number,
+const Model = Schema.Struct({
+  isDragging: Schema.Boolean,
+  clientY: Schema.Number,
 })
-
 type Model = typeof Model.Type
 
 const subscriptions = Subscription.make<Model, Message>()(entry => ({
   autoScroll: entry(
     {
-      isDragging: S.Boolean,
-      clientY: S.Number,
+      isDragging: Schema.Boolean,
+      clientY: Schema.Number,
     },
     {
       modelToDependencies: model => ({

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/schema
 title: "Schema"
 description: "API documentation for the Schema module."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Schema
@@ -14,7 +14,7 @@ current_date: 2026-08-31T07:29:25.100Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/schema/index.ts#L410)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/schema/index.ts#L454)
 
 ```
 /**
@@ -44,7 +44,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/schema/index.ts#L487)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/schema/index.ts#L531)
 
 ```
 /**
@@ -70,16 +70,16 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/schema/index.ts#L4)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/schema/index.ts#L4)
 
 ```
 /** A `TaggedStruct` schema that can be called directly as a constructor: `Foo({ count: 1 })` instead of `Foo.make({ count: 1 })`. */
-type CallableTaggedStruct = S.TaggedStruct<Tag, Fields> & keyof Fields extends never
-  ? (value?: Parameters<S.TaggedStruct<Tag, Fields>["make"]>[0] | void) => Types.Simplify<S.Struct.Type<{
-    _tag: S.tag<Tag>
+type CallableTaggedStruct = Schema.TaggedStruct<Tag, Fields> & keyof Fields extends never
+  ? (value?: Parameters<Schema.TaggedStruct<Tag, Fields>["make"]>[0] | void) => Types.Simplify<Schema.Struct.Type<{
+    _tag: Schema.tag<Tag>
   } & Fields>>
-  : (value: Parameters<S.TaggedStruct<Tag, Fields>["make"]>[0]) => Types.Simplify<S.Struct.Type<{
-    _tag: S.tag<Tag>
+  : (value: Parameters<Schema.TaggedStruct<Tag, Fields>["make"]>[0]) => Types.Simplify<Schema.Struct.Type<{
+    _tag: Schema.tag<Tag>
   } & Fields>>
 ```
 
@@ -87,7 +87,7 @@ type CallableTaggedStruct = S.TaggedStruct<Tag, Fields> & keyof Fields extends n
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/schema/index.ts#L260)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/schema/index.ts#L296)
 
 ```
 /**

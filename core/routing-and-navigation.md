@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/routing-and-navigation
 title: "Routing & Navigation"
 description: "Define routes with bidirectional parser combinators that decode URLs into typed values and build URLs from Schema-validated parameters."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Routing & Navigation
@@ -26,16 +26,15 @@ This symmetry means if you can parse a URL into data, you can always build that 
 `defineRouteUnion` declares every application Route together. Each key is a tag, and its value lists the fields parsed from the URL. `AppRoute` is also an [Effect Schema](https://effect.website/docs/schema/introduction/), so it can be stored in the Model and used to decode unknown values.
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { defineRouteUnion } from 'foldkit/route'
 
 const AppRoute = defineRouteUnion({
   Home: {},
-  People: { searchText: S.Option(S.String) },
-  Person: { personId: S.Number },
-  NotFound: { path: S.String },
+  People: { searchText: Schema.Option(Schema.String) },
+  Person: { personId: Schema.Number },
+  NotFound: { path: Schema.String },
 })
-
 type AppRoute = typeof AppRoute.Type
 ```
 
@@ -66,7 +65,7 @@ If a module needs to name one variant's type, add an alias beside `AppRoute`: `e
 Routers are built by composing small primitives. Each primitive is a biparser that handles one part of the URL.
 
 ```
-import { Schema as S, pipe } from 'effect'
+import { Schema, pipe } from 'effect'
 import { Route } from 'foldkit'
 import { int, literal, slash } from 'foldkit/route'
 
@@ -77,8 +76,8 @@ const homeRouter = pipe(Route.root, Route.mapTo(AppRoute.Home))
 const peopleRouter = pipe(
   literal('people'),
   Route.query(
-    S.Struct({
-      searchText: S.OptionFromOptional(S.String),
+    Schema.Struct({
+      searchText: Schema.OptionFromOptional(Schema.String),
     }),
   ),
   Route.mapTo(AppRoute.People),
@@ -174,7 +173,7 @@ TypeScript ensures you provide the correct data. If `personRouter` expects `{ pe
 Query parameters use [Effect Schema](https://effect.website/docs/schema/introduction/) for validation. This gives you type-safe parsing, optional parameters, and automatic encoding/decoding.
 
 ```
-import { Schema as S, pipe } from 'effect'
+import { Schema, pipe } from 'effect'
 import { Route } from 'foldkit'
 import { literal } from 'foldkit/route'
 
@@ -182,10 +181,10 @@ import { literal } from 'foldkit/route'
 const searchRouter = pipe(
   literal('search'),
   Route.query(
-    S.Struct({
-      q: S.OptionFromOptional(S.String),
-      page: S.OptionFromOptional(S.FiniteFromString),
-      sort: S.OptionFromOptional(S.Literals(['Asc', 'Desc'])),
+    Schema.Struct({
+      q: Schema.OptionFromOptional(Schema.String),
+      page: Schema.OptionFromOptional(Schema.FiniteFromString),
+      sort: Schema.OptionFromOptional(Schema.Literals(['Asc', 'Desc'])),
     }),
   ),
   Route.mapTo(AppRoute.Search),
@@ -204,7 +203,7 @@ console.log(searchUrl)
 // '/search?q=hello&page=2'
 ```
 
-`S.OptionFromOptional` makes parameters optional. Missing params become `Option.none()`. `S.FiniteFromString` automatically parses string query values into numbers.
+`Schema.OptionFromOptional` makes parameters optional. Missing params become `Option.none()`. `Schema.FiniteFromString` automatically parses string query values into numbers.
 
 For a complete routing example, see the [Routing example](https://foldkit.dev/example-apps/routing). For a deeper look at query parameters (custom schema transforms, lenient parsing, and bidirectional URL sync), see the [Query Sync example](https://foldkit.dev/example-apps/query-sync).
 
@@ -213,13 +212,13 @@ For a complete routing example, see the [Routing example](https://foldkit.dev/ex
 `int` and `string` capture a segment as a bare `number` or `string`. When a segment is really a domain id, `schemaSegment` decodes it through an [Effect Schema](https://effect.website/docs/schema/introduction/) instead, so the route carries the schema’s type. A branded `PersonId` flows straight into the Model, where it can’t be passed anywhere a different id or a bare `number` is expected.
 
 ```
-import { Schema as S, pipe } from 'effect'
+import { Schema, pipe } from 'effect'
 import { Route } from 'foldkit'
 import { defineRouteUnion, literal, schemaSegment, slash } from 'foldkit/route'
 
 // A branded id: structurally a number, but its own type. The brand stops it
 // from being mixed up with another number, like an OrderId or a count.
-const PersonId = S.FiniteFromString.pipe(S.brand('PersonId'))
+const PersonId = Schema.FiniteFromString.pipe(Schema.brand('PersonId'))
 type PersonId = typeof PersonId.Type
 
 const AppRoute = defineRouteUnion({
@@ -244,7 +243,7 @@ const personUrl = personRouter({ personId: PersonId.make(42) })
 Whether a segment decodes is the route’s match test, and the decoded value is what the route carries when it passes. `int` already works this way: it claims `/users/42` but not `/users/banana`. `schemaSegment` generalizes that to any rule a schema can express, from a UUID pattern to a fixed set of string literals. Refine a `ProductId` to a UUID and the route matches a real one but declines `/products/banana`, so a malformed id falls through to the next route in `oneOf` (or to not-found) rather than reaching a component that has to handle it. Refinement and a brand compose, so one segment is both validated and carried as a distinct type.
 
 ```
-import { Schema as S, pipe } from 'effect'
+import { Schema, pipe } from 'effect'
 import { Route } from 'foldkit'
 import { defineRouteUnion, literal, schemaSegment, slash } from 'foldkit/route'
 
@@ -253,8 +252,8 @@ import { defineRouteUnion, literal, schemaSegment, slash } from 'foldkit/route'
 // model carries a ProductId distinct from any other string.
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-const ProductId = S.String.check(S.isPattern(UUID_PATTERN)).pipe(
-  S.brand('ProductId'),
+const ProductId = Schema.String.check(Schema.isPattern(UUID_PATTERN)).pipe(
+  Schema.brand('ProductId'),
 )
 type ProductId = typeof ProductId.Type
 
@@ -280,16 +279,16 @@ The schema’s encoded form must be a single segment string, and `schemaSegment`
 
 ## Rest Segments
 
-Some routes carry a whole path as data: a file tree, a documentation page, a breadcrumb trail. `rest` captures every remaining segment as a named field, the feature other routers call catch-all or splat routes. The parsed value is a non-empty array of strings, so the route schema declares the field with `S.NonEmptyArray(S.String)`.
+Some routes carry a whole path as data: a file tree, a documentation page, a breadcrumb trail. `rest` captures every remaining segment as a named field, the feature other routers call catch-all or splat routes. The parsed value is a non-empty array of strings, so the route schema declares the field with `Schema.NonEmptyArray(Schema.String)`.
 
 ```
-import { Schema as S, pipe } from 'effect'
+import { Schema, pipe } from 'effect'
 import { Route } from 'foldkit'
 import { defineRouteUnion, literal, rest, slash } from 'foldkit/route'
 
 const AppRoute = defineRouteUnion({
   FilesIndex: {},
-  Files: { path: S.NonEmptyArray(S.String) },
+  Files: { path: Schema.NonEmptyArray(Schema.String) },
 })
 
 // Matches: /files
@@ -316,16 +315,16 @@ A specific route under the same prefix is different. The rest route also matches
 
 Nothing can follow `rest` in the path, so `slash` cannot extend it. TypeScript rejects the composition. `query` can still follow, since query parameters live after the path.
 
-When the path itself is the value, `restString` captures the same tail as a single string, slashes included, so the route schema declares the field with `S.String`. A repository-relative file path like `20-upgrade/teach/the-elm-architecture.md` round-trips as one value instead of an array of segments.
+When the path itself is the value, `restString` captures the same tail as a single string, slashes included, so the route schema declares the field with `Schema.String`. A repository-relative file path like `20-upgrade/teach/the-elm-architecture.md` round-trips as one value instead of an array of segments.
 
 ```
-import { Schema as S, pipe } from 'effect'
+import { Schema, pipe } from 'effect'
 import { Route } from 'foldkit'
 import { defineRouteUnion, literal, restString, slash } from 'foldkit/route'
 
 const AppRoute = defineRouteUnion({
   VaultIndex: {},
-  VaultNote: { path: S.String },
+  VaultNote: { path: Schema.String },
 })
 
 // Matches: /vault
@@ -387,7 +386,7 @@ Route views are the most common branch, but the same protection applies to any c
 Foldkit provides navigation Commands for programmatically changing the URL. These are returned from your update function like any other Command.
 
 ```
-import { Effect, Schema as S } from 'effect'
+import { Effect, Schema } from 'effect'
 import { Command, Navigation } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 
@@ -402,7 +401,7 @@ const Message = defineMessageUnion({
 type Message = typeof Message.Type
 
 const NavigateInternal = Command.define('NavigateInternal', {
-  args: { url: S.String },
+  args: { url: Schema.String },
   messages: [Message.CompletedNavigateInternal],
   execute: ({ url }) =>
     Navigation.pushUrl(url).pipe(
@@ -411,7 +410,7 @@ const NavigateInternal = Command.define('NavigateInternal', {
 })
 
 const ReplaceUrl = Command.define('ReplaceUrl', {
-  args: { url: S.String },
+  args: { url: Schema.String },
   messages: [Message.CompletedReplaceUrl],
   execute: ({ url }) =>
     Navigation.replaceUrl(url).pipe(Effect.as(Message.CompletedReplaceUrl())),
@@ -428,14 +427,14 @@ const GoForward = Command.define('GoForward', {
 })
 
 const LoadExternal = Command.define('LoadExternal', {
-  args: { href: S.String },
+  args: { href: Schema.String },
   messages: [Message.CompletedLoadExternal],
   execute: ({ href }) =>
     Navigation.load(href).pipe(Effect.as(Message.CompletedLoadExternal())),
 })
 
 const OpenUrl = Command.define('OpenUrl', {
-  args: { url: S.String },
+  args: { url: Schema.String },
   messages: [Message.CompletedOpenUrl],
   execute: ({ url }) =>
     Navigation.openUrl(url).pipe(Effect.as(Message.CompletedOpenUrl())),
@@ -451,7 +450,7 @@ const OpenUrl = Command.define('OpenUrl', {
 When a link is clicked in your application, the `routing.onUrlRequest` handler receives either an Internal or External request. Handle Internal links with `pushUrl` and External links with `load`:
 
 ```
-import { Effect, Schema as S, pipe } from 'effect'
+import { Effect, Schema, pipe } from 'effect'
 import { Command, Navigation, Route, type Update, Url } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 import { defineRouteUnion, int, literal, slash } from 'foldkit/route'
@@ -461,8 +460,8 @@ import { evo } from 'foldkit/struct'
 
 const AppRoute = defineRouteUnion({
   Home: {},
-  Person: { personId: S.Number },
-  NotFound: { path: S.String },
+  Person: { personId: Schema.Number },
+  NotFound: { path: Schema.String },
 })
 type AppRoute = typeof AppRoute.Type
 
@@ -477,7 +476,7 @@ const urlToAppRoute = Route.parseUrlWithFallback(routeParser, AppRoute.NotFound)
 
 // MODEL
 
-const Model = S.Struct({ route: AppRoute })
+const Model = Schema.Struct({ route: AppRoute })
 type Model = typeof Model.Type
 
 // MESSAGE
@@ -493,7 +492,7 @@ type Message = typeof Message.Type
 // COMMAND
 
 const NavigateInternal = Command.define('NavigateInternal', {
-  args: { url: S.String },
+  args: { url: Schema.String },
   messages: [Message.CompletedNavigateInternal],
   execute: ({ url }) =>
     Navigation.pushUrl(url).pipe(
@@ -502,7 +501,7 @@ const NavigateInternal = Command.define('NavigateInternal', {
 })
 
 const LoadExternal = Command.define('LoadExternal', {
-  args: { href: S.String },
+  args: { href: Schema.String },
   messages: [Message.CompletedLoadExternal],
   execute: ({ href }) =>
     Navigation.load(href).pipe(Effect.as(Message.CompletedLoadExternal())),
@@ -550,7 +549,7 @@ A fetch Command returned only from the `ChangedUrl` handler fires on every in-ap
 Both code paths resolve a URL into a route, and both should produce the same route-driven Commands. Factor those Commands into one helper and call it from both places:
 
 ```
-import { Match as M, Option } from 'effect'
+import { Match, Option } from 'effect'
 import { Command, Runtime } from 'foldkit'
 import { evo } from 'foldkit/struct'
 import { Url } from 'foldkit/url'
@@ -559,12 +558,12 @@ import { Url } from 'foldkit/url'
 const commandsForRoute = (
   route: AppRoute,
 ): ReadonlyArray<Command.Command<Message>> =>
-  M.value(route).pipe(
-    M.withReturnType<ReadonlyArray<Command.Command<Message>>>(),
-    M.tag('People', ({ searchText }) => [
+  Match.value(route).pipe(
+    Match.withReturnType<ReadonlyArray<Command.Command<Message>>>(),
+    Match.tag('People', ({ searchText }) => [
       FetchPeople({ searchText: Option.getOrElse(searchText, () => '') }),
     ]),
-    M.orElse(() => []),
+    Match.orElse(() => []),
   )
 
 // ...which init calls for the cold load...
@@ -645,7 +644,7 @@ const commandsForTransition = (
 Every helper that takes a tag answers for one named route. When several routes have entry Commands, ask the transition which route it entered instead: `Transition.enteredAny` returns the entered route in a `Some`, whichever route that was, and `Option.none()` when the transition stayed within one route. Match on the result to dispatch every entry policy in one place:
 
 ```
-import { Match as M, Option } from 'effect'
+import { Match, Option } from 'effect'
 import { Command } from 'foldkit'
 import { Transition } from 'foldkit/route'
 
@@ -656,11 +655,11 @@ const commandsForTransition = (
 ): Commands =>
   Option.match(Transition.enteredAny(transition), {
     onNone: () => [],
-    onSome: M.type<AppRoute>().pipe(
-      M.withReturnType<Commands>(),
-      M.tag('People', () => [FetchPeopleFilters()]),
-      M.tag('Person', ({ personId }) => [FetchPerson({ personId })]),
-      M.orElse(() => []),
+    onSome: Match.type<AppRoute>().pipe(
+      Match.withReturnType<Commands>(),
+      Match.tag('People', () => [FetchPeopleFilters()]),
+      Match.tag('Person', ({ personId }) => [FetchPerson({ personId })]),
+      Match.orElse(() => []),
     ),
   })
 ```

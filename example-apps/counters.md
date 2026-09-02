@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/counters
 title: "Counters"
 description: "Add and remove independent Counter Submodels in a dynamic list. Each row is embedded through h.submodel and routed through a wrapper Message."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -21,7 +21,7 @@ Submodels
 /
 
 ```
-import { Array, Option, Schema as S, pipe } from 'effect'
+import { Array, Option, Schema, pipe } from 'effect'
 import { Runtime, Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -33,15 +33,15 @@ import * as Counter from './counter'
 
 // MODEL
 
-const Row = S.Struct({
-  id: S.String,
+const Row = Schema.Struct({
+  id: Schema.String,
   counter: Counter.Model,
 })
 type Row = typeof Row.Type
 
-export const Model = S.Struct({
-  rows: S.Array(Row),
-  nextRowId: S.Number,
+export const Model = Schema.Struct({
+  rows: Schema.Array(Row),
+  nextRowId: Schema.Number,
 })
 export type Model = typeof Model.Type
 
@@ -49,9 +49,9 @@ export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   ClickedAddRow: {},
-  ClickedRemoveRow: { id: S.String },
+  ClickedRemoveRow: { id: Schema.String },
   GotCounterMessage: {
-    id: S.String,
+    id: Schema.String,
     message: Counter.Message,
   },
 })

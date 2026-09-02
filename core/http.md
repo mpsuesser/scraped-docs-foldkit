@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/http
 title: "Http"
 description: "Provide a Fetch-backed HttpClient to Commands while keeping browser requests CORS-simple by disabling trace header propagation unless it is required."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Http
@@ -29,7 +29,7 @@ Provide `Http.layer` at the edge of the Command's Effect with `Effect.provide`. 
 The Command remains responsible for status checks, response decoding, and converting failures into declared Messages.
 
 ```
-import { Effect, Schema as S } from 'effect'
+import { Effect, Schema } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
 import { Command, Http, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
@@ -37,11 +37,11 @@ import { evo } from 'foldkit/struct'
 
 const Message = defineMessageUnion({
   ClickedFetchCount: {},
-  SucceededFetchCount: { count: S.Number },
-  FailedFetchCount: { error: S.String },
+  SucceededFetchCount: { count: Schema.Number },
+  FailedFetchCount: { error: Schema.String },
 })
 
-const CountResponse = S.Struct({ count: S.Number })
+const CountResponse = Schema.Struct({ count: Schema.Number })
 
 const FetchCount = Command.define('FetchCount', {
   messages: [Message.SucceededFetchCount, Message.FailedFetchCount],
@@ -53,7 +53,7 @@ const FetchCount = Command.define('FetchCount', {
       return yield* Effect.fail('API request failed')
     }
 
-    const { count } = yield* S.decodeUnknownEffect(CountResponse)(
+    const { count } = yield* Schema.decodeUnknownEffect(CountResponse)(
       yield* response.json,
     )
     return Message.SucceededFetchCount({ count })

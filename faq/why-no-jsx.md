@@ -2,8 +2,8 @@
 url: https://foldkit.dev/faq/why-no-jsx
 title: "Why no JSX?"
 description: "Why Foldkit uses a typed function-call DSL instead of JSX, with side-by-side comparisons of buttons, inputs, and conditional rendering."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 Foldkit views use plain TypeScript function calls instead of JSX. They do not need a JSX transform or a JSX runtime. Foldkit applications do still use the required `@foldkit/vite-plugin`, which transforms application functions to assign view identity and provides Model-preserving hot reload. The choice on this page is about the view authoring syntax, not whether application code passes through build tooling.
@@ -51,7 +51,7 @@ function SaveButton({
 The same button in the Foldkit DSL:
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
@@ -95,12 +95,12 @@ function EmailInput({
 The same input in the DSL:
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 const Message = defineMessageUnion({
-  InputtedEmail: { value: S.String },
+  InputtedEmail: { value: Schema.String },
 })
 type Message = typeof Message.Type
 
@@ -126,21 +126,21 @@ Third-party web component events use a different path. [`CustomElement.define`](
 Four-way dispatch in JSX:
 
 ```
-import { Match as M, Schema as S } from 'effect'
+import { Match, Schema } from 'effect'
 
-const Idle = S.TaggedStruct('Idle', {})
-const Loading = S.TaggedStruct('Loading', {})
-const Failed = S.TaggedStruct('Failed', { error: S.String })
-const Loaded = S.TaggedStruct('Loaded', { greeting: S.String })
+const Idle = Schema.TaggedStruct('Idle', {})
+const Loading = Schema.TaggedStruct('Loading', {})
+const Failed = Schema.TaggedStruct('Failed', { error: Schema.String })
+const Loaded = Schema.TaggedStruct('Loaded', { greeting: Schema.String })
 
-const Status = S.Union([Idle, Loading, Failed, Loaded])
+const Status = Schema.Union([Idle, Loading, Failed, Loaded])
 type Status = typeof Status.Type
 
 function Greeting({ status }: { status: Status }) {
   return (
     <div>
-      {M.value(status).pipe(
-        M.tagsExhaustive({
+      {Match.value(status).pipe(
+        Match.tagsExhaustive({
           Idle: () => null,
           Loading: () => <p>Loading…</p>,
           Failed: ({ error }) => <p>Sorry: {error}</p>,
@@ -155,23 +155,23 @@ function Greeting({ status }: { status: Status }) {
 The same dispatch in the DSL:
 
 ```
-import { Match as M, Schema as S } from 'effect'
+import { Match, Schema } from 'effect'
 import { inertHtml as ih } from 'foldkit/html'
 
-const Idle = S.TaggedStruct('Idle', {})
-const Loading = S.TaggedStruct('Loading', {})
-const Failed = S.TaggedStruct('Failed', { error: S.String })
-const Loaded = S.TaggedStruct('Loaded', { greeting: S.String })
+const Idle = Schema.TaggedStruct('Idle', {})
+const Loading = Schema.TaggedStruct('Loading', {})
+const Failed = Schema.TaggedStruct('Failed', { error: Schema.String })
+const Loaded = Schema.TaggedStruct('Loaded', { greeting: Schema.String })
 
-const Status = S.Union([Idle, Loading, Failed, Loaded])
+const Status = Schema.Union([Idle, Loading, Failed, Loaded])
 type Status = typeof Status.Type
 
 const greetingView = (status: Status) =>
   ih.div(
     [],
     [
-      M.value(status).pipe(
-        M.tagsExhaustive({
+      Match.value(status).pipe(
+        Match.tagsExhaustive({
           Idle: () => ih.empty,
           Loading: () => ih.p([], ['Loading…']),
           Failed: ({ error }) => ih.p([], [\`Sorry: ${error}\`]),

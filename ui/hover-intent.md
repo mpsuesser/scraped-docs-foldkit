@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/hover-intent
 title: "Hover Intent"
 description: "Behavior-only Submodel for delayed hover and focus reveal across a trigger and panel."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
@@ -22,7 +22,7 @@ Hover over or focus the “More information” trigger, then move the pointer in
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -31,7 +31,7 @@ import { evo } from 'foldkit/struct'
 import { HoverIntent } from '@foldkit/ui'
 
 // Add a field to your Model:
-const Model = S.Struct({
+const Model = Schema.Struct({
   hoverIntent: HoverIntent.Model,
   // ...your other fields
 })
@@ -51,13 +51,12 @@ const Message = defineMessageUnion({
 })
 type Message = typeof Message.Type
 
-const foldHoverIntentOutMessage = M.type<HoverIntent.OutMessage>().pipe(
-  M.withReturnType<Update.Step<Model, Message>>(),
-  M.tagsExhaustive({
-    Opened: () => model => ({ model }),
-    Closed: () => model => ({ model }),
-  }),
-)
+const foldHoverIntentOutMessage = HoverIntent.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  Opened: () => model => ({ model }),
+  Closed: () => model => ({ model }),
+})
 
 const foldHoverIntent = Update.foldChild({
   update: HoverIntent.update,
@@ -124,7 +123,7 @@ Hover over or focus the “Actions” trigger, then move the pointer into the me
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -132,7 +131,7 @@ import { evo } from 'foldkit/struct'
 
 import { HoverIntent } from '@foldkit/ui'
 
-const Model = S.Struct({
+const Model = Schema.Struct({
   hoverMenu: HoverIntent.Model,
   // ...your other fields
 })
@@ -151,13 +150,12 @@ const Message = defineMessageUnion({
 })
 type Message = typeof Message.Type
 
-const foldHoverMenuOutMessage = M.type<HoverIntent.OutMessage>().pipe(
-  M.withReturnType<Update.Step<Model, Message>>(),
-  M.tagsExhaustive({
-    Opened: () => model => ({ model }),
-    Closed: () => model => ({ model }),
-  }),
-)
+const foldHoverMenuOutMessage = HoverIntent.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  Opened: () => model => ({ model }),
+  Closed: () => model => ({ model }),
+})
 
 const readHoverMenu = (model: Model) => Option.some(model.hoverMenu)
 const writeHoverMenu = (

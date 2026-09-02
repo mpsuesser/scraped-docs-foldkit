@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-slider
 title: "Ui/Slider"
 description: "API documentation for the Ui/Slider module."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Ui/Slider
@@ -14,7 +14,7 @@ current_date: 2026-08-31T07:29:25.100Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L144)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L144)
 
 ```
 /**
@@ -32,7 +32,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L99)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L99)
 
 ```
 /**
@@ -46,7 +46,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L132)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L132)
 
 ```
 /**
@@ -66,13 +66,13 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L342)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L346)
 
 ### update
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L206)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L210)
 
 ## Types
 
@@ -80,7 +80,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L90)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L90)
 
 ```
 /** Configuration for creating a slider model with `init`. */
@@ -96,7 +96,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L472)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L476)
 
 ```
 /**
@@ -119,7 +119,7 @@ type SliderAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L482)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L486)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -142,7 +142,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L47)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L47)
 
 ```
 /** Union of all messages the slider component can produce. */
@@ -170,7 +170,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L34)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L34)
 
 ```
 /**
@@ -198,7 +198,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L82)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L82)
 
 ```
 /** Union of all out-messages the slider component can emit to its parent. */
@@ -213,7 +213,7 @@ const OutMessage: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L290)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L294)
 
 ```
 /**
@@ -232,7 +232,7 @@ const reflectRange: Reflect<Model, Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L439)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L443)
 
 ```
 /** Default drag subscriptions, with the track looked up via `document`. */
@@ -289,7 +289,7 @@ const subscriptions: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/slider/index.ts#L518)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/slider/index.ts#L522)
 
 ```
 /**

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/dialog
 title: "Dialog"
 description: "A modal dialog backed by the native dialog element with focus trapping and scroll locking."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
@@ -24,7 +24,7 @@ Open the Dialog from a trigger by dispatching your own Message. Fold `Dialog.ope
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -33,7 +33,7 @@ import { evo } from 'foldkit/struct'
 import { Dialog } from '@foldkit/ui'
 
 // Add a field to your Model for the Dialog Submodel:
-const Model = S.Struct({
+const Model = Schema.Struct({
   dialog: Dialog.Model,
   // ...your other fields
 })
@@ -57,13 +57,12 @@ type Message = typeof Message.Type
 
 // One boundary handles Dialog Messages, Commands, and OutMessages. Replace
 // either no-op arm with the parent transition that should follow that event.
-const foldDialogOutMessage = M.type<Dialog.OutMessage>().pipe(
-  M.withReturnType<Update.Step<Model, Message>>(),
-  M.tagsExhaustive({
-    Opened: () => model => ({ model }),
-    Closed: () => model => ({ model }),
-  }),
-)
+const foldDialogOutMessage = Dialog.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  Opened: () => model => ({ model }),
+  Closed: () => model => ({ model }),
+})
 
 const readDialog = (model: Model) => Option.some(model.dialog)
 const writeDialog = (model: Model, dialog: Dialog.Model): Model =>
@@ -155,7 +154,7 @@ Pass `isAnimated: true` at init to coordinate animations. The component manages 
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -164,7 +163,7 @@ import { evo } from 'foldkit/struct'
 import { Dialog } from '@foldkit/ui'
 
 // Add a field to your Model for the Dialog Submodel:
-const Model = S.Struct({
+const Model = Schema.Struct({
   dialog: Dialog.Model,
   // ...your other fields
 })
@@ -186,13 +185,12 @@ const Message = defineMessageUnion({
 })
 type Message = typeof Message.Type
 
-const foldDialogOutMessage = M.type<Dialog.OutMessage>().pipe(
-  M.withReturnType<Update.Step<Model, Message>>(),
-  M.tagsExhaustive({
-    Opened: () => model => ({ model }),
-    Closed: () => model => ({ model }),
-  }),
-)
+const foldDialogOutMessage = Dialog.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  Opened: () => model => ({ model }),
+  Closed: () => model => ({ model }),
+})
 
 const foldDialog = Update.foldChild({
   update: Dialog.update,
@@ -286,7 +284,7 @@ A field inside a dialog can open its own overlay, like a Combobox or DatePicker.
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
@@ -294,11 +292,11 @@ import { Combobox, Dialog } from '@foldkit/ui'
 
 // One Model field for the dialog, one for the overlay it contains, plus
 // the parent-owned selection (\`City\` and \`CityCombobox\` are the
-// \`S.Literals\` Schema and typed factory from the Combobox example):
-const Model = S.Struct({
+// \`Schema.Literals\` Schema and typed factory from the Combobox example):
+const Model = Schema.Struct({
   dialog: Dialog.Model,
   combobox: Combobox.Model,
-  maybeCity: S.Option(City),
+  maybeCity: Schema.Option(City),
   // ...your other fields
 })
 
@@ -375,7 +373,7 @@ Use a separate Dialog Model for each level and open the second from a button in 
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -384,7 +382,7 @@ import { evo } from 'foldkit/struct'
 import { Dialog } from '@foldkit/ui'
 
 // One Model field per dialog level:
-const Model = S.Struct({
+const Model = Schema.Struct({
   settingsDialog: Dialog.Model,
   confirmDialog: Dialog.Model,
   // ...your other fields
@@ -409,13 +407,12 @@ const Message = defineMessageUnion({
 })
 type Message = typeof Message.Type
 
-const foldConfirmDialogOutMessage = M.type<Dialog.OutMessage>().pipe(
-  M.withReturnType<Update.Step<Model, Message>>(),
-  M.tagsExhaustive({
-    Opened: () => model => ({ model }),
-    Closed: () => model => ({ model }),
-  }),
-)
+const foldConfirmDialogOutMessage = Dialog.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  Opened: () => model => ({ model }),
+  Closed: () => model => ({ model }),
+})
 
 const readConfirmDialog = (model: Model) => Option.some(model.confirmDialog)
 const writeConfirmDialog = (model: Model, confirmDialog: Dialog.Model): Model =>

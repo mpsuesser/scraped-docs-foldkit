@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/slider
 title: "Slider"
 description: "A numeric range Submodel with pointer dragging, keyboard navigation, constraints, steps, and ARIA slider semantics."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
@@ -26,7 +26,7 @@ Slider is headless. Your `toView` callback controls all markup and styling. The 
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit each into your own Model, init, Message,
 // update, view, and subscription definitions.
-import { Match as M, Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import { Subscription, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -36,8 +36,8 @@ import { Slider } from '@foldkit/ui'
 
 // Add two fields to your Model: the value you own, and the Slider Submodel's
 // interaction state:
-const Model = S.Struct({
-  ratingValue: S.Number,
+const Model = Schema.Struct({
+  ratingValue: Schema.Number,
   ratingDemo: Slider.Model,
   // ...your other fields
 })
@@ -66,17 +66,16 @@ const Message = defineMessageUnion({
 // carries the new number. Lift it to domain state, validate, or persist on
 // each commit. The arm returns an Update.Step over the parent Model, which
 // already has the next Slider Model written back:
-const foldSliderOutMessage = M.type<Slider.OutMessage>().pipe(
-  M.withReturnType<Update.Step<Model, Message>>(),
-  M.tagsExhaustive({
-    // The child has emitted \`ChangedValue\`. Store the new value in the field
-    // you own. This arm is also where the parent can validate, persist, or
-    // trigger a downstream Command.
-    ChangedValue:
-      ({ value }) =>
-      model => ({ model: evo(model, { ratingValue: () => value }) }),
-  }),
-)
+const foldSliderOutMessage = Slider.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  // The child has emitted \`ChangedValue\`. Store the new value in the field
+  // you own. This arm is also where the parent can validate, persist, or
+  // trigger a downstream Command.
+  ChangedValue:
+    ({ value }) =>
+    model => ({ model: evo(model, { ratingValue: () => value }) }),
+})
 
 // Update.foldChild wires the child into the parent: it runs Slider.update,
 // writes the next Slider Model back, maps the Submodel's Commands into your

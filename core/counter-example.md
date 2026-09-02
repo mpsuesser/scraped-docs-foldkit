@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/counter-example
 title: "Counter Example"
 description: "Build and trace a minimal Counter through its Model, Message Schema, update, view, init, and Runtime wiring."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # A Simple Counter Example
@@ -15,7 +15,7 @@ This counter puts the core loop from [Architecture](https://foldkit.dev/core/arc
 The example uses two files. `src/main.ts` holds the pure application definitions: Model, Messages, update, init, and view. Larger applications can split those definitions into focused modules. `src/entry.ts` remains the runtime boundary, so tests can import the application without starting it as a side effect.
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { Runtime, type Update } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -23,8 +23,8 @@ import { evo } from 'foldkit/struct'
 
 // MODEL
 
-export const Model = S.Struct({
-  count: S.Number,
+export const Model = Schema.Struct({
+  count: Schema.Number,
 })
 export type Model = typeof Model.Type
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/managed-resource-layer
 title: "Managed Resource Layer"
 description: "A layer-backed ManagedResource starts a ComputeEngine service from an Effect Layer, exposes it to Commands, and runs Layer finalizers when the Model turns it off."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -30,10 +30,10 @@ import {
   Crypto,
   Effect,
   Layer,
-  Match as M,
+  Match,
   Number,
   Option,
-  Schema as S,
+  Schema,
 } from 'effect'
 import { Command, ManagedResource, Runtime, type Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
@@ -77,15 +77,15 @@ type EngineService = ManagedResource.ServiceOf<typeof Engine>
 export const EngineState = defineTaggedUnion({
   Off: {},
   Booting: {},
-  Ready: { engineId: S.String },
-  Failed: { reason: S.String },
+  Ready: { engineId: Schema.String },
+  Failed: { reason: Schema.String },
 })
 type EngineState = typeof EngineState.Type
 
-export const Model = S.Struct({
+export const Model = Schema.Struct({
   engine: EngineState,
-  computeCount: S.Number,
-  maybeSquareResult: S.Option(S.Number),
+  computeCount: Schema.Number,
+  maybeSquareResult: Schema.Option(Schema.Number),
 })
 export type Model = typeof Model.Type
 
@@ -94,11 +94,11 @@ export type Model = typeof Model.Type
 export const Message = defineMessageUnion({
   ClickedStartEngine: {},
   ClickedStopEngine: {},
-  StartedEngine: { engineId: S.String },
+  StartedEngine: { engineId: Schema.String },
   StoppedEngine: {},
-  FailedStartEngine: { reason: S.String },
+  FailedStartEngine: { reason: Schema.String },
   ClickedCompute: {},
-  CompletedCompute: { result: S.Number },
+  CompletedCompute: { result: Schema.Number },
   SkippedCompute: {},
 })
 
@@ -107,7 +107,7 @@ export type Message = typeof Message.Type
 // COMMAND
 
 export const Compute = Command.define('Compute', {
-  args: { value: S.Number },
+  args: { value: Schema.Number },
   messages: [Message.CompletedCompute, Message.SkippedCompute],
   execute: ({ value }) =>
     Effect.gen(function* () {
@@ -173,13 +173,13 @@ export const init: Runtime.ApplicationInit<Model, Message> = () => ({
 
 export const managedResources = ManagedResource.make<Model, Message>()(
   entry => ({
-    engine: entry(S.Option(S.Null), {
+    engine: entry(Schema.Option(Schema.Null), {
       resource: Engine,
       modelToMaybeRequirements: model =>
-        M.value(model.engine).pipe(
-          M.tag('Booting', 'Ready', () => Option.some(null)),
-          M.tag('Off', 'Failed', () => Option.none()),
-          M.exhaustive,
+        Match.value(model.engine).pipe(
+          Match.tag('Booting', 'Ready', () => Option.some(null)),
+          Match.tag('Off', 'Failed', () => Option.none()),
+          Match.exhaustive,
         ),
       acquire: () =>
         Layer.build(engineLayer).pipe(
@@ -252,18 +252,18 @@ const engineControlsView = (
   engine: EngineState,
   h: HtmlBuilder<Message>,
 ): Html => {
-  const controls = M.value(engine).pipe(
-    M.tag('Booting', 'Ready', () => ({
+  const controls = Match.value(engine).pipe(
+    Match.tag('Booting', 'Ready', () => ({
       label: 'Stop engine',
       message: Message.ClickedStopEngine(),
       colorClassName: 'bg-red-500 hover:bg-red-600',
     })),
-    M.tag('Off', 'Failed', () => ({
+    Match.tag('Off', 'Failed', () => ({
       label: 'Start engine',
       message: Message.ClickedStartEngine(),
       colorClassName: 'bg-green-500 hover:bg-green-600',
     })),
-    M.exhaustive,
+    Match.exhaustive,
   )
 
   return h.div(

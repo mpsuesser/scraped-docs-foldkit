@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view-memoization
 title: "View Memoization"
 description: "Skip stable view subtrees with createLazy and createKeyedLazy, choose cache keys by entity identity, and profile before adding memoization."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # View Memoization
@@ -153,15 +153,17 @@ import { type HtmlBuilder, createKeyedLazy } from 'foldkit/html'
 // rendered page is the expensive part, so it belongs behind the memo.
 const postView = (
   post: Post,
-  copiedSnippets: CopiedSnippets,
+  snippetCopy: SnippetCopy.Model,
   h: HtmlBuilder<Message>,
 ) =>
-  h.article(
-    [],
-    [
-      h.h1([], [post.frontmatter.title]),
-      docPage(post.document, post.slug).view(copiedSnippets, h),
-    ],
+  BlogPostPage.view(
+    post,
+    SnippetCopy.renderer(
+      snippetCopy,
+      message => Message.GotSnippetCopyMessage({ message }),
+      h,
+    ),
+    Prose.renderHeadingLink(hash => Message.ClickedCopyLink({ hash }), h),
   )
 
 // One slot per post, keyed by the same slug the route already uses to give
@@ -172,9 +174,9 @@ const lazyPostView = createKeyedLazy()
 // Coming back to a post you already read returns its cached VNode.
 const view = (
   post: Post,
-  copiedSnippets: CopiedSnippets,
+  snippetCopy: SnippetCopy.Model,
   h: HtmlBuilder<Message>,
-) => lazyPostView(post.slug, postView, [post, copiedSnippets, h])
+) => lazyPostView(post.slug, postView, [post, snippetCopy, h])
 ```
 
 Keys can also identify fixed call sites. If one view function renders in two places, give those positions distinct keys instead of maintaining two `createLazy` slots.

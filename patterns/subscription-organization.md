@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/subscription-organization
 title: "Subscription Organization"
 description: "Organize Subscription records by ownership and lift child Subscriptions through nested Model and Message types."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Subscription Organization
@@ -105,7 +105,7 @@ A leaf declares its entries with `Subscription.make`.
 
 ```
 // page/settings/themeMenu/subscription.ts
-import { Effect, Schema as S, Stream } from 'effect'
+import { Effect, Schema, Stream } from 'effect'
 import { Subscription } from 'foldkit'
 
 import { type Message, PressedEscape } from './message'
@@ -113,7 +113,7 @@ import type { Model } from './model'
 
 export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   escapeKey: entry(
-    { isOpen: S.Boolean },
+    { isOpen: Schema.Boolean },
     {
       modelToDependencies: model => ({ isOpen: model.isOpen }),
       dependenciesToStream: ({ isOpen }) =>
@@ -135,7 +135,7 @@ A composing Submodel lifts child records, declares any local entries, and aggreg
 
 ```
 // page/settings/subscription.ts
-import { Effect, Schema as S, Stream } from 'effect'
+import { Effect, Schema, Stream } from 'effect'
 import { Subscription } from 'foldkit'
 
 import {
@@ -156,7 +156,7 @@ const themeMenuSubscriptions = Subscription.lift(ThemeMenu.subscriptions)<
 
 const localSubscriptions = Subscription.make<Model, Message>()(entry => ({
   unsavedChangesWarning: entry(
-    { hasUnsavedChanges: S.Boolean },
+    { hasUnsavedChanges: Schema.Boolean },
     {
       modelToDependencies: model => ({
         hasUnsavedChanges: model.hasUnsavedChanges,
@@ -185,7 +185,7 @@ The root uses the same shape. Its lifts target the root Model and Message.
 
 ```
 // subscription.ts
-import { Effect, Schema as S, Stream } from 'effect'
+import { Effect, Schema, Stream } from 'effect'
 import { Subscription } from 'foldkit'
 
 import { ChangedSystemTheme, GotSettingsMessage, type Message } from './message'
@@ -202,7 +202,7 @@ const settingsSubscriptions = Subscription.lift(Settings.subscriptions)<
 
 const localSubscriptions = Subscription.make<Model, Message>()(entry => ({
   systemTheme: entry(
-    { isSystemPreference: S.Boolean },
+    { isSystemPreference: Schema.Boolean },
     {
       modelToDependencies: model => ({
         isSystemPreference: model.themePreference === 'System',

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/checkbox
 title: "Checkbox"
 description: "Accessible checkbox with indeterminate state support."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
@@ -26,7 +26,7 @@ You agree to our Terms of Service and Privacy Policy.
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -34,8 +34,8 @@ import { evo } from 'foldkit/struct'
 import { Checkbox } from '@foldkit/ui'
 
 // Store the checked state as a plain boolean field in your Model:
-const Model = S.Struct({
-  acceptedTerms: S.Boolean,
+const Model = Schema.Struct({
+  acceptedTerms: Schema.Boolean,
   // ...your other fields
 })
 
@@ -50,7 +50,7 @@ const init = () => ({
 // A verb-first, past-tense Message carries the new checked state:
 
 const Message = defineMessageUnion({
-  ToggledTerms: { isChecked: S.Boolean },
+  ToggledTerms: { isChecked: Schema.Boolean },
 })
 
 // In the corresponding Message.match handler, store the value.
@@ -104,7 +104,7 @@ Pass `isIndeterminate: true` to show a mixed state. This is typically computed f
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -112,9 +112,9 @@ import { evo } from 'foldkit/struct'
 import { Checkbox } from '@foldkit/ui'
 
 // Store each child's checked state as a plain boolean field in your Model:
-const Model = S.Struct({
-  optionA: S.Boolean,
-  optionB: S.Boolean,
+const Model = Schema.Struct({
+  optionA: Schema.Boolean,
+  optionB: Schema.Boolean,
   // ...your other fields
 })
 
@@ -131,9 +131,9 @@ const init = () => ({
 // the new checked state:
 
 const Message = defineMessageUnion({
-  ToggledSelectAll: { isChecked: S.Boolean },
-  ToggledOptionA: { isChecked: S.Boolean },
-  ToggledOptionB: { isChecked: S.Boolean },
+  ToggledSelectAll: { isChecked: Schema.Boolean },
+  ToggledOptionA: { isChecked: Schema.Boolean },
+  ToggledOptionB: { isChecked: Schema.Boolean },
 })
 
 // In the corresponding Message.match handler, toggling "Select All"

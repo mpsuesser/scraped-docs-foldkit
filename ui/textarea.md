@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/textarea
 title: "Textarea"
 description: "A thin wrapper around the native textarea with ARIA linking and styling hooks."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
@@ -163,6 +163,6 @@ Attribute groups provided to the `toView` callback.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `textarea` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the `<textarea>` element. Includes id, rows, value, ARIA attributes, and event handlers. |
+| `textarea` | `ReadonlyArray<TextareaAttribute<Message>>` | — | Spread onto the `<textarea>` element. Includes id, rows, value, ARIA attributes, and event handlers. |
 | `label` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the `<label>` element. Includes a for attribute linking to the textarea id. |
 | `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes an id that the textarea references via aria-describedby. |

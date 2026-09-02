@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/counter
 title: "Counter"
 description: "The classic counter example. Increment, decrement, and reset a number."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -21,7 +21,7 @@ State
 /
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { Runtime, type Update } from 'foldkit'
 import { Document, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -31,7 +31,7 @@ import { Button } from '@foldkit/ui'
 
 // MODEL
 
-export const Model = S.Struct({ count: S.Number })
+export const Model = Schema.Struct({ count: Schema.Number })
 export type Model = typeof Model.Type
 
 // MESSAGE

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/coming-from-tanstack-query
 title: "Coming from TanStack Query"
 description: "Foldkit has no useQuery. AsyncData models remote values, while caching, refetching, invalidation, deduplication, and request races remain visible application policy."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 TanStack Query is excellent at what it does. It combines remote data, a keyed cache, and fetching policy behind hooks and a `QueryClient`. Foldkit has no `useQuery`, and it does not need one.
@@ -20,7 +20,7 @@ Here is how common TanStack Query concepts map onto Foldkit:
 | --- | --- |
 | `useQuery` | An [AsyncData](https://foldkit.dev/core/async-data) field in the Model plus a fetch Command |
 | `data` / `error` / `status` / `fetchStatus` | The six `AsyncData` states, mapped below |
-| Query cache (keyed by query key) | Model state: one `AsyncData` field, or an `S.HashMap` of them keyed by id |
+| Query cache (keyed by query key) | Model state: one `AsyncData` field, or an `Schema.HashMap` of them keyed by id |
 | `placeholderData: keepPreviousData` / stale data on screen | `Refreshing` and `Stale`, which retain the previous data |
 | `staleTime` / background refetch | A Subscription gated on a Model condition, applying `AsyncData.revalidate` |
 | `staleTime: Infinity` | `AsyncData.loadIfMissing`, followed by explicit revalidation when the application requires it |
@@ -35,18 +35,18 @@ Here is how common TanStack Query concepts map onto Foldkit:
 
 `AsyncData<A, E>` is a union of six states: `Idle`, `Loading`, `Refreshing`, `Failure`, `Stale`, and `Success`. `Refreshing` holds the previous data while a refetch is in flight. `Stale` holds the previous data after that refetch fails. Those variants make stale-while-revalidate and keep-stale-on-failure part of the value instead of conditions derived from several flags.
 
-There is no separate query cache. The Model is the cache. A single resource lives in one `AsyncData` field. A collection of resources keyed by id lives in an `S.HashMap` of those fields. A cache hit is data the application already holds.
+There is no separate query cache. The Model is the cache. A single resource lives in one `AsyncData` field. A collection of resources keyed by id lives in an `Schema.HashMap` of those fields. A cache hit is data the application already holds.
 
 Here is the complete shape of a simple query. It uses one field, one Command, and two `update` arms:
 
 ```
 // MODEL
 
-const Post = S.Struct({ id: S.String, title: S.String })
+const Post = Schema.Struct({ id: Schema.String, title: Schema.String })
 
-const PostsData = AsyncData.Schema(S.Array(Post), S.String)
+const PostsData = AsyncData.Schema(Schema.Array(Post), Schema.String)
 
-const Model = S.Struct({
+const Model = Schema.Struct({
   posts: PostsData.schema,
 })
 
@@ -54,7 +54,9 @@ const Model = S.Struct({
 
 const Message = defineMessageUnion({
   EnteredPostsRoute: {},
-  SettledFetchPosts: { result: S.Result(S.Array(Post), S.String) },
+  SettledFetchPosts: {
+    result: Schema.Result(Schema.Array(Post), Schema.String),
+  },
 })
 
 // COMMAND
@@ -70,7 +72,7 @@ const FetchPosts = Command.define('FetchPosts', {
 
 // UPDATE
 
-M.tagsExhaustive({
+Match.tagsExhaustive({
   EnteredPostsRoute: () =>
     Option.match(AsyncData.revalidateOrLoad(model.posts), {
       onNone: () => ({ model }),
@@ -120,20 +122,23 @@ Imagine a search starts a request for A, then starts a request for B before A re
 Foldkit does not automatically cancel or order independent Commands. Thread the query through the Command into its result Message, then compare it with the current Model before accepting the result:
 
 ```
-import { Effect, Schema as S, pipe } from 'effect'
+import { Effect, Schema, pipe } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
 import { AsyncData, Command, Http, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
-const SearchResult = S.Struct({ id: S.String, title: S.String })
+const SearchResult = Schema.Struct({ id: Schema.String, title: Schema.String })
 
-const SearchResultsData = AsyncData.Schema(S.Array(SearchResult), S.String)
+const SearchResultsData = AsyncData.Schema(
+  Schema.Array(SearchResult),
+  Schema.String,
+)
 
 // MODEL
 
-const Model = S.Struct({
-  queryInput: S.String,
+const Model = Schema.Struct({
+  queryInput: Schema.String,
   searchResults: SearchResultsData.schema,
 })
 type Model = typeof Model.Type
@@ -141,10 +146,10 @@ type Model = typeof Model.Type
 // MESSAGE
 
 const Message = defineMessageUnion({
-  UpdatedQuery: { query: S.String },
+  UpdatedQuery: { query: Schema.String },
   SettledSearch: {
-    query: S.String,
-    result: S.Result(S.Array(SearchResult), S.String),
+    query: Schema.String,
+    result: Schema.Result(Schema.Array(SearchResult), Schema.String),
   },
 })
 type Message = typeof Message.Type
@@ -152,7 +157,7 @@ type Message = typeof Message.Type
 // COMMAND
 
 const Search = Command.define('Search', {
-  args: { query: S.String },
+  args: { query: Schema.String },
   messages: [Message.SettledSearch],
   execute: ({ query }) =>
     pipe(
@@ -162,7 +167,7 @@ const Search = Command.define('Search', {
           HttpClientRequest.setUrlParams({ q: query }),
         )
         const response = yield* client.execute(request)
-        return yield* S.decodeUnknownEffect(S.Array(SearchResult))(
+        return yield* Schema.decodeUnknownEffect(Schema.Array(SearchResult))(
           yield* response.json,
         )
       }),
@@ -210,7 +215,7 @@ When a superseded request is expensive or the user can cancel it, define the Com
 
 There is no equivalent hook, and you do not assemble one. A query is an [AsyncData](https://foldkit.dev/core/async-data) field in the [Model](https://foldkit.dev/core/model) plus a [Command](https://foldkit.dev/core/commands) returned from `update`. The runtime executes the Command and dispatches its result Message. `update` then folds the result into the field.
 
-Keep them in the Model. Use one `AsyncData` field for one resource or an `S.HashMap` keyed by id for many resources. A cache hit is a field for which `AsyncData.hasData` is true. See the [API Cache example](https://foldkit.dev/example-apps/api-cache).
+Keep them in the Model. Use one `AsyncData` field for one resource or an `Schema.HashMap` keyed by id for many resources. A cache hit is a field for which `AsyncData.hasData` is true. See the [API Cache example](https://foldkit.dev/example-apps/api-cache).
 
 ### How do I deduplicate identical requests?
 

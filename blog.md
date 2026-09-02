@@ -2,13 +2,21 @@
 url: https://foldkit.dev/blog
 title: "Blog"
 description: "Announcements, musings, and technical deep dives."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Blog
 
 Announcements, musings, and technical deep dives.
+
+[Foldkit 0.156.0 and 0.157.0](https://foldkit.dev/blog/foldkit-0-157-0)
+
+September 2, 2026 · Devin Jameson
+
+Foldkit 0.156.0 and 0.157.0 add two recommended lint rules, improve refined union matching, and update Story, Scene, Mount, Foldkit UI, and Vite.
+
+[Read more →](https://foldkit.dev/blog/foldkit-0-157-0)
 
 [Foldkit 0.154.0 and 0.155.0](https://foldkit.dev/blog/foldkit-0-155-0)
 

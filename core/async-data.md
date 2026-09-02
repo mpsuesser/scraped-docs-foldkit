@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/async-data
 title: "Async Data"
 description: "A six-state value type for asynchronously loaded data in the Model: Idle, Loading, Refreshing, Failure, Stale, and Success, with stale-while-revalidate and keep-stale-on-failure built in."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 `foldkit/asyncData` is a plain value type in the spirit of Effect’s `Option` and `Result`, built for data that arrives asynchronously. This page introduces the state model and the combinators you reach for most. The [API Reference](https://foldkit.dev/api-reference/async-data) has the exhaustive catalog.
@@ -66,23 +66,26 @@ Because both are type-level states, “show stale data while revalidating” and
 `AsyncData.Schema(dataSchema, errorSchema)` returns the codec you embed in a Model, plus constructors constrained to those data and error types. The returned `.schema` is the six-state Union codec.
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { AsyncData } from 'foldkit'
 
 import { Note, NoteId, Notebook, NotebookId } from './domain'
 
-const NotebooksAsyncData = AsyncData.Schema(S.Array(Notebook), S.String)
-const NotebookAsyncData = AsyncData.Schema(Notebook, S.String)
-const NotesAsyncData = AsyncData.Schema(S.Array(Note), S.String)
-const NoteAsyncData = AsyncData.Schema(Note, S.String)
+const NotebooksAsyncData = AsyncData.Schema(
+  Schema.Array(Notebook),
+  Schema.String,
+)
+const NotebookAsyncData = AsyncData.Schema(Notebook, Schema.String)
+const NotesAsyncData = AsyncData.Schema(Schema.Array(Note), Schema.String)
+const NoteAsyncData = AsyncData.Schema(Note, Schema.String)
 
-export const Model = S.Struct({
+export const Model = Schema.Struct({
   // ...
   notebooks: NotebooksAsyncData.schema,
-  notebookById: S.HashMap(NotebookId, NotebookAsyncData.schema),
+  notebookById: Schema.HashMap(NotebookId, NotebookAsyncData.schema),
   allNotes: NotesAsyncData.schema,
-  notesByNotebook: S.HashMap(NotebookId, NotesAsyncData.schema),
-  noteById: S.HashMap(NoteId, NoteAsyncData.schema),
+  notesByNotebook: Schema.HashMap(NotebookId, NotesAsyncData.schema),
+  noteById: Schema.HashMap(NoteId, NoteAsyncData.schema),
 })
 ```
 
@@ -90,7 +93,7 @@ Error types
 
 The error Schema is simplified to `string` here; a real app usually gives each field a domain error Schema, for example a union of a tagged `NotFound` and `string`.
 
-A single field embeds `.schema` directly. A keyed cache embeds it as the value Schema of an `S.HashMap`, which is how `noteById` holds one independent `AsyncData` per `NoteId`. The Model type of a field is `typeof NotesAsyncData.schema.Type`, structurally equal to `AsyncData.AsyncData<ReadonlyArray<Note>, string>`.
+A single field embeds `.schema` directly. A keyed cache embeds it as the value Schema of an `Schema.HashMap`, which is how `noteById` holds one independent `AsyncData` per `NoteId`. The Model type of a field is `typeof NotesAsyncData.schema.Type`, structurally equal to `AsyncData.AsyncData<ReadonlyArray<Note>, string>`.
 
 To construct a value, use the namespace constructors (generic in `A` / `E`) or the factory-returned ones (tightened to the Model’s `A` / `E`). They build identical runtime values.
 
@@ -238,7 +241,7 @@ const LoadAllNotes = Command.define('LoadAllNotes', {
   ),
 })
 
-M.tagsExhaustive({
+Match.tagsExhaustive({
   SucceededLoadAllNotes: ({ notes }) => ({
     model: evo(model, { allNotes: () => AsyncData.Success({ data: notes }) }),
   }),
@@ -260,7 +263,7 @@ const LoadAllNotes = Command.define('LoadAllNotes', {
   ),
 })
 
-M.tagsExhaustive({
+Match.tagsExhaustive({
   SettledLoadAllNotes: ({ result }) => ({
     model: evo(model, {
       allNotes: previous => AsyncData.settle(previous, result),

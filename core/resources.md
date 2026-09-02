@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/resources
 title: "Resources"
 description: "Provide app-lifetime Effect services to Commands, Subscriptions, Mounts, and Flags, or provide a service directly when sharing is unnecessary."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Resources
@@ -19,7 +19,7 @@ Resources are the kitchen equipment that stays available all night. Every dish c
 Define a service with [Context.Service](https://effect.website/docs/requirements-management/services/), then pass its Layer through the runtime’s `resources` config. The runtime builds that Layer once, the first time it is needed: during startup when a fresh Flags Effect resolves or Subscriptions begin, otherwise when the first Command runs. It shares the built services for the runtime’s lifetime and releases them at teardown. Commands access a service by yielding its tag.
 
 ```
-import { Context, Effect, Layer, Schema as S } from 'effect'
+import { Context, Effect, Layer, Schema } from 'effect'
 import { Command, Runtime } from 'foldkit'
 
 class ApiClientService extends Context.Service<ApiClientService, ApiClient>()(
@@ -29,7 +29,7 @@ class ApiClientService extends Context.Service<ApiClientService, ApiClient>()(
 }
 
 const LoadUser = Command.define('LoadUser', {
-  args: { userId: S.String },
+  args: { userId: Schema.String },
   messages: [CompletedLoadUser],
   execute: ({ userId }) =>
     Effect.gen(function* () {
@@ -94,18 +94,18 @@ Common cases follow directly from that distinction:
 - **An RPC client belongs in `resources`.** Construction does real work, every Command should reuse the same client, and broken configuration should produce one visible failure rather than isolated failures across every server operation.
 
 ```
-import { Effect, Schema as S } from 'effect'
+import { Effect, Schema } from 'effect'
 import { HttpClient } from 'effect/unstable/http'
 import { Command, Http } from 'foldkit'
 
 const FetchWeather = Command.define('FetchWeather', {
-  args: { city: S.String },
+  args: { city: Schema.String },
   messages: [SucceededFetchWeather, FailedFetchWeather],
   execute: ({ city }) =>
     Effect.gen(function* () {
       const client = yield* HttpClient.HttpClient
       const response = yield* client.get(`https://api.weather.com/${city}`)
-      const data = yield* S.decodeUnknownEffect(WeatherResponse)(
+      const data = yield* Schema.decodeUnknownEffect(WeatherResponse)(
         yield* response.json,
       )
       return SucceededFetchWeather({ weather: data })
@@ -125,7 +125,7 @@ An HTTP client can still graduate. When an app grows many HTTP Commands, or shar
 The Flags Effect can require services too. The runtime provides them from the same `resources` Layer used by Commands and Subscriptions, so a client needed during startup and later work is still constructed only once.
 
 ```
-import { Context, Effect, Layer, Option, Schema as S } from 'effect'
+import { Context, Effect, Layer, Option, Schema } from 'effect'
 import { Runtime } from 'foldkit'
 
 class ApiClientService extends Context.Service<ApiClientService, ApiClient>()(
@@ -134,8 +134,8 @@ class ApiClientService extends Context.Service<ApiClientService, ApiClient>()(
   static readonly Default = Layer.effect(this, makeApiClient)
 }
 
-const Flags = S.Struct({
-  maybeSession: S.Option(Session),
+const Flags = Schema.Struct({
+  maybeSession: Schema.Option(Session),
 })
 type Flags = typeof Flags.Type
 

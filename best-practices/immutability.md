@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/immutability
 title: "Immutability"
 description: "Update Models immutably with evo, preserving references for unchanged branches and keeping state transitions predictable."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Immutability
@@ -13,12 +13,12 @@ current_date: 2026-08-20T21:25:20.391Z
 `update` returns a new Model instead of mutating the current one. Foldkit provides `evo` for these immutable field updates. It wraps Effect's `Struct.evolve` with stricter key checking, so removing or renaming a Model field produces errors at every stale update site.
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { evo } from 'foldkit/struct'
 
-const Model = S.Struct({
-  count: S.Number,
-  status: S.Literals(['Idle', 'Counting']),
+const Model = Schema.Struct({
+  count: Schema.Number,
+  status: Schema.Literals(['Idle', 'Counting']),
 })
 type Model = typeof Model.Type
 

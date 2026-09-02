@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/managed-resources
 title: "Managed Resources"
 description: "Acquire a stateful handle while a Model condition holds, expose it to Commands, and release it when dependencies change. Covers Layers and Submodel lifting."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Managed Resources
@@ -19,7 +19,7 @@ Resources are the kitchen equipment available all night. A Managed Resource is a
 Define the handle’s identity with `ManagedResource.tag`, then wire its lifecycle with `ManagedResource.make`. The `modelToMaybeRequirements` function returns `Option.some(params)` while the handle should be active and `Option.none()` while it should be absent.
 
 ```
-import { Effect, Option, Schema as S, pipe } from 'effect'
+import { Effect, Option, Schema, pipe } from 'effect'
 import { ManagedResource, Runtime } from 'foldkit'
 
 // 1. Define a Managed Resource identity
@@ -28,7 +28,7 @@ const CameraStream = ManagedResource.tag<MediaStream>()('CameraStream')
 // 2. Wire the lifecycle with make. The requirements schema sits inline next
 //    to its config: Option.some = active, Option.none = inactive
 const managedResources = ManagedResource.make<Model, Message>()(entry => ({
-  camera: entry(S.Option(S.Struct({ facingMode: S.String })), {
+  camera: entry(Schema.Option(Schema.Struct({ facingMode: Schema.String })), {
     resource: CameraStream,
     modelToMaybeRequirements: model =>
       pipe(
@@ -154,7 +154,7 @@ This is the usual Command error-to-Message boundary. The Model should gate the o
 When setup and teardown are already packaged as an Effect `Layer`, keep that lifecycle intact. `acquire` runs with the Managed Resource’s `Scope` in its context. `Layer.build` registers the Layer’s finalizers on that Scope, and the runtime closes it on release or reacquisition. Map the built Context down to the bare service value that Commands need.
 
 ```
-import { Context, Effect, Layer, Option, Schema as S } from 'effect'
+import { Context, Effect, Layer, Option, Schema } from 'effect'
 import { ManagedResource } from 'foldkit'
 
 // A FEN string is a text description of a chess position.
@@ -194,7 +194,7 @@ const Engine = ManagedResource.tag<ChessEngine>()('ChessEngine')
 //    Layer.build registers the Layer's finalizers on it. They tear down when
 //    the resource is released or re-acquired.
 const managedResources = ManagedResource.make<Model, Message>()(entry => ({
-  engine: entry(S.Option(S.Null), {
+  engine: entry(Schema.Option(Schema.Null), {
     resource: Engine,
     modelToMaybeRequirements: model => Option.as(model.maybeAnalysisSlug, null),
     acquire: () =>
@@ -220,7 +220,7 @@ Unlike `Subscription.lift`, `toChildModel` returns an `Option`. A Managed Resour
 
 ```
 // page/call/managedResource.ts
-import { Effect, Option, Schema as S } from 'effect'
+import { Effect, Option, Schema } from 'effect'
 import { ManagedResource } from 'foldkit'
 
 import {
@@ -245,7 +245,7 @@ const videoCallManagedResources = ManagedResource.lift(
 })
 
 const localManagedResources = ManagedResource.make<Model, Message>()(entry => ({
-  signalingSocket: entry(S.Option(S.Null), {
+  signalingSocket: entry(Schema.Option(Schema.Null), {
     resource: SignalingSocket,
     modelToMaybeRequirements: model => Option.as(model.videoCall, null),
     acquire: () => Effect.try(() => new WebSocket(SIGNALING_URL)),

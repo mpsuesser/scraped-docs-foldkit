@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/web-components
 title: "Web Components"
 description: "A QR code designer integrates two third-party web components through CustomElement.define. The color picker emits CustomEvents as Messages, the QR element receives typed properties, and both communicate through the Model."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -26,7 +26,7 @@ Third-Party Library
 
 ```
 import { clsx } from 'clsx'
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { CustomElement, Runtime, type Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -38,19 +38,19 @@ import '@shoelace-style/shoelace/dist/components/qr-code/qr-code.js'
 
 // MODEL
 
-export const Model = S.Struct({
-  content: S.String,
-  fillColor: S.String,
-  backgroundColor: S.String,
+export const Model = Schema.Struct({
+  content: Schema.String,
+  fillColor: Schema.String,
+  backgroundColor: Schema.String,
 })
 export type Model = typeof Model.Type
 
 // MESSAGE
 
 export const Message = defineMessageUnion({
-  UpdatedContent: { value: S.String },
-  ChangedFillColor: { value: S.String },
-  ChangedBackgroundColor: { value: S.String },
+  UpdatedContent: { value: Schema.String },
+  ChangedFillColor: { value: Schema.String },
+  ChangedBackgroundColor: { value: Schema.String },
 })
 
 export type Message = typeof Message.Type
@@ -89,22 +89,22 @@ export const update = (model: Model, message: Message) =>
 export const hexColorPicker = CustomElement.define({
   tag: 'hex-color-picker',
   properties: {
-    color: S.String,
+    color: Schema.String,
   },
   events: {
-    'color-changed': S.Struct({ value: S.String }),
+    'color-changed': Schema.Struct({ value: Schema.String }),
   },
 })
 
 const qrCode = CustomElement.define({
   tag: 'sl-qr-code',
   properties: {
-    value: S.String,
-    label: S.String,
-    size: S.Number,
-    fill: S.String,
-    background: S.String,
-    radius: S.Number,
+    value: Schema.String,
+    label: Schema.String,
+    size: Schema.Number,
+    fill: Schema.String,
+    background: Schema.String,
+    radius: Schema.Number,
   },
   events: {},
 })

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/foldkit-vs-react-effect-atom
 title: "Foldkit vs React + Effect Atom"
 description: "Two Effect-native architectures: Effect Atom distributes state across reactive cells inside React, while Foldkit builds the application around one Model and update function."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Foldkit vs React + Effect Atom
@@ -86,16 +86,16 @@ In this example, the ways `todosAtom` changes live at its setter call sites. An 
 The Foldkit version represents the same actions as Messages:
 
 ```
-import { Array, Schema as S } from 'effect'
+import { Array, Schema } from 'effect'
 import { type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 
 // MODEL
 
-const Filter = S.Literals(['All', 'Active', 'Done'])
+const Filter = Schema.Literals(['All', 'Active', 'Done'])
 
-export const Model = S.Struct({
-  todos: S.Array(Todo),
+export const Model = Schema.Struct({
+  todos: Schema.Array(Todo),
   filter: Filter,
 })
 type Model = typeof Model.Type
@@ -169,7 +169,7 @@ The Effect runs when the registry first evaluates the atom, and the registry sto
 Foldkit stores remote state in the Model. [AsyncData](https://foldkit.dev/core/async-data) represents six states: `Idle`, `Loading`, `Refreshing`, `Failure`, `Stale`, and `Success`. A Command performs the request, and its result returns through update as a Message.
 
 ```
-import { Effect, Schema as S } from 'effect'
+import { Effect, Schema } from 'effect'
 import { AsyncData, Command, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 
@@ -181,7 +181,7 @@ import { Api } from './api'
 // union, so there is no hand-rolled loading/failure/stale union to maintain.
 const UserAsyncData = AsyncData.Schema(User, ApiError)
 
-export const Model = S.Struct({
+export const Model = Schema.Struct({
   user: UserAsyncData.schema,
 })
 type Model = typeof Model.Type
@@ -277,7 +277,7 @@ Effects remain colocated with the atoms that perform them. Dependencies between 
 Foldkit selects a lifecycle primitive based on what causes the work. A [Command](https://foldkit.dev/core/commands) runs after a Message. A [Subscription](https://foldkit.dev/core/subscriptions) runs while a Model condition holds. A [Mount](https://foldkit.dev/core/mount) follows an element’s lifetime, and a [ManagedResource](https://foldkit.dev/core/managed-resources) follows Model state while exposing a stateful handle to Commands.
 
 ```
-import { Effect, Schema as S, Stream } from 'effect'
+import { Effect, Schema, Stream } from 'effect'
 import { Command, Subscription } from 'foldkit'
 
 import { Api } from './api'
@@ -286,7 +286,7 @@ import { Api } from './api'
 // in DevTools next to the Message that produced it, and is assertable in
 // tests. Api is an Effect service; Api.Default is its layer.
 const CreateTodo = Command.define('CreateTodo', {
-  args: { text: S.String },
+  args: { text: Schema.String },
   messages: [SucceededCreateTodo, FailedCreateTodo],
   execute: ({ text }) =>
     Effect.gen(function* () {
@@ -304,7 +304,7 @@ const CreateTodo = Command.define('CreateTodo', {
 // model.isDrawing changes. No addEventListener, no cleanup, no stale closure.
 export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   mouseRelease: entry(
-    { isDrawing: S.Boolean },
+    { isDrawing: Schema.Boolean },
     {
       modelToDependencies: model => ({ isDrawing: model.isDrawing }),
       dependenciesToStream: ({ isDrawing }) =>

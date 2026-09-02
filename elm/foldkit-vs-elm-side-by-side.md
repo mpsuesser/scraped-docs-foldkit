@@ -2,8 +2,8 @@
 url: https://foldkit.dev/elm/foldkit-vs-elm-side-by-side
 title: "Foldkit vs Elm: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and Elm. Same architecture, different host: ports vs Commands, decoders vs Schema, and what each side gives up."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
@@ -68,23 +68,23 @@ The current Foldkit application has 25 parent Messages:
 
 ```
 const Message = defineMessageUnion({
-  PressedCell: { x: S.Number, y: S.Number },
-  EnteredCell: { x: S.Number, y: S.Number },
+  PressedCell: { x: Schema.Number, y: Schema.Number },
+  EnteredCell: { x: Schema.Number, y: Schema.Number },
   LeftCanvas: {},
   ReleasedMouse: {},
   SelectedColor: { colorIndex: PaletteIndex },
   SelectedTool: { tool: Tool },
-  SelectedGridSize: { size: S.Number },
+  SelectedGridSize: { size: Schema.Number },
   ToggledMirrorHorizontal: {},
   ToggledMirrorVertical: {},
   ClickedUndo: {},
   ClickedRedo: {},
-  ClickedHistoryStep: { stepIndex: S.Number },
-  ClickedRedoStep: { stepIndex: S.Number },
+  ClickedHistoryStep: { stepIndex: Schema.Number },
+  ClickedRedoStep: { stepIndex: Schema.Number },
   ClickedClear: {},
   ClickedExport: {},
   SucceededExportPng: {},
-  FailedExportPng: { error: S.String },
+  FailedExportPng: { error: Schema.String },
   GotErrorDialogMessage: { message: Dialog.Message },
   GotThemeListboxMessage: { message: Listbox.Message },
   GotToolRadioGroupMessage: { message: RadioGroup.Message },
@@ -163,9 +163,9 @@ import { type Update } from 'foldkit'
 export const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     PressedCell: ({ x, y }) =>
-      M.value(model.tool).pipe(
+      Match.value(model.tool).pipe(
         withUpdateReturn,
-        M.when('Brush', () => ({
+        Match.when('Brush', () => ({
           model: evo(model, {
             grid: () => applyBrush(model, x, y),
             undoStack: () => pushHistory(model.undoStack, model.grid),
@@ -173,7 +173,7 @@ export const update = (model: Model, message: Message) =>
             isDrawing: () => true,
           }),
         })),
-        M.when('Fill', () => {
+        Match.when('Fill', () => {
           const nextModel = evo(model, {
             grid: () => applyFill(model, x, y),
             undoStack: () => pushHistory(model.undoStack, model.grid),
@@ -247,25 +247,25 @@ This hand-rolled UI stores Dialog visibility through the presence of `exportErro
 The Foldkit Model uses Effect Schema, `Option`, and child Models for its stateful Foldkit UI controls:
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 
 import { Dialog, Listbox, RadioGroup } from '@foldkit/ui'
 
-export const Model = S.Struct({
+export const Model = Schema.Struct({
   grid: Grid,
-  undoStack: S.Array(Grid),
-  redoStack: S.Array(Grid),
+  undoStack: Schema.Array(Grid),
+  redoStack: Schema.Array(Grid),
   selectedColorIndex: PaletteIndex,
-  gridSize: S.Number,
+  gridSize: Schema.Number,
   tool: Tool,
   mirrorMode: MirrorMode,
-  isDrawing: S.Boolean,
-  maybeHoveredCell: S.Option(Position),
+  isDrawing: Schema.Boolean,
+  maybeHoveredCell: Schema.Option(Position),
   errorDialog: Dialog.Model,
-  maybeExportError: S.Option(S.String),
-  paletteThemeIndex: S.Number,
+  maybeExportError: Schema.Option(Schema.String),
+  paletteThemeIndex: Schema.Number,
   gridSizeConfirmDialog: Dialog.Model,
-  maybePendingGridSize: S.Option(S.Number),
+  maybePendingGridSize: Schema.Option(Schema.Number),
   themeListbox: Listbox.Model,
   toolRadioGroup: RadioGroup.Model,
   gridSizeRadioGroup: RadioGroup.Model,
@@ -350,8 +350,8 @@ Foldkit runs in the JavaScript ecosystem, so its Commands can use browser APIs a
 const SaveCanvas = Command.define('SaveCanvas', {
   args: {
     grid: Grid,
-    gridSize: S.Number,
-    paletteThemeIndex: S.Number,
+    gridSize: Schema.Number,
+    paletteThemeIndex: Schema.Number,
     selectedColorIndex: PaletteIndex,
   },
   messages: [CompletedSaveCanvas],
@@ -364,7 +364,10 @@ const SaveCanvas = Command.define('SaveCanvas', {
         paletteThemeIndex,
         selectedColorIndex,
       }
-      yield* store.set(STORAGE_KEY, S.encodeSync(SavedCanvasJsonString)(data))
+      yield* store.set(
+        STORAGE_KEY,
+        Schema.encodeSync(SavedCanvasJsonString)(data),
+      )
       return CompletedSaveCanvas()
     }).pipe(
       Effect.catch(() => Effect.succeed(CompletedSaveCanvas())),
@@ -373,7 +376,11 @@ const SaveCanvas = Command.define('SaveCanvas', {
 })
 
 const ExportPng = Command.define('ExportPng', {
-  args: { grid: Grid, gridSize: S.Number, paletteThemeIndex: S.Number },
+  args: {
+    grid: Grid,
+    gridSize: Schema.Number,
+    paletteThemeIndex: Schema.Number,
+  },
   messages: [SucceededExportPng, FailedExportPng],
   execute: ({ grid, gridSize, paletteThemeIndex }) =>
     Effect.gen(function* () {
@@ -464,15 +471,15 @@ Foldkit derives both directions from one `SavedCanvas` Schema:
 // The Schema is the single source of truth. The decoder and the
 // encoder both fall out of it. They cannot drift apart.
 
-export const SavedCanvas = S.Struct({
+export const SavedCanvas = Schema.Struct({
   grid: SavedGrid,
-  gridSize: S.Number,
-  paletteThemeIndex: S.Number,
+  gridSize: Schema.Number,
+  paletteThemeIndex: Schema.Number,
   selectedColorIndex: PaletteIndex,
 })
 
-export const SavedCanvasJsonString = S.fromJsonString(
-  S.toCodecJson(SavedCanvas),
+export const SavedCanvasJsonString = Schema.fromJsonString(
+  Schema.toCodecJson(SavedCanvas),
 )
 
 export const flags: Effect.Effect<Flags> = Effect.gen(function* () {
@@ -480,7 +487,7 @@ export const flags: Effect.Effect<Flags> = Effect.gen(function* () {
   const json = yield* Effect.fromOption(
     Option.fromNullishOr(yield* store.get(STORAGE_KEY)),
   )
-  const decoded = yield* S.decodeEffect(SavedCanvasJsonString)(json)
+  const decoded = yield* Schema.decodeEffect(SavedCanvasJsonString)(json)
   return Flags.make({ maybeSavedCanvas: Option.some(decoded) })
 }).pipe(
   Effect.catch(() =>
@@ -490,7 +497,7 @@ export const flags: Effect.Effect<Flags> = Effect.gen(function* () {
 )
 
 // Saving goes through the same Schema:
-// S.encodeSync(SavedCanvasJsonString)(data)
+// Schema.encodeSync(SavedCanvasJsonString)(data)
 ```
 
 The Schema centralizes field names and value constraints. Encoding and decoding therefore evolve from the same definition. Version migrations and fallback behavior still belong to the application.
@@ -541,7 +548,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   ),
 
   mouseRelease: entry(
-    { isDrawing: S.Boolean },
+    { isDrawing: Schema.Boolean },
     {
       modelToDependencies: model => ({ isDrawing: model.isDrawing }),
       dependenciesToStream: ({ isDrawing }) =>

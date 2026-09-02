@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/slow-warnings
 title: "Slow Warnings"
 description: "Measure development-mode update, view, patch, and Subscription dependency phases, interpret warnings, and tune thresholds after profiling."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Slow Warnings
@@ -57,14 +57,14 @@ Passing an object also measures every phase unless `measuredPhases` narrows the 
 `show` and `onSlow` apply to every measured phase. Passing `onSlow` replaces the default `console.warn`, so Foldkit will not also log phases that the callback ignores. The callback receives the full tagged `SlowContext` union even when `measuredPhases` selects a subset.
 
 ```
-import { Match as M } from 'effect'
+import { Match } from 'effect'
 import { Runtime } from 'foldkit'
 
 import * as Sentry from '@sentry/browser'
 
 const handleSlow = (context: Runtime.SlowContext<Model, Message>): void => {
-  const summary = M.value(context).pipe(
-    M.tagsExhaustive({
+  const summary = Match.value(context).pipe(
+    Match.tagsExhaustive({
       View: ({ durationMs, thresholdMs }) =>
         `view ${durationMs.toFixed(1)}ms (budget ${thresholdMs}ms)`,
       Update: ({ durationMs, thresholdMs, message }) =>

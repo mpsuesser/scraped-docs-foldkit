@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Split a large application into child state machines while preserving parent-to-child Message flow. Covers Update.foldChild, h.submodel, OutMessages, reflection, testing, and DevTools."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## When to Create a Submodel
@@ -35,25 +35,24 @@ A child Submodel does not know which parent embeds it. This Settings Submodel ow
 
 ```
 // page/settings.ts
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 // MODEL
 
-export const Theme = S.Literals(['Light', 'Dark', 'System'])
+export const Theme = Schema.Literals(['Light', 'Dark', 'System'])
 export type Theme = typeof Theme.Type
 
-export const FontSize = S.Literals(['Small', 'Medium', 'Large'])
+export const FontSize = Schema.Literals(['Small', 'Medium', 'Large'])
 export type FontSize = typeof FontSize.Type
 
-export const Model = S.Struct({
+export const Model = Schema.Struct({
   theme: Theme,
   fontSize: FontSize,
-  notificationsEnabled: S.Boolean,
+  notificationsEnabled: Schema.Boolean,
 })
-
 export type Model = typeof Model.Type
 
 // MESSAGE
@@ -63,7 +62,6 @@ export const Message = defineMessageUnion({
   ChangedFontSize: { fontSize: FontSize },
   ToggledNotifications: {},
 })
-
 export type Message = typeof Message.Type
 
 // UPDATE
@@ -91,15 +89,14 @@ The parent has three jobs: embed the child’s Model, wrap its Messages, and del
 The child’s Model becomes a field in the parent’s Model:
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 
 import * as Settings from './page/settings'
 
-export const Model = S.Struct({
-  username: S.String,
+export const Model = Schema.Struct({
+  username: Schema.String,
   settings: Settings.Model,
 })
-
 export type Model = typeof Model.Type
 ```
 
@@ -153,7 +150,7 @@ Bypassing update creates three problems:
 Every Message eventually reaches the root update. Each parent therefore declares a wrapper Message for the child Message type. Name it with the `Got*Message` convention, such as `GotSettingsMessage`.
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as Settings from './page/settings'
@@ -161,7 +158,6 @@ import * as Settings from './page/settings'
 export const Message = defineMessageUnion({
   GotSettingsMessage: { message: Settings.Message },
 })
-
 export type Message = typeof Message.Type
 ```
 
@@ -206,17 +202,16 @@ The fold is dual. `foldSettings(model, message)` runs it immediately. `foldSetti
 Use `Update.foldChildStep` for an entry point that takes only the child Model, such as `Dialog.close`. It accepts the same fields and returns an `Update.Step<ParentModel, ParentMessage>`. Add `toParentOutMessage` when at least one child OutMessage should continue to the current Submodel's parent. The fold then returns an `Update.StepWithOutMessage<ParentModel, ParentMessage, ParentOutMessage>`.
 
 ```
-import { Match as M, Option } from 'effect'
+import { Option } from 'effect'
 import { Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
-const toParentDialogOutMessage = M.type<Dialog.OutMessage>().pipe(
-  M.withReturnType<OutMessage | undefined>(),
-  M.tagsExhaustive({
-    Opened: () => undefined,
-    Closed: () => OutMessage.ClosedDialog(),
-  }),
-)
+const toParentDialogOutMessage = Dialog.OutMessage.match<
+  OutMessage | undefined
+>({
+  Opened: () => undefined,
+  Closed: () => OutMessage.ClosedDialog(),
+})
 
 const foldDialogClose = Update.foldChildStep({
   update: Dialog.close,
@@ -635,24 +630,22 @@ The child update can include an OutMessage in its optional `outMessage` field. T
 Define OutMessages beside the child Message. Name them as past-tense facts: `SucceededLogin`, not `TransitionToLoggedIn`; `RequestedLogout`, not `DoLogout`.
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 
 // MESSAGE
 
 export const Message = defineMessageUnion({
   SubmittedLoginForm: {},
-  SucceededAuthenticate: { sessionId: S.String },
+  SucceededAuthenticate: { sessionId: Schema.String },
 })
-
 export type Message = typeof Message.Type
 
 // OUT MESSAGE
 
 export const OutMessage = defineMessageUnion({
-  SucceededLogin: { sessionId: S.String },
+  SucceededLogin: { sessionId: Schema.String },
 })
-
 export type OutMessage = typeof OutMessage.Type
 ```
 
@@ -688,20 +681,19 @@ Handle the OutMessage through `foldOutMessage` on [Update.foldChild](#fold-child
 Do not unpack a child update or helper result by hand. Destructuring `model` and `commands` can leave its `outMessage` behind without a type error. Dot access can still ignore an OutMessage, but an operation-named value keeps all three returned fields visible together. Use `Update.foldChild` or `Update.foldChildStep` so the child Model, lifted Commands, and OutMessage remain part of one fold.
 
 ```
-import { Match as M, Option } from 'effect'
+import { Option } from 'effect'
 import { Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
-const foldLoginOutMessage = M.type<Login.OutMessage>().pipe(
-  M.withReturnType<Update.Step<Model, Message>>(),
-  M.tagsExhaustive({
+const foldLoginOutMessage = Login.OutMessage.match<Update.Step<Model, Message>>(
+  {
     SucceededLogin:
       ({ sessionId }) =>
       () => ({
         model: LoggedIn({ sessionId }),
         commands: [SaveSession(sessionId)],
       }),
-  }),
+  },
 )
 
 const foldLogin = Update.foldChild({
@@ -794,25 +786,30 @@ Inside a Submodel there are two frames, with opposite defaults:
 
 The child view normally builds child handlers. A slot callback normally builds parent handlers.
 
-A shared helper may need the parent builder. For example: a copy button inside a documentation Submodel dispatches an app-level Message. Let the parent build that renderer and pass it through a top-level `viewInputs` callback.
+A shared helper may belong to a sibling Submodel or the parent itself. For example: documentation pages render a shared SnippetCopy Submodel and heading links owned by the application shell. Let the parent build those renderers and pass them through top-level `viewInputs` callbacks.
 
 ```
 // view/docs.ts (inside the parent's view, with its builder \`h\` in scope)
 h.submodel({
   slotId: 'coming-from-react',
   model: model.comingFromReact,
-  view: Page.ComingFromReact.view,
+  view: ComingFromReact.view,
   viewInputs: {
-    // Both close over the parent's builder, so the app-level Messages they
-    // dispatch reach update unwrapped however deep the child renders them.
-    renderCopyButton: defaultRenderCopyButton(model.copiedSnippets, h),
-    renderHeadingLink: defaultRenderHeadingLink(h),
+    renderCopyButton: SnippetCopy.renderer(
+      model.snippetCopy,
+      message => Message.GotSnippetCopyMessage({ message }),
+      h,
+    ),
+    renderHeadingLink: Prose.renderHeadingLink(
+      hash => Message.ClickedCopyLink({ hash }),
+      h,
+    ),
   },
-  toParentMessage: message => GotComingFromReactMessage({ message }),
+  toParentMessage: message => Message.GotComingFromReactMessage({ message }),
 })
 ```
 
-The callback runs in the parent's boundary, so its Message reaches the parent update without a child wrapper.
+The callbacks run in the parent's boundary. The heading link reaches the parent update directly, while each snippet button establishes its own child boundary and produces `GotSnippetCopyMessage` for the parent to fold.
 
 Thread `h` through view functions. Never store it in module state. A stored builder can outlive its render boundary and fail when a handler dispatches.
 

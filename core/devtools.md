@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/devtools
 title: "DevTools"
 description: "Inspect Message history, Model changes, Commands, and Mounts in the development overlay. Configure time travel, filtering, history limits, and AI dispatch."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # DevTools
@@ -21,7 +21,7 @@ The panel lists every recorded Message, with the newest at the bottom. Select a 
 - `Commands` lists the Commands returned by update.
 - `Mounts` shows which Mounts started or ended during that render.
 
-The `Live` badge tells you whether the inspector shows the latest state or a past entry. In time-travel mode, selecting an earlier row pauses the app at that state. Select `Resume` to return to the latest state. `Clear` drops the recorded history without restarting the app.
+The `Live` badge tells you whether the inspector shows the latest state or a past entry. In time-travel mode, selecting an earlier row installs a paused historical view. It does not pause the live application behind that view. Select `Resume` to patch the latest live view back into the DOM. `Clear` drops the recorded history without restarting the app.
 
 AI agent integration
 
@@ -64,7 +64,7 @@ Controls where the badge and panel appear on screen. One of `'BottomRight'` (def
 
 ### mode
 
-`'TimeTravel'` (the default) pauses the app when you select an earlier Message and renders the corresponding state. User interaction is blocked while paused. Subscriptions continue running in the background, and their Messages keep appearing in the panel. Select `Resume` to return to the latest state.
+`'TimeTravel'` (the default) renders the state at an earlier Message and pauses that historical view. The live Model, history, Commands, Subscriptions, ManagedResources, and live-acquired Mounts continue normally. Their Messages and state changes keep appearing in the panel even though the historical DOM stays in place. Foldkit event handlers and Mounts created by the historical render cannot dispatch, and the overlay blocks pointer interaction. A surviving live Mount observes its `viewStateChanges` Stream and must make its imperative integration read-only while paused so keyboard or programmatic DOM interaction cannot produce Messages. Select `Resume` to patch the latest live view back into the DOM; a replay-created Mount whose element is reused is released before the live action starts.
 
 `'Inspect'` lets you browse recorded states without pausing the app. Use it when visitors can open DevTools in production or staging.
 

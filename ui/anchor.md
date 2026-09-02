@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/anchor
 title: "Anchor"
 description: "Position and portal floating panels with the same Floating UI runtime used by Listbox, Combobox, Menu, Popover, Tooltip, and Date Picker."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Anchor
@@ -35,7 +35,7 @@ The module is also exported from the root barrel, as `import { Anchor } from '@f
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, Message, update,
 // and view definitions.
-import { Effect, Schema as S } from 'effect'
+import { Effect, Schema } from 'effect'
 import { Mount } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -56,7 +56,7 @@ const Message = defineMessageUnion({
 // registered with Effect.acquireRelease. Construct the resource inside the
 // acquire body, never before it, or it leaks on interruption:
 const AnchorPanel = Mount.define('AnchorPanel', {
-  args: { buttonId: S.String, anchor: AnchorConfig },
+  args: { buttonId: Schema.String, anchor: AnchorConfig },
   messages: [Message.CompletedAnchorPanel],
   execute: ({ element, buttonId, anchor }) =>
     Effect.gen(function* () {

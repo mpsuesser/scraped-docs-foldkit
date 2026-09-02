@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/kanban
 title: "Kanban"
 description: "A drag-and-drop kanban board with cross-column reordering, keyboard navigation, fractional indexing, and screen reader announcements."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -27,7 +27,7 @@ Storage
 /
 
 ```
-import { Effect, Option, Schema as S } from 'effect'
+import { Effect, Option, Schema } from 'effect'
 import { KeyValueStore } from 'effect/unstable/persistence'
 import { Runtime } from 'foldkit'
 
@@ -43,8 +43,8 @@ import { view } from './view'
 
 // FLAGS
 
-export const Flags = S.Struct({
-  maybeSavedBoard: S.Option(SavedBoard),
+export const Flags = Schema.Struct({
+  maybeSavedBoard: Schema.Option(SavedBoard),
 })
 export type Flags = typeof Flags.Type
 
@@ -53,7 +53,7 @@ export const flags: Effect.Effect<Flags> = Effect.gen(function* () {
   const json = yield* Effect.fromOption(
     Option.fromNullishOr(yield* store.get(STORAGE_KEY)),
   )
-  const decoded = yield* S.decodeEffect(SavedBoardJsonString)(json)
+  const decoded = yield* Schema.decodeEffect(SavedBoardJsonString)(json)
   return Flags.make({ maybeSavedBoard: Option.some(decoded) })
 }).pipe(
   Effect.catch(() =>

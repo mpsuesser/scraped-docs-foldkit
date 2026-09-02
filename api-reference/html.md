@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/html
 title: "Html"
 description: "API documentation for the Html module."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Html
@@ -14,7 +14,7 @@ current_date: 2026-08-31T07:29:25.100Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/childAttribute.ts#L61)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/childAttribute.ts#L70)
 
 ```
 /**
@@ -47,6 +47,10 @@ function
   attribute: unknown
   boundaryMappers: readonly Array<(message: unknown) => unknown>
   dispatch: DispatchSync
+  resolveMountDispatch: Readonly<{
+    owner: MountRenderOwner
+    resolve: () => DispatchSync
+  }>
   resolveUnmount: (message: unknown) => () => void
 }>>
 ```
@@ -55,7 +59,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/lazy.ts#L142)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/lazy.ts#L164)
 
 ```
 /**
@@ -90,21 +94,21 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/lazy.ts#L104)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/lazy.ts#L126)
 
 ```
 /**
  * Creates a memoization slot for a view function. On each render, if the
- *  function reference, dispatch, and all arguments are referentially equal
- *  (`===`) to the previous call, the cached VNode is returned without
+ *  function reference, dispatchers, Mount render owner, and all arguments are
+ *  equal to the previous call, the cached VNode is returned without
  *  re-running the view function. Snabbdom's `patchVnode` short-circuits when
  *  it sees the same VNode reference, so both VNode construction and subtree
  *  diffing are skipped.
  * 
- *  Dispatch is part of the cache key because event handlers in the cached
- *  VNode close over the dispatch active when the VNode was built. Returning
- *  a VNode built under a different dispatch would silently misroute every
- *  event from that subtree.
+ *  Dispatchers and Mount render ownership are part of the cache key because
+ *  event handlers and Mounts in the cached VNode close over the frame active
+ *  when the VNode was built. Returning a VNode built under a different frame
+ *  would silently misroute events or retain the wrong Mount lifecycle owner.
  * 
  *  The cached VNode must be rendered at a single position in the tree.
  *  Snabbdom tracks the real DOM through each VNode's mutable `.elm` field
@@ -122,7 +126,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/index.ts#L517)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/index.ts#L541)
 
 ```
 /**
@@ -1081,7 +1085,7 @@ type Attribute = Data.TaggedEnum<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/childAttribute.ts#L27)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/childAttribute.ts#L35)
 
 ```
 /**
@@ -1095,9 +1099,10 @@ type
  *  `resolveUnmount` snapshots the boundary's wrapping chain at the time the
  *  group was published (child boundary alive) so `OnUnmount` can dispatch a
  *  root message from a destroy hook that fires after the boundary has been
- *  torn down. `boundaryMappers` snapshots the same chain as a pure list of
- *  `toParentMessage` lifts (innermost first) so `OnMount` can stamp it on the
- *  mount marker; the Scene test harness folds it to replay the lift.
+ *  torn down. `boundaryMappers` snapshots the `toParentMessage` lifts
+ *  (innermost first) for the Scene test harness. Groups containing `OnMount`
+ *  also carry `resolveMountDispatch`, which binds the Mount to the acquiring
+ *  render's dispatch owner while following that owner's current live wrappers.
  * 
  *  Created via childAttributes. Element constructors accept
  *  `ChildAttribute` alongside `Attribute<Message>` in their attribute
@@ -1108,6 +1113,7 @@ type ChildAttribute = Readonly<{
   attribute: unknown
   boundaryMappers: ReadonlyArray<(message: unknown) => unknown>
   dispatch: DispatchSync
+  resolveMountDispatch: MountDispatchResolver
   resolveUnmount: (message: unknown) => () => void
 }>
 ```
@@ -1116,7 +1122,7 @@ type ChildAttribute = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/index.ts#L234)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/index.ts#L247)
 
 ```
 /**
@@ -1154,7 +1160,7 @@ type Document = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/index.ts#L162)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/index.ts#L175)
 
 ```
 /**
@@ -1169,7 +1175,7 @@ type Html = VNode | null
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/index.ts#L5143)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/index.ts#L5261)
 
 ```
 /**
@@ -1201,7 +1207,7 @@ type
  */
 type HtmlBuilder = MessageUniverse<Message> & HtmlElements<Message> & HtmlAttributes<Message> & Readonly<{
   empty: null
-  keyed: (tagName: TagName) => (key: PropertyKey, attributes?: ReadonlyArray<Attribute<Message> | ChildAttribute>, children?: ReadonlyArray<Child>) => Html
+  keyed: KeyedFunction<Message>
   submodel: (config: SubmodelConfig<View, Message>) => Html
 }>
 ```
@@ -1210,7 +1216,7 @@ type HtmlBuilder = MessageUniverse<Message> & HtmlElements<Message> & HtmlAttrib
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/index.ts#L137)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/index.ts#L150)
 
 ```
 /** Modifier key state extracted from a `KeyboardEvent`. */
@@ -1226,11 +1232,28 @@ type KeyboardModifiers = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/index.ts#L244)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/index.ts#L257)
 
 ```
 /** Union of all valid HTML, SVG, and MathML tag names. */
 type TagName = "a" | "abbr" | "address" | "area" | "article" | "aside" | "audio" | "b" | "base" | "bdi" | "bdo" | "blockquote" | "body" | "br" | "button" | "canvas" | "caption" | "cite" | "code" | "col" | "colgroup" | "data" | "datalist" | "dd" | "del" | "details" | "dfn" | "dialog" | "div" | "dl" | "dt" | "em" | "embed" | "fieldset" | "figcaption" | "figure" | "footer" | "form" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "head" | "header" | "hgroup" | "hr" | "html" | "i" | "iframe" | "img" | "input" | "ins" | "kbd" | "label" | "legend" | "li" | "link" | "main" | "map" | "mark" | "menu" | "meta" | "meter" | "nav" | "noscript" | "object" | "ol" | "optgroup" | "option" | "output" | "p" | "picture" | "portal" | "pre" | "progress" | "q" | "rp" | "rt" | "ruby" | "s" | "samp" | "script" | "search" | "section" | "select" | "slot" | "small" | "source" | "span" | "strong" | "style" | "sub" | "summary" | "sup" | "table" | "tbody" | "td" | "template" | "textarea" | "tfoot" | "th" | "thead" | "time" | "title" | "tr" | "track" | "u" | "ul" | "var" | "video" | "wbr" | "animate" | "animateMotion" | "animateTransform" | "circle" | "clipPath" | "defs" | "desc" | "ellipse" | "feBlend" | "feColorMatrix" | "feComponentTransfer" | "feComposite" | "feConvolveMatrix" | "feDiffuseLighting" | "feDisplacementMap" | "feDistantLight" | "feDropShadow" | "feFlood" | "feFuncA" | "feFuncB" | "feFuncG" | "feFuncR" | "feGaussianBlur" | "feImage" | "feMerge" | "feMergeNode" | "feMorphology" | "feOffset" | "fePointLight" | "feSpecularLighting" | "feSpotLight" | "feTile" | "feTurbulence" | "filter" | "foreignObject" | "g" | "image" | "line" | "linearGradient" | "marker" | "mask" | "metadata" | "mpath" | "path" | "pattern" | "polygon" | "polyline" | "radialGradient" | "rect" | "set" | "stop" | "svg" | "switch" | "symbol" | "text" | "textPath" | "tspan" | "use" | "view" | "annotation" | "annotation-xml" | "math" | "maction" | "menclose" | "merror" | "mfenced" | "mfrac" | "mglyph" | "mi" | "mlabeledtr" | "mlongdiv" | "mmultiscripts" | "mn" | "mo" | "mover" | "mpadded" | "mphantom" | "mprescripts" | "mroot" | "mrow" | "ms" | "mscarries" | "mscarry" | "msgroup" | "msline" | "mspace" | "msqrt" | "msrow" | "mstack" | "mstyle" | "msub" | "msubsup" | "msup" | "mtable" | "mtd" | "mtext" | "mtr" | "munder" | "munderover" | "semantics"
+```
+
+### TextareaAttribute
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/index.ts#L3131)
+
+```
+/**
+ * An attribute accepted by textarea builders. Textarea content must use
+ *  `h.Value`; innerHTML does not keep the live value tracking the Model after
+ *  the field is dirty.
+ */
+type TextareaAttribute = Exclude<Attribute<Message>, Readonly<{
+  _tag: "InnerHTML"
+}>>
 ```
 
 ## Constants
@@ -1239,7 +1262,7 @@ type TagName = "a" | "abbr" | "address" | "area" | "article" | "aside" | "audio"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/index.ts#L182)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/index.ts#L195)
 
 ```
 /**
@@ -1258,7 +1281,7 @@ const ClickOptions: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/index.ts#L167)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/index.ts#L180)
 
 ```
 /**
@@ -1272,7 +1295,7 @@ const DefaultAction: Literals<readonly ["Allow", "Prevent"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/index.ts#L174)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/index.ts#L187)
 
 ```
 /**
@@ -1286,7 +1309,7 @@ const EventPropagation: Literals<readonly ["Bubble", "Stop"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/index.ts#L194)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/index.ts#L207)
 
 ```
 /**
@@ -1300,7 +1323,7 @@ const TextDirection: Literals<readonly ["Ltr", "Rtl", "Auto"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/html/index.ts#L5226)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/html/index.ts#L5338)
 
 ```
 /**

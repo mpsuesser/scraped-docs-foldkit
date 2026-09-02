@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/messages
 title: "Messages"
 description: "Define the facts update can handle as a Schema-backed Message union, with naming conventions for user actions, Command results, and Submodel wrappers."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Messages
@@ -17,7 +17,7 @@ A Message records something that happened in the application. It does not prescr
 The counter has three Messages:
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 
 // MESSAGE

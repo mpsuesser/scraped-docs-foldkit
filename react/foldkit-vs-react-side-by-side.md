@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/foldkit-vs-react-side-by-side
 title: "Foldkit vs React: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and React. Covers state management, side effects, testing, performance, and architectural tradeoffs."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
@@ -30,23 +30,23 @@ The Foldkit application currently has 25 parent Messages:
 
 ```
 const Message = defineMessageUnion({
-  PressedCell: { x: S.Number, y: S.Number },
-  EnteredCell: { x: S.Number, y: S.Number },
+  PressedCell: { x: Schema.Number, y: Schema.Number },
+  EnteredCell: { x: Schema.Number, y: Schema.Number },
   LeftCanvas: {},
   ReleasedMouse: {},
   SelectedColor: { colorIndex: PaletteIndex },
   SelectedTool: { tool: Tool },
-  SelectedGridSize: { size: S.Number },
+  SelectedGridSize: { size: Schema.Number },
   ToggledMirrorHorizontal: {},
   ToggledMirrorVertical: {},
   ClickedUndo: {},
   ClickedRedo: {},
-  ClickedHistoryStep: { stepIndex: S.Number },
-  ClickedRedoStep: { stepIndex: S.Number },
+  ClickedHistoryStep: { stepIndex: Schema.Number },
+  ClickedRedoStep: { stepIndex: Schema.Number },
   ClickedClear: {},
   ClickedExport: {},
   SucceededExportPng: {},
-  FailedExportPng: { error: S.String },
+  FailedExportPng: { error: Schema.String },
   GotErrorDialogMessage: { message: Dialog.Message },
   GotThemeListboxMessage: { message: Listbox.Message },
   GotToolRadioGroupMessage: { message: RadioGroup.Message },
@@ -241,25 +241,25 @@ The two versions draw their application-state boundary differently.
 The Foldkit Model describes application state with Effect Schema and uses `Option` for absent values. It also contains the Models for two Dialogs, one Listbox, and three RadioGroups:
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 
 import { Dialog, Listbox, RadioGroup } from '@foldkit/ui'
 
-export const Model = S.Struct({
+export const Model = Schema.Struct({
   grid: Grid,
-  undoStack: S.Array(Grid),
-  redoStack: S.Array(Grid),
+  undoStack: Schema.Array(Grid),
+  redoStack: Schema.Array(Grid),
   selectedColorIndex: PaletteIndex,
-  gridSize: S.Number,
+  gridSize: Schema.Number,
   tool: Tool,
   mirrorMode: MirrorMode,
-  isDrawing: S.Boolean,
-  maybeHoveredCell: S.Option(Position),
+  isDrawing: Schema.Boolean,
+  maybeHoveredCell: Schema.Option(Position),
   errorDialog: Dialog.Model,
-  maybeExportError: S.Option(S.String),
-  paletteThemeIndex: S.Number,
+  maybeExportError: Schema.Option(Schema.String),
+  paletteThemeIndex: Schema.Number,
   gridSizeConfirmDialog: Dialog.Model,
-  maybePendingGridSize: S.Option(S.Number),
+  maybePendingGridSize: Schema.Option(Schema.Number),
   themeListbox: Listbox.Model,
   toolRadioGroup: RadioGroup.Model,
   gridSizeRadioGroup: RadioGroup.Model,
@@ -310,9 +310,9 @@ import { type Update } from 'foldkit'
 export const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     PressedCell: ({ x, y }) =>
-      M.value(model.tool).pipe(
+      Match.value(model.tool).pipe(
         withUpdateReturn,
-        M.when('Brush', () => ({
+        Match.when('Brush', () => ({
           model: evo(model, {
             grid: () => applyBrush(model, x, y),
             undoStack: () => pushHistory(model.undoStack, model.grid),
@@ -320,7 +320,7 @@ export const update = (model: Model, message: Message) =>
             isDrawing: () => true,
           }),
         })),
-        M.when('Fill', () => {
+        Match.when('Fill', () => {
           const nextModel = evo(model, {
             grid: () => applyFill(model, x, y),
             undoStack: () => pushHistory(model.undoStack, model.grid),
@@ -413,8 +413,8 @@ Both Commands are named definitions with Schema-checked arguments and declared r
 const SaveCanvas = Command.define('SaveCanvas', {
   args: {
     grid: Grid,
-    gridSize: S.Number,
-    paletteThemeIndex: S.Number,
+    gridSize: Schema.Number,
+    paletteThemeIndex: Schema.Number,
     selectedColorIndex: PaletteIndex,
   },
   messages: [CompletedSaveCanvas],
@@ -427,7 +427,10 @@ const SaveCanvas = Command.define('SaveCanvas', {
         paletteThemeIndex,
         selectedColorIndex,
       }
-      yield* store.set(STORAGE_KEY, S.encodeSync(SavedCanvasJsonString)(data))
+      yield* store.set(
+        STORAGE_KEY,
+        Schema.encodeSync(SavedCanvasJsonString)(data),
+      )
       return CompletedSaveCanvas()
     }).pipe(
       Effect.catch(() => Effect.succeed(CompletedSaveCanvas())),
@@ -436,7 +439,11 @@ const SaveCanvas = Command.define('SaveCanvas', {
 })
 
 const ExportPng = Command.define('ExportPng', {
-  args: { grid: Grid, gridSize: S.Number, paletteThemeIndex: S.Number },
+  args: {
+    grid: Grid,
+    gridSize: Schema.Number,
+    paletteThemeIndex: Schema.Number,
+  },
   messages: [SucceededExportPng, FailedExportPng],
   execute: ({ grid, gridSize, paletteThemeIndex }) =>
     Effect.gen(function* () {
@@ -609,7 +616,7 @@ It renders `App` in jsdom, simulates a stroke, spies on localStorage, and waits 
 The Scene test clicks Export, resolves the resulting Commands, and dismisses the Dialog:
 
 ```
-import { Message as DialogMessage } from '@foldkit/ui/dialog'
+import { Dialog } from '@foldkit/ui'
 
 test('failed export shows error dialog that can be dismissed', () => {
   scene(
@@ -623,7 +630,7 @@ test('failed export shows error dialog that can be dismissed', () => {
       ExportPng,
       FailedExportPng({ error: 'Canvas 2D context not available' }),
     ),
-    Command.resolve(Dialog.ShowDialog, DialogMessage.SucceededShowDialog()),
+    Command.resolve(Dialog.ShowDialog, Dialog.Message.SucceededShowDialog()),
     // The error dialog is open. Find elements by role and text content:
     // no CSS selectors, no test IDs, no DOM.
     expect(text('Export Failed')).toExist(),
@@ -633,7 +640,7 @@ test('failed export shows error dialog that can be dismissed', () => {
     click(role('button', { name: 'Dismiss' })),
     // The update function returned a CloseDialog Command. Resolve it
     // the same way a story test does: synchronously, inline.
-    Command.resolve(Dialog.CloseDialog, DialogMessage.CompletedCloseDialog()),
+    Command.resolve(Dialog.CloseDialog, Dialog.Message.CompletedCloseDialog()),
     // After the Command resolves, the dialog is gone.
     expect(text('Export Failed')).toBeAbsent(),
   )
@@ -699,7 +706,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   ),
 
   mouseRelease: entry(
-    { isDrawing: S.Boolean },
+    { isDrawing: Schema.Boolean },
     {
       modelToDependencies: model => ({ isDrawing: model.isDrawing }),
       dependenciesToStream: ({ isDrawing }) =>

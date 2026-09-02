@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/stopwatch
 title: "Stopwatch"
 description: "A stopwatch with start, stop, and reset. Demonstrates a time-based Subscription."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -25,7 +25,7 @@ import {
   Clock,
   Duration,
   Effect,
-  Schema as S,
+  Schema,
   Stream,
   String,
   flow,
@@ -42,10 +42,10 @@ const TICK_INTERVAL_MS = 10
 
 // MODEL
 
-export const Model = S.Struct({
-  elapsedMs: S.Number,
-  isRunning: S.Boolean,
-  startTime: S.Number,
+export const Model = Schema.Struct({
+  elapsedMs: Schema.Number,
+  isRunning: Schema.Boolean,
+  startTime: Schema.Number,
 })
 export type Model = typeof Model.Type
 
@@ -53,11 +53,11 @@ export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   ClickedStart: {},
-  CompletedDetermineStartTime: { startTime: S.Number },
+  CompletedDetermineStartTime: { startTime: Schema.Number },
   ClickedStop: {},
   ClickedReset: {},
   Ticked: {},
-  CompletedDetermineTickTime: { elapsedMs: S.Number },
+  CompletedDetermineTickTime: { elapsedMs: Schema.Number },
 })
 
 export type Message = typeof Message.Type
@@ -65,7 +65,7 @@ export type Message = typeof Message.Type
 // COMMAND
 
 export const DetermineStartTime = Command.define('DetermineStartTime', {
-  args: { elapsedMs: S.Number },
+  args: { elapsedMs: Schema.Number },
   messages: [Message.CompletedDetermineStartTime],
   execute: ({ elapsedMs }) =>
     Effect.gen(function* () {
@@ -75,7 +75,7 @@ export const DetermineStartTime = Command.define('DetermineStartTime', {
 })
 
 export const DetermineTickTime = Command.define('DetermineTickTime', {
-  args: { startTime: S.Number },
+  args: { startTime: Schema.Number },
   messages: [Message.CompletedDetermineTickTime],
   execute: ({ startTime }) =>
     Effect.gen(function* () {
@@ -140,7 +140,7 @@ export const init: Runtime.ApplicationInit<Model, Message> = () => ({
 
 export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   tick: entry(
-    { isRunning: S.Boolean },
+    { isRunning: Schema.Boolean },
     {
       modelToDependencies: model => ({ isRunning: model.isRunning }),
       dependenciesToStream: ({ isRunning }) =>

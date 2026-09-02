@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/ssr
 title: "Server-Side Rendering"
 description: "A server renders each request into HTML using Flags read from a cookie, and the client hydrates with the exact values the server used. Reload the page and your latest count arrives already in the markup, before any JavaScript runs."
-access_date: 2026-08-18T16:38:52.332Z
-current_date: 2026-08-18T16:38:52.332Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -25,7 +25,7 @@ Flags
 Server-Side Rendering renders each page on a server at request time, so a static preview cannot demonstrate it. Launch the playground to see the server round-trip live, or run the example locally.
 
 ```
-import { Config, Effect, Layer, Match as M, Option } from 'effect'
+import { Config, Effect, Layer, Match, Option } from 'effect'
 import { FileSystem } from 'effect'
 import {
   Headers as HttpHeaders,
@@ -116,12 +116,12 @@ const requestKind = ({
   method,
   url,
 }: HttpServerRequest.HttpServerRequest): RequestKind =>
-  M.value(method).pipe(
-    M.withReturnType<RequestKind>(),
-    M.whenOr('GET', 'HEAD', () =>
+  Match.value(method).pipe(
+    Match.withReturnType<RequestKind>(),
+    Match.whenOr('GET', 'HEAD', () =>
       Server.resolvesToIndexHtml(url) ? 'Render' : 'StaticOrRender',
     ),
-    M.orElse(() =>
+    Match.orElse(() =>
       Server.isHostSettledMethod(method) ? 'HostSettled' : 'Render',
     ),
   )
@@ -166,21 +166,21 @@ const makeHandler = Effect.gen(function* () {
   ) =>
     staticFiles.pipe(
       Effect.catchIf(isRouteNotFound, () =>
-        M.value(
+        Match.value(
           Server.classifyRequest(
             request.url,
             request.headers['sec-fetch-dest'],
           ),
         ).pipe(
-          M.when('PathAsset', () =>
+          Match.when('PathAsset', () =>
             Effect.succeed(HttpServerResponse.empty({ status: 404 })),
           ),
-          M.when('DestinationAsset', () =>
+          Match.when('DestinationAsset', () =>
             Effect.succeed(
               withNegotiatedVary(HttpServerResponse.empty({ status: 404 })),
             ),
           ),
-          M.when('Page', () =>
+          Match.when('Page', () =>
             Server.acceptsHtml(request.headers['accept'])
               ? renderRequest(request, template, requestUrl).pipe(
                   Effect.map(withNegotiatedVary),
@@ -189,7 +189,7 @@ const makeHandler = Effect.gen(function* () {
                   withNegotiatedVary(HttpServerResponse.empty({ status: 404 })),
                 ),
           ),
-          M.exhaustive,
+          Match.exhaustive,
         ),
       ),
     )
@@ -203,15 +203,15 @@ const makeHandler = Effect.gen(function* () {
     const normalizedRequest = request.modify({
       url: `${resolved.pathname}${resolved.search}`,
     })
-    const response = M.value(requestKind(normalizedRequest)).pipe(
-      M.when('Render', () =>
+    const response = Match.value(requestKind(normalizedRequest)).pipe(
+      Match.when('Render', () =>
         renderRequest(normalizedRequest, template, requestUrl),
       ),
-      M.when('StaticOrRender', () =>
+      Match.when('StaticOrRender', () =>
         serveStaticOrRender(normalizedRequest, requestUrl),
       ),
-      M.when('HostSettled', () => Effect.succeed(hostSettledResponse())),
-      M.exhaustive,
+      Match.when('HostSettled', () => Effect.succeed(hostSettledResponse())),
+      Match.exhaustive,
     )
     return Effect.provideService(
       response,

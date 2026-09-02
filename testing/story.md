@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/story
 title: "Story"
 description: "Drive update with Messages, inspect the Model and Commands, and supply Command results without executing their Effects."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Story
@@ -18,7 +18,7 @@ The entire test is one `story` call. Start from a Model, send a Message, resolve
 
 Import the steps you need from `foldkit/story`.
 
-- Top-level steps start the test, send Messages, and inspect results: `story`, `given`, `message`, `model`, `expectOutMessage`, and `expectNoOutMessage`.
+- Top-level steps start the test, group reusable setup, send Messages, and inspect results: `story`, `steps`, `given`, `message`, `model`, `expectOutMessage`, and `expectNoOutMessage`.
 - The `Command` namespace handles pending Commands: `resolve`, `resolveAll`, `resolveAllExact`, `expectHas`, `expectExact`, and `expectNone`.
 
 Use named imports when the file contains only Story tests. If a file contains both Story and Scene tests, import the namespaces from `foldkit` so `Story.given` and `Scene.given` stay distinct.
@@ -31,6 +31,7 @@ import {
   given,
   message,
   model,
+  steps,
   story,
 } from 'foldkit/story'
 
@@ -39,6 +40,9 @@ given(model)
 
 // Send a Message. Commands stay pending.
 message(ClickedSubmit())
+
+// Group a reusable sequence without erasing its step types.
+steps(given(initialModel), message(ClickedSubmit()))
 
 // Resolve one Command with its result. Pass a Definition to match by name,
 // or a Command instance to match by name AND args.
@@ -192,6 +196,43 @@ Unresolved Commands
 
 `message` throws if there are pending Commands from a previous step. Resolve all Commands before sending the next Message. `story` throws at the end if any Commands remain unresolved. Every Command your update function produces must be accounted for.
 
+## Reusable Step Groups
+
+Use `steps` when several stories share the same setup or Message sequence. The group preserves the Model, Message, and OutMessage constraints of every step inside it, so the update passed to `story` still rejects a group built for a different program.
+
+```
+import { given, message, model, steps, story } from 'foldkit/story'
+import { expect, test } from 'vitest'
+
+const givenIncremented = steps(given({ count: 0 }), message(ClickedIncrement()))
+
+test('increments again', () => {
+  story(
+    update,
+    givenIncremented,
+    message(ClickedIncrement()),
+    model(model => {
+      expect(model.count).toBe(2)
+    }),
+  )
+})
+
+test('decrements from the shared setup', () => {
+  story(
+    update,
+    givenIncremented,
+    message(ClickedDecrement()),
+    model(model => {
+      expect(model.count).toBe(0)
+    }),
+  )
+})
+```
+
+A group can contain any step accepted by `story`, including `given`, `message`, Model assertions, Command steps, OutMessage assertions, and another `steps` group. `story` runs the group in declaration order at the position where it appears.
+
+Do not use Effect's `flow` to group Story steps. Message and OutMessage steps are typed data, not functions, and `steps` is the boundary that preserves their types. This does not replace `flow` for ordinary function composition elsewhere in an application.
+
 ## Testing Side Effects
 
 Story tests the state machine. It does not run the Effect inside a Command.
@@ -199,15 +240,15 @@ Story tests the state machine. It does not run the Effect inside a Command.
 To test that a Command’s Effect works correctly (for example, that an HTTP request parses the response right), test it separately with `Effect.provide` and a mock service layer:
 
 ```
-import { Effect, Layer, Match as M, String } from 'effect'
+import { Effect, Layer, Match, String } from 'effect'
 import { HttpClient, HttpClientResponse } from 'effect/unstable/http'
 import { expect, test } from 'vitest'
 
 test('fetchWeather returns SucceededFetchWeather on success', async () => {
   const mockClient = HttpClient.make(request =>
     Effect.sync(() => {
-      const responseData = M.value(request.url).pipe(
-        M.when(String.includes('geocoding'), () => ({
+      const responseData = Match.value(request.url).pipe(
+        Match.when(String.includes('geocoding'), () => ({
           results: [
             {
               name: 'Beverly Hills',
@@ -217,7 +258,7 @@ test('fetchWeather returns SucceededFetchWeather on success', async () => {
             },
           ],
         })),
-        M.when(String.includes('forecast'), () => ({
+        Match.when(String.includes('forecast'), () => ({
           current: {
             time: '2026-03-10T01:30',
             interval: 900,
@@ -227,7 +268,7 @@ test('fetchWeather returns SucceededFetchWeather on success', async () => {
             weather_code: 0,
           },
         })),
-        M.orElse(url => {
+        Match.orElse(url => {
           throw new Error(`Unexpected request URL: ${url}`)
         }),
       )

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/selection-submodels
 title: "Selection Submodels"
 description: "Use create<Item>() factories to keep one item type across a selection Submodel’s view, update, programmatic helpers, and OutMessages."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
@@ -20,7 +20,7 @@ A Listbox over a literal-union `Plan` type:
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -28,7 +28,7 @@ import { evo } from 'foldkit/struct'
 
 import { Listbox } from '@foldkit/ui'
 
-const Plan = S.Literals(['Free', 'Pro', 'Enterprise'])
+const Plan = Schema.Literals(['Free', 'Pro', 'Enterprise'])
 type Plan = typeof Plan.Type
 
 // Declare a typed Listbox once at module scope. \`view\` and \`update\` are
@@ -39,8 +39,8 @@ const PlanListbox = Listbox.create<Plan>()
 // Add a field to your Model for the Listbox Submodel, plus a field for
 // the selected value your app actually cares about. Using the \`Plan\`
 // Schema keeps the field literal-typed end to end:
-const Model = S.Struct({
-  maybePlan: S.Option(Plan),
+const Model = Schema.Struct({
+  maybePlan: Schema.Option(Plan),
   listbox: Listbox.Model,
   // ...your other fields
 })
@@ -63,14 +63,14 @@ const Message = defineMessageUnion({
 // commits a selection it carries \`Selected({ value })\` where \`value: Plan\`.
 // The arm returns an Update.Step over the parent Model, which already has the
 // next Listbox Model written back:
-const foldListboxOutMessage = M.type<Listbox.OutMessage<Plan>>().pipe(
-  M.withReturnType<Update.Step<Model, Message>>(),
-  M.tagsExhaustive({
-    Selected:
-      ({ value }) =>
-      model => ({ model: evo(model, { maybePlan: () => Option.some(value) }) }),
-  }),
-)
+const foldListboxOutMessage = Listbox.OutMessage.match<
+  Update.Step<Model, Message>,
+  Listbox.OutMessage<Plan>
+>({
+  Selected:
+    ({ value }) =>
+    model => ({ model: evo(model, { maybePlan: () => Option.some(value) }) }),
+})
 
 // Update.foldChild wires the child into the parent: it delegates keyboard
 // navigation, typeahead, and open/close to PlanListbox.update, writes the next

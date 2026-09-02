@@ -2,13 +2,13 @@
 url: https://foldkit.dev/ui/animation
 title: "Animation"
 description: "Coordinates CSS enter/leave animations via a state machine and data attributes. Works with both CSS transitions and keyframe animations."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
 
-Animation coordinates CSS enter and leave phases with a state machine and data attributes. You dispatch `Showed` or `Hid`, Animation records each lifecycle phase in its Model, and your CSS styles those phases. The transitions stay visible in DevTools and can be tested through update without waiting for a browser animation.
+Animation coordinates CSS enter and leave phases with a state machine and data attributes. A parent invokes the child-owned `show`, `hide`, or `toggle` update capability through `Update.foldChildStep`; Animation applies its internal `Showed` or `Hid` fact, records each lifecycle phase in its Model, and exposes the resulting Commands through the fold. The transitions stay visible in DevTools and can be tested through update without waiting for a browser animation.
 
 Animation uses the [OutMessage](https://foldkit.dev/core/submodel#surfacing-facts) pattern. The `foldOutMessage` of your [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child) config handles `StartedLeaveAnimating` by providing a Command that detects settlement, then handles `TransitionedOut` when post-animation cleanup can begin. Dialog, Menu, Popover, Listbox, and Combobox use the same Submodel internally when `isAnimated` is true.
 
@@ -30,24 +30,23 @@ Check out how Animation is wired up in a [real Foldkit app](https://github.com/f
 
 ## Examples
 
-Send `Animation.Showed()` to start the enter animation and `Animation.Hid()` to start the leave animation. Style with Tailwind data-attribute selectors like `data-[closed]:opacity-0`.
+Fold `Animation.show` with `Update.foldChildStep` to start the enter animation and fold `Animation.hide` to start the leave animation. Style with Tailwind data-attribute selectors like `data-[closed]:opacity-0`.
 
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 import { Animation } from '@foldkit/ui'
-import { Message as AnimationMessage } from '@foldkit/ui/animation'
 
 // Add a field to your Model for the Animation Submodel. Animation tracks
 // its own visibility and lifecycle state. No need for a separate flag:
-const Model = S.Struct({
+const Model = Schema.Struct({
   animation: Animation.Model,
   // ...your other fields
 })
@@ -63,6 +62,7 @@ const init = () => ({
 // Embed the Animation Message in your parent Message:
 const Message = defineMessageUnion({
   GotAnimationMessage: { message: Animation.Message },
+  ClickedToggleAnimation: {},
 })
 type Message = typeof Message.Type
 
@@ -112,29 +112,44 @@ const foldAnimation = Update.foldChild({
   foldOutMessage: foldAnimationOutMessage,
 })
 
-// In the corresponding Message.match handler, call the fold:
-GotAnimationMessage: ({ message }) => foldAnimation(model, message)
+// Programmatic child capabilities take the child Model and return its next
+// Model and Commands. foldChildStep integrates that result without exposing
+// the internal Showed or Hid Message constructors to the parent.
+const foldAnimationShow = Update.foldChildStep({
+  update: Animation.show,
+  read: (model: Model) => Option.some(model.animation),
+  write: (model, nextAnimation) =>
+    evo(model, { animation: () => nextAnimation }),
+  toParentMessage: message => Message.GotAnimationMessage({ message }),
+})
 
-// Inside your view function, toggle visibility by dispatching
-// AnimationMessage.Showed() or AnimationMessage.Hid() wrapped in your parent
-// Message. model.animation.isShowing is your
-// source of truth for whether content is currently visible. The Animation
-// view wraps your content. Data attributes drive the CSS transitions or
-// keyframe animations defined in className:
+const foldAnimationHide = Update.foldChildStep({
+  update: Animation.hide,
+  read: (model: Model) => Option.some(model.animation),
+  write: (model, nextAnimation) =>
+    evo(model, { animation: () => nextAnimation }),
+  toParentMessage: message => Message.GotAnimationMessage({ message }),
+})
+
+// In the corresponding Message.match handlers, route child Messages through
+// the regular fold and parent-owned actions through the child capabilities:
+GotAnimationMessage: ({ message }) => foldAnimation(model, message)
+ClickedToggleAnimation: () =>
+  model.animation.isShowing
+    ? foldAnimationHide(model)
+    : foldAnimationShow(model)
+
+// Inside your view function, dispatch a parent-owned fact. The parent update
+// invokes the child capability. model.animation.isShowing is your source of
+// truth for whether content is currently visible. The Animation view wraps
+// your content. Data attributes drive the CSS transitions or keyframe
+// animations defined in className:
 const view = (h: HtmlBuilder<Message>) =>
   h.div(
     [],
     [
       h.button(
-        [
-          h.OnClick(
-            Message.GotAnimationMessage({
-              message: model.animation.isShowing
-                ? AnimationMessage.Hid()
-                : AnimationMessage.Showed(),
-            }),
-          ),
-        ],
+        [h.OnClick(Message.ClickedToggleAnimation())],
         [model.animation.isShowing ? 'Hide' : 'Show'],
       ),
       h.submodel({
@@ -157,11 +172,13 @@ const view = (h: HtmlBuilder<Message>) =>
 
 Animation drives the enter phase to completion on its own. The leave phase hands control back to the parent halfway through so the parent can decide how settlement is detected. For example, Foldkit's [Dialog](https://foldkit.dev/ui/dialog) just waits for CSS, while its [Popover](https://foldkit.dev/ui/popover) races CSS against the anchor button scrolling off-screen. The asymmetry exists because leave detection varies by consumer, while enter detection does not.
 
+Internally, the `show`, `hide`, and `toggle` capabilities apply the `Showed` or `Hid` Message according to the current Animation Model and requested transition.
+
 ```
 ENTER                                LEAVE
 Animation drives completion          Parent detects settlement
 
-Showed()                              Hid()
+show()                                hide()
    |                                    |
    v                                    v
 EnterStart                           LeaveStart
@@ -200,6 +217,10 @@ The `animateSize` option uses CSS grid (`grid-template-rows: 0fr` → `1fr`) for
 
 ## API Reference
 
+### toggle
+
+`Animation.toggle(model)` returns the Animation update result that starts the enter or leave lifecycle according to `model.isShowing`. Use it as the `update` entry point of `Update.foldChildStep` when the parent does not need to choose a directional capability.
+
 ### InitConfig
 
 Configuration object passed to `Animation.init()`.
@@ -208,6 +229,10 @@ Configuration object passed to `Animation.init()`.
 | --- | --- | --- | --- |
 | `id` | `string` | — | Unique ID for the animation instance. |
 | `isShowing` | `boolean` | `false` | Initial visibility state. |
+
+### show and hide
+
+`Animation.show(model)` and `Animation.hide(model)` return the next Animation Model and any Commands. Fold these child entry points into the parent with `Update.foldChildStep`; do not construct `Animation.Message.Showed()` or `Animation.Message.Hid()` from the parent.
 
 ### ViewConfig
 
@@ -220,7 +245,7 @@ Configuration object passed to `Animation.view()`.
 | `animateSize` | `boolean` | `false` | Animates height collapse/expand using CSS grid. When true, the element stays in the DOM with grid-template-rows transitioning between 0fr and 1fr. |
 | `className` | `string` | — | CSS class for the animation wrapper. |
 | `attributes` | `ReadonlyArray<Attribute<Message>>` | — | Additional attributes for the wrapper. |
-| `element` | `TagName` | `'div'` | The HTML element for the wrapper. |
+| `element` | `Exclude<TagName, 'textarea'>` | `'div'` | The HTML element for the wrapper. Textarea is excluded because the wrapper renders children. |
 
 ### OutMessage
 

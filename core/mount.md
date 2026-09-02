@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/mount
 title: "Mount"
 description: "Run DOM work while a specific rendered element exists. Mount supplies the live Element, emits declared result Messages, and keeps setup paired with cleanup."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
@@ -12,7 +12,7 @@ Most Foldkit code is declarative. The [view](https://foldkit.dev/core/view) is a
 
 Mount is the escape hatch for work whose cause is a particular element existing in the DOM. `OnMount` supplies the live `Element`, starts the work when that element enters the DOM, and tears it down when the element leaves.
 
-Use `Mount.define` for work that produces one Message when it starts. Its `execute` receives the live element and returns an `Effect<Message>` that emits that Message, then its scope remains open until unmount so cleanup registered with `Effect.acquireRelease` runs at the right time. Use `Mount.defineStream` when listeners or observers on the element must emit a continuing `Stream<Message>`.
+Use `Mount.define` for work that produces one Message when it starts. Its `execute` receives the live element and the rendered view's state, then returns an `Effect<Message>` that emits that Message. Its scope remains open until unmount so cleanup registered with `Effect.acquireRelease` runs at the right time. Use `Mount.defineStream` when listeners or observers on the element must emit a continuing `Stream<Message>`.
 
 Both forms require at least one declared result Message. When no result needs to change the Model, return a descriptive `Completed*` Message and leave the Model unchanged in update. The Message keeps the effect visible to DevTools, Scene tests, and replay.
 
@@ -92,7 +92,7 @@ DevTools re-renders historical Models. Elements inserted during replay run their
 
 ## Per-Instance Args
 
-A Mount often needs an input that differs by element instance, such as an initial scroll position, chart data, or a stable host id. Declare those under `args`, using the same Schema record shape a [Command](https://foldkit.dev/core/commands) takes. `args`, `messages`, and `execute` are all named fields on one config object. `execute` receives the live element as `element` alongside the declared args, so an args field named `element` is rejected where you declare it:
+A Mount often needs an input that differs by element instance, such as an initial scroll position, chart data, or a stable host id. Declare those under `args`, using the same Schema record shape a [Command](https://foldkit.dev/core/commands) takes. `args`, `messages`, and `execute` are all named fields on one config object. `execute` receives the runtime fields `element` and `viewStateChanges` alongside the declared args, so those names are reserved and rejected under `args`:
 
 ```
 Mount.define(name, {
@@ -116,6 +116,58 @@ Args are captured at mount
 
 When a later Message changes the Model and should trigger new DOM work, return a Command from that Message's update handler. A Subscription is appropriate when a Model dependency controls the lifetime of an external stream or a paired DOM state, or when a browser event must be handled synchronously, such as calling `preventDefault` inside its listener. Mount args are not reactive properties for either case.
 
+## Paused Historical Views
+
+Time travel pauses the rendered view, not the application. The live Model, history, Commands, Subscriptions, and ManagedResources continue normally behind the historical DOM. A Mount owns imperative behavior attached to an element in that rendered view, so its `execute` input includes `viewStateChanges`, a `Stream<'Live' | 'Paused'>`.
+
+### Observing the View State
+
+The Stream begins with the rendered view state at the moment the Mount is acquired, followed by changes. That initial state is retained while `execute` performs asynchronous setup, so a Mount inserted by a historical render receives `Paused` first even if it consumes the Stream only after setup finishes. The Stream stays open for the Mount's lifetime and reports only `Live` when time travel is unavailable. A surviving live Mount is not restarted, interrupted, or reacquired when the view pauses. On resume, Mounts receive `Live` only after Foldkit has patched the latest live view back into the DOM.
+
+Custom renderers without time travel can pass `Mount.liveViewStateChanges` as the required second argument to a low-level `MountAction.f` call. It emits `Live` immediately and stays open.
+
+### Keeping Imperative UI Read-only
+
+Use the Stream to update state owned by the imperative integration itself. For example, a rich-text editor can call its read-only API while the historical view is installed, then restore editing when the live view returns:
+
+```
+import { Effect, Stream } from 'effect'
+import { Mount } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+
+import { Editor } from '@tiptap/core'
+
+const Message = defineMessageUnion({
+  CompletedMountEditor: {},
+})
+
+const MountEditor = Mount.define('MountEditor', {
+  messages: [Message.CompletedMountEditor],
+  execute: ({ element, viewStateChanges }) =>
+    Effect.gen(function* () {
+      const editor = yield* Effect.acquireRelease(
+        Effect.sync(() => new Editor({ element })),
+        mountedEditor => Effect.sync(() => mountedEditor.destroy()),
+      )
+
+      yield* viewStateChanges.pipe(
+        Stream.runForEach(viewState =>
+          Effect.sync(() => editor.setEditable(viewState === 'Live')),
+        ),
+        Effect.forkScoped,
+      )
+
+      return Message.CompletedMountEditor()
+    }),
+})
+```
+
+### Live and Historical Mounts
+
+A Mount acquired by the live view keeps participating in the live application while a historical view is displayed. Its asynchronous setup can complete, and its external streams can keep producing Messages. Foldkit cannot tell whether an arbitrary Stream emission came from historical DOM interaction, a timer, an observer, or a network source, so the integration must use `viewStateChanges` to stop its own DOM-derived interaction while paused. Do not translate this signal into an application Message. It describes which Model the DOM currently represents, not a change to application state.
+
+A Mount acquired by a historical render is different: its Messages cannot reach update, change the live Model, or enter history. If the resumed live view reuses that element and declares a Mount there, Foldkit releases the replay acquisition before starting the live action with the live render's args and dispatch. Cleanup finishes before the replacement setup begins, so the old integration cannot tear down the new handle. Within the live render owner, a surviving Mount follows the latest live Submodel `toParentMessage` wiring, matching event handlers without ever borrowing a historical render's wiring.
+
 ## Third-Party Libraries
 
 Mount is especially useful when a library owns a rendered subtree. Charts, code editors, map renderers, and force-directed graphs all need a real element to render into and a way to release their resources.
@@ -123,14 +175,14 @@ Mount is especially useful when a library owns a rendered subtree. Charts, code 
 Construct the handle in an acquire Effect, return the Mount's result Message, and register teardown with `Effect.acquireRelease`. The Effect can finish after emitting its Message because Foldkit keeps its scope open until the element unmounts.
 
 ```
-import { Effect, Schema as S } from 'effect'
+import { Effect, Schema } from 'effect'
 import { Mount } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 const Message = defineMessageUnion({
   SucceededMountChart: {},
-  FailedMountChart: { reason: S.String },
+  FailedMountChart: { reason: Schema.String },
 })
 
 // Mount.define gives the action a name and constrains what Messages it can
@@ -139,7 +191,7 @@ const Message = defineMessageUnion({
 // live element on insert, runs the Effect to produce one Message, dispatches
 // it, and closes the scope on destroy (firing any acquireRelease finalizers).
 
-const ChartData = S.Array(S.Number)
+const ChartData = Schema.Array(Schema.Number)
 type ChartData = typeof ChartData.Type
 
 const MountChart = Mount.define('MountChart', {

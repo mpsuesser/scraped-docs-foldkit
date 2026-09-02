@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/virtual-list
 title: "Virtual List"
 description: "Render only visible rows plus overscan while spacers preserve scroll geometry. Supports fixed and variable row heights, measurement, and programmatic scrolling."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## VirtualList
@@ -30,7 +30,7 @@ Every row uses the same height, configured at init through `rowHeightPx`. The co
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, view, and subscription definitions.
-import { Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import { Subscription, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -41,7 +41,7 @@ import { VirtualList } from '@foldkit/ui'
 // Add a field to your Model for the VirtualList Submodel. The list items
 // stay in your domain Model (your own \`activities\`, \`messages\`, \`rows\`,
 // whatever you call them); only scroll and measurement state live here:
-const Model = S.Struct({
+const Model = Schema.Struct({
   activityList: VirtualList.Model,
   // ...your other fields, including the items array you want to render
 })
@@ -314,6 +314,6 @@ Configuration object passed to `VirtualList.view()`.
 | `itemToView` | `(item: Item, index: number) => Html` | — | Renders one row's contents. The framework wraps your output in a row-height grid container; use flex or grid with align-items: center inside to vertically center your content. |
 | `itemToRowHeightPx` | `(item: Item, index: number) => number` | — | Optional. When provided, the list renders with variable-height rows: each row wrapper takes the height returned for its item, and slice and spacer math walks the items to compute cumulative offsets. When absent, every row uses model.rowHeightPx. Prefer the uniform path when row heights are stable. |
 | `overscan` | `number` | `5` | Number of rows mounted above and below the visible viewport. Higher values can make fast scrolling smoother at the cost of mounting more DOM. Choose a value that suits the row mount cost. |
-| `rowElement` | `TagName` | `'li'` | HTML tag for each row wrapper. Defaults to li (since the container is rendered as ul). Override only when you also wrap the list in something whose children aren't expected to be li. |
+| `rowElement` | `Exclude<TagName, 'textarea'>` | `'li'` | HTML tag for each row wrapper. Textarea is excluded because each row wrapper renders a child. Defaults to li (since the container is rendered as ul). Override only when you also wrap the list in something whose children aren't expected to be li. |
 | `containerClassName` | `string \| undefined` | — | CSS class applied to the scrollable container. The container needs a constrained height (e.g. h-96) for virtualization to work. |
 | `containerAttributes` | `ReadonlyArray<ChildAttribute> \| undefined` | — | Additional attributes spread onto the scrollable container. Pass extra Style({...}) entries for CSS like overscroll-behavior or scroll-margin, data attributes, or any other ChildAttribute. |

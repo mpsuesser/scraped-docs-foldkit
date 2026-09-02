@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/field-validation
 title: "Field Validation"
 description: "Model each field as NotValidated, Validating, Invalid, or Valid. Compose synchronous and asynchronous Rules, cross-field checks, and form-level validation."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Field Validation
@@ -15,7 +15,7 @@ Foldkit models field validation as data in your Model, not scattered logic acros
 `makeRules` takes an options object and returns a `Rules` bundle. `Field(valueSchema)` builds the four-state Schema you put in your Model.
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { Field, Rule, makeRules } from 'foldkit/fieldValidation'
 
 // Optional: no `required` option. The rule applies when the user fills it in.
@@ -36,10 +36,10 @@ const interestsRules = makeRules<ReadonlyArray<string>>({
   rules: [Rule.maxItems(5, 'Choose up to five')],
 })
 
-const Model = S.Struct({
-  username: Field(S.String),
-  email: Field(S.String),
-  interests: Field(S.Array(S.String)),
+const Model = Schema.Struct({
+  username: Field(Schema.String),
+  email: Field(Schema.String),
+  interests: Field(Schema.Array(Schema.String)),
 })
 type Model = typeof Model.Type
 ```
@@ -66,7 +66,7 @@ Every applicable rule passed.
 
 One or more rules failed, with the errors.
 
-The Schema you pass `Field` should match what the control actually holds as the user edits, not the type you parse it into: `Field(S.String)` for text inputs, `Field(S.Array(S.String))` for a multi-select. A scalar like a checkbox’s boolean usually stays plain `S.Boolean` in the Model; wrap it in `Field` only when it needs the validation lifecycle. Values you reach by parsing text, like numbers and dates, stay `Field(S.String)`: a half-typed entry is still a string, so parse it into its domain type on submit. Validation rules stay separate, in the `Rules` bundle.
+The Schema you pass `Field` should match what the control actually holds as the user edits, not the type you parse it into: `Field(Schema.String)` for text inputs, `Field(Schema.Array(Schema.String))` for a multi-select. A scalar like a checkbox’s boolean usually stays plain `Schema.Boolean` in the Model; wrap it in `Field` only when it needs the validation lifecycle. Values you reach by parsing text, like numbers and dates, stay `Field(Schema.String)`: a half-typed entry is still a string, so parse it into its domain type on submit. Validation rules stay separate, in the `Rules` bundle.
 
 Each entry in the `rules` array is a `Rule`: a `[predicate, errorMessage]` tuple. Error messages can be static strings or functions that receive the invalid value. Foldkit ships built-in rules for common cases; see [Custom Rules](#custom-rules) to write your own.
 
@@ -168,7 +168,7 @@ Use `isInvalid(state)` or `anyInvalid(states)` when you specifically need to kno
 For server-side checks like “Is this email taken?”, use the `Validating` state as a bridge: run sync `validate` first, then transition to `Validating`, fire a Command, and handle the result message.
 
 ```
-import { Effect, Match as M, Number, Schema as S } from 'effect'
+import { Effect, Match, Number, Schema } from 'effect'
 import { Command, Update } from 'foldkit'
 import { Invalid, Valid, Validating, validate } from 'foldkit/fieldValidation'
 import { evo } from 'foldkit/struct'
@@ -176,7 +176,7 @@ import { evo } from 'foldkit/struct'
 const validateEmail = validate(emailRules)
 
 const CheckEmailAvailable = Command.define('CheckEmailAvailable', {
-  args: { email: S.String, validationId: S.Number },
+  args: { email: Schema.String, validationId: Schema.Number },
   messages: [CompletedCheckEmailAvailable],
   execute: ({ email, validationId }) =>
     Effect.gen(function* () {
@@ -211,15 +211,15 @@ const update = (model: Model, message: Message) =>
       const syncResult = validateEmail(value)
       const validationId = Number.increment(model.emailValidationId)
 
-      return M.value(syncResult).pipe(
-        M.tag('Valid', () => ({
+      return Match.value(syncResult).pipe(
+        Match.tag('Valid', () => ({
           model: evo(model, {
             email: () => Validating({ value }),
             emailValidationId: () => validationId,
           }),
           commands: [CheckEmailAvailable({ email: value, validationId })],
         })),
-        M.orElse(() => ({
+        Match.orElse(() => ({
           model: evo(model, {
             email: () => syncResult,
             emailValidationId: () => validationId,
@@ -384,7 +384,7 @@ When a value is already modeled by a Schema, a domain codec, or a refined or bra
 Its sweet spot is values where “valid” means “decodes”. The Schema can transform a string into a different type, like a `Calendar.CalendarDateFromIsoString` codec that parses a date the string-shaped rules can’t check, or refine and brand it, like a `Slug`. Either way the field reuses the one Schema as its rule, so the check can’t drift from the type you already maintain:
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { Calendar } from 'foldkit'
 import { Field, Rule, makeRules } from 'foldkit/fieldValidation'
 
@@ -392,7 +392,9 @@ import { Field, Rule, makeRules } from 'foldkit/fieldValidation'
 const EventDate = Calendar.CalendarDateFromIsoString
 
 // A refinement Schema: brands a string that matches the pattern.
-const Slug = S.String.check(S.isPattern(/^[a-z0-9-]+$/)).pipe(S.brand('Slug'))
+const Slug = Schema.String.check(Schema.isPattern(/^[a-z0-9-]+$/)).pipe(
+  Schema.brand('Slug'),
+)
 type Slug = typeof Slug.Type
 
 // Reuse each Schema as a rule, so the rule can't drift from the Schema.
@@ -406,10 +408,10 @@ const slugRules = makeRules({
   rules: [Rule.fromSchema(Slug, 'Use lowercase letters, numbers, and hyphens')],
 })
 
-// Each Field wraps S.String, the raw value the control holds.
-const Model = S.Struct({
-  eventDate: Field(S.String),
-  slug: Field(S.String),
+// Each Field wraps Schema.String, the raw value the control holds.
+const Model = Schema.Struct({
+  eventDate: Field(Schema.String),
+  slug: Field(Schema.String),
 })
 type Model = typeof Model.Type
 ```

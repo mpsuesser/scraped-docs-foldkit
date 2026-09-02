@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/init-and-flags
 title: "Init & Flags"
 description: "Construct the first Model and startup Commands. Routing supplies the current URL, while Schema-validated Flags support fresh client boots and hydration."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## The First Model
@@ -13,12 +13,12 @@ current_date: 2026-08-31T07:29:25.100Z
 The counter starts at zero and has no startup work:
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import type { Runtime } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 
-const Model = S.Struct({
-  count: S.Number,
+const Model = Schema.Struct({
+  count: Schema.Number,
 })
 type Model = typeof Model.Type
 
@@ -42,25 +42,24 @@ Flags carry data from outside the application into `init`. Typical sources inclu
 Define the boundary with a Flags Schema. For a fresh client boot, also define an Effect that obtains a value matching that Schema:
 
 ```
-import { Effect, Option, Schema as S } from 'effect'
+import { Effect, Option, Schema } from 'effect'
 import { KeyValueStore } from 'effect/unstable/persistence'
 
 import { BrowserKeyValueStore } from '@effect/platform-browser'
 
-const Todo = S.Struct({
-  id: S.String,
-  text: S.String,
-  completed: S.Boolean,
+const Todo = Schema.Struct({
+  id: Schema.String,
+  text: Schema.String,
+  completed: Schema.Boolean,
 })
 
-const Todos = S.Array(Todo)
+const Todos = Schema.Array(Todo)
 
-const TodosJsonString = S.fromJsonString(S.toCodecJson(Todos))
+const TodosJsonString = Schema.fromJsonString(Schema.toCodecJson(Todos))
 
-const Flags = S.Struct({
-  todos: S.Option(Todos),
+const Flags = Schema.Struct({
+  todos: Schema.Option(Todos),
 })
-
 type Flags = typeof Flags.Type
 
 const flags: Effect.Effect<Flags> = Effect.gen(function* () {
@@ -69,7 +68,7 @@ const flags: Effect.Effect<Flags> = Effect.gen(function* () {
     Option.fromNullishOr(yield* store.get('todos')),
   )
 
-  const decodeTodos = S.decodeEffect(TodosJsonString)
+  const decodeTodos = Schema.decodeEffect(TodosJsonString)
   const todos = yield* decodeTodos(todosJson)
 
   return Flags.make({ todos: Option.some(todos) })
@@ -82,18 +81,18 @@ const flags: Effect.Effect<Flags> = Effect.gen(function* () {
 `init` receives the decoded Flags value and folds it into the first Model:
 
 ```
-import { Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import type { Runtime } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 
-const Model = S.Struct({
-  count: S.Number,
-  startingCount: S.Option(S.Number),
+const Model = Schema.Struct({
+  count: Schema.Number,
+  startingCount: Schema.Option(Schema.Number),
 })
 type Model = typeof Model.Type
 
-const Flags = S.Struct({
-  savedCount: S.Option(S.Number),
+const Flags = Schema.Struct({
+  savedCount: Schema.Option(Schema.Number),
 })
 type Flags = typeof Flags.Type
 

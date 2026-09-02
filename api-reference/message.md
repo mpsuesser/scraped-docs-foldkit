@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/message
 title: "Message"
 description: "API documentation for the Message module."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Message
@@ -14,7 +14,7 @@ current_date: 2026-08-31T07:29:25.100Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/schema/index.ts#L368)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/schema/index.ts#L412)
 
 ```
 /**
@@ -48,12 +48,14 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/schema/index.ts#L270)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/schema/index.ts#L309)
 
 ```
 /**
  * The Schema returned by `defineMessageUnion`. Each variant is a callable
- * property on the union, and `match` handles the union exhaustively.
+ * property on the union, and `match` handles the union exhaustively. Pass a
+ * structurally refined union as `match`'s optional second type argument to
+ * preserve narrower payload fields in each handler.
  */
 type MessageUnion = UnionSchema<CasesByTag> & {
   readonly [Tag in keyof CasesByTag & string]: CallableTaggedStruct<Tag, CasesByTag[Tag]>

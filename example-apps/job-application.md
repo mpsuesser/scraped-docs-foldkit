@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/job-application
 title: "Job Application"
 description: "A multi-step form with asynchronous email validation, cross-field date constraints, file uploads, and per-step error indicators."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -25,7 +25,7 @@ UI Components
 /
 
 ```
-import { Crypto, Effect, Schema as S } from 'effect'
+import { Crypto, Effect, Schema } from 'effect'
 import { Calendar, Runtime } from 'foldkit'
 
 import { BrowserCrypto } from '@effect/platform-browser'
@@ -46,11 +46,11 @@ import { view } from './view'
 
 // FLAGS
 
-export const Flags = S.Struct({
+export const Flags = Schema.Struct({
   today: Calendar.CalendarDate,
-  initialWorkHistoryEntryId: S.String,
-  initialEducationEntryId: S.String,
-  initialSkillsEntryId: S.String,
+  initialWorkHistoryEntryId: Schema.String,
+  initialEducationEntryId: Schema.String,
+  initialSkillsEntryId: Schema.String,
 })
 export type Flags = typeof Flags.Type
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/slow-warnings
 title: "Slow Warnings"
 description: "Trigger slow update, view, patch, and Subscription dependency warnings at their default thresholds, then inspect them in a visible log."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -23,15 +23,7 @@ Diagnostics
 /
 
 ```
-import {
-  Array,
-  Match as M,
-  Number,
-  Option,
-  Schema as S,
-  Stream,
-  pipe,
-} from 'effect'
+import { Array, Match, Number, Option, Schema, Stream, pipe } from 'effect'
 import { Runtime, Subscription, type Update } from 'foldkit'
 import { type Document, type Html, HtmlBuilder, createLazy } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -44,7 +36,7 @@ const PATCH_ROW_COUNT = 4000
 const MAX_WARNING_COUNT = 8
 const SLOW_WARNING_EVENT = 'foldkit:slow-warning'
 
-const Workload = S.Literals([
+const Workload = Schema.Literals([
   'Idle',
   'Update',
   'View',
@@ -55,29 +47,29 @@ type Workload = typeof Workload.Type
 
 type SlowPhase = Runtime.SlowPhase
 
-export const SlowWarningReport = S.Struct({
+export const SlowWarningReport = Schema.Struct({
   phase: Runtime.SlowPhase,
-  durationMs: S.Number,
-  thresholdMs: S.Number,
-  trigger: S.String,
-  details: S.String,
+  durationMs: Schema.Number,
+  thresholdMs: Schema.Number,
+  trigger: Schema.String,
+  details: Schema.String,
 })
 export type SlowWarningReport = typeof SlowWarningReport.Type
 
-export const SlowWarning = S.Struct({
-  id: S.Number,
+export const SlowWarning = Schema.Struct({
+  id: Schema.Number,
   ...SlowWarningReport.fields,
 })
 export type SlowWarning = typeof SlowWarning.Type
 
 // MODEL
 
-export const Model = S.Struct({
+export const Model = Schema.Struct({
   activeWorkload: Workload,
-  nextWarningId: S.Number,
-  warnings: S.Array(SlowWarning),
-  patchRows: S.Number,
-  patchRun: S.Number,
+  nextWarningId: Schema.Number,
+  warnings: Schema.Array(SlowWarning),
+  patchRows: Schema.Number,
+  patchRun: Schema.Number,
 })
 export type Model = typeof Model.Type
 
@@ -118,9 +110,9 @@ const maybeMessageTrigger = (message: Option.Option<Message>): string =>
 const triggerForSlowContext = (
   context: Runtime.SlowContext<Model, Message>,
 ): string =>
-  M.value(context).pipe(
-    M.withReturnType<string>(),
-    M.tagsExhaustive({
+  Match.value(context).pipe(
+    Match.withReturnType<string>(),
+    Match.tagsExhaustive({
       Update: ({ message }) => messageToTag(message),
       View: ({ message }) => maybeMessageTrigger(message),
       Patch: ({ message }) => maybeMessageTrigger(message),
@@ -131,9 +123,9 @@ const triggerForSlowContext = (
 const detailsForSlowContext = (
   context: Runtime.SlowContext<Model, Message>,
 ): string =>
-  M.value(context).pipe(
-    M.withReturnType<string>(),
-    M.tagsExhaustive({
+  Match.value(context).pipe(
+    Match.withReturnType<string>(),
+    Match.tagsExhaustive({
       Update: () =>
         'CPU work ran inside update before Foldkit could return the next Model.',
       View: () =>
@@ -146,13 +138,13 @@ const detailsForSlowContext = (
   )
 
 const phaseLabel = (phase: SlowPhase): string =>
-  M.value(phase).pipe(
-    M.withReturnType<string>(),
-    M.when('Update', () => 'Update'),
-    M.when('View', () => 'View'),
-    M.when('Patch', () => 'Patch'),
-    M.when('SubscriptionDependencies', () => 'Subscription dependencies'),
-    M.exhaustive,
+  Match.value(phase).pipe(
+    Match.withReturnType<string>(),
+    Match.when('Update', () => 'Update'),
+    Match.when('View', () => 'View'),
+    Match.when('Patch', () => 'Patch'),
+    Match.when('SubscriptionDependencies', () => 'Subscription dependencies'),
+    Match.exhaustive,
   )
 
 const slowContextToReport = (
@@ -260,7 +252,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
       toMessage: event =>
         pipe(
           event.detail,
-          S.decodeUnknownOption(SlowWarningReport),
+          Schema.decodeUnknownOption(SlowWarningReport),
           Option.map(report => Message.RecordedSlowWarning({ report })),
         ),
     }),
@@ -295,16 +287,16 @@ const secondaryButtonClass =
   'inline-flex items-center justify-center rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-950'
 
 const phaseAccentClass = (phase: SlowPhase): string =>
-  M.value(phase).pipe(
-    M.withReturnType<string>(),
-    M.when('Update', () => 'border-amber-400 bg-amber-50 text-amber-950'),
-    M.when('View', () => 'border-sky-400 bg-sky-50 text-sky-950'),
-    M.when('Patch', () => 'border-rose-400 bg-rose-50 text-rose-950'),
-    M.when(
+  Match.value(phase).pipe(
+    Match.withReturnType<string>(),
+    Match.when('Update', () => 'border-amber-400 bg-amber-50 text-amber-950'),
+    Match.when('View', () => 'border-sky-400 bg-sky-50 text-sky-950'),
+    Match.when('Patch', () => 'border-rose-400 bg-rose-50 text-rose-950'),
+    Match.when(
       'SubscriptionDependencies',
       () => 'border-emerald-400 bg-emerald-50 text-emerald-950',
     ),
-    M.exhaustive,
+    Match.exhaustive,
   )
 
 const burnCpuDuringView = (workload: Workload): void => {

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/model
 title: "Model"
 description: "Define application state as one Schema-backed Model. Foldkit uses its runtime Schema to preserve state across hot updates and validate unknown data."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Model
@@ -17,17 +17,17 @@ In the [restaurant analogy](https://foldkit.dev/core/architecture#the-restaurant
 The counter defines its Model with [Effect Schema](https://effect.website/docs/schema/introduction/):
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 
 // MODEL
 
-const Model = S.Struct({
-  count: S.Number,
+const Model = Schema.Struct({
+  count: Schema.Number,
 })
 type Model = typeof Model.Type
 ```
 
-`S.Struct` creates the runtime Schema. `typeof Model.Type` derives the TypeScript type from that same definition, so the runtime and compiler agree on the Model’s shape.
+`Schema.Struct` creates the runtime Schema. `typeof Model.Type` derives the TypeScript type from that same definition, so the runtime and compiler agree on the Model’s shape.
 
 That runtime value matters because TypeScript types disappear after compilation. Foldkit uses the Model Schema to encode and decode state preserved across hot updates. The same Schema can validate unknown data at application boundaries.
 
@@ -36,17 +36,17 @@ That runtime value matters because TypeScript types disappear after compilation.
 Use `defineTaggedUnion` when a Model field can have several named shapes. Declare every variant together, then construct and match values through the union:
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 import { defineTaggedUnion } from 'foldkit/schema'
 
 const EditorMode = defineTaggedUnion({
   Browsing: {},
-  Editing: { noteId: S.String },
-  Previewing: { noteId: S.String },
+  Editing: { noteId: Schema.String },
+  Previewing: { noteId: Schema.String },
 })
 type EditorMode = typeof EditorMode.Type
 
-const Model = S.Struct({
+const Model = Schema.Struct({
   editorMode: EditorMode,
 })
 type Model = typeof Model.Type
@@ -74,14 +74,14 @@ Use `taggedStruct` only when the variants cannot be declared together. Recursive
 The counter starts with one field. When automatic counting becomes part of the application state, the Model grows to record it:
 
 ```
-import { Schema as S } from 'effect'
+import { Schema } from 'effect'
 
 // When the counter gains auto-counting,
 // the Model grows to hold new state:
 
-const Model = S.Struct({
-  count: S.Number,
-  isAutoCounting: S.Boolean,
+const Model = Schema.Struct({
+  count: Schema.Number,
+  isAutoCounting: Schema.Boolean,
 })
 type Model = typeof Model.Type
 ```

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/project-organization
 title: "Project Organization"
 description: "Start with one main module, then separate Messages, Commands, Submodels, and Subscriptions when ownership or file size makes the split useful."
-access_date: 2026-08-21T01:47:37.174Z
-current_date: 2026-08-21T01:47:37.174Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Project Organization
@@ -131,8 +131,8 @@ Use `index.ts` only as a barrel. Re-export the feature's modules from it.
 
 ```
 // page/home/index.ts
-export * as Model from './model'
-export * as Message from './message'
+export { Model } from './model'
+export { Message } from './message'
 export * from './init'
 export * from './update'
 export * from './view'
@@ -163,3 +163,9 @@ Cart.totalItems(cart)
 ```
 
 `Home.` exposes the feature's public surface without revealing its internal file layout.
+
+### Keep Barrel Dependencies Pointing Inward
+
+A parent barrel may re-export each immediate child namespace, and application code may import those namespaces from the barrel. The exported child modules must not import the application root in return. If `message.ts` imports `Home` from `page/index.ts` while a module re-exported by `page/index.ts` imports that root Message, the barrel closes a circular dependency.
+
+Keep shared leaf modules independent of the root. Pass parent-owned rendering capabilities through function arguments or Submodel `viewInputs`, and make stateful shared behavior its own Submodel. The parent then provides the capability at the view boundary while each Page remains importable through the one-level barrel.

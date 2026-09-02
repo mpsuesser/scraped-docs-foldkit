@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view
 title: "View"
 description: "Return a Document or Html value as a pure function of the Model. Covers document metadata, element builders, events, and view decomposition."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Model In, HTML Out
@@ -158,7 +158,7 @@ const greeting = (name: string, h: HtmlBuilder<Message>) =>
 
 The Message type follows the builder. If `h.OnClick` receives a Message outside the application union, TypeScript rejects it. The root runtime supplies its builder, and `Submodel.defineView` supplies one for each child view.
 
-Element builders take attributes first and optional children second. Omit the children argument when there are no children: `h.div([h.Class('divider')])`. Attributes remain required, so `h.div([])` represents an element with neither attributes nor children. `h.keyed` follows the same rule, with the key before the attributes and children. Void elements such as `h.img` and `h.br` accept attributes only. The `foldkit/no-empty-children-array` [lint rule](https://foldkit.dev/tooling/oxlint-plugin#no-empty-children-array) catches a trailing `[]` that carries no information.
+Element builders that accept children take attributes first and optional children second. Omit the children argument when there are no children: `h.div([h.Class('divider')])`. Attributes remain required, so `h.div([])` represents an element with neither attributes nor children. `h.keyed` follows the element's rule, with the key before the attributes and children. Void elements such as `h.img` and `h.br` accept attributes only. A textarea is not void, but `h.textarea` and `h.keyed('textarea')` also accept attributes only; set their live content with `h.Value`, never children or `h.InnerHTML`. The `foldkit/no-empty-children-array` [lint rule](https://foldkit.dev/tooling/oxlint-plugin#no-empty-children-array) catches a trailing `[]` that carries no information.
 
 Application code cannot construct a builder. It only enters through a view parameter, which keeps its Message type aligned with the boundary that dispatches its handlers. Extracted view helpers should take `h: HtmlBuilder<Message>` as their last parameter. A helper that works under any parent can introduce a `ParentMessage` generic and accept `h: HtmlBuilder<ParentMessage>`.
 
@@ -214,7 +214,7 @@ Clicks allow the browser default and bubble to ancestors unless you say otherwis
 A handler can do more than return a one-line Message. The constraint is purity, not size. It may branch on event data, read Model-derived state from view scope, and return `Option<Message>` when only some events should dispatch:
 
 ```
-import { Match as M, Option } from 'effect'
+import { Match, Option } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 
 // A handler is a pure translator from event data to a Message.
@@ -222,16 +222,16 @@ import type { HtmlBuilder } from 'foldkit/html'
 // in scope.
 const searchResultsView = (model: Model, h: HtmlBuilder<Message>) => {
   const handleResultsKeyDown = (key: string): Option.Option<Message> =>
-    M.value(key).pipe(
-      M.when('Escape', () => Option.some(DismissedResults())),
-      M.when('Enter', () =>
+    Match.value(key).pipe(
+      Match.when('Escape', () => Option.some(DismissedResults())),
+      Match.when('Enter', () =>
         Option.map(model.maybeActiveIndex, index => SelectedResult({ index })),
       ),
-      M.when('ArrowDown', () => Option.some(ActivatedNextResult())),
-      M.when('ArrowUp', () => Option.some(ActivatedPreviousResult())),
+      Match.when('ArrowDown', () => Option.some(ActivatedNextResult())),
+      Match.when('ArrowUp', () => Option.some(ActivatedPreviousResult())),
       // Every other key stays with the browser: no Message,
       // no preventDefault.
-      M.orElse(() => Option.none()),
+      Match.orElse(() => Option.none()),
     )
 
   return h.ul(

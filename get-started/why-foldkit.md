@@ -1,12 +1,12 @@
 ---
-url: https://foldkit.dev/get-started/manifesto
-title: "Manifesto"
+url: https://foldkit.dev/get-started/why-foldkit
+title: "Why Foldkit"
 description: "Why Foldkit exists and the principles behind its design."
-access_date: 2026-08-03T19:45:20.723Z
-current_date: 2026-08-03T19:45:20.723Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
-# Manifesto
+# Why Foldkit
 
 ## The Architecture Problem
 

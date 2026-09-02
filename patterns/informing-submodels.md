@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/informing-submodels
 title: "Informing Submodels"
 description: "Relay a change a Submodel does not own (a URL, a server push, an auth change) through a helper it exposes, so it can update its own state in response."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Informing Submodels
@@ -31,7 +31,7 @@ Update copies the route query into the input, records it in recent searches, and
 `informRouteChanged` is the public entry point. It calls `update(model, ChangedRoute({ route }))`, keeping the Message constructor private.
 
 ```
-import { Option, Schema as S, String } from 'effect'
+import { Option, Schema, String } from 'effect'
 import { type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
@@ -40,15 +40,19 @@ import { PeopleRoute } from '../route'
 
 // MESSAGE
 
-const Person = S.Struct({ id: S.Number, name: S.String, role: S.String })
+const Person = Schema.Struct({
+  id: Schema.Number,
+  name: Schema.String,
+  role: Schema.String,
+})
 
 export const Message = defineMessageUnion({
-  ChangedSearchInput: { value: S.String },
+  ChangedSearchInput: { value: Schema.String },
   SubmittedSearch: {},
   ChangedRoute: { route: PeopleRoute },
   SucceededFetchPeople: {
-    query: S.String,
-    people: S.Array(Person),
+    query: Schema.String,
+    people: Schema.Array(Person),
   },
 })
 export type Message = typeof Message.Type
@@ -104,7 +108,7 @@ Not an OutMessage
 The root defines one fold for regular People Messages and another for `informRouteChanged`. Both folds use the same `read`, `write`, and `toParentMessage` boundary. The `ChangedUrl` handler stores the next Route, then composes the relevant child step with `Update.combine`.
 
 ```
-import { Match as M, Option } from 'effect'
+import { Match, Option } from 'effect'
 import { Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
@@ -135,10 +139,12 @@ export const update = (model: Model, message: Message) =>
     ChangedUrl: ({ url }) => {
       const nextRoute = urlToAppRoute(url)
 
-      const routeSteps = M.value(nextRoute).pipe(
-        M.withReturnType<ReadonlyArray<Update.Step<Model, Message>>>(),
-        M.tag('People', peopleRoute => [foldPeopleRouteChanged(peopleRoute)]),
-        M.orElse(() => []),
+      const routeSteps = Match.value(nextRoute).pipe(
+        Match.withReturnType<ReadonlyArray<Update.Step<Model, Message>>>(),
+        Match.tag('People', peopleRoute => [
+          foldPeopleRouteChanged(peopleRoute),
+        ]),
+        Match.orElse(() => []),
       )
 
       return Update.combine(model, [setRoute(nextRoute), ...routeSteps])

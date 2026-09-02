@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/story
 title: "Story"
 description: "API documentation for the Story module."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Story
@@ -14,7 +14,7 @@ current_date: 2026-08-31T07:29:25.100Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L293)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L373)
 
 ```
 /** Asserts that update emitted no OutMessage. */
@@ -25,21 +25,21 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L275)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L365)
 
 ```
 /**
  * Asserts by structural equality that update emitted the expected OutMessage,
  *  so callers can pass a freshly constructed expected value.
  */
-<Expected>(expected: Expected): (simulation: StorySimulation<Model, Message, OutMessage>) => StorySimulation<Model, Message, OutMessage>
+<OutMessage>(expected: OutMessage): OutMessageStep<OutMessage>
 ```
 
 ### given
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L82)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L120)
 
 ```
 /** Sets the initial Model for a test story. */
@@ -50,26 +50,32 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L103)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L161)
 
 ```
 /**
  * Sends a Message through update. Commands stay pending until resolve or
  *  resolveAll.
  */
-<MessageInput>(message_: MessageInput): (simulation: StorySimulation<Model, Message, OutMessage>) => StorySimulation<Model, Message, OutMessage>
+<Message>(message_: Message): MessageStep<Message>
 ```
 
 ### model
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L210)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L248)
 
 ```
 /** Runs an assertion function against the current Model. */
 <Model>(f: (model: Model) => void): ModelStep<Model>
 ```
+
+### steps
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L255)
 
 ## Types
 
@@ -77,7 +83,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/internal.ts#L46)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/internal.ts#L46)
 
 ```
 /**
@@ -99,7 +105,7 @@ type CommandMatcher = CommandDefinition<string, unknown> | AnyCommand
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L39)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L39)
 
 ```
 /** A callable step that sets the initial Model. Carries phantom type for compile-time validation. */
@@ -108,11 +114,25 @@ type GivenStep = Readonly<{
 }> & (simulation: StorySimulation<M, Message, OutMessage>) => StorySimulation<M, Message, OutMessage>
 ```
 
+### MessageStep
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L51)
+
+```
+/** A typed Message-dispatch step produced by message. */
+type MessageStep = Readonly<{
+  _tag: "MessageStep"
+  message: Message
+}>
+```
+
 ### ModelStep
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L45)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L45)
 
 ```
 /** A model-assertion step produced by model. */
@@ -122,11 +142,25 @@ type ModelStep = Readonly<{
 }>
 ```
 
+### OutMessageStep
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L57)
+
+```
+/** A typed OutMessage assertion step produced by expectOutMessage. */
+type OutMessageStep = Readonly<{
+  _tag: "OutMessageStep"
+  expected: OutMessage
+}>
+```
+
 ### StorySimulation
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L30)
 
 ```
 /** An immutable test simulation of a Foldkit program. */
@@ -141,14 +175,29 @@ type StorySimulation = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L52)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L80)
 
 ```
 /**
- * A single step in a story: a GivenStep, a ModelStep,
- *  or a simulation transform.
+ * A single step in a story: a GivenStep, ModelStep,
+ *  MessageStep, OutMessageStep, StoryStepsStep, or
+ *  simulation transform.
  */
-type StoryStep = GivenStep<NoInfer<Model>> | ModelStep<NoInfer<Model>> | (sim: StorySimulation<any, any, any>) => StorySimulation<any, any, any>
+type StoryStep = GivenStep<NoInfer<Model>> | ModelStep<NoInfer<Model>> | MessageStep<NoInfer<Message>> | OutMessageStep<NoInfer<OutMessage>> | StoryStepsStep<NoInfer<Model>, (model: NoInfer<Model>) => void, NoInfer<Message>, NoInfer<OutMessage>> | (simulation: StorySimulation<any, any, any>) => StorySimulation<any, any, any>
+```
+
+### StoryStepsStep
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L63)
+
+```
+/** A grouped sequence of Story steps produced by steps. */
+type StoryStepsStep = Readonly<{
+  _tag: "StoryStepsStep"
+  steps: ReadonlyArray<StoryStep<any, any, any>>
+}>
 ```
 
 ## Constants
@@ -157,7 +206,7 @@ type StoryStep = GivenStep<NoInfer<Model>> | ModelStep<NoInfer<Model>> | (sim: S
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L252)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L328)
 
 ```
 /**
@@ -182,7 +231,7 @@ const Command: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/foldkit/src/test/story.ts#L313)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/test/story.ts#L422)
 
 ```
 /** Executes a test story. Throws if any Commands remain unresolved. */
@@ -190,5 +239,5 @@ const story: (updateFn: (model: Model, message: Message) => Readonly<{
   commands: ReadonlyArray<AnyCommand>
   model: Model
   outMessage: OutMessage
-}>, steps: readonly Array<StoryStep<NoInfer<Model>>>) => void
+}>, steps: readonly Array<StoryStep<NoInfer<Model>, NoInfer<Message>, NoInfer<OutMessage>>>) => void
 ```

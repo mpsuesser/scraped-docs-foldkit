@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/commands
 title: "Commands"
 description: "Describe one-shot Effects caused by Messages, map their results back into Messages, test them as values, and interrupt keyed work when needed."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## One-Shot Effects as Data
@@ -94,7 +94,7 @@ Use `message` to dispatch Messages, `Command.resolve` to supply results, and `mo
 The same structure applies to network work. This version asks an API for the next count instead of incrementing locally:
 
 ```
-import { Effect, Schema as S } from 'effect'
+import { Effect, Schema } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
 import { Command, Http, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
@@ -102,11 +102,11 @@ import { evo } from 'foldkit/struct'
 
 const Message = defineMessageUnion({
   ClickedFetchCount: {},
-  SucceededFetchCount: { count: S.Number },
-  FailedFetchCount: { error: S.String },
+  SucceededFetchCount: { count: Schema.Number },
+  FailedFetchCount: { error: Schema.String },
 })
 
-const CountResponse = S.Struct({ count: S.Number })
+const CountResponse = Schema.Struct({ count: Schema.Number })
 
 const FetchCount = Command.define('FetchCount', {
   messages: [Message.SucceededFetchCount, Message.FailedFetchCount],
@@ -118,7 +118,7 @@ const FetchCount = Command.define('FetchCount', {
       return yield* Effect.fail('API request failed')
     }
 
-    const { count } = yield* S.decodeUnknownEffect(CountResponse)(
+    const { count } = yield* Schema.decodeUnknownEffect(CountResponse)(
       yield* response.json,
     )
     return Message.SucceededFetchCount({ count })
@@ -153,7 +153,7 @@ The Effect error channel records whether a Command can fail. Once every failure 
 Many Commands need an input that changes from one dispatch to the next. For example: a weather lookup needs a zip code, a focus call needs an element id, and a delay may need a duration. Declare those values in `args`. The Command Definition then accepts a typed record, and `execute` receives that record when the runtime starts the work.
 
 ```
-import { Effect, Schema as S } from 'effect'
+import { Effect, Schema } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
 import { Command, Http, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
@@ -162,12 +162,12 @@ import { evo } from 'foldkit/struct'
 const Message = defineMessageUnion({
   SubmittedWeatherForm: {},
   SucceededFetchWeather: { weather: WeatherSchema },
-  FailedFetchWeather: { error: S.String },
+  FailedFetchWeather: { error: Schema.String },
 })
 
 const FetchWeather = Command.define('FetchWeather', {
   // Args schema: the per-dispatch inputs the Command needs.
-  args: { zipCode: S.String },
+  args: { zipCode: Schema.String },
   // Every Message this Command can produce.
   messages: [Message.SucceededFetchWeather, Message.FailedFetchWeather],
   // The Effect receives a typed args record.
@@ -177,7 +177,7 @@ const FetchWeather = Command.define('FetchWeather', {
       const response = yield* client.execute(
         HttpClientRequest.get(\`/api/weather?zip=${zipCode}\`),
       )
-      const weather = yield* S.decodeUnknownEffect(WeatherSchema)(
+      const weather = yield* Schema.decodeUnknownEffect(WeatherSchema)(
         yield* response.json,
       )
       return Message.SucceededFetchWeather({ weather })
@@ -219,26 +219,26 @@ Commands normally run to completion. Sometimes the user cancels an upload or new
 Foldkit prefixes a derived key with the Command name, so definitions with distinct names occupy distinct namespaces. A Command without declared args has no values from which to derive a key, so `interrupt: true` is its only form.
 
 ```
-import { Array, Effect, Schema as S } from 'effect'
+import { Array, Effect, Schema } from 'effect'
 import { Command, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 import { evo } from 'foldkit/struct'
 
 const Message = defineMessageUnion({
-  ClickedCancelUpload: { uploadId: S.Number },
-  SucceededUploadFile: { uploadId: S.Number },
-  FailedUploadFile: { uploadId: S.Number },
+  ClickedCancelUpload: { uploadId: Schema.Number },
+  SucceededUploadFile: { uploadId: Schema.Number },
+  FailedUploadFile: { uploadId: Schema.Number },
   CompletedCancelUploadFile: {
-    uploadId: S.Number,
+    uploadId: Schema.Number,
     outcome: Command.Interruptible.Outcome,
   },
 })
 
-const UploadKey = S.Struct({ uploadId: S.Number })
+const UploadKey = Schema.Struct({ uploadId: Schema.Number })
 type UploadKey = typeof UploadKey.Type
 
 const UploadFile = Command.define('UploadFile', {
-  args: { ...UploadKey.fields, file: S.instanceOf(File) },
+  args: { ...UploadKey.fields, file: Schema.instanceOf(File) },
   messages: [Message.SucceededUploadFile, Message.FailedUploadFile],
   // The key function maps args to what distinguishes invocations. Foldkit
   // prefixes the Command name automatically, so the full key for upload 7

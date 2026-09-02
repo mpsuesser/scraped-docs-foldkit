@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/popover
 title: "Popover"
 description: "An anchored floating panel for arbitrary content, with dismissal, focus return, portaling, and optional modal behavior."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
@@ -26,7 +26,7 @@ Pass `anchor` to position the panel relative to the button. The panel can hold a
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -35,7 +35,7 @@ import { evo } from 'foldkit/struct'
 import { Popover } from '@foldkit/ui'
 
 // Add a field to your Model for the Popover Submodel:
-const Model = S.Struct({
+const Model = Schema.Struct({
   popover: Popover.Model,
   // ...your other fields
 })
@@ -58,19 +58,18 @@ const Message = defineMessageUnion({
 // other UI, or clear ephemeral state on close. Each arm returns an
 // Update.Step over the parent Model, which already has the next Popover Model
 // written back:
-const foldPopoverOutMessage = M.type<Popover.OutMessage>().pipe(
-  M.withReturnType<Update.Step<Model, Message>>(),
-  M.tagsExhaustive({
-    // The child has emitted \`Opened\`. In this arm the parent can update its
-    // own state or dispatch its own Commands, for example lazy-load panel
-    // content, log analytics, or trigger a downstream Command.
-    Opened: () => model => ({ model }),
-    // The child has emitted \`Closed\`. In this arm the parent can update its
-    // own state or dispatch its own Commands, for example persist a draft,
-    // clear ephemeral state, or trigger a downstream Command.
-    Closed: () => model => ({ model }),
-  }),
-)
+const foldPopoverOutMessage = Popover.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  // The child has emitted \`Opened\`. In this arm the parent can update its
+  // own state or dispatch its own Commands, for example lazy-load panel
+  // content, log analytics, or trigger a downstream Command.
+  Opened: () => model => ({ model }),
+  // The child has emitted \`Closed\`. In this arm the parent can update its
+  // own state or dispatch its own Commands, for example persist a draft,
+  // clear ephemeral state, or trigger a downstream Command.
+  Closed: () => model => ({ model }),
+})
 
 // Update.foldChild wires the child into the parent: it runs Popover.update,
 // writes the next Popover Model back, maps the Submodel's Commands into your
@@ -248,7 +247,7 @@ Use a separate Popover Model for each level. For a parent panel that opens onto 
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option, Schema as S } from 'effect'
+import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -257,7 +256,7 @@ import { evo } from 'foldkit/struct'
 import { Popover } from '@foldkit/ui'
 
 // Add one Popover Submodel field for each level:
-const Model = S.Struct({
+const Model = Schema.Struct({
   accountPopover: Popover.Model,
   accountDetailsPopover: Popover.Model,
   // ...your other fields
@@ -284,13 +283,12 @@ const Message = defineMessageUnion({
 })
 type Message = typeof Message.Type
 
-const foldPopoverOutMessage = M.type<Popover.OutMessage>().pipe(
-  M.withReturnType<Update.Step<Model, Message>>(),
-  M.tagsExhaustive({
-    Opened: () => model => ({ model }),
-    Closed: () => model => ({ model }),
-  }),
-)
+const foldPopoverOutMessage = Popover.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  Opened: () => model => ({ model }),
+  Closed: () => model => ({ model }),
+})
 
 const foldAccountPopover = Update.foldChild({
   update: Popover.update,

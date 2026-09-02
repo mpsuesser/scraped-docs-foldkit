@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/pixel-art
 title: "Pixel Art"
 description: "A pixel art editor with immutable undo and redo, time-travel history, Foldkit UI components, lazy views, Subscriptions, Commands that report errors as Messages, and localStorage persistence through Flags."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -25,7 +25,7 @@ Storage
 /
 
 ```
-import { Effect, Option, Schema as S } from 'effect'
+import { Effect, Option, Schema } from 'effect'
 import { KeyValueStore } from 'effect/unstable/persistence'
 import { Runtime } from 'foldkit'
 
@@ -52,8 +52,8 @@ import {
 
 // FLAGS
 
-export const Flags = S.Struct({
-  maybeSavedCanvas: S.Option(SavedCanvas),
+export const Flags = Schema.Struct({
+  maybeSavedCanvas: Schema.Option(SavedCanvas),
 })
 export type Flags = typeof Flags.Type
 
@@ -62,7 +62,7 @@ export const flags: Effect.Effect<Flags> = Effect.gen(function* () {
   const json = yield* Effect.fromOption(
     Option.fromNullishOr(yield* store.get(STORAGE_KEY)),
   )
-  const decoded = yield* S.decodeEffect(SavedCanvasJsonString)(json)
+  const decoded = yield* Schema.decodeEffect(SavedCanvasJsonString)(json)
   return Flags.make({ maybeSavedCanvas: Option.some(decoded) })
 }).pipe(
   Effect.catch(() =>

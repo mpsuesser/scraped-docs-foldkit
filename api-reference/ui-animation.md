@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-animation
 title: "Ui/Animation"
 description: "API documentation for the Ui/Animation module."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 # Ui/Animation
@@ -14,29 +14,62 @@ current_date: 2026-08-31T07:29:25.100Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/update.ts#L117)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/update.ts#L134)
 
 ```
 /** Creates the standard leave-phase command that waits for CSS animations on the element to settle. Use this when handling the `StartedLeaveAnimating` OutMessage for components that don't need custom leave behavior. */
 (model: Animation.Model): Command.Command<Message>
 ```
 
+### hide
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/update.ts#L121)
+
+```
+/** Programmatically starts the leave lifecycle. */
+(model: Animation.Model): Update.Return<Model, Message>
+```
+
 ### init
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/schema.ts#L58)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/schema.ts#L58)
 
 ```
 /** Creates an initial animation model from a config. Defaults to hidden. */
 (config: InitConfig): Animation.Model
 ```
 
+### show
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/update.ts#L117)
+
+```
+/** Programmatically starts the enter lifecycle. */
+(model: Animation.Model): Update.Return<Model, Message>
+```
+
+### toggle
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/update.ts#L125)
+
+```
+/** Toggles the animation between its shown and hidden states. */
+(model: Animation.Model): Update.Return<Model, Message>
+```
+
 ### update
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/update.ts#L46)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/update.ts#L46)
 
 ```
 /**
@@ -74,7 +107,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/schema.ts#L52)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/schema.ts#L52)
 
 ```
 /** Configuration for creating an animation model with `init`. */
@@ -88,7 +121,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/index.ts#L21)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/index.ts#L32)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -97,7 +130,7 @@ type ViewInputs = Readonly<{
   attributes: ReadonlyArray<ChildAttribute>
   className: string
   content: Html
-  element: TagName
+  element: Exclude<TagName, "textarea">
 }>
 ```
 
@@ -107,7 +140,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/schema.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/schema.ts#L30)
 
 ```
 /** Union of all messages the animation component can produce. */
@@ -123,7 +156,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/schema.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/schema.ts#L19)
 
 ```
 /** Schema for the animation component's state, tracking its unique ID, visibility intent, and lifecycle phase. */
@@ -138,7 +171,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/schema.ts#L43)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/schema.ts#L43)
 
 ```
 const OutMessage: MessageUnion<{
@@ -151,7 +184,7 @@ const OutMessage: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/schema.ts#L7)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/schema.ts#L7)
 
 ```
 /** Schema for the animation lifecycle state, tracking enter/leave phases. */
@@ -162,7 +195,7 @@ const TransitionState: Literals<readonly ["Idle", "EnterStart", "EnterAnimating"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/update.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/update.ts#L30)
 
 ```
 /** Waits for all CSS animations on the element to settle. Covers both CSS transitions and CSS keyframe animations. */
@@ -177,7 +210,7 @@ const WaitForAnimationSettled: CommandDefinitionWithArgs<"WaitForAnimationSettle
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/update.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/update.ts#L25)
 
 ```
 /** Waits for paint via double-rAF before the enter/leave lifecycle advances. */
@@ -190,7 +223,7 @@ const WaitForPaint: CommandDefinitionNoArgs<"WaitForPaint", Effect<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/65afa5c34cc05b5e6423161420faed831c9a5bd9/packages/ui/src/animation/index.ts#L41)
+[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/animation/index.ts#L52)
 
 ```
 /**
@@ -218,10 +251,14 @@ const view: SubmodelView<Animation.Model, {
     attribute: unknown
     boundaryMappers: readonly Array<(message: unknown) => unknown>
     dispatch: DispatchSync
+    resolveMountDispatch: Readonly<{
+      owner: MountRenderOwner
+      resolve: () => unknown
+    }>
     resolveUnmount: (message: unknown) => () => void
   }>>
   className: string
   content: Html
-  element: TagName
+  element: "symbol" | "object" | "portal" | "div" | "a" | "abbr" | "address" | "area" | "article" | "aside" | "audio" | "b" | "base" | "bdi" | "bdo" | "blockquote" | "body" | "br" | "button" | "canvas" | "caption" | "cite" | "code" | "col" | "colgroup" | "data" | "datalist" | "dd" | "del" | "details" | "dfn" | "dialog" | "dl" | "dt" | "em" | "embed" | "fieldset" | "figcaption" | "figure" | "footer" | "form" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "head" | "header" | "hgroup" | "hr" | "html" | "i" | "iframe" | "img" | "input" | "ins" | "kbd" | "label" | "legend" | "li" | "link" | "main" | "map" | "mark" | "menu" | "meta" | "meter" | "nav" | "noscript" | "ol" | "optgroup" | "option" | "output" | "p" | "picture" | "pre" | "progress" | "q" | "rp" | "rt" | "ruby" | "s" | "samp" | "script" | "search" | "section" | "select" | "slot" | "small" | "source" | "span" | "strong" | "style" | "sub" | "summary" | "sup" | "table" | "tbody" | "td" | "template" | "tfoot" | "th" | "thead" | "time" | "title" | "tr" | "track" | "u" | "ul" | "var" | "video" | "wbr" | "filter" | "animate" | "animateMotion" | "animateTransform" | "circle" | "clipPath" | "defs" | "desc" | "ellipse" | "feBlend" | "feColorMatrix" | "feComponentTransfer" | "feComposite" | "feConvolveMatrix" | "feDiffuseLighting" | "feDisplacementMap" | "feDistantLight" | "feDropShadow" | "feFlood" | "feFuncA" | "feFuncB" | "feFuncG" | "feFuncR" | "feGaussianBlur" | "feImage" | "feMerge" | "feMergeNode" | "feMorphology" | "feOffset" | "fePointLight" | "feSpecularLighting" | "feSpotLight" | "feTile" | "feTurbulence" | "foreignObject" | "g" | "image" | "line" | "linearGradient" | "marker" | "mask" | "metadata" | "mpath" | "path" | "pattern" | "polygon" | "polyline" | "radialGradient" | "rect" | "set" | "stop" | "svg" | "switch" | "text" | "textPath" | "tspan" | "use" | "view" | "annotation" | "annotation-xml" | "maction" | "math" | "merror" | "mfrac" | "mi" | "mmultiscripts" | "mn" | "mo" | "mover" | "mpadded" | "mphantom" | "mprescripts" | "mroot" | "mrow" | "ms" | "mspace" | "msqrt" | "mstyle" | "msub" | "msubsup" | "msup" | "mtable" | "mtd" | "mtext" | "mtr" | "munder" | "munderover" | "semantics" | "menclose" | "mfenced" | "mglyph" | "mlabeledtr" | "mlongdiv" | "mscarries" | "mscarry" | "msgroup" | "msline" | "msrow" | "mstack"
 }>>
 ```

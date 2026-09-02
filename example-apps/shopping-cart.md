@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/shopping-cart
 title: "Shopping Cart"
 description: "An e-commerce application with a product listing, cart management, and checkout flow."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -21,7 +21,7 @@ Routing
 /
 
 ```
-import { Effect, Match as M, Option, Schema as S } from 'effect'
+import { Effect, Match, Option, Schema } from 'effect'
 import { Command, Runtime, Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -42,11 +42,11 @@ import {
 
 // MODEL
 
-export const Model = S.Struct({
+export const Model = Schema.Struct({
   route: AppRoute,
   cart: Cart.Cart,
-  deliveryInstructions: S.String,
-  orderPlaced: S.Boolean,
+  deliveryInstructions: Schema.String,
+  orderPlaced: Schema.Boolean,
   productsPage: Products.Model,
 })
 export type Model = typeof Model.Type
@@ -59,11 +59,11 @@ export const Message = defineMessageUnion({
   ClickedLink: { request: UrlRequest },
   ChangedUrl: { url: Url },
   GotProductsMessage: { message: Products.Message },
-  ClickedIncrementQuantity: { itemId: S.String },
-  ClickedDecrementQuantity: { itemId: S.String },
-  ClickedRemoveCartItem: { itemId: S.String },
+  ClickedIncrementQuantity: { itemId: Schema.String },
+  ClickedDecrementQuantity: { itemId: Schema.String },
+  ClickedRemoveCartItem: { itemId: Schema.String },
   ClickedClearCart: {},
-  UpdatedDeliveryInstructions: { value: S.String },
+  UpdatedDeliveryInstructions: { value: Schema.String },
   ClickedPlaceOrder: {},
 })
 
@@ -88,14 +88,14 @@ export const init: Runtime.RoutingApplicationInit<Model, Message> = (
 // COMMAND
 
 const NavigateInternal = Command.define('NavigateInternal', {
-  args: { url: S.String },
+  args: { url: Schema.String },
   messages: [Message.CompletedNavigateInternal],
   execute: ({ url }) =>
     pushUrl(url).pipe(Effect.as(Message.CompletedNavigateInternal())),
 })
 
 const LoadExternal = Command.define('LoadExternal', {
-  args: { href: S.String },
+  args: { href: Schema.String },
   messages: [Message.CompletedLoadExternal],
   execute: ({ href }) =>
     load(href).pipe(Effect.as(Message.CompletedLoadExternal())),
@@ -105,24 +105,23 @@ const LoadExternal = Command.define('LoadExternal', {
 
 type UpdateReturn = Update.Return<Model, Message>
 
-const foldProductsOutMessage = M.type<Products.OutMessage>().pipe(
-  M.withReturnType<Update.Step<Model, Message>>(),
-  M.tagsExhaustive({
-    AddedToCart:
-      ({ item }) =>
-      model => ({ model: evo(model, { cart: Cart.addItem(item) }) }),
-    IncrementedQuantity:
-      ({ itemId }) =>
-      model => ({
-        model: evo(model, { cart: Cart.incrementQuantity(itemId) }),
-      }),
-    DecrementedQuantity:
-      ({ itemId }) =>
-      model => ({
-        model: evo(model, { cart: Cart.decrementQuantity(itemId) }),
-      }),
-  }),
-)
+const foldProductsOutMessage = Products.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  AddedToCart:
+    ({ item }) =>
+    model => ({ model: evo(model, { cart: Cart.addItem(item) }) }),
+  IncrementedQuantity:
+    ({ itemId }) =>
+    model => ({
+      model: evo(model, { cart: Cart.incrementQuantity(itemId) }),
+    }),
+  DecrementedQuantity:
+    ({ itemId }) =>
+    model => ({
+      model: evo(model, { cart: Cart.decrementQuantity(itemId) }),
+    }),
+})
 
 const foldProducts = Update.foldChild({
   update: Products.update,
@@ -294,9 +293,9 @@ const notFoundView = (path: string, h: HtmlBuilder<Message>): Html =>
   )
 
 const routeTitle = (route: Model['route']): string =>
-  M.value(route).pipe(
-    M.tag('Products', () => 'Shopping Cart'),
-    M.orElse(({ _tag }) => `${_tag} | Shopping Cart`),
+  Match.value(route).pipe(
+    Match.tag('Products', () => 'Shopping Cart'),
+    Match.orElse(({ _tag }) => `${_tag} | Shopping Cart`),
   )
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => {

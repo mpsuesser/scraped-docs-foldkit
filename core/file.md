@@ -2,15 +2,15 @@
 url: https://foldkit.dev/core/file
 title: "File"
 description: "Read and select browser files through an opaque File type, with event attributes for native inputs and drop zones."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-02T07:05:07.578Z
+current_date: 2026-09-02T07:05:07.578Z
 ---
 
 ## Overview
 
 The `File` module brings browser file APIs into the Foldkit architecture. It opens the native picker through Commands, reads contents through Effects, and exposes synchronous metadata helpers. Inline inputs and drop zones use the typed file handlers in `foldkit/html` or the FileDrop Submodel.
 
-`File.File` is both a direct alias for the browser's native `File` type and a Schema that accepts native File instances. A Model can hold one with `S.Option(File.File)`. The Schema treats the value as an opaque browser object; it validates the instance but does not turn file contents into serializable Model data.
+`File.File` is both a direct alias for the browser's native `File` type and a Schema that accepts native File instances. A Model can hold one with `Schema.Option(File.File)`. The Schema treats the value as an opaque browser object; it validates the instance but does not turn file contents into serializable Model data.
 
 ## Metadata and Reading
 
@@ -80,7 +80,7 @@ FileDrop emits a `ReceivedFiles` OutMessage with a guaranteed non-empty file lis
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.
-import { Match as M, Option, Schema as S } from 'effect'
+import { Array, Option, Schema } from 'effect'
 import { File, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -89,9 +89,9 @@ import { evo } from 'foldkit/struct'
 import { FileDrop } from '@foldkit/ui'
 
 // Add the FileDrop Submodel to your Model, plus a list of accepted files:
-const Model = S.Struct({
+const Model = Schema.Struct({
   uploader: FileDrop.Model,
-  uploadedFiles: S.Array(File.File),
+  uploadedFiles: Schema.Array(File.File),
   // ...your other fields
 })
 
@@ -113,21 +113,20 @@ const Message = defineMessageUnion({
 // drop or input change) into your own Model. Each arm returns an Update.Step
 // over the parent Model, which already has the next FileDrop Model written
 // back:
-const foldFileDropOutMessage = M.type<FileDrop.OutMessage>().pipe(
-  M.withReturnType<Update.Step<Model, Message>>(),
-  M.tagsExhaustive({
-    ReceivedFiles:
-      ({ files }) =>
-      model => ({
-        model: evo(model, {
-          uploadedFiles: () => [...model.uploadedFiles, ...files],
-        }),
+const foldFileDropOutMessage = FileDrop.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  ReceivedFiles:
+    ({ files }) =>
+    model => ({
+      model: evo(model, {
+        uploadedFiles: Array.appendAll(files),
       }),
-    // Fires when something is dropped but no files came through (e.g.
-    // a drag of text or a URL). Ignore, or show a hint to the user.
-    RejectedNonFiles: () => model => ({ model }),
-  }),
-)
+    }),
+  // Fires when something is dropped but no files came through (e.g.
+  // a drag of text or a URL). Ignore, or show a hint to the user.
+  RejectedNonFiles: () => model => ({ model }),
+})
 
 // Update.foldChild wires the child into the parent: it runs FileDrop.update,
 // writes the next FileDrop Model back, maps the Submodel's Commands into your
