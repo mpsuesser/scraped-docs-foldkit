@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/blog/foldkit-0-157-0
 title: "Foldkit 0.156.0 and 0.157.0"
-description: "Foldkit 0.156.0 and 0.157.0 add two recommended lint rules, improve refined union matching, and update Story, Scene, Mount, Foldkit UI, and Vite."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+description: "Two new recommended @foldkit/oxlint-plugin rules, less boilerplate when matching refined unions, plus updates to Story, Scene, Mount, @foldkit/ui, and Foldkit's Vite plugin."
+access_date: 2026-09-02T16:31:11.406Z
+current_date: 2026-09-02T16:31:11.406Z
 ---
 
 [← Blog](https://foldkit.dev/blog)

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/runtime
 title: "Runtime"
 description: "API documentation for the Runtime module."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-02T16:31:11.406Z
+current_date: 2026-09-02T16:31:11.406Z
 ---
 
 # Runtime
@@ -14,7 +14,7 @@ current_date: 2026-09-02T07:05:07.578Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L460)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L460)
 
 ```
 (context: SlowContext<unknown, unknown>): void
@@ -24,7 +24,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L4804)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L4804)
 
 ```
 /**
@@ -70,7 +70,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L4748)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L4748)
 
 ```
 <P extends Readonly<{
@@ -86,13 +86,13 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L4077)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L4077)
 
 ### makeElement
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L4382)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L4382)
 
 ```
 /**
@@ -127,7 +127,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L4687)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L4687)
 
 ```
 /**
@@ -157,7 +157,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1247)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1247)
 
 ```
 /** Configuration for `makeApplication` without Flags or URL routing. */
@@ -170,7 +170,7 @@ type ApplicationConfig = BaseApplicationConfig<Model, Message, Resources, Manage
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1225)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1225)
 
 ```
 /** Configuration for `makeApplication` with Flags but no URL routing. */
@@ -183,7 +183,7 @@ type ApplicationConfigWithFlags = BaseApplicationConfig<Model, Message, Resource
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1347)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1347)
 
 ```
 /** The `init` function type for a `makeApplication` app without URL routing. */
@@ -196,7 +196,7 @@ type ApplicationInit = Flags extends void
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L615)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L615)
 
 ```
 /**
@@ -215,7 +215,7 @@ type CrashConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L605)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L605)
 
 ```
 /**
@@ -235,7 +235,7 @@ type CrashContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L185)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L185)
 
 ```
 /**
@@ -267,7 +267,7 @@ type DevToolsConfig = false | Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L144)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L144)
 
 ```
 /**
@@ -283,7 +283,7 @@ type DevToolsMode = "Inspect" | "TimeTravel"
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L151)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L151)
 
 ```
 /**
@@ -303,7 +303,7 @@ type DevToolsModeConfig = DevToolsMode | Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L133)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L133)
 
 ```
 /** Position of the DevTools badge and panel on screen. */
@@ -314,7 +314,7 @@ type DevToolsPosition = "BottomRight" | "BottomLeft" | "TopRight" | "TopLeft"
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1331)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1331)
 
 ```
 /** Configuration for `makeElement` without Flags. */
@@ -327,7 +327,7 @@ type ElementConfig = BaseElementConfig<Model, Message, Resources, ManagedResourc
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1306)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1306)
 
 ```
 /** Configuration for `makeElement` with Flags. */
@@ -341,7 +341,7 @@ type ElementConfigWithFlags = BaseElementConfig<Model, Message, Resources, Manag
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1271)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1271)
 
 ```
 /**
@@ -359,7 +359,7 @@ type ElementCrashConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1378)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1378)
 
 ```
 /**
@@ -374,7 +374,7 @@ type ElementInit = ApplicationInit<Model, Message, Flags, Resources, ManagedReso
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1479)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1479)
 
 ```
 /**
@@ -397,7 +397,7 @@ type EmbedHandle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L4709)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L4709)
 
 ```
 /** Options for hydrate. */
@@ -410,7 +410,7 @@ type HydrateOptions = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1425)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1425)
 
 ```
 /**
@@ -429,7 +429,7 @@ type InboundPortHandle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1439)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1439)
 
 ```
 /**
@@ -449,7 +449,7 @@ type InboundPortHandles = InboundPorts extends Readonly<Record<string, Inbound<a
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1404)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1404)
 
 ```
 /**
@@ -477,7 +477,7 @@ type MakeRuntimeReturn = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1433)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1433)
 
 ```
 /**
@@ -495,7 +495,7 @@ type OutboundPortHandle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1452)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1452)
 
 ```
 /**
@@ -515,7 +515,7 @@ type OutboundPortHandles = OutboundPorts extends Readonly<Record<string, Outboun
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1465)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1465)
 
 ```
 /**
@@ -531,7 +531,7 @@ type PortHandles = P extends Ports
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1204)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1204)
 
 ```
 /** Configuration for `makeApplication` with URL routing but no Flags. */
@@ -545,7 +545,7 @@ type RoutingApplicationConfig = BaseApplicationConfig<Model, Message, Resources,
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1180)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1180)
 
 ```
 /** Configuration for `makeApplication` with Flags and URL routing. */
@@ -559,7 +559,7 @@ type RoutingApplicationConfigWithFlags = BaseApplicationConfig<Model, Message, R
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1360)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1360)
 
 ```
 /** The `init` function type for a `makeApplication` app with URL routing, receives the current URL and optional Flags. */
@@ -572,7 +572,7 @@ type RoutingApplicationInit = Flags extends void
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L596)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L596)
 
 ```
 /** Configuration for URL routing with handlers for URL requests and URL changes. */
@@ -586,7 +586,7 @@ type RoutingConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L1392)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L1392)
 
 ```
 /**
@@ -603,7 +603,7 @@ type RunOptions = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L322)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L322)
 
 ```
 /**
@@ -630,7 +630,7 @@ type SlowConfig = false | Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L269)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L269)
 
 ```
 /** Tagged union of every slow-phase context passed to `slow.onSlow`. */
@@ -641,7 +641,7 @@ type SlowContext = SlowViewContext<Model, Message> | SlowUpdateContext<Model, Me
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L251)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L251)
 
 ```
 /** Context provided when DOM patching exceeds its configured time budget. */
@@ -658,7 +658,7 @@ type SlowPatchContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L260)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L260)
 
 ```
 /** Context provided when subscription dependency extraction exceeds its configured time budget. */
@@ -675,7 +675,7 @@ type SlowSubscriptionDependenciesContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L285)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L285)
 
 ```
 /** Budget overrides for slow warning phases. Omitted fields use Foldkit defaults. */
@@ -691,7 +691,7 @@ type SlowThresholdOverrides = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L241)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L241)
 
 ```
 /** Context provided when update exceeds its configured time budget. */
@@ -709,7 +709,7 @@ type SlowUpdateContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L232)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L232)
 
 ```
 /** Context provided when view construction exceeds its configured time budget. */
@@ -726,7 +726,7 @@ type SlowViewContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/viewTransition.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/viewTransition.ts#L35)
 
 ```
 /**
@@ -742,7 +742,7 @@ type ViewTransitionConfig = (context: ViewTransitionContext<Model, Message>) => 
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/viewTransition.ts#L18)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/viewTransition.ts#L18)
 
 ```
 /**
@@ -773,7 +773,7 @@ type ViewTransitionContext = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/viewTransition.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/viewTransition.ts#L28)
 
 ```
 /**
@@ -791,7 +791,7 @@ type ViewTransitionDecision = boolean | Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L137)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L137)
 
 ```
 /** Controls when a feature is shown. */
@@ -804,7 +804,7 @@ type Visibility = "Development" | "Always"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/foldkit/src/runtime/runtime.ts#L276)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/runtime/runtime.ts#L276)
 
 ```
 /** Phase names measured by the slow warning runtime option. */

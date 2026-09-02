@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-dialog
 title: "Ui/Dialog"
 description: "API documentation for the Ui/Dialog module."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-02T16:31:11.406Z
+current_date: 2026-09-02T16:31:11.406Z
 ---
 
 # Ui/Dialog
@@ -14,7 +14,7 @@ current_date: 2026-09-02T07:05:07.578Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L341)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L341)
 
 ```
 /** Programmatically closes the dialog. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L364)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L364)
 
 ```
 /**
@@ -45,7 +45,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L96)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L96)
 
 ```
 /** Creates an initial dialog model from a config. Defaults to closed and non-animated. */
@@ -56,7 +56,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L337)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L337)
 
 ```
 /** Programmatically opens the dialog. */
@@ -67,7 +67,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L354)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L354)
 
 ```
 /**
@@ -87,7 +87,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L238)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L238)
 
 ## Types
 
@@ -95,7 +95,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L83)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L83)
 
 ```
 /**
@@ -121,7 +121,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L404)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L404)
 
 ```
 /**
@@ -179,7 +179,7 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L416)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L416)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -194,7 +194,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L154)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L154)
 
 ```
 /**
@@ -218,7 +218,7 @@ const CloseDialog: CommandDefinitionWithArgs<"CloseDialog", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L38)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L38)
 
 ```
 /** Union of all messages the dialog component can produce. */
@@ -245,7 +245,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L25)
 
 ```
 /** Schema for the dialog component's state, tracking its unique ID, open/closed status, animation support, and animation lifecycle phase. */
@@ -266,7 +266,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L63)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L63)
 
 ```
 /** Union of out-messages the dialog component can produce. */
@@ -280,7 +280,7 @@ const OutMessage: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L171)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L171)
 
 ```
 /**
@@ -300,7 +300,7 @@ const ReleaseDialogResources: CommandDefinitionWithArgs<"ReleaseDialogResources"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L131)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L131)
 
 ```
 /**
@@ -329,7 +329,7 @@ const ShowDialog: CommandDefinitionWithArgs<"ShowDialog", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/2f739758a2786fb72c0983e125a6f3d2f8eae56a/packages/ui/src/dialog/index.ts#L424)
+[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/dialog/index.ts#L424)
 
 ```
 /**
