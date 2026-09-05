@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-animation
 title: "Ui/Animation"
 description: "API documentation for the Ui/Animation module."
-access_date: 2026-09-02T16:31:11.406Z
-current_date: 2026-09-02T16:31:11.406Z
+access_date: 2026-09-05T19:30:16.678Z
+current_date: 2026-09-05T19:30:16.678Z
 ---
 
 # Ui/Animation
@@ -14,7 +14,7 @@ current_date: 2026-09-02T16:31:11.406Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/update.ts#L134)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/update.ts#L134)
 
 ```
 /** Creates the standard leave-phase command that waits for CSS animations on the element to settle. Use this when handling the `StartedLeaveAnimating` OutMessage for components that don't need custom leave behavior. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/update.ts#L121)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/update.ts#L121)
 
 ```
 /** Programmatically starts the leave lifecycle. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/schema.ts#L58)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/schema.ts#L58)
 
 ```
 /** Creates an initial animation model from a config. Defaults to hidden. */
@@ -47,7 +47,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/update.ts#L117)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/update.ts#L117)
 
 ```
 /** Programmatically starts the enter lifecycle. */
@@ -58,7 +58,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/update.ts#L125)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/update.ts#L125)
 
 ```
 /** Toggles the animation between its shown and hidden states. */
@@ -69,7 +69,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/update.ts#L46)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/update.ts#L46)
 
 ```
 /**
@@ -107,7 +107,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/schema.ts#L52)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/schema.ts#L52)
 
 ```
 /** Configuration for creating an animation model with `init`. */
@@ -121,7 +121,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/index.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/index.ts#L32)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -140,7 +140,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/schema.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/schema.ts#L30)
 
 ```
 /** Union of all messages the animation component can produce. */
@@ -156,7 +156,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/schema.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/schema.ts#L19)
 
 ```
 /** Schema for the animation component's state, tracking its unique ID, visibility intent, and lifecycle phase. */
@@ -171,7 +171,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/schema.ts#L43)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/schema.ts#L43)
 
 ```
 const OutMessage: MessageUnion<{
@@ -184,7 +184,7 @@ const OutMessage: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/schema.ts#L7)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/schema.ts#L7)
 
 ```
 /** Schema for the animation lifecycle state, tracking enter/leave phases. */
@@ -195,7 +195,7 @@ const TransitionState: Literals<readonly ["Idle", "EnterStart", "EnterAnimating"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/update.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/update.ts#L30)
 
 ```
 /** Waits for all CSS animations on the element to settle. Covers both CSS transitions and CSS keyframe animations. */
@@ -210,7 +210,7 @@ const WaitForAnimationSettled: CommandDefinitionWithArgs<"WaitForAnimationSettle
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/update.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/update.ts#L25)
 
 ```
 /** Waits for paint via double-rAF before the enter/leave lifecycle advances. */
@@ -223,7 +223,7 @@ const WaitForPaint: CommandDefinitionNoArgs<"WaitForPaint", Effect<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/animation/index.ts#L52)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/animation/index.ts#L52)
 
 ```
 /**

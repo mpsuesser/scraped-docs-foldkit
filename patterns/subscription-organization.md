@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/subscription-organization
 title: "Subscription Organization"
 description: "Organize Subscription records by ownership and lift child Subscriptions through nested Model and Message types."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-05T19:30:16.678Z
+current_date: 2026-09-05T19:30:16.678Z
 ---
 
 # Subscription Organization
@@ -19,26 +19,29 @@ This mirrors the other halves of the boundary. `Update.foldChild` lifts child up
 Each level declares local entries with `Subscription.make` and lifts child records with `Subscription.lift`. By the time a Stream reaches the root, it emits root Messages that the Runtime can dispatch through update. This diagram follows one leaf record through those lifts:
 
 ```
-page/settings/themeMenu/
-  subscription.ts
-  Subscription.make
-  Stream<ThemeMenu.Message>
-               |
-       Subscription.lift
- wraps with GotThemeMenuMessage
-               v
-page/settings/
-  subscription.ts
-  Stream<Settings.Message>
-               |
-       Subscription.lift
-   wraps with GotSettingsMessage
-               v
-subscription.ts (root)
-  Stream<Message>
-               |
-               v
-            Runtime
++-------------------------------+
+| ThemeMenu                     |
+| Stream<ThemeMenu.Message>     |
++-------------------------------+
+  |
+  | Subscription.lift
+  | wraps with GotThemeMenuMessage
+  v
++-------------------------------+
+| Settings                      |
+| Stream<Settings.Message>      |
++-------------------------------+
+  |
+  | Subscription.lift
+  | wraps with GotSettingsMessage
+  v
++-------------------------------+
+| Root                          |
+| Stream<Message>               |
++-------------------------------+
+  |
+  v
+Runtime
 ```
 
 ## The Composition Verbs

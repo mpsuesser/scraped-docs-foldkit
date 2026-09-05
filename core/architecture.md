@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/architecture
 title: "Architecture"
 description: "How Model, Messages, update, view, Commands, Subscriptions, and the Runtime form Foldkit’s Elm Architecture loop."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-05T19:30:16.678Z
+current_date: 2026-09-05T19:30:16.678Z
 ---
 
 # Architecture
@@ -26,15 +26,15 @@ Every Foldkit app repeats the same cycle:
 The complete cycle looks like this:
 
 ```
-+------> update -> Commands -----------+
++-----> update --> Commands -----------+
 |         |                            |
 |         v                            |
-|       Model -> Subscriptions --------+
+|       Model ---> Subscriptions ------+
 |         |                            |
-|         +-> ManagedResources --------+
+|         +------> ManagedResources ---+
 |         |                            |
 |         v                            |
-|       view -> Mounts ----------------+
+|       view ----> Mounts -------------+
 |         |                            |
 |         v                            |
 |       Browser -> events -------------+

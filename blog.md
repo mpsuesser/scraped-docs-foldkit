@@ -2,13 +2,21 @@
 url: https://foldkit.dev/blog
 title: "Blog"
 description: "Announcements, musings, and technical deep dives."
-access_date: 2026-09-02T16:31:11.406Z
-current_date: 2026-09-02T16:31:11.406Z
+access_date: 2026-09-05T19:30:16.678Z
+current_date: 2026-09-05T19:30:16.678Z
 ---
 
 # Blog
 
 Announcements, musings, and technical deep dives.
+
+[Foldkit 0.158.0](https://foldkit.dev/blog/foldkit-0-158-0)
+
+September 4, 2026 · Devin Jameson
+
+Machine gains shared transitions, read-only context, simpler update integration, and a guide to defining, testing, and analyzing your application's workflows.
+
+[Read more →](https://foldkit.dev/blog/foldkit-0-158-0)
 
 [Foldkit 0.156.0 and 0.157.0](https://foldkit.dev/blog/foldkit-0-157-0)
 

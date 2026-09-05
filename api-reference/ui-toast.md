@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-toast
 title: "Ui/Toast"
 description: "API documentation for the Ui/Toast module."
-access_date: 2026-09-02T16:31:11.406Z
-current_date: 2026-09-02T16:31:11.406Z
+access_date: 2026-09-05T19:30:16.678Z
+current_date: 2026-09-05T19:30:16.678Z
 ---
 
 # Ui/Toast
@@ -14,7 +14,7 @@ current_date: 2026-09-02T16:31:11.406Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/toast/index.ts#L136)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/toast/index.ts#L136)
 
 ## Types
 
@@ -22,7 +22,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/toast/index.ts#L100)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/toast/index.ts#L100)
 
 ```
 /**
@@ -41,7 +41,7 @@ type EntryHandlers = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/toast/schema.ts#L117)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/toast/schema.ts#L117)
 
 ```
 /**
@@ -60,7 +60,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/toast/update.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/toast/update.ts#L30)
 
 ```
 /**
@@ -82,7 +82,7 @@ type ShowInput = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/toast/schema.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/toast/schema.ts#L66)
 
 ```
 /** Payload-independent Message variants shared by every bound Toast module. */
@@ -117,7 +117,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/toast/schema.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/toast/schema.ts#L19)
 
 ```
 /** Where the toast viewport is anchored on the screen and how entries stack. */
@@ -128,7 +128,7 @@ const Position: Literals<readonly ["TopLeft", "TopCenter", "TopRight", "BottomLe
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/toast/schema.ts#L13)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/toast/schema.ts#L13)
 
 ```
 /**
@@ -145,7 +145,7 @@ const Variant: Literals<readonly ["Info", "Success", "Warning", "Error"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/ui/src/toast/update.ts#L41)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/toast/update.ts#L41)
 
 ```
 /**

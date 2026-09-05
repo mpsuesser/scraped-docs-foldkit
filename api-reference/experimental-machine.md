@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/experimental-machine
 title: "Experimental/Machine"
 description: "API documentation for the Experimental/Machine module."
-access_date: 2026-09-02T16:31:11.406Z
-current_date: 2026-09-02T16:31:11.406Z
+access_date: 2026-09-05T19:30:16.678Z
+current_date: 2026-09-05T19:30:16.678Z
 ---
 
 # Experimental/Machine
@@ -14,9 +14,53 @@ current_date: 2026-09-02T16:31:11.406Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L556)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L1177)
 
 ```
+/**
+ * Compiles a declarative Machine definition into a Machine.
+ * 
+ * Two stages: the first takes the state and Message union Schemas and fixes
+ * the type parameters, the second takes the initial state, optional shared
+ * transition defaults, and the state-local transition table. The split is
+ * what lets TypeScript narrow `state` and `message` inside every Edge from its
+ * transition-map position: a single-call form checks the definition while the
+ * type parameters are still being inferred, and the narrowing collapses.
+ * 
+ * Build shared defaults with forStates. Each fragment is expanded
+ * into the ordinary state-local table before dispatch and static analysis. A
+ * state-local transition replaces its shared default for that state and
+ * Message; overlapping shared fragments throw when the Machine is defined.
+ * 
+ * The Machine is not a runtime: `transition` returns an `Update.Return`, so the
+ * Machine state lives in the Model and the Foldkit runtime never learns the
+ * Machine exists. Use fold to read and write a Machine state field in
+ * an enclosing Model. Messages that match no Edge leave the state unchanged;
+ * use `step` when the `Ignored` outcome should be observable.
+ * 
+ * Declare a `context` Schema when transitions need a read-only view of data
+ * outside the Machine state. The context is passed to guards and Edge handlers
+ * on each call; it is not decoded, stored, or included in static analysis. Data
+ * that the state owns for its lifetime belongs in the state as a snapshot.
+ * Values that should be visible as facts in Story tests and DevTools should
+ * still enter through Messages.
+ * 
+ * Because every Edge names a literal target tag, the Edge set is plain data:
+ * `reachableFrom`, `unreachableStates`, `deadTransitions`, and `toMermaid`
+ * all read it directly.
+ * 
+ * The Machine's requirements `R` are the services its edge Commands need, and
+ * flow into `transition` and `step`. `R` defaults to `never`. When every edge
+ * Command shares one service, `R` is inferred from the table. When edges need
+ * distinct services `R` cannot be inferred to their union, so supply it on the
+ * second call: `define(schemas)<UploadsClient | SaveClient>({ ... })`.
+ */
+<State extends Readonly<{
+  _tag: string
+}>, Message extends Readonly<{
+  _tag: string
+}>, ContextSchema extends Top>(schemas: MachineSchemas<State, Message, ContextSchema>): (definition: MachineDefinition<State, Message, R, ContextSchema["Type"]>) => Machine<State, Message, R, ContextSchema["Type"]>
+
 <State extends Readonly<{
   _tag: string
 }>, Message extends Readonly<{
@@ -24,11 +68,21 @@ function
 }>>(schemas: MachineSchemas<State, Message>): (definition: MachineDefinition<State, Message, R>) => Machine<State, Message, R>
 ```
 
+### ignore
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L557)
+
+```
+(): Ignore
+```
+
 ### otherwise
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L285)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L535)
 
 ```
 <State extends Readonly<{
@@ -39,14 +93,14 @@ function
   _tag: string
 }>, TriggerMessage extends Readonly<{
   _tag: string
-}>, R = never>(edge: Edge<State, Message, SourceState, TriggerMessage, void, R>): Otherwise<State, Message, SourceState, TriggerMessage, R>
+}>, R = never, Context = typeof NoMachineContextTypeId>(edge: Edge<State, Message, SourceState, TriggerMessage, void, R, Context>): Otherwise<State, Message, SourceState, TriggerMessage, R, Context>
 ```
 
 ### to
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L202)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L428)
 
 ```
 <State extends Readonly<{
@@ -57,28 +111,33 @@ function
   _tag: string
 }>, TriggerMessage extends Readonly<{
   _tag: string
-}>, TargetTag extends string, R = never>(
+}>, TargetTag extends string, R = never, Context = typeof NoMachineContextTypeId>(
   target: TargetTag,
-  build: (input: NoInfer<Readonly<{
-    guardValue: void
-    message: TriggerMessage
-    state: SourceState
-  }>>) => NoInfer<Extract<State, Readonly<{
-    _tag: TargetTag
-  }>>>,
-  commands?: (input: NoInfer<Readonly<{
-    guardValue: void
-    message: TriggerMessage
-    state: SourceState
-  }>>) => readonly Array<Command<NoInfer<Message>, never, R>>
-): Edge<State, Message, SourceState, TriggerMessage, void, R>
+  handler: (input: NoInfer<EdgeInput<SourceState, TriggerMessage, void, Context>>) => Update.Return<NoInfer<Variant<State, TargetTag>>, NoInfer<Message>, R>
+): Edge<State, Message, SourceState, TriggerMessage, void, R, Context>
 ```
 
 ### when
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L233)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L468)
+
+```
+<State extends Readonly<{
+  _tag: string
+}>, Message extends Readonly<{
+  _tag: string
+}>, SourceState extends Readonly<{
+  _tag: string
+}>, TriggerMessage extends Readonly<{
+  _tag: string
+}>, GuardResult extends boolean | Option<unknown>, TargetTag extends string, R = never, Context = typeof NoMachineContextTypeId>(
+  guard: (state: NoInfer<SourceState>, message: NoInfer<TriggerMessage>, context: ContextArguments<NoInfer<Context>>) => GuardResult,
+  target: TargetTag,
+  handler: (input: NoInfer<EdgeInput<SourceState, TriggerMessage, GuardValueOf<GuardResult>, Context>>) => Update.Return<NoInfer<Variant<State, TargetTag>>, NoInfer<Message>, R>
+): When<State, Message, SourceState, TriggerMessage, GuardValueOf<GuardResult>, R, Context>
+```
 
 ## Types
 
@@ -86,7 +145,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L360)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L642)
 
 ```
 /** An Edge that cannot fire in a walk of the declared Edge set, with the reason. */
@@ -100,43 +159,42 @@ type DeadTransition = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L357)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L638)
 
 ```
 /**
  * Why an Edge cannot fire in a walk of the declared Edge set:
  * `UnreachableSource` means no path from the walk roots reaches the Edge's
  * source state, and `ShadowedByOtherwise` means an earlier `otherwise` in the
- * Edge's guard list always fires first.
+ * Edge's guard list always fires first. `ShadowedByIgnore` means an earlier
+ * ignore stops evaluation first.
  */
-type DeadTransitionReason = "UnreachableSource" | "ShadowedByOtherwise"
+type DeadTransitionReason = "UnreachableSource" | "ShadowedByOtherwise" | "ShadowedByIgnore"
 ```
 
 ### Edge
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L103)
 
 ```
 /**
  * A single transition edge. The target state tag is a literal value, so the
- * edge set of a Machine is enumerable data. `build` constructs the target
- * variant from its EdgeInput. `maybeCommands` holds transition-time
- * effects, dispatched as ordinary Commands.
+ * edge set of a Machine is enumerable data. `handler` returns the target
+ * variant and any transition-time Commands as an `Update.Return` record.
  * 
- * The correlation between `target` and `build`'s return variant is enforced
+ * The correlation between `target` and `handler`'s Model variant is enforced
  * by to's signature, not by this type. Keeping this type free of the
  * target tag is what lets TypeScript infer the source state and trigger
- * Message from the transition table position.
+ * Message from the transition-map position.
  * 
  * Construct with to.
  */
 type Edge = Readonly<{
   _tag: "Edge"
   ~foldkit/EdgeGuardValue: GuardValue
-  build: (input: EdgeInput<SourceState, TriggerMessage, unknown>) => State
-  maybeCommands: Option.Option<(input: EdgeInput<SourceState, TriggerMessage, unknown>) => ReadonlyArray<Command<Message, never, R>>>
+  handler: (input: EdgeInput<SourceState, TriggerMessage, unknown, Context>) => Update.Return<State, Message, R>
   target: TagOf<State>
 }>
 ```
@@ -145,7 +203,7 @@ type Edge = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L335)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L615)
 
 ```
 /** Which guard construct an Edge sits under, with its position in the guard list. */
@@ -164,27 +222,35 @@ type EdgeGuard = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L72)
 
 ```
 /**
- * The single argument an Edge's `build` and `commands` callbacks receive:
- * the source state, the triggering Message, and the guard value produced by
- * the Edge's when guard (`void` on unguarded and boolean-guarded
- * Edges). Destructure the fields you need.
+ * The single argument an Edge handler receives: the source state, the
+ * triggering Message, the guard value produced by the Edge's when
+ * guard (`void` on unguarded and boolean-guarded Edges), and the read-only
+ * context declared for the Machine when one exists. Destructure the fields you
+ * need.
  */
-type EdgeInput = Readonly<{
-  guardValue: GuardValue
-  message: TriggerMessage
-  state: SourceState
-}>
+type EdgeInput = HasMachineContext<Context> extends true
+  ? Readonly<{
+    context: Context
+    guardValue: GuardValue
+    message: TriggerMessage
+    state: SourceState
+  }>
+  : Readonly<{
+    guardValue: GuardValue
+    message: TriggerMessage
+    state: SourceState
+  }>
 ```
 
 ### EdgeSummary
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L341)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L621)
 
 ```
 /** One Edge of the table as plain data: source, trigger, target, and guard placement. */
@@ -196,38 +262,101 @@ type EdgeSummary = Readonly<{
 }>
 ```
 
+### FoldConfig
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L733)
+
+```
+/**
+ * The capabilities needed to fold a Machine state field into its enclosing
+ * Model. `read` returns an `Option` because the field may be absent in the
+ * current Model variant; `write` replaces it after a transition. A contextual
+ * Machine also requires `context`, which reads the current context from the
+ * enclosing Model for each transition.
+ */
+type FoldConfig = Readonly<{
+  machine: Machine<State, Message, R, Context>
+  read: (model: ParentModel) => Option.Option<State>
+  write: (model: ParentModel, nextState: State) => ParentModel
+}> & FoldContextField<ParentModel, Context>
+```
+
 ### GuardedEdge
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L97)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L165)
 
 ```
-/** One entry in an ordered guard list: a When or the Otherwise fallback. */
-type GuardedEdge = When<State, Message, SourceState, TriggerMessage, unknown, R> | Otherwise<State, Message, SourceState, TriggerMessage, R>
+/**
+ * One entry in an ordered guard list: a When, the Otherwise
+ * transition fallback, or the Ignore no-transition fallback.
+ */
+type GuardedEdge = When<State, Message, SourceState, TriggerMessage, unknown, R, Context> | Otherwise<State, Message, SourceState, TriggerMessage, R, Context> | Ignore
+```
+
+### Ignore
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L161)
+
+```
+/** An explicit no-transition fallback at the end of a guard list. Construct with ignore. */
+type Ignore = Readonly<{
+  _tag: "Ignore"
+}>
 ```
 
 ### Ignored
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L315)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L594)
 
 ```
-/** A step that matched no Edge: the state is unchanged and the Message is observable as ignored. */
+/**
+ * A step that matched no Edge: the state is unchanged and the Message is
+ * observable as ignored. `reason` distinguishes the four causes, described
+ * on IgnoredReason.
+ */
 type Ignored = Readonly<{
   _tag: "Ignored"
   messageTag: TagOf<Message>
+  reason: IgnoredReason
   state: State
   stateTag: TagOf<State>
 }>
+```
+
+### IgnoredReason
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L586)
+
+```
+/**
+ * Why a step matched no Edge. `OutOfAlphabet` means the Message tag appears
+ * in no state's `on` record anywhere in the table, so the Message is outside
+ * the Machine's alphabet. `NotApplicable` means the Message tag is in the
+ * alphabet, but no Edge for it exists from the current state, whether the
+ * state is absent from the table or its `on` record lacks the tag.
+ * `GuardsFellThrough` means an Edge entry exists for this state and Message,
+ * but every guard declined and no otherwise or ignore fallback
+ * was present.
+ * `ExplicitlyIgnored` means evaluation reached an ignore fallback.
+ */
+type IgnoredReason = "OutOfAlphabet" | "NotApplicable" | "GuardsFellThrough" | "ExplicitlyIgnored"
 ```
 
 ### Machine
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L374)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L656)
 
 ```
 /**
@@ -241,9 +370,9 @@ type Machine = Readonly<{
   initial: State
   reachableFrom: (tag: TagOf<State>) => ReadonlySet<TagOf<State>>
   stateTags: ReadonlyArray<TagOf<State>>
-  step: (state: State, message: Message) => TransitionResult<State, Message, R>
+  step: (state: State, message: Message, context: MachineContextArguments<Context>) => TransitionResult<State, Message, R>
   toMermaid: () => string
-  transition: (state: State, message: Message) => Update.Return<State, Message, R>
+  transition: (state: State, message: Message, context: MachineContextArguments<Context>) => Update.Return<State, Message, R>
   unreachableStates: (extraRoots?: ReadonlyArray<TagOf<State>>) => ReadonlyArray<TagOf<State>>
 }>
 ```
@@ -252,17 +381,20 @@ type Machine = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L440)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L860)
 
 ```
 /**
- * The Machine definition: the initial state and the transition table.
+ * The Machine definition: the initial state, shared transition defaults, and
+ * the state-local transition table. A state-local transition replaces a
+ * shared transition for the same state and Message.
  * 
  *  Ships from `foldkit/experimental/machine`; expect breaking changes while the API settles.
  */
 type MachineDefinition = Readonly<{
   initial: State
-  states: TransitionTable<State, Message, R>
+  shared: ReadonlyArray<ForStatesFragment<State, Message, R, Context>>
+  states: TransitionTable<State, Message, R, Context>
 }>
 ```
 
@@ -270,44 +402,59 @@ type MachineDefinition = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L427)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L845)
 
 ```
 /**
- * The Schemas a Machine is defined over: the state union and the Message
- * union. Passed to `define`'s first stage so the type parameters are
- * fully resolved before the transition table is checked.
+ * The Schemas a Machine is defined over, including an optional read-only
+ * context Schema. A declared context is required by the Machine's guards,
+ * Edge handlers, `transition`, and `step`.
  */
-type MachineSchemas = Readonly<{
-  message: Schema.Top & Readonly<{
-    Type: Message
+type MachineSchemas = MachineSchemaFields<State, Message> & [ContextSchema] extends [Schema.Top]
+  ? Readonly<{
+    context: ContextSchema
   }>
-  state: Schema.Top & Readonly<{
-    members: ReadonlyArray<Schema.Top>
-    Type: State
+  : Readonly<{
+    context: never
   }>
-}>
 ```
 
 ### Otherwise
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L85)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L148)
 
 ```
 /** The unconditional fallback Edge at the end of a guard list. Construct with otherwise. */
 type Otherwise = Readonly<{
   _tag: "Otherwise"
-  edge: Edge<State, Message, SourceState, TriggerMessage, void, R>
+  edge: Edge<State, Message, SourceState, TriggerMessage, void, R, Context>
 }>
+```
+
+### StateTransitions
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L364)
+
+```
+/**
+ * The transition table entry for one source state. Use this alias when
+ * extracting an entry from a Machine's `states` record to preserve the source
+ * state and triggering Message narrowing inside its Edges.
+ * 
+ *  Ships from `foldkit/experimental/machine`; expect breaking changes while the API settles.
+ */
+type StateTransitions = NonNullable<TransitionTable<State, Message, R, Context>[SourceTag]>
 ```
 
 ### TagOf
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L23)
 
 ```
 /** The union of `_tag` literals in a Tagged union. */
@@ -318,7 +465,7 @@ type TagOf = Union["_tag"]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L9)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L20)
 
 ```
 /** Any value discriminated by a `_tag` field. Both states and Messages satisfy this shape. */
@@ -331,7 +478,7 @@ type Tagged = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L326)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L606)
 
 ```
 /**
@@ -346,7 +493,7 @@ type TransitionResult = Transitioned<State, Message, R> | Ignored<State, Message
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L123)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L193)
 
 ```
 /**
@@ -361,7 +508,7 @@ type
 type TransitionTable = Readonly<{
   [SourceTag in TagOf<State>]: Readonly<{
     on: Readonly<{
-      [MessageTag in TagOf<Message>]: Edge<State, Message, Variant<State, SourceTag>, Variant<Message, MessageTag>, void, R> | ReadonlyArray<GuardedEdge<State, Message, Variant<State, SourceTag>, Variant<Message, MessageTag>, R>>
+      [MessageTag in TagOf<Message>]: Edge<State, Message, Variant<State, SourceTag>, Variant<Message, MessageTag>, void, R, Context> | ReadonlyArray<GuardedEdge<State, Message, Variant<State, SourceTag>, Variant<Message, MessageTag>, R, Context>>
     }>
   }>
 }>
@@ -371,7 +518,7 @@ type TransitionTable = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L301)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L562)
 
 ```
 /** A step that matched an Edge: the next state plus any transition-time Commands. */
@@ -389,7 +536,7 @@ type Transitioned = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L15)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L26)
 
 ```
 /** The single variant of a Tagged union carrying the given tag. */
@@ -402,13 +549,71 @@ type Variant = Extract<Union, Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/009aa88d012fa1ac31d90ec469acba8af67c4249/packages/foldkit/src/experimental/machine/machine.ts#L71)
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L121)
 
 ```
 /** A guarded Edge that fires only when its guard passes. Construct with when. */
 type When = Readonly<{
   _tag: "When"
-  edge: Edge<State, Message, SourceState, TriggerMessage, GuardValue, R>
-  guard: (state: SourceState, message: TriggerMessage) => Option.Option<unknown>
+  edge: Edge<State, Message, SourceState, TriggerMessage, GuardValue, R, Context>
+  guard: (state: SourceState, message: TriggerMessage, context: ContextArguments<Context>) => Option.Option<unknown>
 }>
+```
+
+## Constants
+
+### fold
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L793)
+
+```
+/**
+ * Folds a Machine state field into an enclosing Model. Any transition-time
+ * Commands pass through unchanged.
+ * 
+ * When `read` returns `None`, the fold returns the original Model without
+ * running a transition. For a contextual Machine, `context` is read only when
+ * the Machine state is present and is supplied to that transition.
+ * 
+ * ```ts
+ * const foldUpload = Machine.fold({
+ *   machine: uploadMachine,
+ *   read: (model: Model) => Option.some(model.upload),
+ *   write: (model, nextUpload) =>
+ *     evo(model, { upload: () => nextUpload }),
+ *   context: model => model.uploadQueues,
+ * })
+ * 
+ * // Data-first in update
+ * foldUpload(model, message)
+ * 
+ * // Data-last in a composed update
+ * Update.combine(model, [foldUpload(message), recordUploadAttempt])
+ * ```
+ * 
+ *  Ships from `foldkit/experimental/machine`; expect breaking changes while the API settles.
+ */
+const fold: (config: FoldConfig<ParentModel, State, Message, R, Context>) => Fold<ParentModel, Message, Message, R>
+```
+
+### forStates
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/experimental/machine/machine.ts#L345)
+
+```
+/**
+ * Selects source state tags for a shared transition map. The `on` handler's
+ * `state` is narrowed to the union of the selected variants, and its `message`
+ * is narrowed by the map key.
+ * 
+ * Add the resulting fragment to a Machine definition's `shared` array. Shared
+ * transitions are defaults: a state-local transition for the same Message
+ * replaces the shared transition. Defining the same state/Message pair in two
+ * shared fragments throws when the Machine is defined.
+ */
+const forStates: (sourceTags: SourceTags) => ForStatesBuilder<SourceTags>
 ```
