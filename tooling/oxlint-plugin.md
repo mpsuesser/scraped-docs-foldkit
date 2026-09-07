@@ -2,8 +2,8 @@
 url: https://foldkit.dev/tooling/oxlint-plugin
 title: "Oxlint Plugin"
 description: "Install and configure @foldkit/oxlint-plugin, then see what each Foldkit-specific rule accepts and rejects."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-07T07:29:31.695Z
+current_date: 2026-09-07T07:29:31.695Z
 ---
 
 # Oxlint Plugin
@@ -14,7 +14,7 @@ Foldkit projects use `oxlint` for general linting and `@foldkit/oxlint-plugin` f
 
 ## Scaffolded Projects
 
-[Create Foldkit app](https://foldkit.dev/get-started/getting-started) includes `.oxlintrc.json`, a `lint` script, `oxlint`, and `@foldkit/oxlint-plugin`. Generated projects extend the recommended Foldkit preset:
+[Create Foldkit app](https://foldkit.dev/get-started) includes `.oxlintrc.json`, a `lint` script, `oxlint`, and `@foldkit/oxlint-plugin`. Generated projects extend the recommended Foldkit preset:
 
 ```
 {

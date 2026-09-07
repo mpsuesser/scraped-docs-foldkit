@@ -1,9 +1,9 @@
 ---
-url: https://foldkit.dev/get-started/why-foldkit
+url: https://foldkit.dev/introduction/why-foldkit
 title: "Why Foldkit"
 description: "Why Foldkit exists and the principles behind its design."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-07T07:29:31.695Z
+current_date: 2026-09-07T07:29:31.695Z
 ---
 
 # Why Foldkit

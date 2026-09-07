@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-anchor
 title: "Ui/Anchor"
 description: "API documentation for the Ui/Anchor module."
-access_date: 2026-09-05T19:30:16.678Z
-current_date: 2026-09-05T19:30:16.678Z
+access_date: 2026-09-07T07:29:31.695Z
+current_date: 2026-09-07T07:29:31.695Z
 ---
 
 # Ui/Anchor
@@ -14,7 +14,7 @@ current_date: 2026-09-05T19:30:16.678Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/anchor/anchor.ts#L182)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/anchor/anchor.ts#L195)
 
 ```
 /**
@@ -26,9 +26,17 @@ function
  *  components like Popover where Tab should navigate naturally within the
  *  panel. When `focusAfterPosition` is true, the element is focused after the
  *  first position computation clears visibility, deferred via
- *  requestAnimationFrame so the element is painted before focus fires.
+ *  requestAnimationFrame so the element is painted before focus fires. That
+ *  focus passes `preventScroll`. Floating UI has already placed the element
+ *  in view, so a scroll-on-focus can only move the page under it, which
+ *  happens when the element's top edge lands within the document's
+ *  `scroll-padding-top`.
  *  `focusSelector` optionally targets a descendant (e.g. a calendar grid
  *  inside a popover panel) instead of the panel itself.
+ *  A portaled element whose button sits inside a `position: fixed` ancestor
+ *  is positioned with Floating UI's fixed strategy, so it stays under the
+ *  button while the page scrolls instead of moving with the document until
+ *  `autoUpdate` repositions it.
  *  The side the element currently sits on is written to `data-placement`, so
  *  CSS can react to it. When `isPlacementLocked` is true, the element keeps the
  *  side that the first positioning picks, `flip` is removed from every later
@@ -45,7 +53,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/anchor/anchor.ts#L98)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/anchor/anchor.ts#L98)
 
 ```
 /**
@@ -66,7 +74,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/anchor/anchor.ts#L136)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/anchor/anchor.ts#L141)
 
 ```
 /**
@@ -110,7 +118,7 @@ type SetupConfig = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/anchor/anchor.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/anchor/anchor.ts#L48)
 
 ```
 /** Static configuration for anchor-based positioning of a floating element relative to a button. */
@@ -136,7 +144,7 @@ const AnchorConfig: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/anchor/anchor.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/anchor/anchor.ts#L35)
 
 ```
 /**
@@ -158,7 +166,7 @@ const Padding: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/ui/src/anchor/anchor.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/anchor/anchor.ts#L16)
 
 ```
 /**

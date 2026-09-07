@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/field-validation-rule
 title: "FieldValidation/Rule"
 description: "API documentation for the FieldValidation/Rule module."
-access_date: 2026-09-05T19:30:16.678Z
-current_date: 2026-09-05T19:30:16.678Z
+access_date: 2026-09-07T07:29:31.695Z
+current_date: 2026-09-07T07:29:31.695Z
 ---
 
 # FieldValidation/Rule
@@ -14,7 +14,7 @@ current_date: 2026-09-05T19:30:16.678Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L44)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L44)
 
 ```
 /** Creates a `Rule` that checks if a string is a valid email format. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L78)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L78)
 
 ```
 /** Creates a `Rule` that checks if a string ends with a specified suffix. */
@@ -39,7 +39,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L96)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L96)
 
 ```
 /** Creates a `Rule` that checks if a string exactly matches an expected value. */
@@ -53,7 +53,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L145)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L145)
 
 ```
 /**
@@ -75,7 +75,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L87)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L87)
 
 ```
 /** Creates a `Rule` that checks if a string contains a specified substring. */
@@ -89,7 +89,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L128)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L128)
 
 ```
 /** Creates a `Rule` that checks an array holds at most `max` items. */
@@ -103,7 +103,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L27)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L27)
 
 ```
 /** Creates a `Rule` that checks if a string does not exceed a maximum length. */
@@ -117,7 +117,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L119)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L119)
 
 ```
 /** Creates a `Rule` that checks an array holds at least `min` items. */
@@ -131,7 +131,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L18)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L18)
 
 ```
 /** Creates a `Rule` that checks if a string meets a minimum length. */
@@ -145,7 +145,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L105)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L105)
 
 ```
 /** Creates a `Rule` that checks if a string is one of a specified set of allowed values. */
@@ -159,7 +159,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L36)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L36)
 
 ```
 /** Creates a `Rule` that checks if a string matches a regular expression. */
@@ -173,7 +173,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L12)
 
 ```
 /** Resolves a `RuleMessage` to a concrete string, applying it to the value when the message is a function. */
@@ -187,7 +187,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L69)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L69)
 
 ```
 /** Creates a `Rule` that checks if a string begins with a specified prefix. */
@@ -201,7 +201,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L55)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L55)
 
 ```
 /**
@@ -222,7 +222,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L9)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L9)
 
 ```
 /** A tuple of a predicate and error message used for field validation. */
@@ -233,7 +233,7 @@ type Rule = readonly [Predicate.Predicate<A>, RuleMessage<A>]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ac2789f4af3deeb96ce5b03c660b6d239ae31df4/packages/foldkit/src/fieldValidation/rule.ts#L6)
+[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/fieldValidation/rule.ts#L6)
 
 ```
 /** An error message for a rule: either a static string, or a function that receives the invalid value. */

@@ -2,13 +2,13 @@
 url: https://foldkit.dev/example-apps
 title: "Examples"
 description: "Browse working Foldkit applications that cover state, forms, routing, caching, authentication, server rendering, UI components, third-party integrations, and more."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-09-07T07:29:31.695Z
+current_date: 2026-09-07T07:29:31.695Z
 ---
 
 # Examples
 
-Each example is available as a starter template via [Create Foldkit App](https://github.com/foldkit/foldkit/tree/main/packages/create-foldkit-app). Pick one that matches what you’re building, or start with Counter and work your way up. See [Getting Started](https://foldkit.dev/get-started/getting-started) to get up and running.
+Each example is available as a starter template via [Create Foldkit App](https://github.com/foldkit/foldkit/tree/main/packages/create-foldkit-app). Pick one that matches what you’re building, or start with Counter and work your way up. See [Get Started](https://foldkit.dev/get-started) to get up and running.
 
 Example
 

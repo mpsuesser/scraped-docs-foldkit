@@ -2,8 +2,8 @@
 url: https://foldkit.dev/about
 title: "About Foldkit"
 description: "What Foldkit is, who builds it, how changes are developed and released, and where the project stands before 1.0."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-07T07:29:31.695Z
+current_date: 2026-09-07T07:29:31.695Z
 ---
 
 # About Foldkit
@@ -28,7 +28,7 @@ Releases go out through Changesets. Every user-visible change to a published pac
 
 ## Project Status
 
-Foldkit is pre-1.0. The architecture is settled and the core API is stable in practice, but minor releases can still change public surface. The [roadmap](https://foldkit.dev/roadmap) lists the work that gates 1.0, which features are experimental today, and which architectural decisions will not change.
+Foldkit is pre-1.0. The architecture is settled and the core API is stable in practice, but minor releases can still change public surface. The [roadmap](https://foldkit.dev/introduction/roadmap) lists the work that gates 1.0, which features are experimental today, and which architectural decisions will not change.
 
 ## This Site
 
@@ -38,6 +38,6 @@ The site is also built to be read by agents. Every page is available as Markdown
 
 ## Where to Go Next
 
-- [Getting Started](https://foldkit.dev/get-started/getting-started) creates a project and walks through the generated structure.
-- [Why Foldkit](https://foldkit.dev/get-started/why-foldkit) explains why Foldkit exists and the principles behind its design.
+- [Get Started](https://foldkit.dev/get-started) creates a project and walks through the generated structure.
+- [Why Foldkit](https://foldkit.dev/introduction/why-foldkit) explains why Foldkit exists and the principles behind its design.
 - [Contact](https://foldkit.dev/contact) lists the ways to reach the project.

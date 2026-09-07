@@ -1,12 +1,12 @@
 ---
-url: https://foldkit.dev/get-started/getting-started
-title: "Getting Started"
+url: https://foldkit.dev/get-started
+title: "Get Started"
 description: "Create a Foldkit project from a starter, inspect the generated structure, or add Foldkit to an existing Vite application."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-07T07:29:31.695Z
+current_date: 2026-09-07T07:29:31.695Z
 ---
 
-# Getting Started
+# Get Started
 
 Built on Effect. Architected like Elm. Written in TypeScript. Let’s get your first application running.
 
@@ -50,7 +50,7 @@ The exact files depend on the rendering mode and starter example. A small browse
 - `vite.config.ts`: Vite configuration with `@foldkit/vite-plugin`
 - `tsconfig.json`: TypeScript configuration
 - `.oxlintrc.json`: Oxlint configuration
-- `.prettierrc`: Prettier configuration
+- `.oxfmtrc.json`: Oxfmt configuration
 - `AGENTS.md`: your instructions for AI coding assistants working on the project
 - `FOLDKIT.md`: Foldkit's own conventions for those assistants, [replaced from the current template when you upgrade Foldkit](https://foldkit.dev/ai/overview)
 

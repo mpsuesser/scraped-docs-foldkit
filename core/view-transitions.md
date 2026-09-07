@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view-transitions
 title: "View Transitions"
 description: "Animate qualifying renders with the browser View Transitions API. Covers route direction, shared elements, and when a running transition is skipped."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-07T07:29:31.695Z
+current_date: 2026-09-07T07:29:31.695Z
 ---
 
 # View Transitions
@@ -85,15 +85,15 @@ CSS scopes animations to the active types with `:active-view-transition-type(...
   animation-duration: 300ms;
 }
 
-:root:active-view-transition-type(to-artwork-detail)::view-transition-old(
-    root
-  ) {
+:root:active-view-transition-type(
+    to-artwork-detail
+  )::view-transition-old(root) {
   animation-name: slide-out-to-left;
 }
 
-:root:active-view-transition-type(to-artwork-detail)::view-transition-new(
-    root
-  ) {
+:root:active-view-transition-type(
+    to-artwork-detail
+  )::view-transition-new(root) {
   animation-name: slide-in-from-right;
 }
 

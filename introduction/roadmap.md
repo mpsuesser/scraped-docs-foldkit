@@ -1,9 +1,9 @@
 ---
-url: https://foldkit.dev/roadmap
+url: https://foldkit.dev/introduction/roadmap
 title: "Roadmap"
 description: "Where Foldkit is today, how it got here, the work remaining before 1.0, and the architectural promises that will not change."
-access_date: 2026-09-05T19:30:16.678Z
-current_date: 2026-09-05T19:30:16.678Z
+access_date: 2026-09-07T07:29:31.695Z
+current_date: 2026-09-07T07:29:31.695Z
 ---
 
 # Roadmap
