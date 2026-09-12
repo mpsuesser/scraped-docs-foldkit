@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/routing-and-navigation
 title: "Routing & Navigation"
 description: "Define routes with bidirectional parser combinators that decode URLs into typed values and build URLs from Schema-validated parameters."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-12T22:55:23.086Z
+current_date: 2026-09-12T22:55:23.086Z
 ---
 
 # Routing & Navigation
@@ -204,6 +204,8 @@ console.log(searchUrl)
 ```
 
 `Schema.OptionFromOptional` makes parameters optional. Missing params become `Option.none()`. `Schema.FiniteFromString` automatically parses string query values into numbers.
+
+`Schema.withConstructorDefault` does not provide a query-string default. Constructor defaults run only when calling a Schema’s `make` constructor, while `Route.query` decodes and encodes values. Use `Schema.withDecodingDefaultKey` when a missing query key should decode to a concrete value, or `Schema.OptionFromOptional` when the Route should preserve its absence. The [`foldkit/no-route-query-constructor-default`](https://foldkit.dev/tooling/oxlint-plugin#no-route-query-constructor-default) lint rule catches the inert constructor-default form.
 
 For a complete routing example, see the [Routing example](https://foldkit.dev/example-apps/routing). For a deeper look at query parameters (custom schema transforms, lenient parsing, and bidirectional URL sync), see the [Query Sync example](https://foldkit.dev/example-apps/query-sync).
 

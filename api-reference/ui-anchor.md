@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-anchor
 title: "Ui/Anchor"
 description: "API documentation for the Ui/Anchor module."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-12T22:55:23.086Z
+current_date: 2026-09-12T22:55:23.086Z
 ---
 
 # Ui/Anchor
@@ -14,7 +14,7 @@ current_date: 2026-09-12T18:49:33.387Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/anchor/anchor.ts#L195)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/anchor/anchor.ts#L195)
 
 ```
 /**
@@ -53,7 +53,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/anchor/anchor.ts#L98)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/anchor/anchor.ts#L98)
 
 ```
 /**
@@ -74,7 +74,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/anchor/anchor.ts#L141)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/anchor/anchor.ts#L141)
 
 ```
 /**
@@ -118,7 +118,7 @@ type SetupConfig = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/anchor/anchor.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/anchor/anchor.ts#L48)
 
 ```
 /** Static configuration for anchor-based positioning of a floating element relative to a button. */
@@ -144,7 +144,7 @@ const AnchorConfig: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/anchor/anchor.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/anchor/anchor.ts#L35)
 
 ```
 /**
@@ -166,7 +166,7 @@ const Padding: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/anchor/anchor.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/anchor/anchor.ts#L16)
 
 ```
 /**

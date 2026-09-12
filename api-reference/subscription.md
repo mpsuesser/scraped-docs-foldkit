@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/subscription
 title: "Subscription"
 description: "API documentation for the Subscription module."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-12T22:55:23.086Z
+current_date: 2026-09-12T22:55:23.086Z
 ---
 
 # Subscription
@@ -14,7 +14,7 @@ current_date: 2026-09-12T18:49:33.387Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/subscription.ts#L194)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L194)
 
 ```
 /**
@@ -29,7 +29,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/animationFrame.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/animationFrame.ts#L66)
 
 ```
 /**
@@ -53,7 +53,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/fromEvent.ts#L170)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/fromEvent.ts#L211)
 
 ```
 /**
@@ -73,7 +73,9 @@ function
  * Model condition.
  * 
  * For a listener that reacts to only some events, reach for
- * `fromEventFilterMap`, whose mapper returns `Option<Message>`.
+ * `fromEventFilterMap`, whose mapper returns `Option<Message>`. For a
+ * listener that also cancels the default action of the events it handles,
+ * reach for `fromEventFilterMapPreventDefault`.
  */
 <EventType extends Event, Message>(config: FromEventConfig<EventType, Message>): Stream<Message>
 ```
@@ -82,7 +84,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/fromEvent.ts#L104)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/fromEvent.ts#L143)
 
 ```
 /**
@@ -98,7 +100,11 @@ function
  * keep an event is paired with `event.preventDefault()`. The mapper runs
  * synchronously inside the browser's event dispatch, so `preventDefault()`
  * takes effect, while a downstream filter would run on a later turn after the
- * default action has already happened.
+ * default action has already happened. The exception is a passive listener,
+ * which ignores `preventDefault()`. Some browsers default wheel and touch
+ * listeners on global targets to passive. Pass
+ * `options: { passive: false }` explicitly when cancelling those events, or
+ * reach for `fromEventFilterMapPreventDefault`, which does so for you.
  * 
  * The listener lifecycle uses `Effect.acquireRelease`. The `addEventListener`
  * call happens inside the acquire Effect, and the matching
@@ -114,11 +120,51 @@ function
 <EventType extends Event, Message>(config: FromEventFilterMapConfig<EventType, Message>): Stream<Message>
 ```
 
+### fromEventFilterMapPreventDefault
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/fromEvent.ts#L273)
+
+```
+/**
+ * Build a Stream that emits a Message for the dispatches of a DOM event the
+ * mapper marks handled, calling `event.preventDefault()` on each of them,
+ * registering the listener when the Stream's scope opens and removing it when
+ * the scope closes.
+ * 
+ * This is the cancelling variant of `fromEventFilterMap`, mirroring
+ * `h.OnKeyDownPreventDefault` from `foldkit/html`. Its `toMessage` returns
+ * `Option.some(message)` to mark a dispatch handled. The helper evaluates the
+ * mapper, calls `event.preventDefault()`, and queues the Message before the
+ * native listener returns. `Option.none()` leaves the default behavior intact.
+ * The mapper never calls `preventDefault()` itself.
+ * 
+ * Because cancelling is the point, the listener registers with
+ * `passive: false` when the config does not say otherwise. This keeps wheel
+ * and touch events cancelable when a browser would otherwise make listeners
+ * on a global target passive. Passing `passive: true` explicitly contradicts
+ * the helper's purpose and throws.
+ * 
+ * The listener lifecycle uses `Effect.acquireRelease`. The `addEventListener`
+ * call happens inside the acquire Effect, and the matching
+ * `removeEventListener` is registered only after acquire completes, so the
+ * listener never leaks on interruption.
+ * 
+ * This is a Stream, not a Subscription entry. Wrap it with
+ * `Subscription.persistent` for a listener whose lifetime spans the whole
+ * Subscriptions record, or plug it into a `Subscription.make` entry's
+ * `dependenciesToStream` (typically behind `Stream.when`) to gate it on a
+ * Model condition.
+ */
+<EventType extends Event, Message>(config: FromEventFilterMapPreventDefaultConfig<EventType, Message>): Stream<Message>
+```
+
 ### lift
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/subscription.ts#L543)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L543)
 
 ```
 /**
@@ -160,7 +206,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/subscription.ts#L166)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L166)
 
 ```
 /**
@@ -181,7 +227,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/subscription.ts#L226)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L226)
 
 ```
 /**
@@ -203,7 +249,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/animationFrame.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/animationFrame.ts#L12)
 
 ```
 /**
@@ -225,7 +271,7 @@ type AnimationFrameConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/subscription.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L16)
 
 ```
 /**
@@ -245,7 +291,7 @@ type EntryWithoutKeepAlive = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/fromEvent.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/fromEvent.ts#L21)
 
 ```
 /**
@@ -259,7 +305,12 @@ type
  * 
  * `toMessage(event)` transforms each dispatched event into a Message. The
  * mapper runs synchronously in the same call stack as the browser's event
- * dispatch, so calling `event.preventDefault()` inside it works as expected.
+ * dispatch, so calling `event.preventDefault()` inside it takes effect,
+ * unless the listener is passive. Some browsers default wheel and touch
+ * listeners on global targets to passive, where `preventDefault()` is
+ * ignored. Pass `options: { passive: false }` explicitly when cancelling
+ * those events, or reach for `fromEventFilterMapPreventDefault`, which does
+ * so for you.
  */
 type FromEventConfig = Readonly<{
   options: AddEventListenerOptions
@@ -273,7 +324,7 @@ type FromEventConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/fromEvent.ts#L41)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/fromEvent.ts#L50)
 
 ```
 /**
@@ -288,9 +339,47 @@ type
  * `toMessage(event)` returns `Option.some(message)` to emit a Message for the
  * event, or `Option.none()` to ignore it. The mapper runs synchronously in the
  * same call stack as the browser's event dispatch, so calling
- * `event.preventDefault()` inside it works as expected.
+ * `event.preventDefault()` inside it takes effect, unless the listener is
+ * passive. Some browsers default wheel and touch listeners on global targets
+ * to passive, where `preventDefault()` is ignored. Pass
+ * `options: { passive: false }` explicitly when cancelling those events, or
+ * reach for `fromEventFilterMapPreventDefault`, which does so for you.
  */
 type FromEventFilterMapConfig = Readonly<{
+  options: AddEventListenerOptions
+  target: EventTarget | () => EventTarget
+  toMessage: (event: EventType) => Option.Option<Message>
+  type: string
+}>
+```
+
+### FromEventFilterMapPreventDefaultConfig
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/fromEvent.ts#L79)
+
+```
+/**
+ * Configuration for the `fromEventFilterMapPreventDefault` Stream helper.
+ * 
+ * `target` is read inside the acquire Effect, never before it, so the
+ * resolved `EventTarget` is captured at the moment the Subscription's scope
+ * opens. Pass a thunk when the target may not exist until the scope opens, or
+ * pass the `EventTarget` directly for always-present globals like `window` or
+ * `document`.
+ * 
+ * `toMessage(event)` returns `Option.some(message)` to mark the dispatch
+ * handled, or `Option.none()` to leave the default behavior intact. For a
+ * handled dispatch the helper calls `event.preventDefault()` and queues the
+ * Message before the listener returns; the mapper itself never calls
+ * `preventDefault()`.
+ * 
+ * `options.passive` defaults to `false` so `preventDefault()` keeps working
+ * for the events browsers would otherwise register as passive. Passing
+ * `passive: true` explicitly contradicts the helper's purpose and throws.
+ */
+type FromEventFilterMapPreventDefaultConfig = Readonly<{
   options: AddEventListenerOptions
   target: EventTarget | () => EventTarget
   toMessage: (event: EventType) => Option.Option<Message>
@@ -302,7 +391,7 @@ type FromEventFilterMapConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/subscription.ts#L269)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L269)
 
 ```
 /**
@@ -324,7 +413,7 @@ type GatedDependencies = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/subscription.ts#L64)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L64)
 
 ```
 /**
@@ -359,7 +448,7 @@ type Subscription = Entry<Model, Message, Dependencies, Services> & Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/subscription/subscription.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L72)
 
 ```
 /** A record of named Subscriptions keyed by dependency field name. */

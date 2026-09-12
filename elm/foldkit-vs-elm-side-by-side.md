@@ -2,8 +2,8 @@
 url: https://foldkit.dev/elm/foldkit-vs-elm-side-by-side
 title: "Foldkit vs Elm: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and Elm. Same architecture, different host: ports vs Commands, decoders vs Schema, and what each side gives up."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-12T22:55:23.086Z
+current_date: 2026-09-12T22:55:23.086Z
 ---
 
 ## Overview
@@ -539,12 +539,20 @@ keyboardDecoder model =
 
 ```
 export const subscriptions = Subscription.make<Model, Message>()(entry => ({
-  keyboard: Subscription.persistent(
-    Stream.fromEventListener<KeyboardEvent>(document, 'keydown').pipe(
-      Stream.mapEffect(handleKeyboardEvent),
-      Stream.filter(Option.isSome),
-      Stream.map(option => option.value),
-    ),
+  undoRedoKeys: Subscription.persistent(
+    Subscription.fromEventFilterMapPreventDefault<KeyboardEvent, Message>({
+      target: document,
+      type: 'keydown',
+      toMessage: toUndoRedoMessage,
+    }),
+  ),
+
+  toolKeys: Subscription.persistent(
+    Subscription.fromEventFilterMap<KeyboardEvent, Message>({
+      target: document,
+      type: 'keydown',
+      toMessage: toToolMessage,
+    }),
   ),
 
   mouseRelease: entry(

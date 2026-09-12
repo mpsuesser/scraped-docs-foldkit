@@ -2,8 +2,8 @@
 url: https://foldkit.dev/tooling/oxlint-plugin
 title: "Oxlint Plugin"
 description: "Install and configure @foldkit/oxlint-plugin, then see what each Foldkit-specific rule accepts and rejects."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-12T22:55:23.086Z
+current_date: 2026-09-12T22:55:23.086Z
 ---
 
 # Oxlint Plugin
@@ -235,6 +235,61 @@ const FetchWeather = Command.define('FetchWeather', {
 })
 ```
 
+## Commands and Effects
+
+### foldkit/acquire-release-constructs-in-acquire-body
+
+Requires the acquire Effect passed to `Effect.acquireRelease` to construct its resource lazily. Returning a handle captured from an outer binding, or wrapping an eagerly constructed resource in `Effect.succeed`, leaves a window where interruption can leak the resource before its release action is registered.
+
+The Effect type tracks the resource value, failure, and requirements, but not whether the resource was constructed before the acquire Effect began. That timing distinction cannot be enforced by the `Effect.acquireRelease` API or TypeScript alone, so the lint rule checks the construction shape.
+
+```
+import { Effect } from 'effect'
+
+const closeSocket = (socket: WebSocket) => Effect.sync(() => socket.close())
+
+// ❌ Bad
+// An interruption between constructing the socket and acquire leaks it.
+const socket = new WebSocket('/updates')
+const badResource = Effect.acquireRelease(Effect.succeed(socket), closeSocket)
+
+// ✅ Good
+// Construct the socket inside acquire, so acquire owns the whole lifetime.
+const goodResource = Effect.acquireRelease(
+  Effect.sync(() => new WebSocket('/updates')),
+  closeSocket,
+)
+```
+
+### foldkit/prefer-command-mapmessage
+
+Lifts a Command result Message with `Command.mapMessage` or `Command.mapMessages`, not by mapping the Effect inside `Command.mapEffect`. Mapping the Effect dispatches correctly in production but records nothing on the message-mapping chain, so Story and Scene `resolve` see the raw child Message.
+
+`Command.mapEffect` is appropriate when the result Message stays the same and the Effect's execution changes, such as providing a service, adding retry or delay behavior, or changing its error or requirement channel. Its type preserves the result Message; use the Message-specific helpers when the result itself changes.
+
+```
+import { Effect } from 'effect'
+import { Command } from 'foldkit'
+
+// ❌ Bad
+// Effect.map lifts the result Message but records nothing on the mapping chain,
+// so Story/Scene resolve sees the child's raw Message.
+const badCommand = Command.mapEffect(
+  childCommand,
+  Effect.map(message => Message.GotChildMessage({ message })),
+)
+
+// ✅ Good
+// mapEffect may change execution while preserving the result Message.
+const infallibleCommand = Command.mapEffect(childCommand, Effect.orDie)
+
+// ✅ Good
+// mapMessage records the lift, so resolve can recover it in tests.
+const goodCommand = Command.mapMessage(childCommand, message =>
+  Message.GotChildMessage({ message }),
+)
+```
+
 ## Model Updates
 
 ### foldkit/no-empty-commands-array
@@ -286,6 +341,56 @@ const goodUpdate = (model: Model) =>
   })
 ```
 
+## State Modeling
+
+### foldkit/no-switch-on-message-tag
+
+Rejects a `switch` on a Message or state `_tag`. Use the tagged union’s `match` helper for exhaustive dispatch, or Effect `Match` when the union has no matcher, so adding a variant produces a type error instead of a silent fall-through. Matchers are also the idiomatic Foldkit form: they organize behavior around named variants and keep low-level `_tag` branching out of application logic.
+
+```
+// ❌ Bad
+// A switch on _tag has no exhaustiveness check, so a new variant silently
+// falls through. It also exposes dispatch mechanics instead of organizing the
+// logic around named variants.
+const badLabel = (message: Message): string => {
+  switch (message._tag) {
+    case 'Incremented':
+      return 'up'
+    case 'Decremented':
+      return 'down'
+  }
+}
+
+// ✅ Good
+// The idiomatic union matcher makes a forgotten variant a type error.
+const goodLabel = (message: Message): string =>
+  Message.match<string>(message, {
+    Incremented: () => 'up',
+    Decremented: () => 'down',
+  })
+```
+
+### foldkit/prefer-option-over-nullable-in-model
+
+Requires a direct field in the `Model` Schema to represent absence with `Schema.Option`, not a nullable, undefined, or optional Schema field. The rule stays scoped to `const Model = Schema.Struct({...})`, leaving wire and API Schemas free to preserve nullable input formats.
+
+```
+import { Schema } from 'effect'
+
+// ❌ Bad
+// Nullable and optional Schemas model absence as values the update layer must
+// guard.
+const Model = Schema.Struct({
+  currentUser: Schema.NullOr(User),
+})
+
+// ✅ Good
+// Option makes presence explicit and threads through update without null checks.
+const ModelWithOption = Schema.Struct({
+  currentUser: Schema.Option(User),
+})
+```
+
 ## Routing
 
 ### foldkit/no-hardcoded-route-strings
@@ -305,6 +410,44 @@ const badLink = (h: HtmlBuilder<Message>) => h.a([h.Href('/tasks')], ['Tasks'])
 // Build the href from the Router so it stays in sync with the route.
 const goodLink = (h: HtmlBuilder<Message>) =>
   h.a([h.Href(tasksRouter())], ['Tasks'])
+```
+
+### foldkit/no-route-query-constructor-default
+
+Rejects `Schema.withConstructorDefault` inside `Route.query`. Constructor defaults run only when a Schema constructs a value with `make`; route query parameters are decoded and encoded, so the annotation does not supply a default for a missing parameter. Use `Schema.withDecodingDefaultKey` when an absent key should decode to a value, or `Schema.OptionFromOptional` when absence belongs in the Route.
+
+```
+import { Effect, Schema, pipe } from 'effect'
+import { Route } from 'foldkit'
+import { literal } from 'foldkit/route'
+
+// ❌ Bad
+// Constructor defaults run only during make, not Route.query decoding.
+const badSearchRouter = pipe(
+  literal('search'),
+  Route.query(
+    Schema.Struct({
+      page: Schema.FiniteFromString.pipe(
+        Schema.withConstructorDefault(Effect.succeed(1)),
+      ),
+    }),
+  ),
+  Route.mapTo(SearchRoute),
+)
+
+// ✅ Good
+// Use a decoding default when an absent query key should produce a value.
+const goodSearchRouter = pipe(
+  literal('search'),
+  Route.query(
+    Schema.Struct({
+      page: Schema.FiniteFromString.pipe(
+        Schema.withDecodingDefaultKey(Effect.succeed('1')),
+      ),
+    }),
+  ),
+  Route.mapTo(SearchRoute),
+)
 ```
 
 ## View Keying and Accessibility
@@ -436,6 +579,45 @@ const goodRows = (tags: ReadonlyArray<Tag>, h: HtmlBuilder<Message>) =>
 ```
 
 ## Purity Boundaries
+
+### foldkit/no-prevent-default-in-stream-operator
+
+Flags `preventDefault()` inside callbacks passed to `Stream.map`, `Stream.mapEffect`, `Stream.filterMap`, `Stream.filterMapEffect`, `Stream.filter`, `Stream.filterEffect`, or `Stream.tap`. A DOM event placed into a callback-backed Stream is queued before downstream operators run, so cancellation there happens after the native listener returns and may be too late for the browser.
+
+Use `Subscription.fromEventFilterMapPreventDefault` instead. Its mapper returns `Option.some(message)` for a handled event or `Option.none()` for an event the browser should handle normally. Foldkit calls `preventDefault()` for handled events before the native listener returns.
+
+The rule recognizes inline callbacks and functions declared in the same module. It is intentionally conservative about the Stream's source. Suppress it when the value is not a DOM event or the Stream is deliberately executed synchronously inside a native listener.
+
+```
+import { Effect, Option, Stream } from 'effect'
+import { Subscription } from 'foldkit'
+
+// ❌ Bad: fromEventListener queues the event and returns before mapEffect runs.
+const keyboardBad = Stream.fromEventListener<KeyboardEvent>(
+  document,
+  'keydown',
+).pipe(
+  Stream.mapEffect(event =>
+    Effect.sync(() => {
+      event.preventDefault() // The browser may have started its default action.
+      return Message.PressedKey({ key: event.key })
+    }),
+  ),
+)
+
+// ✅ Good: Some marks Tab handled, so Foldkit cancels it inside the listener.
+const keyboardGood = Subscription.fromEventFilterMapPreventDefault<
+  KeyboardEvent,
+  Message
+>({
+  target: document,
+  type: 'keydown',
+  toMessage: event =>
+    event.key === 'Tab'
+      ? Option.some(Message.PressedKey({ key: event.key }))
+      : Option.none(),
+})
+```
 
 ### foldkit/no-impure-call-at-decision-time
 

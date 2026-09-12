@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/side-effects-and-purity
 title: "Side Effects & Purity"
 description: "Keep update and view deterministic by confining outside work to Commands, Subscriptions, Mounts, ManagedResources, and other Runtime-managed boundaries."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-12T22:55:23.086Z
+current_date: 2026-09-12T22:55:23.086Z
 ---
 
 # Side Effects and Purity
@@ -23,7 +23,7 @@ Effectful work lives at boundaries managed by the Runtime. Depending on the boun
 - [Resources](https://foldkit.dev/core/resources) provide app-lifetime services shared by Commands, Subscriptions, Mounts, and Flags.
 - [ManagedResource](https://foldkit.dev/core/managed-resources) acquires a typed stateful handle while a Model condition holds. Commands and Subscriptions can use that handle while it is live.
 
-These descriptions do nothing until the Runtime starts them. One narrow exception stays inside its boundary: a mapper passed to `Subscription.fromEvent` may perform synchronous browser work such as `event.preventDefault()` before returning a Message.
+These descriptions do nothing until the Runtime starts them. One narrow exception stays inside its boundary: a DOM-event mapper may need to perform synchronous browser work before returning a Message. Use `Subscription.fromEventFilterMapPreventDefault` when handling an event should also cancel its default action. The helper runs its mapper and calls `preventDefault()` inside the browser's dispatch, while a downstream `Stream` operator runs too late to cancel the event.
 
 A [CustomElement](https://foldkit.dev/core/custom-element) binding remains declarative. Properties flow from the Model into the native element, and its events return as Messages. The browser owns the custom element's internal implementation.
 
@@ -107,8 +107,7 @@ const update = (model: Model, message: Message) =>
 
 ```
 import { Effect } from 'effect'
-import { Command, type Update } from 'foldkit'
-import * as Dom from 'foldkit/dom'
+import { Command, Dom, type Update } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
 import { Message } from './message'

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/foldkit-vs-react-side-by-side
 title: "Foldkit vs React: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and React. Covers state management, side effects, testing, performance, and architectural tradeoffs."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-12T22:55:23.086Z
+current_date: 2026-09-12T22:55:23.086Z
 ---
 
 ## Overview
@@ -697,12 +697,20 @@ The Subscription declares that lifetime from Model dependencies:
 
 ```
 export const subscriptions = Subscription.make<Model, Message>()(entry => ({
-  keyboard: Subscription.persistent(
-    Stream.fromEventListener<KeyboardEvent>(document, 'keydown').pipe(
-      Stream.mapEffect(handleKeyboardEvent),
-      Stream.filter(Option.isSome),
-      Stream.map(option => option.value),
-    ),
+  undoRedoKeys: Subscription.persistent(
+    Subscription.fromEventFilterMapPreventDefault<KeyboardEvent, Message>({
+      target: document,
+      type: 'keydown',
+      toMessage: toUndoRedoMessage,
+    }),
+  ),
+
+  toolKeys: Subscription.persistent(
+    Subscription.fromEventFilterMap<KeyboardEvent, Message>({
+      target: document,
+      type: 'keydown',
+      toMessage: toToolMessage,
+    }),
   ),
 
   mouseRelease: entry(

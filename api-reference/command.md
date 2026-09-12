@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/command
 title: "Command"
 description: "API documentation for the Command module."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-12T22:55:23.086Z
+current_date: 2026-09-12T22:55:23.086Z
 ---
 
 # Command
@@ -14,7 +14,7 @@ current_date: 2026-09-12T18:49:33.387Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/command/index.ts#L220)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/command/index.ts#L220)
 
 ## Types
 
@@ -22,7 +22,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/command/index.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/command/index.ts#L12)
 
 ```
 /**
@@ -50,7 +50,7 @@ type Command = [T] extends [Schema.Top]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/command/index.ts#L76)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/command/index.ts#L76)
 
 ```
 /** A Command definition created with `Command.define`. Union over the no-args and with-args shapes; consumers that only need name/identity can accept this. */
@@ -61,7 +61,7 @@ type CommandDefinition = CommandDefinitionNoArgs<Name, Effect.Effect<ResultMessa
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/command/index.ts#L92)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/command/index.ts#L92)
 
 ```
 /**
@@ -87,7 +87,7 @@ type InterruptOption = true | Readonly<{
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/command/index.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/command/index.ts#L51)
 
 ```
 /** A Command definition for a Command with no declared args. Call as `Definition()` to produce a Command instance. */
@@ -101,7 +101,7 @@ interface CommandDefinitionNoArgs {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/command/index.ts#L61)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/command/index.ts#L61)
 
 ```
 /** A Command definition for a Command with declared args. Call as `Definition(args)` to produce a Command instance. */
@@ -117,7 +117,7 @@ interface CommandDefinitionWithArgs {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/command/brand.ts#L3)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/command/brand.ts#L3)
 
 ```
 /** Type-level brand for CommandDefinition values. */
@@ -128,28 +128,30 @@ const CommandDefinitionTypeId: unique symbol
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/command/index.ts#L400)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/command/index.ts#L402)
 
 ```
 /**
- * Transforms the Effect inside a Command while preserving its name, args, and
- *  message-mapping chain. Reach for this to adjust the Effect itself (provide a
- *  service, add a delay or retry), not to lift the result Message. Never use it
- *  to transform the result Message, even via
- *  `Effect.map(childMessage => Parent({ childMessage }))`. That dispatches
+ * Transforms the Effect inside a Command while preserving its result Message,
+ *  name, args, and message-mapping chain. Reach for this to provide a service,
+ *  add a delay or retry, or change the error or requirement channel. Its type
+ *  prevents the transform from changing the result Message. Never use it to
+ *  lift that Message, even via
+ *  `Effect.map(message => Message.GotChildMessage({ message }))`. That dispatches
  *  correctly in production but is invisible to `Story`/`Scene` `resolve`, which
  *  replays only the recorded chain and never runs the Effect, so the test would
  *  see the child's raw Message instead of the wrapped one. Lift result Messages
- *  with mapMessage / mapMessages, which record the lift.
+ *  with mapMessage / mapMessages, which record the lift. The
+ *  `foldkit/prefer-command-mapmessage` lint rule flags this misuse.
  */
-const mapEffect: (f: (effect: Effect<A, E1, R1>) => Effect<B, E2, R2>) => (command: Command<A, E1, R1>) => Command<B, E2, R2>
+const mapEffect: (f: (effect: Effect<A, E1, R1>) => Effect<NoInfer<A>, E2, R2>) => (command: Command<A, E1, R1>) => Command<A, E2, R2>
 ```
 
 ### mapMessage
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/command/index.ts#L445)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/command/index.ts#L447)
 
 ```
 /**
@@ -182,7 +184,7 @@ const mapMessage: (command: Command<FromMessage, E, R>, f: (message: FromMessage
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/command/index.ts#L513)
+[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/command/index.ts#L515)
 
 ```
 /**

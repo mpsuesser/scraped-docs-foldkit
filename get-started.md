@@ -2,8 +2,8 @@
 url: https://foldkit.dev/get-started
 title: "Get Started"
 description: "Create a Foldkit project from a starter, inspect the generated structure, or add Foldkit to an existing Vite application."
-access_date: 2026-09-07T07:29:31.695Z
-current_date: 2026-09-07T07:29:31.695Z
+access_date: 2026-09-12T22:55:23.086Z
+current_date: 2026-09-12T22:55:23.086Z
 ---
 
 # Get Started
@@ -64,18 +64,12 @@ The generated project also includes `lint` and `format` scripts. Run them with y
 
 Skip this section if you used `create-foldkit-app`. Scaffolded projects already receive compatible package versions.
 
-Foldkit currently uses the Effect v4 release candidate and pins its `effect` peer dependency to an exact version: `effect@4.0.0-rc.112`. Stable Effect v3 does not satisfy that pin. Adding Foldkit to an Effect v3 project produces peer dependency conflicts. When Foldkit moves to a new release candidate, an existing project may need to upgrade Effect at the same time.
+Foldkit currently uses the Effect v4 release candidate and pins its peer dependencies to exact versions: `effect@4.0.0-rc.115` and `@effect/platform-browser@4.0.0-rc.115`. Stable Effect v3 does not satisfy those pins. Adding Foldkit to an Effect v3 project produces peer dependency conflicts. When Foldkit moves to a new release candidate, an existing project may need to upgrade Effect at the same time.
 
-Install Foldkit together with its pinned peer dependency:
-
-```
-npm install foldkit effect@4.0.0-rc.112
-```
-
-`@effect/platform-browser` is a separate package pinned to the same version. Install it when you use `@foldkit/devtools`, which declares it as a peer dependency, or when you need Effect browser services such as `BrowserKeyValueStore` and `BrowserCrypto`:
+Install Foldkit together with its pinned peer dependencies:
 
 ```
-npm install @effect/platform-browser@4.0.0-rc.112
+npm install foldkit effect@4.0.0-rc.115 @effect/platform-browser@4.0.0-rc.115
 ```
 
 ## Where to Go Next
