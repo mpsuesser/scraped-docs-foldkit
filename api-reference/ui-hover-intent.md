@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-hover-intent
 title: "Ui/HoverIntent"
 description: "API documentation for the Ui/HoverIntent module."
-access_date: 2026-09-07T07:29:31.695Z
-current_date: 2026-09-07T07:29:31.695Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Ui/HoverIntent
@@ -14,7 +14,7 @@ current_date: 2026-09-07T07:29:31.695Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/hoverIntent/hoverIntent.ts#L218)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/hoverIntent/hoverIntent.ts#L218)
 
 ```
 /**
@@ -28,7 +28,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/hoverIntent/hoverIntent.ts#L39)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/hoverIntent/hoverIntent.ts#L39)
 
 ```
 /** Creates a HoverIntent Model. Pointer entry opens after 200 milliseconds and pointer departure closes after a 300-millisecond grace period by default. Focus entry opens immediately, and focus departure closes without that pointer grace period. */
@@ -39,7 +39,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/hoverIntent/hoverIntent.ts#L228)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/hoverIntent/hoverIntent.ts#L228)
 
 ```
 /** Processes a HoverIntent Message and returns the next Model, optional Commands, and an optional OutMessage. */
@@ -80,7 +80,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/hoverIntent/hoverIntent.ts#L33)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/hoverIntent/hoverIntent.ts#L33)
 
 ```
 /** Configuration for creating a HoverIntent Model. */
@@ -94,7 +94,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/hoverIntent/hoverIntent.ts#L278)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/hoverIntent/hoverIntent.ts#L278)
 
 ```
 /**
@@ -115,7 +115,7 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/hoverIntent/hoverIntent.ts#L285)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/hoverIntent/hoverIntent.ts#L285)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -131,7 +131,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/hoverIntent/message.ts#L7)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/hoverIntent/message.ts#L7)
 
 ```
 /** Union of all Messages the HoverIntent component can produce. */
@@ -160,7 +160,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/hoverIntent/hoverIntent.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/hoverIntent/hoverIntent.ts#L16)
 
 ```
 /** Schema for HoverIntent state. It tracks pointer and focus engagement over a trigger and its panel, visibility, delay timers, and Escape dismissal. */
@@ -181,7 +181,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/hoverIntent/message.ts#L39)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/hoverIntent/message.ts#L39)
 
 ```
 /** Union of visibility-transition OutMessages emitted by HoverIntent. */
@@ -195,7 +195,7 @@ const OutMessage: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/hoverIntent/hoverIntent.ts#L70)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/hoverIntent/hoverIntent.ts#L70)
 
 ```
 /** Waits before closing, then emits the version that scheduled the wait. */
@@ -212,7 +212,7 @@ const WaitBeforeClosing: CommandDefinitionWithArgs<"WaitBeforeClosing", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/hoverIntent/hoverIntent.ts#L60)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/hoverIntent/hoverIntent.ts#L60)
 
 ```
 /** Waits before opening, then emits the version that scheduled the wait. */
@@ -229,7 +229,7 @@ const WaitBeforeOpening: CommandDefinitionWithArgs<"WaitBeforeOpening", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/hoverIntent/hoverIntent.ts#L292)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/hoverIntent/hoverIntent.ts#L292)
 
 ```
 /** Renders headless HoverIntent event bundles. It owns no markup, ARIA semantics, positioning, or styling. */

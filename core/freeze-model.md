@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/freeze-model
 title: "Freeze Model"
 description: "Deep-freeze the Model in development to catch accidental mutation at the write site. Covers what is frozen and the Runtime cost."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Freeze Model
@@ -14,7 +14,7 @@ Foldkit depends on immutable Model updates. TypeScript's `readonly` checks sourc
 
 During development, Foldkit deep-freezes the Model after init and after every update. An accidental write then throws a `TypeError` at the write site instead of producing a later rendering or Subscription bug.
 
-Freezing runs only when Vite HMR is active. Set `freezeModel` to `false` to disable it, but do not use that option to hide a mutation the guardrail found.
+Freezing runs only under Vite's dev server. Set `freezeModel` to `false` to disable it, but do not use that option to hide a mutation the guardrail found.
 
 ## Scope
 

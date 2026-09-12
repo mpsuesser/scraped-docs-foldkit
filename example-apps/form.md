@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/form
 title: "Form"
 description: "A form with field validation, error states, and asynchronous submission."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -322,6 +322,7 @@ const inputFieldView = (
       value: field.value,
       onInput: onUpdate,
       isInvalid: field._tag === 'Invalid',
+      hasDescription: field._tag === 'Validating' || field._tag === 'Invalid',
       type,
       toView: attributes =>
         h.div(
@@ -358,6 +359,7 @@ const textareaFieldView = (
       value: field.value,
       onInput: onUpdate,
       isInvalid: field._tag === 'Invalid',
+      hasDescription: field._tag === 'Validating' || field._tag === 'Invalid',
       toView: attributes =>
         h.div(
           [h.Class('mb-4')],

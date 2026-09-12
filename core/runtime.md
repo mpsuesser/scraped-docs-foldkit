@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/runtime
 title: "Runtime"
 description: "Configure a page-owning application with makeApplication, or mount a reusable widget with makeElement and embed."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Runtime
@@ -23,7 +23,7 @@ The Runtime API makes two independent choices:
 
 ### Without routing
 
-Without a `routing` config, the program doesn't manage the URL bar. This is the default for most programs.
+Without a `routing` config, the program doesn't manage the URL bar.
 
 ```
 import { Runtime } from 'foldkit'

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/custom-element
 title: "CustomElement"
 description: "API documentation for the CustomElement module."
-access_date: 2026-09-07T07:29:31.695Z
-current_date: 2026-09-07T07:29:31.695Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # CustomElement
@@ -14,7 +14,7 @@ current_date: 2026-09-07T07:29:31.695Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/customElement/index.ts#L187)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/customElement/index.ts#L195)
 
 ```
 /**
@@ -23,10 +23,12 @@ function
  * `.withMessage<Message>()` factory that yields a typed `ElementBuilder` for
  * the consumer's Message universe.
  * 
- * Property changes diff across renders; declared `CustomEvent`s are
- * converted to Messages by the runtime.
+ * Property changes diff across renders; declared `CustomEvent` details are
+ * decoded against their Schema before the runtime converts them to Messages.
+ * A detail the Schema rejects is reported to the console and dispatches no
+ * Message.
  */
-<Tag extends string, Properties extends Record<string, Top>, Events extends Record<string, Top>>(config: CustomElementConfig<Tag, Properties, Events>): CustomElementSpec<Tag, Properties, Events>
+<Tag extends string, Properties extends Record<string, Top>, Events extends Record<string, EventSchema>>(config: CustomElementConfig<Tag, Properties, Events>): CustomElementSpec<Tag, Properties, Events>
 ```
 
 ## Types
@@ -35,7 +37,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/customElement/index.ts#L98)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/customElement/index.ts#L104)
 
 ```
 /**
@@ -52,7 +54,7 @@ type Builder = Spec extends CustomElementSpec<string, infer Properties, infer Ev
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/customElement/index.ts#L54)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/customElement/index.ts#L60)
 
 ```
 /**
@@ -66,13 +68,29 @@ type
 type ElementBuilder = (attributes?: ReadonlyArray<Attribute<Message> | ChildAttribute>, children?: ReadonlyArray<Child>) => Html & PropertyFactories<Message, Properties> & EventFactories<Message, Events>
 ```
 
+### EventSchema
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/customElement/index.ts#L34)
+
+```
+/**
+ * Constraint on a declared event's `detail` Schema. The runtime decodes
+ * `detail` synchronously inside the DOM event handler, where there is no
+ * Effect context to draw from, so a Schema requiring decoding services
+ * cannot describe an event payload.
+ */
+type EventSchema = Schema.Codec<unknown, unknown, never, unknown>
+```
+
 ## Interfaces
 
 ### CustomElementConfig
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/customElement/index.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/customElement/index.ts#L72)
 
 ```
 /** Configuration accepted by `CustomElement.define`. */
@@ -87,7 +105,7 @@ interface CustomElementConfig {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/customElement/index.ts#L82)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/customElement/index.ts#L88)
 
 ```
 /**

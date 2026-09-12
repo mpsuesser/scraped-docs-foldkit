@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/schema
 title: "Schema"
 description: "API documentation for the Schema module."
-access_date: 2026-09-07T07:29:31.695Z
-current_date: 2026-09-07T07:29:31.695Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Schema
@@ -14,7 +14,7 @@ current_date: 2026-09-07T07:29:31.695Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/schema/index.ts#L454)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/schema/index.ts#L553)
 
 ```
 /**
@@ -26,6 +26,7 @@ function
  * 
  * - One callable Schema constructor per variant.
  * - `match` for exhaustive handling.
+ * - `matchOrElse` for selected variants with a fallback for the rest.
  * - `guards` and `isAnyOf` for variant checks.
  * - `subset` for a Schema that accepts only the named variants.
  * - `members` for APIs such as `Machine.define` that enumerate the union.
@@ -34,8 +35,8 @@ function
  * unions and standalone tagged structs are the common cases.
  * 
  * A tag cannot use a name already owned by the union, such as `make`, `match`,
- * `cases`, `ast`, `members`, or `subset`. TypeScript rejects these names, and
- * untyped calls throw an error.
+ * `matchOrElse`, `cases`, `ast`, `members`, or `subset`. TypeScript rejects
+ * these names, and untyped calls throw an error.
  */
 <CasesByTag extends Record<string, Fields>>(casesByTag: CasesByTag & ValidateVariantNames<CasesByTag>): TaggedUnion<CasesByTag>
 ```
@@ -44,7 +45,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/schema/index.ts#L531)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/schema/index.ts#L631)
 
 ```
 /**
@@ -70,7 +71,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/schema/index.ts#L4)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/schema/index.ts#L4)
 
 ```
 /** A `TaggedStruct` schema that can be called directly as a constructor: `Foo({ count: 1 })` instead of `Foo.make({ count: 1 })`. */
@@ -87,13 +88,15 @@ type CallableTaggedStruct = Schema.TaggedStruct<Tag, Fields> & keyof Fields exte
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/schema/index.ts#L296)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/schema/index.ts#L394)
 
 ```
 /**
  * The Schema returned by `defineTaggedUnion`. It includes callable variant
- * constructors, exhaustive `match`, `guards`, `isAnyOf`, `subset`, and
- * `members`.
+ * constructors, exhaustive `match`, partial `matchOrElse`, `guards`,
+ * `isAnyOf`, `subset`, and `members`. Pass a structurally refined union as a
+ * matcher's optional second type argument to preserve narrower payload fields
+ * in each handler.
  */
 type TaggedUnion = RichUnionSchema<CasesByTag> & {
   readonly [Tag in keyof CasesByTag & string]: CallableTaggedStruct<Tag, CasesByTag[Tag]>

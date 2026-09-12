@@ -2,8 +2,8 @@
 url: https://foldkit.dev/faq/performance
 title: "Performance"
 description: "Foldkit’s rendering cost model, TodoMVC benchmark results, development-mode overhead, and the tools for measuring and memoizing expensive views."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Performance
@@ -148,7 +148,7 @@ The dev server runs several systems that production builds strip entirely:
 - [Freeze Model](https://foldkit.dev/core/freeze-model) deep-freezes the Model after every update to catch accidental mutation at the write site.
 - [DevTools](https://foldkit.dev/core/devtools) records each Message with Model snapshots and diffs for time travel.
 - The [Slow Warnings](https://foldkit.dev/core/slow-warnings) can time update, subscriptions, view, and patch work against phase budgets.
-- HMR Model preservation encodes the Model so state survives hot reloads.
+- Model preservation encodes the Model so state survives development reloads.
 
 All of it is gated behind `import.meta.hot` and eliminated from production bundles. The consequence: judge performance with a production build. An animation-heavy app dispatching Messages at 60Hz pays the dev-mode systems on every single update, so the dev server systematically understates how the deployed app performs. If DevTools is enabled, use `excludeFromHistory` to skip history recording for high-frequency Messages like frame ticks and pointer moves.
 

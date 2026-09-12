@@ -2,8 +2,8 @@
 url: https://foldkit.dev/tooling/oxlint-plugin
 title: "Oxlint Plugin"
 description: "Install and configure @foldkit/oxlint-plugin, then see what each Foldkit-specific rule accepts and rejects."
-access_date: 2026-09-07T07:29:31.695Z
-current_date: 2026-09-07T07:29:31.695Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Oxlint Plugin
@@ -295,7 +295,7 @@ Rejects hardcoded path and URL strings passed to link and navigation helpers. Bu
 ```
 import type { HtmlBuilder } from 'foldkit/html'
 
-import { tasksRouter } from '../route'
+import { tasksRouter } from './route'
 
 // ❌ Bad
 // A hardcoded path rots when the route changes and bypasses the Route module.

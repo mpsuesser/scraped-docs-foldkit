@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Split a large application into child state machines while preserving parent-to-child Message flow. Covers Update.foldChild, h.submodel, OutMessages, reflection, testing, and DevTools."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 ## When to Create a Submodel
@@ -106,8 +106,8 @@ The parent stores the child Model, but the child still owns it. Do not use [evo]
 
 ```
 // ❌ Don't reach into the child's Model from the parent's update.
-// This bypasses Settings.update, so DevTools never sees the change,
-// and any invariant Settings.update was enforcing is silently violated.
+// This bypasses Settings.update, so its invariants, Commands,
+// and OutMessages are skipped.
 ClickedResetSettings: () => ({
   model: evo(model, {
     settings: settings => evo(settings, { theme: () => 'Light' }),
@@ -120,8 +120,10 @@ For a parent-initiated change, export a helper from the child and fold that help
 ```
 // CHILD
 
+import { Message as ChildMessage } from './message'
+
 export const setTheme = (model: Model, theme: Theme) =>
-  update(model, ChangedTheme({ theme }))
+  update(model, ChildMessage.ChangedTheme({ theme }))
 
 // PARENT UPDATE
 
@@ -129,7 +131,7 @@ const foldSettingsTheme = Update.foldChild({
   update: Settings.setTheme,
   read: (model: Model) => Option.some(model.settings),
   write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
-  toParentMessage: message => GotSettingsMessage({ message }),
+  toParentMessage: message => Message.GotSettingsMessage({ message }),
 })
 
 ClickedResetSettings: () => foldSettingsTheme(model, 'Light')
@@ -528,9 +530,9 @@ Pass parent state through `viewInputs` when the child needs it for rendering. Th
 ```
 import { Submodel } from 'foldkit'
 
-import type { User } from '../user'
 import type { Message } from './message'
 import type { Model } from './model'
+import type { User } from './user'
 
 // The child declares the parent state it needs via the third type
 // parameter on \`Submodel.defineView\`. The view receives it as
@@ -575,9 +577,9 @@ import { evo } from 'foldkit/struct'
 
 import { Message } from '../../message'
 import type { Model as AppModel } from '../../model'
-import type { User } from '../user'
 import { PersistSettings, Message as SettingsMessage } from './message'
 import type { Model as SettingsModel } from './model'
+import type { User } from './user'
 
 type Context = Readonly<{
   currentUser: User
@@ -994,6 +996,8 @@ Issues new Submodel users hit, and where to read about the fix:
 - **Child-owned handler uses the parent boundary:** The child published attributes without `childAttributes`. See [childAttributes](#child-attributes).
 - **Error names a nested `viewInputs` path:** Move the nested callback to the top level of `viewInputs`.
 - **A long child list rerenders slowly:** Profile it before adding `createKeyedLazy`. See [Memoization](#memoization).
+
+These checks catch wiring mistakes. See [Anti-patterns](https://foldkit.dev/patterns/anti-patterns) for code that compiles but lets the parent own a child's state or internal Messages.
 
 ## API Reference
 

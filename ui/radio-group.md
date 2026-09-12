@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/radio-group
 title: "Radio Group"
 description: "A selection Submodel for radio options, with roving tabindex, keyboard navigation, and read-only behavior."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 ## Overview
@@ -137,6 +137,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
       options: plans,
       selectedValue: model.maybePlan,
       ariaLabel: 'Server plan',
+      hasOptionDescription: () => true,
       toView: ({ group, options }) =>
         h.div(
           [...group, h.Class('flex flex-col gap-3')],
@@ -218,7 +219,7 @@ RadioGroup uses roving tabindex: only the active option is in the tab order. Arr
 
 ## Accessibility
 
-The group element receives `role="radiogroup"` and `aria-orientation`, plus `aria-readonly="true"` when `isReadOnly` is set. Each option receives `role="radio"` with `aria-checked`, `aria-labelledby`, and `aria-describedby`.
+The group element receives `role="radiogroup"` and `aria-orientation`, plus `aria-readonly="true"` when `isReadOnly` is set. Each option receives `role="radio"` with `aria-checked` and `aria-labelledby`. Use `hasOptionDescription` to add `aria-describedby` only to options whose descriptions are rendered.
 
 ## API Reference
 
@@ -244,6 +245,7 @@ Configuration object passed to the view returned by `RadioGroup.create<Value>()`
 | `toView` | `(render: RenderInfo<Value>) => Html` | — | Callback that receives the `group` attribute bundle, one `OptionInfo<Value>` per option, the current `selectedValue`, and the `hiddenInput` attributes. Returns the composed layout. |
 | `orientation` | `'Vertical' \| 'Horizontal'` | `'Vertical'` | Layout orientation. Controls arrow key direction and `aria-orientation`. |
 | `isOptionDisabled` | `(value: Value, index: number) => boolean` | — | Disables individual options. |
+| `hasOptionDescription` | `(value: Value, index: number) => boolean` | — | Returns whether an option renders a description. Adds `aria-describedby` only for matching options. |
 | `isDisabled` | `boolean` | `false` | Disables all options. A disabled option carries neither a click handler nor a keydown handler. |
 | `isReadOnly` | `boolean` | `false` | Keeps arrow, Home, End, PageUp, and PageDown focus navigation while making Space and clicking inert. Carries `aria-readonly` on the group. Independent of `isDisabled`. See [Read-Only](#read-only). |
 | `name` | `string` | — | Form field name. When provided, `RenderInfo.hiddenInput` carries the attributes for a hidden `<input>` holding the selected value (the consumer renders the element). |
@@ -271,9 +273,9 @@ Each entry in `RenderInfo.options`. Carries the value, derived state flags, and 
 | `isActive` | `boolean` | — | Whether this option owns the roving tabindex (the one in the tab order). Follows the modeled focus, so in a read-only group it tracks keyboard navigation rather than the selection. |
 | `isDisabled` | `boolean` | — | Whether this option is disabled (either individually via `isOptionDisabled` or because `isDisabled` is set on the whole group). |
 | `isReadOnly` | `boolean` | — | Whether the group is read-only. |
-| `option` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the option element. Includes `role="radio"`, `aria-checked`, `aria-labelledby`, `aria-describedby`, `tabindex`, click/keyboard handlers, and `type="button"` so an option inside a form does not submit it. |
+| `option` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the option element. Includes `role="radio"`, `aria-checked`, `aria-labelledby`, optional `aria-describedby`, `tabindex`, click/keyboard handlers, and `type="button"` so an option inside a form does not submit it. |
 | `label` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the label element. Includes an id for `aria-labelledby`. |
-| `description` | `ReadonlyArray<ChildAttribute>` | — | Spread onto a description element. Includes an id for `aria-describedby`. |
+| `description` | `ReadonlyArray<ChildAttribute>` | — | Spread onto a description element. Includes the id referenced when `hasOptionDescription` returns true. |
 
 ### OutMessage
 

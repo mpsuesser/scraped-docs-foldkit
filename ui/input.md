@@ -2,13 +2,13 @@
 url: https://foldkit.dev/ui/input
 title: "Input"
 description: "A thin wrapper around the native input with ARIA linking and styling hooks."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 ## Overview
 
-An accessible text input that links a label and description to the input element via ARIA attributes. Input is a stateless render helper: call it directly with a ViewConfig in your own view; no Model, update, or `h.submodel` wrapping. It provides three attribute groups (`input`, `label`, and `description`) that you spread onto your own elements to get correct accessibility wiring.
+An accessible text input that links a label and an optional description to the input element via ARIA attributes. Input is a stateless render helper: call it directly with a ViewConfig in your own view; no Model, update, or `h.submodel` wrapping. It provides three attribute groups (`input`, `label`, and `description`) that you spread onto your own elements to get correct accessibility wiring.
 
 See it in an app
 
@@ -18,7 +18,7 @@ Check out how Input is wired up in a [real Foldkit app](https://github.com/foldk
 
 ### Basic
 
-Pass an `id`, an `onInput` handler, and a `toView` callback. The callback receives attribute groups for three elements: `label` (linked via `for`), `input` (with ARIA attributes), and `description` (linked via `aria-describedby`).
+Pass an `id`, an `onInput` handler, and a `toView` callback. The callback receives attribute groups for three elements: `label` (linked via `for`), `input` (with ARIA attributes), and `description`. Set `hasDescription: true` when you render the description to link it through `aria-describedby`.
 
 As it appears on your government-issued ID.
 
@@ -33,6 +33,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
   Input.view(
     {
       id: 'full-name',
+      hasDescription: true,
       value: model.name, // your Model field
       onInput: value => UpdatedName({ value }), // your Message
       placeholder: 'Enter your full name',
@@ -77,6 +78,7 @@ const view = (h: HtmlBuilder<Message>) =>
     {
       id: 'email-disabled',
       isDisabled: true,
+      hasDescription: true,
       value: 'ada@lovelace.dev',
       toView: attributes =>
         h.div(
@@ -125,7 +127,7 @@ A read-only input still takes focus and allows selection and copying. Typing doe
 
 ## Accessibility
 
-The three attribute groups wire up ARIA relationships automatically. The `label` group includes `for` pointing to the input `id`. The `description` group includes an `id` that the input references via `aria-describedby`. You can access this description ID directly with `Input.descriptionId(id)` if you need to reference it outside the `toView` callback.
+The three attribute groups provide the ARIA wiring. The `label` group includes `for` pointing to the input `id`. The `description` group always includes an `id`; set `hasDescription: true` when that element is rendered so the input references it through `aria-describedby`. Leaving the option false prevents a dangling reference. You can access the description ID directly with `Input.descriptionId(id)` if you need it outside the `toView` callback.
 
 When `isInvalid` is true, `aria-invalid="true"` is set on the input element so screen readers announce the error state.
 
@@ -151,6 +153,7 @@ Configuration object passed to `Input.view()`.
 | `isReadOnly` | `boolean` | `false` | Whether the input is readable but not editable. Sets the native readonly attribute and adds a data-readonly attribute for styling. Independent of `isDisabled`. |
 | `isInvalid` | `boolean` | `false` | Whether the input is in an invalid state. Sets aria-invalid and adds a data-invalid attribute for styling. |
 | `isAutofocus` | `boolean` | `false` | Whether the input receives focus when the page loads. |
+| `hasDescription` | `boolean` | `false` | Whether the input renders a description. Adds `aria-describedby` when true. |
 | `name` | `string` | — | The form field name for native form submission. |
 | `type` | `string` | `'text'` | The HTML input type (text, email, password, number, etc.). |
 | `placeholder` | `string` | — | Placeholder text shown when the input is empty. |
@@ -163,4 +166,4 @@ Attribute groups provided to the `toView` callback.
 | --- | --- | --- | --- |
 | `input` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the `<input>` element. Includes id, type, value, ARIA attributes, and event handlers. |
 | `label` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the `<label>` element. Includes a for attribute linking to the input id. |
-| `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes an id that the input references via aria-describedby. |
+| `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes the id referenced when `hasDescription` is true. |

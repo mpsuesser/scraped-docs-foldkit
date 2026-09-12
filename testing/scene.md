@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/scene
 title: "Scene"
 description: "Drive the rendered VNode tree with accessible locators, dispatch interactions, resolve lifecycle results, and assert on the resulting HTML."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Scene
@@ -353,6 +353,16 @@ with optional
 
 with the given text
 
+`typeContentEditable(target, text)`
+
+`OnInput`
+
+on a
+
+`Contenteditable`
+
+host, with the given rendered text
+
 `change(target, value)`
 
 `OnChange`
@@ -362,6 +372,24 @@ with the given value, for
 `<select>`
 
 and similar
+
+`beforeInput(target, inputType, data)`
+
+`OnBeforeInput`
+
+or
+
+`OnBeforeInputPreventDefault`
+
+, with the given
+
+`inputType`
+
+and
+
+`Option`
+
+data
 
 `keydown(target, key, modifiers?)`
 
@@ -378,6 +406,8 @@ with optional
 `submit(target)`
 
 `OnSubmit`
+
+Pass `Option.some(text)` to `beforeInput` for an edit that carries text and `Option.none()` for one that does not, such as a backward deletion.
 
 `tap(fn)` runs a function for side effects (like ad-hoc assertions on raw VNodes or accumulated Commands) without breaking the step chain.
 

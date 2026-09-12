@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view
 title: "View"
 description: "Return a Document or Html value as a pure function of the Model. Covers document metadata, element builders, events, and view decomposition."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 ## Model In, HTML Out
@@ -247,6 +247,8 @@ const searchResultsView = (model: Model, h: HtmlBuilder<Message>) => {
 
 For `OnKeyDownPreventDefault`, returning `Some` claims the key. Foldkit suppresses the browser's default action and dispatches the Message. Returning `None` leaves the key to the browser.
 
+`OnKeyDownSelf` and `OnKeyDownSelfPreventDefault` handle only keydowns that target the host itself. Keydowns bubbling from descendants are ignored. Use them when a composite widget owns keyboard input for its host but embeds interactive children whose keys should remain independent. The prevent-default variant otherwise follows the same `Some` and `None` contract as `OnKeyDownPreventDefault`.
+
 Handlers never run Effects or decide consequences. The example classifies Enter with an active result as `SelectedResult`; update decides what selection changes. When a translator grows, extract it to a named pure function and pass that function to the attribute.
 
 ## Focus Regions
@@ -282,6 +284,10 @@ Most side effects can run after the browser event returns, through a Command, Su
 Two constraints account for most uses. `event.preventDefault()` must run before the browser commits its default action. On iOS Safari, `.focus()` must run during the gesture to open the on-screen keyboard.
 
 `OnClick` accepts `defaultAction`, `propagation`, and `focusSelector` controls. Foldkit applies them synchronously before dispatching the Message. `OnKeyDownPreventDefault` lets a translator decide whether to claim a key event. `OnPastePreventDefault` passes the clipboard's `text/plain` payload to its translator; `Some` suppresses the default insertion and dispatches the Message, while `None` leaves the paste alone. `OnCopyText` and `OnCutText` write Model-derived text to the clipboard and suppress the browser's default payload; the cut variant also dispatches a Message.
+
+`OnBeforeInputPreventDefault` is the editor-grade member for a `Contenteditable` host. Its translator receives the edit's `inputType` and its `data` as an `Option`. Returning `Some` suppresses the native edit and dispatches the Message, so update owns the document mutation before the DOM changes; `None` lets the edit proceed. A non-cancelable edit, including some IME composition input, proceeds without dispatching and can be reconciled through `OnInput`.
+
+`OnCancelPreventDefault` always suppresses a cancel event's default action. A native cancel event dispatches no Message. A `CustomEvent` dispatches the optional Message, so an application-owned cancel signal can use the same event name without treating native cancellation as a state change. Dialog uses this distinction to ignore the native cancel event observed when a file picker closes and map `Dom.showDialog` 's signal for an unhandled Escape to `RequestedClose`.
 
 ```
 // Inside a view, with its builder \`h\` in scope.

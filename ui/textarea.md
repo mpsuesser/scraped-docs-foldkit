@@ -2,13 +2,13 @@
 url: https://foldkit.dev/ui/textarea
 title: "Textarea"
 description: "A thin wrapper around the native textarea with ARIA linking and styling hooks."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 ## Overview
 
-An accessible multi-line text input that links a label and description via ARIA attributes. Textarea is a stateless render helper: call it directly with a ViewConfig in your own view; no Model, update, or `h.submodel` wrapping. It exposes the same three attribute groups as Input (`textarea`, `label`, and `description`) plus a `rows` prop to control the visible height.
+An accessible multi-line text input that links a label and an optional description via ARIA attributes. Textarea is a stateless render helper: call it directly with a ViewConfig in your own view; no Model, update, or `h.submodel` wrapping. It exposes the same three attribute groups as Input (`textarea`, `label`, and `description`) plus a `rows` prop to control the visible height.
 
 See it in an app
 
@@ -18,7 +18,7 @@ Check out how Textarea is wired up in a [real Foldkit app](https://github.com/fo
 
 ### Basic
 
-The `toView` callback receives attribute groups for the label, description, and textarea element. Spread `attributes.textarea` onto a `<textarea>` in your layout to wire up ARIA, focus, and change handling.
+The `toView` callback receives attribute groups for the label, description, and textarea element. Spread `attributes.textarea` onto a `<textarea>` in your layout to wire up ARIA, focus, and change handling. Set `hasDescription: true` when you render the description.
 
 A brief introduction about yourself.
 
@@ -33,6 +33,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
   Textarea.view(
     {
       id: 'bio',
+      hasDescription: true,
       value: model.bio, // your Model field
       onInput: value => UpdatedBio({ value }), // your Message
       placeholder: 'Tell us about yourself...',
@@ -78,6 +79,7 @@ const view = (h: HtmlBuilder<Message>) =>
     {
       id: 'bio-disabled',
       isDisabled: true,
+      hasDescription: true,
       value: 'Known for work on the Analytical Engine.',
       rows: 3,
       toView: attributes =>
@@ -127,7 +129,7 @@ A read-only textarea still takes focus and allows selection and copying. Typing 
 
 ## Accessibility
 
-Textarea provides the same ARIA wiring as Input. The `label` group links via `for`, and the `description` group is referenced by `aria-describedby` on the textarea. You can access the description ID directly with `Textarea.descriptionId(id)`.
+Textarea provides the same ARIA wiring as Input. The `label` group links via `for`, and the `description` group always includes an id. Set `hasDescription: true` when that element is rendered so the textarea references it through `aria-describedby`; leaving the option false prevents a dangling reference. You can access the description ID directly with `Textarea.descriptionId(id)`.
 
 When `isInvalid` is true, `aria-invalid="true"` is set on the textarea element.
 
@@ -153,6 +155,7 @@ Configuration object passed to `Textarea.view()`.
 | `isReadOnly` | `boolean` | `false` | Whether the textarea is readable but not editable. Sets the native readonly attribute and adds a data-readonly attribute for styling. Independent of `isDisabled`. |
 | `isInvalid` | `boolean` | `false` | Whether the textarea is in an invalid state. Sets aria-invalid and adds a data-invalid attribute for styling. |
 | `isAutofocus` | `boolean` | `false` | Whether the textarea receives focus when the page loads. |
+| `hasDescription` | `boolean` | `false` | Whether the textarea renders a description. Adds `aria-describedby` when true. |
 | `name` | `string` | — | The form field name for native form submission. |
 | `rows` | `number` | — | The visible number of text lines. |
 | `placeholder` | `string` | — | Placeholder text shown when the textarea is empty. |
@@ -165,4 +168,4 @@ Attribute groups provided to the `toView` callback.
 | --- | --- | --- | --- |
 | `textarea` | `ReadonlyArray<TextareaAttribute<Message>>` | — | Spread onto the `<textarea>` element. Includes id, rows, value, ARIA attributes, and event handlers. |
 | `label` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the `<label>` element. Includes a for attribute linking to the textarea id. |
-| `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes an id that the textarea references via aria-describedby. |
+| `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes the id referenced when `hasDescription` is true. |

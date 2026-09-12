@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/update
 title: "Update"
 description: "Handle every Message with a pure update function that returns the next Model and Commands. Use Match and evo to keep transitions exhaustive and immutable."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 ## One Function Defines Every Transition
@@ -14,7 +14,7 @@ Update is pure. Given the same Model and Message, it returns the same result. It
 
 Use `Message.match` to handle the Message union. If you add a Message and omit its branch, TypeScript reports the missing case. No `default` branch silently absorbs a new variant.
 
-Use [Effect's `Match`](https://effect.website/docs/code-style/pattern-matching/) for other tagged unions, partial matches, fallbacks, and one handler shared across several tags.
+Use a `defineTaggedUnion` or `defineRouteUnion` namespace's `match` for exhaustive matching and `matchOrElse` for selected variants with a fallback. Use [Effect's `Match`](https://effect.website/docs/code-style/pattern-matching/) when one handler matches several tags, for Message partial matching, or for unions without their own matcher.
 
 ```
 import { type Update } from 'foldkit'

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/overview
 title: "Foldkit UI"
 description: "Choose between stateful Submodels and stateless render helpers in Foldkit’s headless UI package. Covers accessibility, styling, installation, and the component catalog."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Foldkit UI
@@ -122,6 +122,18 @@ Submodel
 
 Floating panel with arbitrary content and natural Tab navigation.
 
+[Tooltip](https://foldkit.dev/ui/tooltip)
+
+Submodel
+
+Non-interactive floating label anchored to a trigger. Shows on hover after a delay or immediately on keyboard focus, and hides on pointer-leave, blur, or Escape.
+
+[Toast](https://foldkit.dev/ui/toast)
+
+Submodel
+
+Stack of transient notifications anchored to a corner of the viewport. Each entry has its own enter and leave animation, auto-dismiss timer, and hover-to-pause behavior.
+
 [Disclosure](https://foldkit.dev/ui/disclosure)
 
 Helper
@@ -175,6 +187,12 @@ Coordinates CSS enter/leave animations via a state machine and data attributes. 
 Submodel
 
 Headless hover and focus behavior for a trigger and panel, with delayed pointer opening and a closing grace period. The consumer owns semantics, positioning, and styling.
+
+[Virtual List](https://foldkit.dev/ui/virtual-list)
+
+Submodel
+
+Virtualization for large lists. Only the items inside the viewport plus an overscan buffer are mounted, and spacer elements above and below the visible slice keep the scrollbar accurate.
 
 Underneath the floating components sits [Anchor](https://foldkit.dev/ui/anchor), the positioning runtime Listbox, Combobox, Menu, Popover, Tooltip, and Date Picker share. It is neither a helper nor a Submodel, so it has no row above. Reach for it directly only when you are building an anchored component none of those cover.
 

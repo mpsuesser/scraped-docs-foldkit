@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/model
 title: "Model"
 description: "Define application state as one Schema-backed Model. Foldkit uses its runtime Schema to preserve state across hot updates and validate unknown data."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Model
@@ -64,6 +64,8 @@ const modeLabel = (mode: EditorMode): string =>
 ```
 
 `EditorMode` is the Schema stored in `Model` and the namespace used to construct values such as `EditorMode.Browsing()`. Its `match` method requires every variant to be handled. If you add another editor mode, TypeScript finds each match that needs a new branch.
+
+Use `EditorMode.matchOrElse` when selected variants need their own handlers and every remaining variant shares one fallback. The fallback is called only for variants not named in the case record; when the return type is inferred, its parameter narrows to those variants. Adding another editor mode includes it in that fallback.
 
 Use `EditorMode.guards.Editing` to check one variant and `EditorMode.isAnyOf(['Editing', 'Previewing'])` to check several.
 

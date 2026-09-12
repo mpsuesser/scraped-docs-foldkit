@@ -2,13 +2,21 @@
 url: https://foldkit.dev/blog
 title: "Blog"
 description: "Announcements, musings, and technical deep dives."
-access_date: 2026-09-05T19:30:16.678Z
-current_date: 2026-09-05T19:30:16.678Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Blog
 
 Announcements, musings, and technical deep dives.
+
+[Foldkit 0.159.0](https://foldkit.dev/blog/foldkit-0-159-0)
+
+September 12, 2026 · Devin Jameson
+
+Foldkit's Vite plugin now builds a portable Web fetch handler for Node and Workers, with smaller updates to browser input, accessibility, and tooling.
+
+[Read more →](https://foldkit.dev/blog/foldkit-0-159-0)
 
 [Foldkit 0.158.0](https://foldkit.dev/blog/foldkit-0-158-0)
 

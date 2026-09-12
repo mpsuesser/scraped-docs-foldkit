@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/slow-warnings
 title: "Slow Warnings"
 description: "Measure development-mode update, view, patch, and Subscription dependency phases, interpret warnings, and tune thresholds after profiling."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Slow Warnings
@@ -14,7 +14,7 @@ Slow synchronous work blocks the browser from responding to input or drawing the
 
 Each phase has its own time budget. When work exceeds that budget, Foldkit logs a warning with the phase, duration, threshold, and attribution context. Configure `slow.onSlow` to send the same context to another destination.
 
-Measurement runs only when Vite HMR is active by default. Set `show: 'Always'` to measure the selected phases in every environment.
+Measurement runs only under Vite's dev server by default. Set `show: 'Always'` to measure the selected phases in every environment.
 
 The [Slow Warnings example](https://foldkit.dev/example-apps/slow-warnings) intentionally trips each phase with the default thresholds, then records the actual callback payloads in the UI.
 
@@ -24,7 +24,7 @@ Treat warnings as signals
 
 A warning identifies work worth profiling. It does not prove that the application is slow for users. Do not disable the guardrail or add memoization only to clear the console.
 
-HMR, DevTools recording, breakpoints, and slow CI workers can all inflate development measurements. Reproduce the problem in a production build and use a profiler to confirm where the time goes.
+Live reload, DevTools recording, breakpoints, and slow CI workers can all inflate development measurements. Reproduce the problem in a production build and use a profiler to confirm where the time goes.
 
 Measure before and after the change. Keep the optimization only when the profile improves.
 

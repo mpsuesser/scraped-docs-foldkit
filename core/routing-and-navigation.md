@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/routing-and-navigation
 title: "Routing & Navigation"
 description: "Define routes with bidirectional parser combinators that decode URLs into typed values and build URLs from Schema-validated parameters."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Routing & Navigation
@@ -173,7 +173,7 @@ TypeScript ensures you provide the correct data. If `personRouter` expects `{ pe
 Query parameters use [Effect Schema](https://effect.website/docs/schema/introduction/) for validation. This gives you type-safe parsing, optional parameters, and automatic encoding/decoding.
 
 ```
-import { Schema, pipe } from 'effect'
+import { Option, Schema, pipe } from 'effect'
 import { Route } from 'foldkit'
 import { literal } from 'foldkit/route'
 

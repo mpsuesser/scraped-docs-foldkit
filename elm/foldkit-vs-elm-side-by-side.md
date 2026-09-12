@@ -2,8 +2,8 @@
 url: https://foldkit.dev/elm/foldkit-vs-elm-side-by-side
 title: "Foldkit vs Elm: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and Elm. Same architecture, different host: ports vs Commands, decoders vs Schema, and what each side gives up."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 ## Overview
@@ -607,7 +607,22 @@ toolbarView model theme =
 ### Foldkit createLazy and keyed
 
 ```
-const lazyHeader = createLazy()
+import { Array, Option, pipe } from 'effect'
+import {
+  type Document,
+  type HtmlBuilder,
+  createKeyedLazy,
+  createLazy,
+} from 'foldkit/html'
+
+import { isGridEmpty } from './grid'
+import type { Message } from './message'
+import type { Model } from './model'
+import { currentPaletteTheme } from './palette'
+import { canvasView } from './view/canvas'
+import { historyPanelView } from './view/history'
+import { toolPanelView } from './view/toolbar'
+
 const lazyToolPanel = createLazy()
 const lazyHistoryPanel = createLazy()
 const lazyRow = createKeyedLazy()
@@ -617,34 +632,47 @@ const lazyRow = createKeyedLazy()
 // evo() preserves references for unchanged Model fields, so the check just
 // works, and the builder is the same object every render, so passing it
 // through the args never invalidates the cache.
-export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
-  title: 'Pixel Art',
-  body: h.div(
-    [],
-    [
-      lazyHeader(headerView, [h]),
-      lazyToolPanel(toolPanelView, [
-        model.mirrorMode,
-        model.tool,
-        model.gridSize,
-        model.selectedColorIndex,
-        isGridEmpty(model.grid),
-        theme,
-        model.themeListbox,
-        h,
-      ]),
-      canvasView(model, theme, h),
-      lazyHistoryPanel(historyPanelView, [
-        model.undoStack,
-        model.redoStack,
-        currentGrid,
-        model.gridSize,
-        theme,
-        h,
-      ]),
-    ],
-  ),
-})
+export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
+  const theme = currentPaletteTheme(model)
+  const currentGrid = model.isDrawing
+    ? pipe(
+        Array.last(model.undoStack),
+        Option.getOrElse(() => model.grid),
+      )
+    : model.grid
+
+  return {
+    title: 'Pixel Art',
+    body: h.div(
+      [],
+      [
+        lazyToolPanel(toolPanelView, [
+          model.mirrorMode,
+          model.tool,
+          model.gridSize,
+          model.selectedColorIndex,
+          isGridEmpty(model.grid),
+          theme,
+          model.paletteThemeIndex,
+          model.themeListbox,
+          model.toolRadioGroup,
+          model.gridSizeRadioGroup,
+          model.paletteRadioGroup,
+          h,
+        ]),
+        canvasView(model, theme, h),
+        lazyHistoryPanel(historyPanelView, [
+          model.undoStack,
+          model.redoStack,
+          currentGrid,
+          model.gridSize,
+          theme,
+          h,
+        ]),
+      ],
+    ),
+  }
+}
 ```
 
 `Html.Lazy.lazy` and `createLazy` reuse a previous rendered value when their function inputs remain referentially equal. Elm provides arity-specific helpers such as `lazy` and `lazy5`. Foldkit creates a lazy wrapper at module scope and passes an argument array. `createKeyedLazy` retains a separate cache for each stable key.
@@ -684,6 +712,13 @@ cellView x y backgroundColor =
 ```
 
 ```
+import { Array } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+
+import { Message } from './message'
+import type { Cell, HexColor } from './model'
+import { type PaletteTheme, resolveColor } from './palette'
+
 const rowView = (
   row: ReadonlyArray<Cell>,
   y: number,
@@ -701,8 +736,8 @@ const rowView = (
       const displayColor = isPreview ? previewColor : resolveColor(cell, theme)
 
       return h.div([
-        h.OnMouseDown(PressedCell({ x, y })),
-        h.OnMouseEnter(EnteredCell({ x, y })),
+        h.OnMouseDown(Message.PressedCell({ x, y })),
+        h.OnMouseEnter(Message.EnteredCell({ x, y })),
         h.Style({ flex: '1', backgroundColor: displayColor }),
       ])
     }),

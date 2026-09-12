@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/preserve-scroll
 title: "Preserve Scroll"
-description: "Restore window scroll position across Vite HMR reloads. Covers when restoration runs and its window-only scope."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+description: "Restore window scroll position across Vite dev reloads. Covers when restoration runs and its window-only scope."
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Preserve Scroll
@@ -14,7 +14,7 @@ When Vite reloads the page after a file change, the browser normally returns to 
 
 Foldkit saves `window.scrollX` and `window.scrollY` just before the reload. After the restored view renders, it scrolls the window back to that position.
 
-Scroll preservation runs only when Vite HMR is active. Set `preserveScroll` to `false` when the application implements its own development scroll restoration.
+Scroll preservation runs only under Vite's dev server. Set `preserveScroll` to `false` when the application implements its own development scroll restoration.
 
 ## Window Scroll Only
 

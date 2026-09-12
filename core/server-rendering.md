@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/server-rendering
 title: "Server Rendering"
 description: "Render the same application to HTML for request-time SSR or build-time SSG, then hydrate it in place through a validated build-id and Flags handoff."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 ## Overview
@@ -88,13 +88,13 @@ export const renderPage = (request: Request): Promise<Server.EntryResult> =>
   )
 ```
 
-The outer `Promise` keeps `renderPage` callable from Vite, build scripts, serverless functions, and long-running Effect HTTP servers. Those hosts do not need to provide the application's Effect requirements. The entry uses Effect internally; the host sees only the `Promise`.
+The outer `Promise` keeps `renderPage` callable from Vite, build scripts, serverless functions, and the emitted `fetch` handler. Those hosts do not need to provide the application's Effect requirements. The entry uses Effect internally; the host sees only the `Promise`.
 
 The entry is application code. Keep it in `src/` (`src/entry.server.ts` in the examples), not in the host's directory. It imports the application's `init`, `view`, and `Flags`, so the server build must compile it with those application imports.
 
 The client and server are separate module graphs. Within each graph, the view and the Foldkit runtime that calls it must resolve to one `foldkit` module instance. The HTML builder tracks a render in module-level state. If one render uses two Foldkit copies, the view writes to one copy while the runtime reads the other. The render fails instead of producing the wrong page. Duplicate monorepo installs and aliases that split one graph are common causes.
 
-A delivery host imports the built entry and calls `renderPage`. It does not import the application and render it directly. The [SSR example](https://foldkit.dev/example-apps/ssr) 's host lives outside `src/`, in `server/`, and does exactly that.
+A delivery host runs the built `fetch` handler. It does not import the application and render it directly. One `vite build` emits `dist/server/fetch.js` whose default export is `{ fetch }`. The [SSR example](https://foldkit.dev/example-apps/ssr) starts that module with `node scripts/serve.ts`. A Worker can default-export the same module.
 
 `renderToString` accepts the server-relevant subset of a `makeApplication` config. That subset contains `init` and `view`, plus `Flags` and `routing` when the application declares them. A full application config satisfies the subset, so an entry can pass it unchanged.
 
@@ -154,11 +154,11 @@ Foldkit rejects extra top-level content, ambiguous handoff markers, and source t
 
 ### Application ownership
 
-`runtimeId` pairs one hydratable root with its Flags payload. It also keys the Model and scroll position preserved by hot reloading. A nondefault id changes that pairing. It does not create another document owner.
+`runtimeId` pairs one hydratable root with its Flags payload. It also keys the preserved Model and scroll position. A nondefault id changes that pairing. It does not create another document owner.
 
 A document may contain one hydratable Foldkit root. `injectIntoTemplate` refuses to insert a hydratable render when the template already contains one, even when the ids differ. `Runtime.hydrate` refuses and contains a page assembled elsewhere when it finds more than one stamped root. An explicit container does not override this rule.
 
-Two roots with the same id would also read the same Flags and preserved HMR state. Foldkit reports that collision specifically, but distinct ids do not make multiple page-owning applications valid.
+Two roots with the same id would also read the same Flags and share Model and scroll preservation. Foldkit reports that collision specifically, but distinct ids do not make multiple page-owning applications valid.
 
 The root stamp must have a nonempty id and name the document's single stamped root in the body light DOM. A requested root in `<head>`, a shadow tree, a detached subtree, or another document is refused and the page is contained before startup. When the configured container resolves to an element, it must be that root or one of its descendants.
 
@@ -179,7 +179,7 @@ The placeholder's location and the view's root are part of the contract. Browser
 A hydratable render carries these markers:
 
 - The application root has `data-foldkit-app`. Its value is the `runtimeId`.
-- The root also has `data-foldkit-build`. Its value identifies the deployment that rendered the page.
+- The root also has `data-foldkit-build`. Its value identifies the deployment that rendered the page. The client removes it as it takes the root over, so its absence is the signal that the client runtime owns the page; a browser test can wait for `[data-foldkit-build]` to disappear. A refused handoff keeps the stamp and adds `data-foldkit-refused`.
 - An application with Flags emits a `<script type="application/json" data-foldkit-flags="...">`. It carries the Schema-encoded Flags that produced the server Model. The attribute value matches the root's `runtimeId`.
 - Keyed elements carry `data-foldkit-key`. Elements with build-assigned view identity carry `data-foldkit-identity`. Both values are deterministic, non-cryptographic fingerprints. Neither marker contains the original key, which may hold an account id or email address, or the build's source path. Hydration compares each fingerprint and removes the marker as it adopts the element. A render with `isHydratable: false` emits neither marker.
 	A fingerprint is a public comparison token, not a secret or an authentication check. A reader can compute the fingerprint of a guessed key or view identity and test for a match. An attacker can also construct two values with the same fingerprint. Key by values that are safe to publish. Hydratable keys must be strings or numbers other than `NaN`.
@@ -286,16 +286,16 @@ foldkit({ ssr: { serverEntry: '/src/entry.server.ts' } })
 
 Vite continues to serve the client entry, HMR, and assets. Requests that reach Foldkit become Web `Request` values and pass to `renderPage`. The returned Web `Response` provides the status, headers, and body.
 
-A hot update does not exercise hydration. HMR preserves the Model but rebuilds the DOM under the root. That DOM came from code that predates the edit. Reload the page to test hydration itself. The stamped root remains required during a hot update; without it, startup fails as it would on a fresh load.
+A development reload does not exercise hydration. Foldkit restores the Model but rebuilds the DOM under the root. That DOM came from code that predates the edit. Refresh the page manually to test hydration itself. The stamped root remains required during a development reload; without it, startup fails as it would on a fresh load.
 
-In production, the host is built alongside the client. Set `ssr.build` in the plugin and `vite build` produces both, with `entry` naming the host module when requests reach one, as they do here. The host serves static assets first, imports the built entry, and sends `Server.toResponse(template, await renderPage(request))`. The [SSR example](https://github.com/foldkit/foldkit/tree/main/examples/ssr) uses an Effect `HttpServer` for this delivery layer:
+In production, the host is built alongside the client. Set `ssr.build` in the plugin and `vite build` produces both. The server bundle is a Web `fetch` handler: Node and Workers both run it. Static files stay the platform's job. The [SSR example](https://github.com/foldkit/foldkit/tree/main/examples/ssr) starts that handler on Node:
 
 ```
 foldkit({
   buildId,
   ssr: {
     serverEntry: '/src/entry.server.ts',
-    build: { entry: '/server/main.ts' },
+    build: true,
   },
 })
 ```
@@ -348,7 +348,7 @@ A deployed SSG build is a directory of static files. Any static host or CDN can 
 
 A build that `@foldkit/vite-plugin` owns writes `foldkit.build.json` beside the server bundle, naming the two output directories, the server entry, and every path it generated. A host reads it to decide what its asset layer does with a request matching no file: generated paths are files, anything else reaches the server when there is one. Deriving that from the build is how a deployment target avoids asking for it a second time, in settings whose wrong values serve an empty page at 200.
 
-A deployed SSR application needs a host with two jobs: serve the built client assets and call `renderPage` for page requests. On Node, use the [SSR example's server](https://github.com/foldkit/foldkit/tree/main/examples/ssr/server) as the reference. It serves static files first and sends `Server.toResponse(template, await renderPage(request))` for everything else.
+A deployed SSR application needs a host with two jobs: serve the built client assets and call `fetch` for page requests. On Node, use the [SSR example's `scripts/serve.ts`](https://github.com/foldkit/foldkit/tree/main/examples/ssr/scripts/serve.ts) as the reference. It serves static files first and falls through to `dist/server/fetch.js`.
 
 ### Which methods reach the entry
 
@@ -380,21 +380,15 @@ Request-time rendering depends on its Flags. A route with universal Flags can us
 
 ### Fetch-native runtimes
 
-Cloudflare Workers, Deno, and Bun already use Web `Request` and `Response`, so they can run the entry without an adapter:
+Cloudflare Workers, Deno, and Bun already use Web `Request` and `Response`, so they can run the emitted handler without an adapter:
 
 ```
-import { Server } from 'foldkit/experimental'
+import handler from './dist/server/fetch.js'
 
-import template from './dist/client/index.html'
-import { renderPage } from './dist/server/entry.server'
-
-export default {
-  fetch: async (request: Request): Promise<Response> =>
-    Server.toResponse(template, await renderPage(request)),
-}
+export default handler
 ```
 
-The platform serves the built client assets, and the handler covers page requests. Configure the bundler to treat the template's `.html` import as a string. Cloudflare's Wrangler CLI calls this a `Text` module rule. The same built server entry runs unchanged on each runtime.
+The platform serves the built client assets, and the handler covers page requests. The handler trusts `Request.url` as the platform constructed it. Only a Node adapter sees a raw request target, and `scripts/serve.ts` resolves that target against its configured origin and refuses an off-origin one before calling `fetch`. The same built `fetch.js` module runs unchanged on each runtime.
 
 [Alchemy](https://alchemy.run/) can provision and deploy the host. It is TypeScript-native infrastructure as code built on Effect. The Worker and its databases, object storage, or queues live in the same TypeScript program as the entry. Its [Cloudflare support](https://alchemy.run/cloudflare/) deploys the Worker directly.
 

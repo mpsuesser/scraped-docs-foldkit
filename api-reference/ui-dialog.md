@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-dialog
 title: "Ui/Dialog"
 description: "API documentation for the Ui/Dialog module."
-access_date: 2026-09-07T07:29:31.695Z
-current_date: 2026-09-07T07:29:31.695Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Ui/Dialog
@@ -14,7 +14,7 @@ current_date: 2026-09-07T07:29:31.695Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L341)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L343)
 
 ```
 /** Programmatically closes the dialog. */
@@ -25,18 +25,20 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L364)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L368)
 
 ```
 /**
- * Returns the framework-managed id the dialog's `aria-describedby` points at,
- *  the `-dialog-description` suffix on `model.id`.
+ * Returns the framework-managed description id, the
+ *  `-dialog-description` suffix on `model.id`.
  * 
  *  The primary path is spreading `RenderInfo`'s `description` onto your
  *  description element (`h.p([...description], [...])`), which carries this id
  *  for you. Reach for this helper only when you need the id as a value outside
  *  `toView`: a Command that calls `getElementById`, a cross-element
- *  `aria-describedby`, or a test. Do not hand-roll the id string.
+ *  `aria-describedby`, or a test. When the description is rendered, set
+ *  `ViewInputs.hasDescription` so the dialog points at this id. Do not
+ *  hand-roll the id string.
  */
 (model: Dialog.Model): string
 ```
@@ -45,7 +47,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L96)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L96)
 
 ```
 /** Creates an initial dialog model from a config. Defaults to closed and non-animated. */
@@ -56,7 +58,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L337)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L339)
 
 ```
 /** Programmatically opens the dialog. */
@@ -67,7 +69,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L354)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L356)
 
 ```
 /**
@@ -87,7 +89,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L238)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L240)
 
 ## Types
 
@@ -95,7 +97,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L83)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L83)
 
 ```
 /**
@@ -121,18 +123,19 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L404)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L410)
 
 ```
 /**
  * Render-time payload published to the consumer's `toView`.
  * 
  *  - `dialog`: attributes for the native `<dialog>` element. Carries
- *    the id, ARIA labelling, `open` prop, positioning style, the
- *    `OnCancel` handler that wires Escape to `RequestedClose`, and an
- *    `OnUnmount` backstop that releases framework hygiene (scroll lock,
- *    focus trap, return focus) if the element is removed from the DOM
- *    while still open, such as navigating away from a route-keyed subtree.
+ *    the id, ARIA labelling, `open` prop, positioning style, a `cancel` handler
+ *    that prevents a file picker's native cancellation from closing the dialog
+ *    while mapping `Dom.showDialog`'s Escape signal to `RequestedClose`,
+ *    and an `OnUnmount` backstop that releases framework hygiene (scroll lock,
+ *    focus trap, return focus) if the element is removed from the DOM while
+ *    still open, such as navigating away from a route-keyed subtree.
  *    The consumer MUST render an `h.dialog(...)` element so the framework
  *    can open and close it, and so the unmount backstop can fire.
  *  - `backdrop`: attributes for the backdrop element. Includes the
@@ -146,8 +149,9 @@ type
  *    onto your heading element (`h.h2([...title], [...])`) so labelling
  *    wires up without hand-rolling the id.
  *  - `description`: attributes for the description element. Carries the
- *    framework-managed id the dialog's `aria-describedby` points at. Spread
- *    onto your description element (`h.p([...description], [...])`).
+ *    framework-managed id referenced by `aria-describedby` when
+ *    `ViewInputs.hasDescription` is true. Spread onto your description element
+ *    (`h.p([...description], [...])`).
  *  - `initialFocus`: attributes for the element that should receive focus when
  *    the dialog opens. Spread onto that element (`h.input([...initialFocus])`).
  *    A configured `focusSelector` (see `init`) takes precedence, and focus
@@ -179,11 +183,12 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L416)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L422)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
 type ViewInputs = Readonly<{
+  hasDescription: boolean
   toView: (render: RenderInfo) => Html
 }>
 ```
@@ -194,7 +199,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L154)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L156)
 
 ```
 /**
@@ -218,7 +223,7 @@ const CloseDialog: CommandDefinitionWithArgs<"CloseDialog", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L38)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L38)
 
 ```
 /** Union of all messages the dialog component can produce. */
@@ -245,7 +250,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L25)
 
 ```
 /** Schema for the dialog component's state, tracking its unique ID, open/closed status, animation support, and animation lifecycle phase. */
@@ -266,7 +271,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L63)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L63)
 
 ```
 /** Union of out-messages the dialog component can produce. */
@@ -280,7 +285,7 @@ const OutMessage: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L171)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L173)
 
 ```
 /**
@@ -300,16 +305,18 @@ const ReleaseDialogResources: CommandDefinitionWithArgs<"ReleaseDialogResources"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L131)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L133)
 
 ```
 /**
  * Locks page scroll and opens the native dialog element through
  *  `Dom.showDialog`, which calls `show()` (not native `showModal()`) so other
  *  high-z-index overlays stay interactive. It layers the dialog with a high
- *  z-index, traps focus, and dispatches a `cancel` event on Esc. The Dialog
- *  component supplies its own backdrop. If the dialog element is gone by the
- *  time the show runs, the lock is released and the Command reports
+ *  z-index and traps focus. For an unhandled Escape on the topmost Dialog, the
+ *  helper dispatches a `CustomEvent` named `cancel`; the Dialog view maps that
+ *  signal to `RequestedClose` while suppressing native `cancel` events. The
+ *  Dialog component supplies its own backdrop. If the dialog element is gone
+ *  by the time the show runs, the lock is released and the Command reports
  *  `FailedShowDialog`. A closed dialog has no `OnUnmount`, so nothing else
  *  would release the lock. The update function then closes the Model. Without
  *  this close, the dialog would render open with no lock and no focus trap.
@@ -329,14 +336,14 @@ const ShowDialog: CommandDefinitionWithArgs<"ShowDialog", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/ui/src/dialog/index.ts#L424)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/ui/src/dialog/index.ts#L431)
 
 ```
 /**
  * Renders a headless dialog component backed by the native `<dialog>`
  *  element. `ShowDialog` opens it through `Dom.showDialog`, which uses `show()`
  *  (not native `showModal()`) with a high z-index, a focus trap, a
- *  component-supplied backdrop, and a `cancel` event dispatched on Esc.
+ *  component-supplied backdrop, and topmost-only Escape handling.
  */
 const view: SubmodelView<Dialog.Model, {
   _tag: "RequestedOpen"
@@ -364,6 +371,7 @@ const view: SubmodelView<Dialog.Model, {
     _tag: "EndedAnimation"
   }
 }, Readonly<{
+  hasDescription: boolean
   toView: (render: RenderInfo) => Html
 }>>
 ```

@@ -2,13 +2,13 @@
 url: https://foldkit.dev/ui/select
 title: "Select"
 description: "A stateless wrapper around the native select with ARIA linking, change handling, and styling hooks."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 ## Overview
 
-A wrapper around the native `<select>` element with ARIA label/description linking and data-attribute hooks. Select is a stateless render helper: call it directly with a ViewConfig in your own view; no Model, update, or `h.submodel` wrapping. For a custom dropdown with keyboard navigation and custom rendering, use Listbox or Combobox instead.
+A wrapper around the native `<select>` element with ARIA label and optional-description linking plus data-attribute hooks. Select is a stateless render helper: call it directly with a ViewConfig in your own view; no Model, update, or `h.submodel` wrapping. For a custom dropdown with keyboard navigation and custom rendering, use Listbox or Combobox instead.
 
 See it in an app
 
@@ -34,6 +34,7 @@ const view = (h: HtmlBuilder<Message>) =>
   Select.view(
     {
       id: 'country',
+      hasDescription: true,
       value: model.country, // your Model field
       onChange: value => UpdatedCountry({ value }), // your Message
       toView: attributes =>
@@ -84,6 +85,7 @@ const view = (h: HtmlBuilder<Message>) =>
     {
       id: 'country-disabled',
       isDisabled: true,
+      hasDescription: true,
       value: 'us',
       toView: attributes =>
         h.div(
@@ -137,7 +139,7 @@ Select uses the native `<select>` element, so keyboard interaction is handled by
 
 ## Accessibility
 
-Select provides the same ARIA wiring as Input. The `label` group links via `for`, and the `description` group is referenced by `aria-describedby`. You can access the description ID directly with `Select.descriptionId(id)`.
+Select provides the same ARIA wiring as Input. The `label` group links via `for`, and the `description` group always includes an id. Set `hasDescription: true` when that element is rendered so the select references it through `aria-describedby`; leaving the option false prevents a dangling reference. You can access the description ID directly with `Select.descriptionId(id)`.
 
 ## API Reference
 
@@ -154,6 +156,7 @@ Configuration object passed to `Select.view()`.
 | `isDisabled` | `boolean` | `false` | Whether the select is disabled. Sets the native disabled attribute. |
 | `isInvalid` | `boolean` | `false` | Whether the select is in an invalid state. Sets aria-invalid and adds a data-invalid attribute for styling. |
 | `isAutofocus` | `boolean` | `false` | Whether the select receives focus when the page loads. |
+| `hasDescription` | `boolean` | `false` | Whether the select renders a description. Adds `aria-describedby` when true. |
 | `name` | `string` | — | The form field name for native form submission. |
 
 ### SelectAttributes
@@ -164,4 +167,4 @@ Attribute groups provided to the `toView` callback.
 | --- | --- | --- | --- |
 | `select` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the `<select>` element. Includes id, value, ARIA attributes, and event handlers. |
 | `label` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto the `<label>` element. Includes a for attribute linking to the select id. |
-| `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes an id that the select references via aria-describedby. |
+| `description` | `ReadonlyArray<Attribute<Message>>` | — | Spread onto a description element. Includes the id referenced when `hasDescription` is true. |

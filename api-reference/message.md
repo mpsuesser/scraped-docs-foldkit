@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/message
 title: "Message"
 description: "API documentation for the Message module."
-access_date: 2026-09-07T07:29:31.695Z
-current_date: 2026-09-07T07:29:31.695Z
+access_date: 2026-09-12T18:49:33.387Z
+current_date: 2026-09-12T18:49:33.387Z
 ---
 
 # Message
@@ -14,7 +14,7 @@ current_date: 2026-09-07T07:29:31.695Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/schema/index.ts#L412)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/schema/index.ts#L510)
 
 ```
 /**
@@ -36,8 +36,8 @@ function
  * fields.
  * 
  * A tag cannot use a name already owned by the union, such as `make`, `match`,
- * `cases`, `ast`, `members`, or `subset`. TypeScript rejects these names, and
- * untyped calls throw an error.
+ * `matchOrElse`, `cases`, `ast`, `members`, or `subset`. TypeScript rejects
+ * these names, and untyped calls throw an error.
  */
 <CasesByTag extends Record<string, Fields>>(casesByTag: CasesByTag & ValidateVariantNames<CasesByTag>): MessageUnion<CasesByTag>
 ```
@@ -48,7 +48,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/fa58326c9959d93d0edae71522711cb8c11546c1/packages/foldkit/src/schema/index.ts#L309)
+[source](https://github.com/foldkit/foldkit/blob/ba0d6f141325a66ba6608cdd5957c3667ed5ba37/packages/foldkit/src/schema/index.ts#L407)
 
 ```
 /**
