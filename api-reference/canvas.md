@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/canvas
 title: "Canvas"
 description: "API documentation for the Canvas module."
-access_date: 2026-09-18T16:33:34.359Z
-current_date: 2026-09-18T16:33:34.359Z
+access_date: 2026-09-18T18:12:22.916Z
+current_date: 2026-09-18T18:12:22.916Z
 ---
 
 # Canvas
@@ -14,7 +14,7 @@ current_date: 2026-09-18T16:33:34.359Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/view.ts#L83)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/view.ts#L83)
 
 ```
 /**
@@ -39,7 +39,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L171)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L171)
 
 ```
 /**
@@ -54,7 +54,7 @@ type Shape = typeof Rect.Type | typeof Circle.Type | typeof Path.Type | typeof T
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/view.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/view.ts#L19)
 
 ```
 /**
@@ -80,7 +80,7 @@ type ViewConfig = Readonly<{
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L157)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L157)
 
 ```
 /**
@@ -107,7 +107,7 @@ interface Group {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L37)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L37)
 
 ```
 /** Draw a cubic Bezier curve from the cursor through two control points to an end point. */
@@ -125,7 +125,7 @@ const BezierTo: CallableTaggedStruct<"BezierTo", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L111)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L111)
 
 ```
 /** A filled or stroked circle. */
@@ -143,7 +143,7 @@ const Circle: CallableTaggedStruct<"Circle", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L49)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L49)
 
 ```
 /** Close the current path by drawing a line back to its starting point. */
@@ -154,7 +154,7 @@ const Close: CallableTaggedStruct<"Close", {}>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L157)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L157)
 
 ```
 /** Construct a `Group` shape that wraps its children in a transformed scope. */
@@ -177,7 +177,7 @@ const Group: CallableTaggedStruct<"Group", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L65)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L65)
 
 ```
 /** Stroke cap style: how the ends of an open stroked subpath are rendered. */
@@ -188,7 +188,7 @@ const LineCap: Literals<readonly ["Butt", "Round", "Square"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L70)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L70)
 
 ```
 /** Stroke join style: how two connected stroked segments meet. */
@@ -199,7 +199,7 @@ const LineJoin: Literals<readonly ["Miter", "Round", "Bevel"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L19)
 
 ```
 /** Draw a straight line from the cursor to a point. */
@@ -213,7 +213,7 @@ const LineTo: CallableTaggedStruct<"LineTo", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L11)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L11)
 
 ```
 /** Move the path cursor to a point without drawing. */
@@ -227,7 +227,7 @@ const MoveTo: CallableTaggedStruct<"MoveTo", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L123)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L123)
 
 ```
 /** A path built from a sequence of `PathInstruction`s. */
@@ -269,7 +269,7 @@ const Path: CallableTaggedStruct<"Path", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L54)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L54)
 
 ```
 /** A single drawing instruction within a `Path` shape. */
@@ -304,7 +304,7 @@ const PathInstruction: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L6)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L6)
 
 ```
 /** A 2D point in canvas-local coordinates. */
@@ -318,7 +318,7 @@ const Point: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L27)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L27)
 
 ```
 /** Draw a quadratic Bezier curve from the cursor through a control point to an end point. */
@@ -334,7 +334,7 @@ const QuadTo: CallableTaggedStruct<"QuadTo", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L98)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L98)
 
 ```
 /** An axis-aligned rectangle. */
@@ -353,7 +353,7 @@ const Rect: CallableTaggedStruct<"Rect", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L135)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L135)
 
 ```
 /** A single line of text drawn with a font, fill, and optional stroke. */
@@ -374,7 +374,7 @@ const Text: CallableTaggedStruct<"Text", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L75)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L75)
 
 ```
 /** Horizontal alignment of a `Text` shape relative to its anchor x coordinate. */
@@ -385,7 +385,7 @@ const TextAlign: Literals<readonly ["Left", "Center", "Right", "Start", "End"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/canvas/shape.ts#L86)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/canvas/shape.ts#L86)
 
 ```
 /** Vertical alignment of a `Text` shape relative to its anchor y coordinate. */

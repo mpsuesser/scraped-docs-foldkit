@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/subscription
 title: "Subscription"
 description: "API documentation for the Subscription module."
-access_date: 2026-09-18T16:33:34.359Z
-current_date: 2026-09-18T16:33:34.359Z
+access_date: 2026-09-18T18:12:22.916Z
+current_date: 2026-09-18T18:12:22.916Z
 ---
 
 # Subscription
@@ -14,7 +14,7 @@ current_date: 2026-09-18T16:33:34.359Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/animationFrame.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/animationFrame.ts#L66)
 
 ```
 /**
@@ -38,7 +38,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/fromEvent.ts#L382)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L382)
 
 ```
 /**
@@ -76,7 +76,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/fromEvent.ts#L325)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L325)
 
 ```
 /**
@@ -125,7 +125,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/fromEvent.ts#L451)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L451)
 
 ```
 /**
@@ -167,17 +167,17 @@ function
 <Target extends EventTarget, Type extends string, Message>(config: FromEventFilterMapPreventDefaultConfig<Target, Type, Message>): Stream<Message>
 ```
 
-### keyboardShortcuts
+### keyBindings
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/keyboardShortcuts.ts#L849)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/keyBindings.ts#L844)
 
 ```
 /**
- * Build a Stream that turns declarative keyboard shortcuts into Messages.
+ * Build a Stream that turns declarative key bindings into Messages.
  * 
- * A string shortcut describes one key press. Modifiers are joined with `+`:
+ * A string describes one key press. Modifiers are joined with `+`:
  * `'Mod+K'`, `'Control+Shift+P'`, or `'Alt+ArrowDown'`. The supported modifiers
  * are `Mod`, `Control`, `Meta`, `Alt`, and `Shift`. `Mod` resolves to Meta on
  * Apple platforms and Control elsewhere; `modKey` can override that choice.
@@ -189,17 +189,17 @@ function
  * one second by default; `sequenceTimeout` accepts any Effect Duration input.
  * Modifier-only events and repeated keydowns do not advance a sequence.
  * 
- * Shortcuts are suppressed by default when the event's composed path contains
+ * Bindings are suppressed by default when the event's composed path contains
  * an `input`, `textarea`, `select`, or contenteditable element. Set
  * `whileTyping` to `'Allow'` for a binding that must work there. Events emitted
  * during IME composition are always ignored. Repeated keydowns are ignored for
- * one-press shortcuts unless `whenRepeated` is `'Allow'`. An event another
+ * one-press bindings unless `whenRepeated` is `'Allow'`. An event another
  * handler already canceled is ignored and clears any sequence in progress.
  * 
  * Matched key presses call `preventDefault()` before dispatching. For a
  * sequence, that policy applies to every matched press. Set `preventDefault`
  * to `false` to opt out. Sequences sharing a prefix must use the same policy.
- * Duplicate bindings and a complete shortcut that is also a sequence prefix
+ * Duplicate bindings and a complete binding that is also a sequence prefix
  * are rejected when the Stream is created.
  * 
  * This helper returns a Stream, not a complete Subscription entry. Use
@@ -208,19 +208,19 @@ function
  * derive each binding's `isEnabled` from the dependency record. A dependency
  * change opens a new Stream scope and resets any sequence in progress. If a
  * parent owns a condition for a lifted child, declare the table at that parent
- * or put shortcuts with different parent-owned lifetimes in separate child
+ * or put bindings with different parent-owned lifetimes in separate child
  * entries so `Subscription.lift` can gate them individually. If the meaning
  * of a key depends on the Model, dispatch a factual key Message and decide
  * what it means in update instead of reading the Model from `toMessage`.
  */
-<Message>(config: KeyboardShortcutsConfig<Message>): Stream<Message>
+<Message>(config: KeyBindingsConfig<Message>): Stream<Message>
 ```
 
 ### lift
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/subscription.ts#L682)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L682)
 
 ```
 /**
@@ -262,7 +262,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/subscription.ts#L174)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L174)
 
 ```
 /**
@@ -283,7 +283,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/subscription.ts#L365)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L365)
 
 ```
 /**
@@ -305,7 +305,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/animationFrame.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/animationFrame.ts#L12)
 
 ```
 /**
@@ -327,7 +327,7 @@ type AnimationFrameConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/subscription.ts#L24)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L24)
 
 ```
 /**
@@ -347,7 +347,7 @@ type EntryWithoutKeepAlive = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/fromEvent.ts#L146)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L146)
 
 ```
 /**
@@ -384,7 +384,7 @@ type FromEventConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/fromEvent.ts#L179)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L179)
 
 ```
 /**
@@ -421,7 +421,7 @@ type FromEventFilterMapConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/fromEvent.ts#L251)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L251)
 
 ```
 /**
@@ -460,7 +460,7 @@ type FromEventFilterMapPreventDefaultConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/subscription.ts#L408)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L408)
 
 ```
 /**
@@ -478,61 +478,61 @@ type GatedDependencies = Readonly<{
 }>
 ```
 
-### KeyboardShortcut
+### KeyBinding
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/keyboardShortcuts.ts#L19)
-
-```
-/** A single key press or a sequence of two or more key presses. */
-type KeyboardShortcut = string | Readonly<[string, string, ...Array<string>]>
-```
-
-### KeyboardShortcutBinding
-
-type
-
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/keyboardShortcuts.ts#L38)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/keyBindings.ts#L36)
 
 ```
 /**
- * One entry in a keyboardShortcuts binding table.
+ * One entry in a keyBindings binding table.
  * 
  * A string describes one key press, such as `'/'`, `'Escape'`, or `'Mod+K'`.
  * An array describes a sequence of at least two presses, such as
  * `['G', 'H']` or `['G', 'Shift+G']`.
  */
-type KeyboardShortcutBinding = BindingBase<Message> & Readonly<{
-  shortcut: string
+type KeyBinding = BindingBase<Message> & Readonly<{
+  keys: string
   whenRepeated: "Ignore" | "Allow"
 }> | Readonly<{
-  shortcut: Readonly<[string, string, ...Array<string>]>
+  keys: Readonly<[string, string, ...Array<string>]>
   whenRepeated: never
 }>
 ```
 
-### KeyboardShortcutsConfig
+### KeyBindingsConfig
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/keyboardShortcuts.ts#L53)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/keyBindings.ts#L51)
 
 ```
-/** Configuration for the keyboardShortcuts Stream helper. */
-type KeyboardShortcutsConfig = Readonly<{
-  bindings: ReadonlyArray<KeyboardShortcutBinding<Message>>
+/** Configuration for the keyBindings Stream helper. */
+type KeyBindingsConfig = Readonly<{
+  bindings: ReadonlyArray<KeyBinding<Message>>
   modKey: ModKey
   sequenceTimeout: Duration.Input
   target: EventTarget | () => EventTarget
 }>
 ```
 
+### KeySequence
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/keyBindings.ts#L19)
+
+```
+/** A single key press or a sequence of two or more key presses. */
+type KeySequence = string | Readonly<[string, string, ...Array<string>]>
+```
+
 ### Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/subscription.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L72)
 
 ```
 /**
@@ -567,7 +567,7 @@ type Subscription = Entry<Model, Message, Dependencies, Services> & Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/subscription.ts#L80)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L80)
 
 ```
 /** A record of named Subscriptions keyed by dependency field name. */
@@ -578,10 +578,10 @@ type Subscriptions = Readonly<Record<string, Subscription<Model, Message, any, S
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/keyboardShortcuts.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/keyBindings.ts#L16)
 
 ```
-/** Whether a shortcut may fire when its keyboard event comes from an editable element. */
+/** Whether a key binding may fire when its event comes from an editable element. */
 type WhileTyping = "Suppress" | "Allow"
 ```
 
@@ -591,7 +591,7 @@ type WhileTyping = "Suppress" | "Allow"
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/fromEvent.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L25)
 
 ```
 /**
@@ -621,7 +621,7 @@ interface TypedEventTarget {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/subscription/subscription.ts#L336)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L336)
 
 ```
 /**

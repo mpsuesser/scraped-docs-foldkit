@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-0-161-0
 title: "Foldkit 0.160.0 and 0.161.0"
 description: "Accessibility fixes across Foldkit UI, declarative keyboard shortcuts, helpers for initializing Submodels, stronger lint checks, and improved type inference."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-18T18:12:22.916Z
+current_date: 2026-09-18T18:12:22.916Z
 ---
 
 ![Rows of 160 and 161 in cyan and yellow, joined by plus signs, with tilted coral and lime digits on a light gray background.](https://foldkit.dev/blog/foldkit-0-161-0/cover.webp)
@@ -69,7 +69,7 @@ const shortcuts = Subscription.keyboardShortcuts<Message>({
 
 Shortcuts ignore editable elements, IME composition, and held-key repeats by default. Here, `whileTyping: 'Allow'` lets the search shortcut work inside a text field. Matched presses cancel their browser default before the listener returns unless a binding sets `preventDefault: false`. The update function still decides how the application responds to each Message.
 
-The [Subscriptions guide](https://foldkit.dev/core/subscriptions#keyboard-shortcuts) covers the options, and the [routing example](https://foldkit.dev/example-apps/routing) demonstrates sequence navigation.
+The [Subscriptions guide](https://foldkit.dev/core/subscriptions#key-bindings) covers the options, and the [routing example](https://foldkit.dev/example-apps/routing) demonstrates sequence navigation.
 
 Thank you to [@artile](https://github.com/artile) for proposing and contributing the shortcut helper, and to [@hdoro](https://github.com/hdoro) for helping shape its API, including conditional shortcuts and key sequences!
 

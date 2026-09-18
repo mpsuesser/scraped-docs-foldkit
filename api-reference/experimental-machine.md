@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/experimental-machine
 title: "Experimental/Machine"
 description: "API documentation for the Experimental/Machine module."
-access_date: 2026-09-18T16:33:34.359Z
-current_date: 2026-09-18T16:33:34.359Z
+access_date: 2026-09-18T18:12:22.916Z
+current_date: 2026-09-18T18:12:22.916Z
 ---
 
 # Experimental/Machine
@@ -14,7 +14,7 @@ current_date: 2026-09-18T16:33:34.359Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L1183)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L1183)
 
 ```
 /**
@@ -72,7 +72,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L557)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L557)
 
 ```
 (): Ignore
@@ -82,7 +82,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L535)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L535)
 
 ```
 <State extends Readonly<{
@@ -100,7 +100,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L428)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L428)
 
 ```
 <State extends Readonly<{
@@ -121,7 +121,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L468)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L468)
 
 ```
 <State extends Readonly<{
@@ -145,7 +145,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L647)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L647)
 
 ```
 /** An Edge that cannot fire in a walk of the declared Edge set, with the reason. */
@@ -159,7 +159,7 @@ type DeadTransition = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L641)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L641)
 
 ```
 /**
@@ -176,7 +176,7 @@ type DeadTransitionReason = "UnreachableSource" | "ShadowedByOtherwise" | "Shado
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L103)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L103)
 
 ```
 /**
@@ -203,7 +203,7 @@ type Edge = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L618)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L618)
 
 ```
 /** Which guard construct an Edge sits under, with its position in the guard list. */
@@ -222,7 +222,7 @@ type EdgeGuard = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L72)
 
 ```
 /**
@@ -250,7 +250,7 @@ type EdgeInput = HasMachineContext<Context> extends true
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L624)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L624)
 
 ```
 /** One Edge of the table as plain data: source, trigger, target, and guard placement. */
@@ -266,7 +266,7 @@ type EdgeSummary = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L738)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L738)
 
 ```
 /**
@@ -287,7 +287,7 @@ type FoldConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L165)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L165)
 
 ```
 /**
@@ -301,7 +301,7 @@ type GuardedEdge = When<State, Message, SourceState, TriggerMessage, unknown, R,
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L161)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L161)
 
 ```
 /** An explicit no-transition fallback at the end of a guard list. Construct with ignore. */
@@ -314,7 +314,7 @@ type Ignore = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L597)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L597)
 
 ```
 /**
@@ -335,7 +335,7 @@ type Ignored = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L586)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L586)
 
 ```
 /**
@@ -356,7 +356,7 @@ type IgnoredReason = "OutOfAlphabet" | "NotApplicable" | "GuardsFellThrough" | "
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L661)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L661)
 
 ```
 /**
@@ -381,7 +381,7 @@ type Machine = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L865)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L865)
 
 ```
 /**
@@ -402,7 +402,7 @@ type MachineDefinition = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L850)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L850)
 
 ```
 /**
@@ -423,7 +423,7 @@ type MachineSchemas = MachineSchemaFields<State, Message> & [ContextSchema] exte
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L148)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L148)
 
 ```
 /** The unconditional fallback Edge at the end of a guard list. Construct with otherwise. */
@@ -437,7 +437,7 @@ type Otherwise = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L364)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L364)
 
 ```
 /**
@@ -454,7 +454,7 @@ type StateTransitions = NonNullable<TransitionTable<State, Message, R, Context>[
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L23)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L23)
 
 ```
 /** The union of `_tag` literals in a Tagged union. */
@@ -465,7 +465,7 @@ type TagOf = Union["_tag"]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L20)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L20)
 
 ```
 /** Any value discriminated by a `_tag` field. Both states and Messages satisfy this shape. */
@@ -478,7 +478,7 @@ type Tagged = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L609)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L609)
 
 ```
 /**
@@ -493,7 +493,7 @@ type TransitionResult = Transitioned<State, Message, R> | Ignored<State, Message
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L193)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L193)
 
 ```
 /**
@@ -518,7 +518,7 @@ type TransitionTable = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L562)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L562)
 
 ```
 /** A step that matched an Edge: the next state plus any transition-time Commands. */
@@ -536,7 +536,7 @@ type Transitioned = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L26)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L26)
 
 ```
 /** The single variant of a Tagged union carrying the given tag. */
@@ -549,7 +549,7 @@ type Variant = Extract<Union, Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L121)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L121)
 
 ```
 /** A guarded Edge that fires only when its guard passes. Construct with when. */
@@ -566,7 +566,7 @@ type When = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L798)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L798)
 
 ```
 /**
@@ -602,7 +602,7 @@ const fold: (config: FoldConfig<ParentModel, State, Message, R, Context>) => Fol
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/experimental/machine/machine.ts#L345)
+[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/experimental/machine/machine.ts#L345)
 
 ```
 /**
