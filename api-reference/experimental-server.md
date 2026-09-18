@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/experimental-server
 title: "Experimental/Server"
 description: "API documentation for the Experimental/Server module."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # Experimental/Server
@@ -14,7 +14,7 @@ current_date: 2026-09-12T22:55:23.086Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/host.ts#L77)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/host.ts#L77)
 
 ```
 (acceptHeader: string | undefined): boolean
@@ -24,7 +24,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/host.ts#L298)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/host.ts#L298)
 
 ```
 (
@@ -37,7 +37,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/fetch.ts#L81)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/fetch.ts#L81)
 
 ```
 (
@@ -50,7 +50,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/template.ts#L728)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/template.ts#L728)
 
 ```
 (
@@ -66,7 +66,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/host.ts#L400)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/host.ts#L400)
 
 ```
 (method: string): boolean
@@ -76,13 +76,13 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L1366)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L1366)
 
 ### resolveRequestUrl
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/host.ts#L166)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/host.ts#L166)
 
 ```
 (
@@ -95,7 +95,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/host.ts#L344)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/host.ts#L344)
 
 ```
 (requestUrl: string): boolean
@@ -105,7 +105,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/entry.ts#L96)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/entry.ts#L96)
 
 ```
 (
@@ -121,7 +121,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/host.ts#L116)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/host.ts#L116)
 
 ```
 (
@@ -134,7 +134,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/host.ts#L146)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/host.ts#L146)
 
 ```
 (existing: string | undefined): string
@@ -146,7 +146,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L1118)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L1118)
 
 ```
 /**
@@ -164,7 +164,7 @@ type ApplicationConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L1108)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L1108)
 
 ```
 /**
@@ -183,7 +183,7 @@ type ApplicationConfigWithFlags = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/entry.ts#L85)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/entry.ts#L85)
 
 ```
 /**
@@ -208,7 +208,7 @@ type EntryModule = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/entry.ts#L71)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/entry.ts#L71)
 
 ```
 /**
@@ -223,7 +223,7 @@ type EntryResult = Rendered | Responded
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/fetch.ts#L17)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/fetch.ts#L17)
 
 ```
 /**
@@ -242,7 +242,7 @@ type HandleRequestOptions = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L1140)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L1140)
 
 ```
 /**
@@ -262,7 +262,7 @@ type HydratableRenderOptions = CommonRenderOptions & Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/template.ts#L677)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/template.ts#L677)
 
 ```
 /**
@@ -279,7 +279,7 @@ type InjectIntoTemplateOptions = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L1070)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L1070)
 
 ```
 /**
@@ -294,7 +294,7 @@ type RenderError = MissingBuildId | InvalidUrl | FlagsEncodeError | Serializatio
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L1191)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L1191)
 
 ```
 /**
@@ -311,7 +311,7 @@ type RenderFlagsOptions = RenderOptions & Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L1176)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L1176)
 
 ```
 /**
@@ -334,7 +334,7 @@ type RenderOptions = HydratableRenderOptions | StaticRenderOptions
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L1201)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L1201)
 
 ```
 /**
@@ -350,7 +350,7 @@ type RenderUrlFlagsOptions = RenderUrlOptions & RenderFlagsOptions<Flags>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L1182)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L1182)
 
 ```
 /**
@@ -367,7 +367,7 @@ type RenderUrlOptions = RenderOptions & Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/entry.ts#L23)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/entry.ts#L23)
 
 ```
 /**
@@ -388,7 +388,7 @@ type Rendered = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L997)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L997)
 
 ```
 /**
@@ -413,7 +413,7 @@ type RenderedApplication = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/host.ts#L281)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/host.ts#L281)
 
 ```
 /**
@@ -439,7 +439,7 @@ type RequestClassification = "PathAsset" | "DestinationAsset" | "Page"
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/entry.ts#L53)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/entry.ts#L53)
 
 ```
 /**
@@ -461,7 +461,7 @@ type Responded = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/entry.ts#L13)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/entry.ts#L13)
 
 ```
 /**
@@ -479,7 +479,7 @@ type ResponseOptions = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L1098)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L1098)
 
 ```
 /**
@@ -498,7 +498,7 @@ type RoutingApplicationConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L1086)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L1086)
 
 ```
 /**
@@ -520,7 +520,7 @@ type RoutingApplicationConfigWithFlags = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/server.ts#L1158)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/server.ts#L1158)
 
 ```
 /**
@@ -541,7 +541,7 @@ type StaticRenderOptions = CommonRenderOptions & Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/hydrationMarker.ts#L5)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/hydrationMarker.ts#L5)
 
 ```
 /**
@@ -557,7 +557,7 @@ const FOLDKIT_APP_ATTRIBUTE: "data-foldkit-app"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/hydrationMarker.ts#L11)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/hydrationMarker.ts#L11)
 
 ```
 /**
@@ -573,7 +573,7 @@ const FOLDKIT_FLAGS_ATTRIBUTE: "data-foldkit-flags"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/host.ts#L386)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/host.ts#L386)
 
 ```
 /**
@@ -608,7 +608,7 @@ const HOST_METHOD_ANSWERS: Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/entry.ts#L23)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/entry.ts#L23)
 
 ```
 /**
@@ -627,7 +627,7 @@ const Rendered: (application: RenderedApplication, options?: Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/experimental/server/entry.ts#L53)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/experimental/server/entry.ts#L53)
 
 ```
 /**

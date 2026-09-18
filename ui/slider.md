@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/slider
 title: "Slider"
 description: "A numeric range Submodel with pointer dragging, keyboard navigation, constraints, steps, and ARIA slider semantics."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 ## Overview
@@ -103,7 +103,7 @@ const sliderSubscriptions = Subscription.lift({
   toParentMessage: message => Message.GotSliderMessage({ message }),
 })
 
-const subscriptions = Subscription.aggregate<Model, Message>()(
+const subscriptions = Subscription.aggregate(
   sliderSubscriptions,
   // ...your other subscription records
 )

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/toast
 title: "Toast"
 description: "Stack of transient notifications anchored to a corner of the viewport with per-entry enter/leave animations and auto-dismiss."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 ## Overview
@@ -218,10 +218,10 @@ Configuration object passed to `Toast.view()`.
 | `model` | `Toast.Model` | — | The toast container state from your parent Model. |
 | `position` | `'TopLeft' \| 'TopCenter' \| 'TopRight' \| 'BottomLeft' \| 'BottomCenter' \| 'BottomRight'` | — | Where the toast viewport is anchored on the screen. |
 | `toParentMessage` | `(childMessage: Dismissed \| HoveredEntry \| LeftEntry) => ParentMessage` | — | Wraps the subset of Toast Messages that fire from DOM events in your parent Message type. |
-| `entryToView` | `(entry: typeof Toast.Entry.Type, handlers: { dismiss: ReadonlyArray<ChildAttribute> }) => Html` | — | Renders each entry from its lifecycle fields (for example id, variant, and animation) and its payload (your shape). The component wraps the return in an `<li>` with role, lifecycle handlers, and transition data attributes. Spread handlers.dismiss onto a close button (h.button(\[...handlers.dismiss\], \[...\])) so users can dismiss the entry manually. |
+| `entryToView` | `(entry: typeof Toast.Entry.Type, handlers: { dismiss: ReadonlyArray<ChildAttribute> }) => Html` | — | Renders each entry from its lifecycle fields (for example id, variant, and animation) and its payload (your shape). The component wraps the return in a `<div>` with role, lifecycle handlers, and transition data attributes. Spread handlers.dismiss onto a close button (h.button(\[...handlers.dismiss\], \[...\])) so users can dismiss the entry manually. |
 | `ariaLabel` | `string` | `'Notifications'` | aria-label on the container region. |
-| `containerClassName` | `string` | — | CSS class for the container `<ol>`. |
-| `entryClassName` | `string` | — | CSS class applied to every `<li>` entry. |
+| `containerClassName` | `string` | — | CSS class for the container `<div>`. |
+| `entryClassName` | `string` | — | CSS class applied to every entry `<div>`. |
 
 ### Programmatic Helpers
 

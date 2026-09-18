@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/ui-showcase
 title: "UI Showcase"
 description: "An interactive showcase of every Foldkit UI component, with styled routed demos and their parent and Submodel wiring."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -222,17 +222,10 @@ export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
   flags: Flags,
   url: Url,
 ) => {
-  const uiInit_ = uiInit(flags.today)
-
-  return {
-    model: {
-      route: urlToAppRoute(url),
-      uiModel: uiInit_.model,
-    },
-    commands: Command.mapMessages(uiInit_.commands, message =>
-      Message.GotUiMessage({ message }),
-    ),
-  }
+  return Update.foldChildInit(uiInit(flags.today), {
+    toParentModel: uiModel => ({ route: urlToAppRoute(url), uiModel }),
+    toParentMessage: message => Message.GotUiMessage({ message }),
+  })
 }
 
 // UPDATE

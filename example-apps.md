@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps
 title: "Examples"
 description: "Browse working Foldkit applications that cover state, forms, routing, caching, authentication, server rendering, UI components, third-party integrations, and more."
-access_date: 2026-09-07T07:29:31.695Z
-current_date: 2026-09-07T07:29:31.695Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # Examples
@@ -145,6 +145,10 @@ An interactive showcase of every Foldkit UI component, with styled routed demos 
 [Personal Blog](https://foldkit.dev/example-apps/personal-blog)
 
 A blog whose prose lives in Markdown files. The @foldkit/markdown Vite plugin compiles each file into a typed document, per-node view overrides style the result, and directive islands place a live Counter Submodel and Note callout between paragraphs.
+
+[LiveStore](https://foldkit.dev/example-apps/livestore)
+
+A LiveStore-backed task list persisted in OPFS that stays reactive across browser tabs. Commands commit events, materializers project them into SQLite, and one Subscription feeds the live query into the Foldkit Model.
 
 [Typing Terminal](https://foldkit.dev/example-apps/typing-terminal)
 

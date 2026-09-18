@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/foldkit-vs-react-side-by-side
 title: "Foldkit vs React: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and React. Covers state management, side effects, testing, performance, and architectural tradeoffs."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 ## Overview
@@ -698,7 +698,7 @@ The Subscription declares that lifetime from Model dependencies:
 ```
 export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   undoRedoKeys: Subscription.persistent(
-    Subscription.fromEventFilterMapPreventDefault<KeyboardEvent, Message>({
+    Subscription.fromEventFilterMapPreventDefault({
       target: document,
       type: 'keydown',
       toMessage: toUndoRedoMessage,
@@ -706,7 +706,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   ),
 
   toolKeys: Subscription.persistent(
-    Subscription.fromEventFilterMap<KeyboardEvent, Message>({
+    Subscription.fromEventFilterMap({
       target: document,
       type: 'keydown',
       toMessage: toToolMessage,

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-disclosure
 title: "Ui/Disclosure"
 description: "API documentation for the Ui/Disclosure module."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # Ui/Disclosure
@@ -14,7 +14,7 @@ current_date: 2026-09-12T22:55:23.086Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/disclosure/index.ts#L10)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/disclosure/index.ts#L10)
 
 ```
 /**
@@ -30,7 +30,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/disclosure/index.ts#L82)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/disclosure/index.ts#L96)
 
 ```
 /**
@@ -66,11 +66,30 @@ function
 
 ## Types
 
+### AnimatePanelOptions
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/disclosure/index.ts#L48)
+
+```
+/**
+ * Options for DisclosureAttributes.animatePanel.
+ * 
+ *  - `peek`: a CSS height the collapsed panel keeps, such as `'7.5em'` for
+ *    five lines at a 1.5 leading. The visible content is an inert preview;
+ *    content becomes accessible and interactive when the disclosure opens.
+ */
+type AnimatePanelOptions = Readonly<{
+  peek: string
+}>
+```
+
 ### DisclosureAttributes
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/disclosure/index.ts#L26)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/disclosure/index.ts#L26)
 
 ```
 /**
@@ -86,7 +105,7 @@ type
  *  than an HTML attribute. Spread a later `h.Type` to override it.
  */
 type DisclosureAttributes = Readonly<{
-  animatePanel: (content: Html) => Html
+  animatePanel: (content: Html, options?: AnimatePanelOptions) => Html
   button: ReadonlyArray<Attribute<Message>>
   panel: ReadonlyArray<Attribute<Message>>
 }>
@@ -96,7 +115,7 @@ type DisclosureAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/disclosure/index.ts#L49)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/disclosure/index.ts#L63)
 
 ```
 /**

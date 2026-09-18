@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/dialog
 title: "Dialog"
 description: "A modal dialog backed by the native dialog element with focus trapping and scroll locking."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 ## Overview
@@ -146,6 +146,28 @@ const view = (h: HtmlBuilder<Message>) =>
     ],
   )
 ```
+
+### Initially open
+
+`Dialog.init()` always creates a closed Dialog. An initially open Dialog previously used:
+
+```
+const dialog = Dialog.init({ id: 'confirm', isOpen: true })
+```
+
+Use `Dialog.boot()` instead. `boot()` returns the open Model together with the `ShowDialog` Command and `Opened` OutMessage produced by the normal update path.
+
+Pass the boot result to `Update.foldChildInit`. Its adapters construct the parent Model, map the child Commands into the parent Message type, and fold the OutMessage through the same `foldDialogOutMessage` used by the parent update. This ensures an `Opened` arm with parent behavior also runs during initialization; a parent with no behavior for that fact keeps an explicit no-op `Opened` arm.
+
+```
+return Update.foldChildInit(Dialog.boot({ id: 'confirm' }), {
+  toParentModel: dialog => ({ dialog }),
+  toParentMessage: toGotDialogMessage,
+  foldOutMessage: foldDialogOutMessage,
+})
+```
+
+The mapped `ShowDialog` Command acquires background isolation, scroll locking, focus trapping, stack registration, and runtime cleanup after the first render commits. The Dialog's Mount reacquires those resources when development Model preservation restores an open Dialog without replaying initialization Commands.
 
 ### Animated
 
@@ -369,7 +391,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
 
 ### Stacked
 
-Use a separate Dialog Model for each level and open the second from a button in the first. The framework stacks them by z-index, traps focus in the topmost, and closes them one at a time: Escape closes the top dialog before the one beneath it.
+Use a separate Dialog Model for each level and open the second from a button in the first. The framework stacks them by z-index, isolates the page around the topmost Dialog, and traps focus there. Escape closes the top Dialog first; its parent becomes interactive again and receives focus.
 
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
@@ -545,7 +567,9 @@ When `isAnimated` is true, enter/leave animations flow through the [Animation](h
 
 ## Accessibility
 
-The dialog always sets `aria-labelledby` on the native element. Set `hasDescription: true` when you render a description to add `aria-describedby`; leaving it false prevents a dangling reference when no description is present. Spread `...title` onto your heading (`h.h2([...title], [...])`) and `...description` onto your description element (`h.p([...description], [...])`). You never construct either id yourself. Focus trapping is handled by the framework.
+When the Dialog opens, Foldkit marks surrounding content inert and `aria-hidden="true"`, and sets `aria-modal="true"` on the Dialog. Keyboard focus stays inside until it closes, then the original inert and ARIA state is restored before focus returns to the element that opened it. The DevTools overlay remains interactive during development.
+
+The dialog always sets `aria-labelledby` on the native element. Set `hasDescription: true` when you render a description to add `aria-describedby`; leaving it false prevents a dangling reference when no description is present. Spread `...title` onto your heading (`h.h2([...title], [...])`) and `...description` onto your description element (`h.p([...description], [...])`). You never construct either id yourself.
 
 The ids are framework-managed (the `-dialog-title`, `-dialog-description`, and `-panel` suffixes on the configured id). Going through the render info keeps them unique for you. The `Dialog.titleId(model)` and `Dialog.descriptionId(model)` helpers return the same ids as plain strings for the cases where you need the id as a value outside `toView`, such as a Command that calls `getElementById` or a cross-element reference. As a backstop, the runtime warns on any duplicate id in the rendered tree in development.
 
@@ -558,9 +582,12 @@ Configuration object passed to `Dialog.init()`.
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | — | Unique ID for the dialog instance. |
-| `isOpen` | `boolean` | `false` | Initial open/closed state. |
 | `isAnimated` | `boolean` | `false` | Enables animation coordination for open/close animations. |
 | `focusSelector` | `string` | — | CSS selector for the element that receives focus when the dialog opens. A selector-based override of the `initialFocus` marker, for an element whose id you do not own or a descendant selector. Takes precedence over `initialFocus`; with neither set, focus falls to the first focusable element. |
+
+### boot
+
+`Dialog.boot(config)` accepts the same configuration as `Dialog.init(config)` and returns `Update.ReturnWithOutMessage<Dialog.Model, Dialog.Message, Dialog.OutMessage>`. Its Model is open, its Commands contain `ShowDialog`, and its OutMessage is `Opened`.
 
 ### ViewConfig
 
@@ -579,7 +606,7 @@ Payload delivered to the `toView` callback each render.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dialog` | `ReadonlyArray<ChildAttribute>` | — | Spread onto an `h.dialog(...)` element. Carries the id, ARIA labelling, `open` prop, positioning style, a handler that suppresses native `cancel` events so canceling a file picker leaves the dialog open, and a mapping from `Dom.showDialog` 's distinct Escape signal to `RequestedClose`. |
+| `dialog` | `ReadonlyArray<ChildAttribute>` | — | Spread onto an `h.dialog(...)` element. Carries the id, ARIA labelling and modal state, `open` prop, positioning style, lifecycle resource acquisition and cleanup, a handler that suppresses native `cancel` events so canceling a file picker leaves the dialog open, and a mapping from `Dom.showDialog` 's distinct Escape signal to `RequestedClose`. |
 | `backdrop` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the backdrop element. Includes the Animation data attributes and the outside-click handler that dispatches `RequestedClose` (suppressed while a leave animation is in progress). |
 | `panel` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the panel element. Includes the panel id (`${id}-panel`) and the Animation data attributes. |
 | `title` | `ReadonlyArray<ChildAttribute>` | — | Spread onto your accessible-name heading (`h.h2([...title], [...])`). Carries the framework-managed id the dialog’s `aria-labelledby` points at, so labelling wires up without hand-rolling the id. |

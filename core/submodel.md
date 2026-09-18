@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Split a large application into child state machines while preserving parent-to-child Message flow. Covers Update.foldChild, h.submodel, OutMessages, reflection, testing, and DevTools."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 ## When to Create a Submodel
@@ -225,6 +225,34 @@ const foldDialogClose = Update.foldChildStep({
 
 export const closeDialog = (model: Model) => foldDialogClose(model)
 ```
+
+Use `Update.foldChildInit` when one child `init` or `boot` result needs to enter a parent Model. It is data-first because initialization has no reusable data-last Step. Provide `toParentModel` instead of `read` and `write`; Foldkit lifts child Commands and gives `foldOutMessage` the completed parent Model. Say `Settings.boot` receives a saved theme from flags and emits `RestoredTheme`. The parent returns a Command to apply that theme after constructing its Model.
+
+```
+const foldSettingsOutMessage = Settings.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  RestoredTheme:
+    ({ theme }) =>
+    model => ({
+      model,
+      commands: [ApplyTheme({ theme })],
+    }),
+})
+
+const init = (username: string, savedTheme: Settings.Theme) =>
+  Update.foldChildInit(Settings.boot({ theme: savedTheme }), {
+    toParentModel: settings =>
+      Model.make({
+        username,
+        settings,
+      }),
+    toParentMessage: message => Message.GotSettingsMessage({ message }),
+    foldOutMessage: foldSettingsOutMessage,
+  })
+```
+
+Use `Update.foldChildInits` when several children initialize together. Its `toParentModel` receives every child Model before their OutMessage folds run. See [Initializing Children with OutMessages](https://foldkit.dev/core/update#initializing-children-with-outmessages) for an example that combines both children's restoration results into one parent OutMessage.
 
 ### Wiring the View with h.submodel
 
@@ -678,9 +706,9 @@ export const update = (model: Model, message: Message) =>
 
 ### Handling in the Parent
 
-Handle the OutMessage through `foldOutMessage` on [Update.foldChild](#fold-child). Bind the fold as a standalone `fold<Child>OutMessage` value and match on every OutMessage tag. The returned `Update.Step<ParentModel, ParentMessage>` receives the parent Model after the updated child has been written back.
+Handle the OutMessage through `foldOutMessage` on [Update.foldChild](#fold-child). `Update.foldChildInit` accepts the same OutMessage adapters when one child emits a fact during initialization. `Update.foldChildInits` applies those adapters to each named child after its shared `toParentModel` has constructed the parent Model. Bind the fold as a standalone `fold<Child>OutMessage` value and match on every OutMessage tag. The returned `Update.Step<ParentModel, ParentMessage>` receives the parent Model after the updated child has been written back or after `toParentModel` has constructed it.
 
-Do not unpack a child update or helper result by hand. Destructuring `model` and `commands` can leave its `outMessage` behind without a type error. Dot access can still ignore an OutMessage, but an operation-named value keeps all three returned fields visible together. Use `Update.foldChild` or `Update.foldChildStep` so the child Model, lifted Commands, and OutMessage remain part of one fold.
+Do not unpack a child update, helper, init, or boot result by hand. Destructuring `model` and `commands` can leave its `outMessage` behind without a type error. Dot access can still ignore an OutMessage, but an operation-named value keeps all three returned fields visible together. Use `Update.foldChild`, `Update.foldChildStep`, `Update.foldChildInit`, or `Update.foldChildInits` so the child Model, lifted Commands, and OutMessage remain part of one fold.
 
 ```
 import { Option } from 'effect'
@@ -714,6 +742,8 @@ export const update = (model: Model, message: Message) =>
 
 The fold appends the Step's Commands after the child's lifted Commands. If the Step returns a child Command, use `liftCommand` or `liftCommands` from `Update.FoldContext`. The lifter wraps the Command's result Message with the same `toParentMessage` used by the child fold.
 
+When a `foldChildInits` entry needs that context, annotate both parameters, such as `(outMessage: Search.OutMessage, { liftCommand }: Update.FoldContext<Search.Message, Message>)`. The `folds` record cannot infer the context's parent Message from the same entry's `toParentMessage`. The [FoldContext example](#handling-in-the-parent) uses the same typed handler shape.
+
 In this example, only the parent knows the redirect Route for `Login.SendMagicLink`. The child emits `RequestedMagicLink`, and the parent fills in the Route while keeping the Command result inside the Login boundary.
 
 ```
@@ -745,7 +775,7 @@ If every child OutMessage stops at this Submodel, omit `toParentOutMessage`. Any
 
 `toParentOutMessage` passes the child's fact upward one to one. When the parent's fact is derived instead, annotate the fold's return type as `Update.StepWithOutMessage` and return the parent OutMessage in `outMessage`. For example, a picker child emits `SelectedDate`, and the parent applies it to its own Model and emits `CompletedRange` only once both dates are set. This path needs no `toParentOutMessage` adapter.
 
-When a fold both derives a parent OutMessage and has a one-to-one lift, the derived OutMessage replaces the lift for that dispatch. If the Step omits `outMessage`, the lift still runs. `Update.foldChildStep` follows the same rule for no-argument child entry points.
+When a fold both derives a parent OutMessage and has a one-to-one lift, the derived OutMessage replaces the lift for that dispatch. If the Step omits `outMessage`, the lift still runs. `Update.foldChildStep`, `Update.foldChildInit`, and each `Update.foldChildInits` entry follow the same rule.
 
 ## Reflecting External State
 

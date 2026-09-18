@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/tabs
 title: "Tabs"
 description: "A selection Submodel for tab panels, with roving tabindex, horizontal and vertical orientation, and automatic or manual activation."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 ## Overview
@@ -254,7 +254,7 @@ Tabs uses roving tabindex: only the focused tab is in the tab order. Arrow direc
 
 ## Accessibility
 
-The tab list receives `role="tablist"` with `aria-orientation` and `aria-label`. Each tab button gets `role="tab"` with `aria-selected` and `aria-controls` linking to its panel. Panels receive `role="tabpanel"` with `aria-labelledby` pointing back to the tab.
+The tab list receives `role="tablist"` with `aria-orientation` and `aria-label`. Each tab button gets `role="tab"` with `aria-selected`. It receives `aria-controls` when its panel is mounted, so the relationship never points at a missing panel. Panels receive `role="tabpanel"` with `aria-labelledby` pointing back to the tab. The default `panelMount: 'ActiveOnly'` fits views that render only the active panel. Set `panelMount: 'All'` when your view keeps every panel mounted and hides inactive ones.
 
 ## API Reference
 
@@ -281,6 +281,7 @@ Configuration object passed to the view returned by `Tabs.create<Value>()`.
 | `toView` | `(render: RenderInfo<Value>) => Html` | — | Callback that receives the `tablist` attribute bundle, one `TabInfo<Value>` per tab, and the current `activeIndex`. Returns the composed layout. |
 | `isTabDisabled` | `(value: Value, index: number) => boolean` | — | Disables individual tabs. |
 | `orientation` | `'Horizontal' \| 'Vertical'` | `'Horizontal'` | Controls arrow key direction and `aria-orientation`. Horizontal uses left/right, vertical uses up/down. |
+| `panelMount` | `'ActiveOnly' \| 'All'` | `'ActiveOnly'` | Describes whether `toView` renders only the active panel or keeps every panel mounted. With `All`, every tab receives `aria-controls` for its mounted panel. |
 
 ### RenderInfo
 
@@ -303,7 +304,7 @@ Each entry in `RenderInfo.tabs`. Carries the value, derived state flags, and att
 | `isActive` | `boolean` | — | Whether this tab is currently active. |
 | `isFocused` | `boolean` | — | Whether this tab owns the roving tabindex (the one in the tab order). |
 | `isDisabled` | `boolean` | — | Whether this tab is disabled via `isTabDisabled`. |
-| `tab` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the tab button element. Includes `role="tab"`, `type="button"`, `aria-selected`, `aria-controls`, `tabindex`, the click handler, and the keyboard handler. |
+| `tab` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the tab button element. Includes `role="tab"`, `type="button"`, `aria-selected`, `tabindex`, the click handler, and the keyboard handler. `aria-controls` follows `panelMount`. |
 | `panel` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the tab panel element. Includes `role="tabpanel"`, `aria-labelledby` pointing back to the tab, and `tabindex`. |
 
 ### OutMessage

@@ -2,34 +2,19 @@
 url: https://foldkit.dev/api-reference/managed-resource
 title: "ManagedResource"
 description: "API documentation for the ManagedResource module."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # ManagedResource
 
 ## Functions
 
-### aggregate
-
-function
-
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/managedResource/managedResource.ts#L405)
-
-```
-/**
- * Combines multiple Managed Resources records into one. Throws on duplicate
- * keys so a misconfigured aggregate fails loudly at startup rather than
- * silently overriding.
- */
-<Model, Message>(): (records: Records) => MergeRecords<Records>
-```
-
 ### lift
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/managedResource/managedResource.ts#L342)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/managedResource/managedResource.ts#L343)
 
 ```
 /**
@@ -58,7 +43,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/managedResource/managedResource.ts#L294)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/managedResource/managedResource.ts#L295)
 
 ```
 /**
@@ -126,7 +111,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/managedResource/managedResource.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/managedResource/managedResource.ts#L49)
 
 ```
 /** Creates a managed resource identity with a `.get` accessor for use in commands. */
@@ -139,7 +124,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/managedResource/managedResource.ts#L133)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/managedResource/managedResource.ts#L134)
 
 ```
 /**
@@ -177,7 +162,7 @@ type Entry = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/managedResource/managedResource.ts#L83)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/managedResource/managedResource.ts#L84)
 
 ```
 /** Internal configuration for a single Managed Resource, used by the runtime. */
@@ -197,7 +182,7 @@ type ManagedResourceConfig = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/managedResource/managedResource.ts#L95)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/managedResource/managedResource.ts#L96)
 
 ```
 /** A record of named Managed Resource configurations, keyed by resource name. */
@@ -210,7 +195,7 @@ type ManagedResources = Record<string, ManagedResourceConfig<Model, Message>> & 
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/managedResource/managedResource.ts#L80)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/managedResource/managedResource.ts#L81)
 
 ```
 /** Type-level utility to extract the service identity type from a ManagedResource. */
@@ -223,7 +208,7 @@ type ServiceOf = T extends ManagedResource<any, infer S>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/managedResource/managedResource.ts#L154)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/managedResource/managedResource.ts#L155)
 
 ```
 /** Type-level utility to extract the service union from a Managed Resources record. */
@@ -240,7 +225,7 @@ type ServicesOf = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/managedResource/managedResource.ts#L77)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/managedResource/managedResource.ts#L78)
 
 ```
 /** Type-level utility to extract the value type from a ManagedResource. */
@@ -255,7 +240,7 @@ type Value = T extends ManagedResource<infer V, any>
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/managedResource/managedResource.ts#L39)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/managedResource/managedResource.ts#L40)
 
 ```
 /**
@@ -276,11 +261,40 @@ interface ManagedResource {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/managedResource/managedResource.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/managedResource/managedResource.ts#L29)
 
 ```
 /** Branded identity type for a managed resource, used in the Effect R channel. */
 interface ManagedResourceService {
   [ManagedResourceBrand]: Key
 }
+```
+
+## Constants
+
+### aggregate
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/managedResource/managedResource.ts#L505)
+
+```
+/**
+ * Combines multiple Managed Resources records into one. Throws on duplicate
+ * keys so a misconfigured aggregate fails loudly at startup rather than
+ * silently overriding.
+ * 
+ * Pass the records directly and the Model and Message are read off them. The
+ * Model of the first record is the one every later record is checked against,
+ * so a record from another Model universe fails at its own argument position.
+ * Message widens to the union across all records.
+ * 
+ * The result keeps each record's keys, each entry's requirements schema and
+ * resource service, and the arity of each `onAcquired` handler. Read the
+ * service union off the result with ServicesOf.
+ * 
+ * The curried form remains available for a record that has to be typed before
+ * its entries exist, such as a value annotated at a module boundary.
+ */
+const aggregate: () => (records: Records) => MergeRecords<Records>
 ```

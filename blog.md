@@ -2,13 +2,21 @@
 url: https://foldkit.dev/blog
 title: "Blog"
 description: "Announcements, musings, and technical deep dives."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # Blog
 
 Announcements, musings, and technical deep dives.
+
+[Foldkit 0.160.0 and 0.161.0](https://foldkit.dev/blog/foldkit-0-161-0)
+
+September 17, 2026 · Devin Jameson
+
+Accessibility fixes across Foldkit UI, declarative keyboard shortcuts, helpers for initializing Submodels, stronger lint checks, and improved type inference.
+
+[Read more →](https://foldkit.dev/blog/foldkit-0-161-0)
 
 [Foldkit 0.159.0](https://foldkit.dev/blog/foldkit-0-159-0)
 

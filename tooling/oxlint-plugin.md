@@ -2,8 +2,8 @@
 url: https://foldkit.dev/tooling/oxlint-plugin
 title: "Oxlint Plugin"
 description: "Install and configure @foldkit/oxlint-plugin, then see what each Foldkit-specific rule accepts and rejects."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # Oxlint Plugin
@@ -606,10 +606,7 @@ const keyboardBad = Stream.fromEventListener<KeyboardEvent>(
 )
 
 // ✅ Good: Some marks Tab handled, so Foldkit cancels it inside the listener.
-const keyboardGood = Subscription.fromEventFilterMapPreventDefault<
-  KeyboardEvent,
-  Message
->({
+const keyboardGood = Subscription.fromEventFilterMapPreventDefault({
   target: document,
   type: 'keydown',
   toMessage: event =>
@@ -876,13 +873,18 @@ const Message = defineMessageUnion({
 
 ### foldkit/no-child-message-construction-in-root
 
-Rejects constructing a child Message variant from a parent. Expose a child-owned update capability that applies the internal fact, then integrate it with `Update.foldChild` or `Update.foldChildStep`. A child-owned view, Command, or Subscription may still construct that child's Messages; the boundary is ownership, not file spelling. See [Informing Submodels](https://foldkit.dev/patterns/informing-submodels) for the complete pattern.
+Rejects constructing a child Message variant from a parent, including through a local `const` alias of the child constructor or namespace. Expose a child-owned update capability that applies the internal fact, then integrate it with `Update.foldChild` or `Update.foldChildStep`. A child-owned view, Command, or Subscription may still construct that child's Messages. The rule cannot infer the origin of an arbitrary prebuilt Message value. See [Informing Submodels](https://foldkit.dev/patterns/informing-submodels) for the complete pattern.
 
 ```
+import * as Child from './child'
+
 // ❌ Bad
 // The root reaches into the child Message namespace to build a child Message.
 const badRouting = () =>
   GotChildMessage({ message: Child.Message.ClickedSave() })
+
+const clickedSave = Child.Message.ClickedSave
+const badAliasRouting = () => GotChildMessage({ message: clickedSave() })
 
 // ✅ Good
 // The child exports an update capability. The parent folds the complete child
@@ -895,6 +897,64 @@ const foldChildSave = Update.foldChildStep({
 })
 
 const goodRouting = model => foldChildSave(model)
+```
+
+### foldkit/no-direct-submodel-state-update
+
+Flags a parent update that uses nested `evo` to change a known Submodel field directly. The child update does not run, so validation, Commands, and OutMessages can be skipped. The rule establishes ownership from a module-scope `Update.foldChild` or `Update.foldChildStep` whose `read` and `write` point to the same field, then checks the parent Model passed through that fold. It leaves an unrelated Model with the same field name, fold `write` callbacks, and child-owned silent `reflect*` helpers alone.
+
+```
+import { Option } from 'effect'
+import { Update } from 'foldkit'
+import { evo } from 'foldkit/struct'
+
+import * as Settings from './settings'
+
+const foldSettingsTheme = Update.foldChild({
+  update: Settings.setTheme,
+  read: model => Option.some(model.settings),
+  write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
+  toParentMessage: message => Message.GotSettingsMessage({ message }),
+})
+
+// ❌ Bad: the parent changes a child field without running Settings.update.
+const badReset = model => ({
+  model: evo(model, {
+    settings: settings => evo(settings, { theme: () => 'Light' }),
+  }),
+})
+
+// ✅ Good: the child decides the transition and the fold preserves its result.
+const goodReset = model => foldSettingsTheme(model, 'Light')
+```
+
+### foldkit/require-fold-for-child-update-result
+
+Flags a parent that copies only `.model` from a child helper or update result into its own Model instead of folding the complete result. This can silently discard Commands or an OutMessage. The rule requires an in-file `Update.foldChild` or `Update.foldChildStep` whose `update`, `read`, and `write` establish the child module and field, then follows a local result from that child's helper into the matching `evo` field. The field need not be named after the module: `Products.update(model.productsPage)` is one example. It leaves unrelated helpers, initial Model assembly, fold `write` callbacks, and child-owned silent `reflect*` helpers alone. It does not infer direct helper imports or parent assembly outside `evo`.
+
+```
+import { Option } from 'effect'
+import { Update } from 'foldkit'
+import { evo } from 'foldkit/struct'
+
+import * as Settings from './settings'
+
+const foldSettingsTheme = Update.foldChild({
+  update: Settings.setTheme,
+  read: model => Option.some(model.settings),
+  write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
+  toParentMessage: message => Message.GotSettingsMessage({ message }),
+})
+
+// ❌ Bad: copying the child Model drops any Commands or OutMessage.
+const badReset = model => {
+  const settingsReset = Settings.setTheme(model.settings, 'Light')
+
+  return { model: evo(model, { settings: () => settingsReset.model }) }
+}
+
+// ✅ Good: the fold preserves the complete child update result.
+const goodReset = model => foldSettingsTheme(model, 'Light')
 ```
 
 ### foldkit/selection-submodel-factory-at-module-scope

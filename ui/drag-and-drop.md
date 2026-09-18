@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/drag-and-drop
 title: "Drag and Drop"
 description: "Accessible drag and drop with keyboard support, auto-scrolling, and screen reader announcements."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 ## Overview
@@ -116,7 +116,7 @@ const dragAndDropSubscriptions = Subscription.lift({
   toParentMessage: message => Message.GotDragAndDropMessage({ message }),
 })
 
-const subscriptions = Subscription.aggregate<Model, Message>()(
+const subscriptions = Subscription.aggregate(
   dragAndDropSubscriptions,
   // ...your other subscription records
 )

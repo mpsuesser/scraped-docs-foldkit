@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/routing
 title: "Routing"
 description: "A client-routed application with URL parameters, nested routes, rest segments, and navigation."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -22,7 +22,7 @@ Routing
 
 ```
 import { Array, Effect, Match, Option, Schema } from 'effect'
-import { Command, Runtime, Update } from 'foldkit'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { UrlRequest, load, pushUrl } from 'foldkit/navigation'
@@ -60,11 +60,15 @@ export type Model = typeof Model.Type
 
 // MESSAGE
 
+const NavigationShortcut = Schema.Literals(['GH', 'GP', 'GF', 'GN'])
+type NavigationShortcut = typeof NavigationShortcut.Type
+
 export const Message = defineMessageUnion({
   CompletedNavigateInternal: {},
   CompletedLoadExternal: {},
   ClickedLink: { request: UrlRequest },
   ChangedUrl: { url: Url },
+  EnteredNavigationShortcut: { shortcut: NavigationShortcut },
   GotPeopleMessage: { message: People.Message },
 })
 
@@ -82,18 +86,15 @@ export const init: Runtime.RoutingApplicationInit<Model, Message> = (
     Match.orElse(() => AppRoute.People({ searchText: Option.none() })),
   )
 
-  const peopleInit = People.init(initialPeopleRoute)
-  return {
-    model: { route, peoplePage: peopleInit.model },
-    commands: Command.mapMessages(peopleInit.commands, childMessage =>
-      Message.GotPeopleMessage({ message: childMessage }),
-    ),
-  }
+  return Update.foldChildInit(People.init(initialPeopleRoute), {
+    toParentModel: peoplePage => ({ route, peoplePage }),
+    toParentMessage: message => Message.GotPeopleMessage({ message }),
+  })
 }
 
 // COMMAND
 
-const NavigateInternal = Command.define('NavigateInternal', {
+export const NavigateInternal = Command.define('NavigateInternal', {
   args: { url: Schema.String },
   messages: [Message.CompletedNavigateInternal],
   execute: ({ url }) =>
@@ -110,6 +111,15 @@ const LoadExternal = Command.define('LoadExternal', {
 // UPDATE
 
 type UpdateReturn = Update.Return<Model, Message>
+
+const navigationUrlByShortcut: Readonly<
+  Record<NavigationShortcut, () => string>
+> = {
+  GH: homeRouter,
+  GP: () => peopleRouter({ searchText: Option.none() }),
+  GF: filesIndexRouter,
+  GN: nestedRouter,
+}
 
 const foldPeopleEntry = <Input>(
   update: (peoplePage: People.Model, input: Input) => People.UpdateReturn,
@@ -161,8 +171,45 @@ export const update = (model: Model, message: Message) =>
       return Update.combine(model, [setRoute(nextRoute), ...routeSteps])
     },
 
+    EnteredNavigationShortcut: ({ shortcut }) => {
+      const url = navigationUrlByShortcut[shortcut]()
+
+      return { model, commands: [NavigateInternal({ url })] }
+    },
+
     GotPeopleMessage: ({ message }) => foldPeople(model, message),
   })
+
+// SUBSCRIPTION
+
+export const subscriptions = Subscription.make<Model, Message>()(() => ({
+  shortcuts: Subscription.persistent(
+    Subscription.keyboardShortcuts<Message>({
+      bindings: [
+        {
+          shortcut: ['G', 'H'],
+          toMessage: () =>
+            Message.EnteredNavigationShortcut({ shortcut: 'GH' }),
+        },
+        {
+          shortcut: ['G', 'P'],
+          toMessage: () =>
+            Message.EnteredNavigationShortcut({ shortcut: 'GP' }),
+        },
+        {
+          shortcut: ['G', 'F'],
+          toMessage: () =>
+            Message.EnteredNavigationShortcut({ shortcut: 'GF' }),
+        },
+        {
+          shortcut: ['G', 'N'],
+          toMessage: () =>
+            Message.EnteredNavigationShortcut({ shortcut: 'GN' }),
+        },
+      ],
+    }),
+  ),
+}))
 
 // VIEW
 

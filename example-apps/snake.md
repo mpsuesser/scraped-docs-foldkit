@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/snake
 title: "Snake"
 description: "The classic snake game. Keyboard input, game loop, and collision detection."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -275,7 +275,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   ),
 
   keyboard: Subscription.persistent(
-    Subscription.fromEventFilterMapPreventDefault<KeyboardEvent, Message>({
+    Subscription.fromEventFilterMapPreventDefault({
       target: document,
       type: 'keydown',
       toMessage: keyboardEvent =>

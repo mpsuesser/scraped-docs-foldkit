@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/dom
 title: "Dom"
 description: "Use Effects for common DOM work such as focus, dialog control, scrolling, scroll locks, and inert isolation."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # Dom
@@ -31,6 +31,8 @@ const FocusEmailInput = Command.define('FocusEmailInput', {
 ```
 
 Most helpers that resolve a live element wait until Foldkit has committed the latest render before querying the DOM. This lets update return a Command for an element that the same Message just brought into the view. You do not need to add `Render.afterCommit` before `Dom.focus`, `Dom.showDialog`, `Dom.clickElement`, `Dom.scrollIntoView`, or `Dom.advanceFocus`.
+
+`Dom.showDialog` resolves to `true` when it installs the focus trap, return focus, stack entry, and optional modal isolation. It resolves to `false` when that Dialog id already holds those resources, so concurrent lifecycle recovery and application Commands do not acquire them twice.
 
 Scrolling has two later-timing variants. `Dom.scrollIntoViewAfterPaint` waits until the target has been painted, which suits a route that just inserted a fragment target. `Dom.scrollIntoViewIfNotVisible` also waits through paint by default, but accepts `{ when: 'Commit' }` when the first visible frame should already be scrolled.
 

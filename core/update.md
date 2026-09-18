@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/update
 title: "Update"
 description: "Handle every Message with a pure update function that returns the next Model and Commands. Use Match and evo to keep transitions exhaustive and immutable."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 ## One Function Defines Every Transition
@@ -70,20 +70,16 @@ An update, init, boot, or component helper that statically creates no Commands o
 
 ### Keeping Results Together
 
-Keep an update-like result attached to the operation that produced it. Name the value after the operation and use dot access:
+Fold a child `init` or `boot` result into the parent instead of unpacking its Model and Commands:
 
 ```
-const homeInit = Home.init()
-
-return {
-  model: { home: homeInit.model },
-  commands: Command.mapMessages(homeInit.commands, message =>
-    Message.GotHomeMessage({ message }),
-  ),
-}
+return Update.foldChildInit(Home.init(), {
+  toParentModel: home => ({ home }),
+  toParentMessage: message => Message.GotHomeMessage({ message }),
+})
 ```
 
-The same rule applies when a test consumes an update result:
+For another update-like result, keep it attached to the operation that produced it. Name the value after the operation and use dot access. The same rule applies when a test consumes an update result:
 
 ```
 const formSubmit = update(model, Message.SubmittedForm())
@@ -124,7 +120,7 @@ return Update.combine(model, [
 ])
 ```
 
-Manual unpacking of a child result usually means the site should use `Update.foldChild` or `Update.foldChildStep`.
+Use `Update.foldChildInit` to keep a child `init` or `boot` result, its lifted Commands, and any OutMessage together. Use `Update.foldChild` for a child update that receives input, or `Update.foldChildStep` for a child helper that receives only its Model.
 
 Use `Update.combine` when two or more operations transform the same Model and a later Step should receive the Model produced by an earlier Step. Name that parameter `stepModel` when an inline Step needs it:
 
@@ -141,25 +137,200 @@ return Update.combine(model, [
 
 Do not wrap one Step in `Update.combine`; call that operation directly.
 
-### Combining Independent Results
+### Combining Child Initialization Results
 
-Independent child inits are not a sequence because neither child updates the other child's Model. Initialize them separately and assemble the parent Model:
+Use `Update.foldChildInits` to initialize several Submodels inside one parent. It constructs the parent Model once, then handles each child's OutMessage against that complete Model.
+
+For example, a Workspace Submodel contains Search and Editor Submodels. The Search Submodel's boot result can report a prepared document, and the Editor Submodel's can report an opened document. The Workspace Submodel handles both locally:
 
 ```
-const homeInit = Home.init()
-const roomInit = Room.init(route)
+const foldSearchOutMessage = Search.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  PreparedResults:
+    ({ documentId }) =>
+    model => ({
+      model: evo(model, {
+        maybeSelectedDocumentId: () => Option.some(documentId),
+      }),
+    }),
+})
 
-return {
-  model: {
-    home: homeInit.model,
-    room: roomInit.model,
+const foldEditorOutMessage = Editor.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  OpenedDocument:
+    ({ documentId }) =>
+    model => ({
+      model: evo(model, {
+        maybeOpenedDocumentId: () => Option.some(documentId),
+      }),
+    }),
+})
+
+return Update.foldChildInits(
+  {
+    search: Search.boot(),
+    editor: Editor.boot(),
   },
-  commands: [
-    ...Command.mapMessages(homeInit.commands, toGotHomeMessage),
-    ...Command.mapMessages(roomInit.commands, toGotRoomMessage),
-  ],
-}
+  {
+    toParentModel: ({ search, editor }) =>
+      Model.make({
+        search,
+        editor,
+        maybeSelectedDocumentId: Option.none(),
+        maybeOpenedDocumentId: Option.none(),
+      }),
+    folds: {
+      search: {
+        toParentMessage: message => Message.GotSearchMessage({ message }),
+        foldOutMessage: foldSearchOutMessage,
+      },
+      editor: {
+        toParentMessage: message => Message.GotEditorMessage({ message }),
+        foldOutMessage: foldEditorOutMessage,
+      },
+    },
+  },
+)
 ```
+
+`toParentModel` receives the Search and Editor Models. It also supplies the initial values for the Workspace Submodel's own fields. `Model.make` gives those fields their declared types, including the value type inside `Option.none()`.
+
+The `folds` record determines the order of the OutMessage handlers. Use descriptive string keys such as `search` and `editor`, written in the order the handlers should run. Both records must name the same children.
+
+In this example, the Search fold sets `maybeSelectedDocumentId`. The Editor fold receives that updated Model and sets `maybeOpenedDocumentId`, keeping the selection. Foldkit does not construct the parent again or overwrite either child Model between folds. If a child emits no OutMessage, its handler is skipped.
+
+This order applies to the Model changes made by the folds. Commands run independently; a later child's Commands do not wait for an earlier child's Commands to finish.
+
+### Initializing Children with OutMessages
+
+A parent can combine information from several children into one OutMessage. For example, App contains a Workspace Submodel, which contains Search and Editor Submodels. The Search Submodel's boot function reports `RestoredQuery` when it restores a saved query; the Editor Submodel's reports `RestoredDraft` when it restores a saved draft. App should show one restoration notice that includes both results.
+
+The Workspace Submodel uses `toParentOutMessage` adapters to translate each child's OutMessage into its own OutMessage type. The Workspace Submodel is the parent of the Search and Editor Submodels, and a child of App. It also uses these adapters when an individual child restores state during a later update.
+
+During initialization, `resolveOutMessage` combines the two translated OutMessages into `RestoredWorkspace` for App. It receives them under the `search` and `editor` keys. Both restored values are preserved:
+
+```
+const OutMessage = defineMessageUnion({
+  RestoredSearch: { query: Schema.String },
+  RestoredEditor: { documentId: Schema.String },
+  RestoredWorkspace: {
+    maybeQuery: Schema.Option(Schema.String),
+    maybeDocumentId: Schema.Option(Schema.String),
+  },
+})
+
+const toParentSearchOutMessage = Search.OutMessage.match({
+  RestoredQuery: ({ query }) => OutMessage.RestoredSearch({ query }),
+})
+
+const toParentEditorOutMessage = Editor.OutMessage.match({
+  RestoredDraft: ({ documentId }) => OutMessage.RestoredEditor({ documentId }),
+})
+
+return Update.foldChildInits(
+  {
+    search: Search.boot(),
+    editor: Editor.boot(),
+  },
+  {
+    toParentModel: ({ search, editor }) => Model.make({ search, editor }),
+    folds: {
+      search: {
+        toParentMessage: message => Message.GotSearchMessage({ message }),
+        toParentOutMessage: toParentSearchOutMessage,
+      },
+      editor: {
+        toParentMessage: message => Message.GotEditorMessage({ message }),
+        toParentOutMessage: toParentEditorOutMessage,
+      },
+    },
+    resolveOutMessage: ({ search, editor }) =>
+      OutMessage.RestoredWorkspace({
+        maybeQuery: pipe(
+          Option.fromNullishOr(search),
+          Option.map(outMessage =>
+            Match.value(outMessage).pipe(
+              Match.tagsExhaustive({
+                RestoredSearch: ({ query }) => query,
+              }),
+            ),
+          ),
+        ),
+        maybeDocumentId: pipe(
+          Option.fromNullishOr(editor),
+          Option.map(outMessage =>
+            Match.value(outMessage).pipe(
+              Match.tagsExhaustive({
+                RestoredEditor: ({ documentId }) => documentId,
+              }),
+            ),
+          ),
+        ),
+      }),
+  },
+)
+```
+
+If only the Search Submodel reports a restoration, the final OutMessage has `Some(query)` and `None` for the document. If only the Editor Submodel reports one, it has `None` for the query and `Some(documentId)`. If neither reports one, `resolveOutMessage` is not called and the result has no `outMessage`.
+
+The current Model can tell App what query and document are present. It cannot necessarily tell App whether they were restored during this boot. The resolver keeps that information from the OutMessages without adding temporary bookkeeping to the Model.
+
+`resolveOutMessage` is required whenever an entry can produce a parent OutMessage. It runs after all local folds and also receives the final parent Model as its second argument. Return a combined OutMessage when both results matter. Choosing one and dropping the other needs an application-specific reason. Returning `undefined` emits no OutMessage.
+
+When the final Model contains everything needed for the parent's OutMessage, handle the children locally and attach that OutMessage afterward with [`Update.withOutMessage`](#returning-an-outmessage). That also lets initialization report completion when none of the children emitted an OutMessage.
+
+### Deriving an OutMessage in a Local Fold
+
+A local fold can report a more complete result than the child's original OutMessage. For example, an end-date picker reports `SelectedDate`. A date-range Submodel forwards `SelectedEndDate` while the start date is absent. Once both dates are known, its local fold reports `CompletedRange` instead:
+
+```
+const OutMessage = defineMessageUnion({
+  SelectedEndDate: { date: Schema.String },
+  CompletedRange: { startDate: Schema.String, endDate: Schema.String },
+})
+type OutMessage = typeof OutMessage.Type
+
+const foldEndDateOutMessage = DatePicker.OutMessage.match<
+  Update.StepWithOutMessage<Model, Message, OutMessage>
+>({
+  SelectedDate:
+    ({ date }) =>
+    model => {
+      const nextModel = evo(model, {
+        maybeEndDate: () => Option.some(date),
+      })
+
+      return Option.match(nextModel.maybeStartDate, {
+        onNone: () => ({ model: nextModel }),
+        onSome: startDate => ({
+          model: nextModel,
+          outMessage: OutMessage.CompletedRange({ startDate, endDate: date }),
+        }),
+      })
+    },
+})
+
+const init = (maybeStartDate: Option.Option<string>) =>
+  Update.foldChildInit(DatePicker.boot(), {
+    toParentModel: endDatePicker =>
+      Model.make({
+        endDatePicker,
+        maybeStartDate,
+        maybeEndDate: Option.none(),
+      }),
+    toParentMessage: message => Message.GotEndDateMessage({ message }),
+    foldOutMessage: foldEndDateOutMessage,
+    toParentOutMessage: DatePicker.OutMessage.match<OutMessage>({
+      SelectedDate: ({ date }) => OutMessage.SelectedEndDate({ date }),
+    }),
+  })
+```
+
+When the local fold returns `CompletedRange`, Foldkit uses it and skips `toParentOutMessage` for that child. When the fold returns no OutMessage, `toParentOutMessage` supplies `SelectedEndDate`. A child that emits nothing triggers neither handler.
+
+`foldChild`, `foldChildStep`, `foldChildInit`, and each entry in `foldChildInits` follow this rule. In `foldChildInits`, the resulting OutMessage is passed to `resolveOutMessage` alongside those from the other entries; it does not replace another child's OutMessage.
 
 ## Preventing Lost OutMessages
 

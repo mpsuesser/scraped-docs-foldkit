@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-calendar
 title: "Ui/Calendar"
 description: "API documentation for the Ui/Calendar module."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # Ui/Calendar
@@ -14,7 +14,7 @@ current_date: 2026-09-12T22:55:23.086Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L243)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L243)
 
 ```
 /**
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L118)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L118)
 
 ```
 /**
@@ -52,7 +52,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L162)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L162)
 
 ```
 /**
@@ -77,7 +77,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L517)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L517)
 
 ## Types
 
@@ -85,7 +85,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L821)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L811)
 
 ```
 /**
@@ -101,7 +101,7 @@ type CalendarAttributes = DaysModeAttributes | MonthsModeAttributes | YearsModeA
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L738)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L728)
 
 ```
 /** A column header for the day grid's first row (day-of-week labels). */
@@ -115,7 +115,7 @@ type ColumnHeader = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L725)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L715)
 
 ```
 /** Information about a single day cell in the rendered calendar grid. */
@@ -136,7 +136,7 @@ type DayCell = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L780)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L770)
 
 ```
 /** Attributes provided to the consumer when rendering the day grid. */
@@ -161,7 +161,7 @@ type DaysModeAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L103)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L103)
 
 ```
 /** Configuration for creating a calendar model with `init`. */
@@ -181,7 +181,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L755)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L745)
 
 ```
 /**
@@ -208,7 +208,7 @@ type MonthCell = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L796)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L786)
 
 ```
 /**
@@ -233,7 +233,7 @@ type MonthsModeAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L831)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L844)
 
 ```
 /**
@@ -244,14 +244,33 @@ type
  *  `foldOutMessage` of the Calendar's `Update.foldChild` config.
  */
 type ViewInputs = Readonly<{
-  daysHeadingButtonLabel: string
   maybeSelectedDate: Option.Option<CalendarDate>
+  toView: (attributes: CalendarAttributes) => Html
+}> & ViewLabels
+```
+
+### ViewLabels
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L818)
+
+```
+/**
+ * Accessible labels and label builders accepted by Calendar views. DatePicker
+ * accepts the same fields and forwards them to its embedded Calendar.
+ */
+type ViewLabels = Readonly<{
+  daysHeadingButtonLabel: string
   monthsHeadingButtonLabel: string
   nextMonthLabel: string
   nextYearsPageLabel: string
   previousMonthLabel: string
   previousYearsPageLabel: string
-  toView: (attributes: CalendarAttributes) => Html
+  toDaysGridLabel: (monthYear: string) => string
+  toMonthsGridLabel: (year: number) => string
+  toWeekLabel: (weekStart: CalendarDate) => string
+  toYearsGridLabel: (startYear: number, endYear: number) => string
 }>
 ```
 
@@ -259,7 +278,7 @@ type ViewInputs = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L745)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L735)
 
 ```
 /**
@@ -276,7 +295,7 @@ type Week = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L768)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L758)
 
 ```
 /** Information about a single year cell in the rendered years grid. */
@@ -296,7 +315,7 @@ type YearCell = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L807)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L797)
 
 ```
 /**
@@ -323,7 +342,7 @@ type YearsModeAttributes = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L146)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L146)
 
 ```
 /**
@@ -341,7 +360,7 @@ const FocusGrid: CommandDefinitionWithArgs<"FocusGrid", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L61)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L61)
 
 ```
 /** Union of all messages the calendar component can produce. */
@@ -386,7 +405,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L41)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L41)
 
 ```
 /**
@@ -405,10 +424,88 @@ const Model: Struct<{
   id: String
   isGridFocused: Boolean
   locale: Struct<{
+    ariaLabelFormat: NonEmptyArray<TaggedUnion<{
+      DayName: {}
+      DayNumber: {}
+      LiteralText: {
+        text: String
+      }
+      MonthName: {}
+      MonthNumber: {}
+      PaddedDayNumber: {}
+      PaddedMonthNumber: {}
+      ShortDayName: {}
+      ShortMonthName: {}
+      YearNumber: {}
+    }>>
     dayNames: Tuple<readonly [String, String, String, String, String, String, String]>
     firstDayOfWeek: Literals<readonly ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]>
+    longFormat: NonEmptyArray<TaggedUnion<{
+      DayName: {}
+      DayNumber: {}
+      LiteralText: {
+        text: String
+      }
+      MonthName: {}
+      MonthNumber: {}
+      PaddedDayNumber: {}
+      PaddedMonthNumber: {}
+      ShortDayName: {}
+      ShortMonthName: {}
+      YearNumber: {}
+    }>>
     monthNames: Tuple<readonly [String, String, String, String, String, String, String, String, String, String, String, String]>
+    monthYearFormat: NonEmptyArray<Union<readonly [
+      TaggedStruct<"MonthName", {}> & (value?: void | {
+        _tag: unknown
+      }) => {
+        _tag: "MonthName"
+      },
+      TaggedStruct<"ShortMonthName", {}> & (value?: void | {
+        _tag: unknown
+      }) => {
+        _tag: "ShortMonthName"
+      },
+      TaggedStruct<"MonthNumber", {}> & (value?: void | {
+        _tag: unknown
+      }) => {
+        _tag: "MonthNumber"
+      },
+      TaggedStruct<"PaddedMonthNumber", {}> & (value?: void | {
+        _tag: unknown
+      }) => {
+        _tag: "PaddedMonthNumber"
+      },
+      TaggedStruct<"YearNumber", {}> & (value?: void | {
+        _tag: unknown
+      }) => {
+        _tag: "YearNumber"
+      },
+      TaggedStruct<"LiteralText", {
+        text: String
+      }> & (value: {
+        _tag: unknown | unknown
+        text: string
+      }) => {
+        _tag: "LiteralText"
+        text: string
+      }
+    ]>>
     shortDayNames: Tuple<readonly [String, String, String, String, String, String, String]>
+    shortFormat: NonEmptyArray<TaggedUnion<{
+      DayName: {}
+      DayNumber: {}
+      LiteralText: {
+        text: String
+      }
+      MonthName: {}
+      MonthNumber: {}
+      PaddedDayNumber: {}
+      PaddedMonthNumber: {}
+      ShortDayName: {}
+      ShortMonthName: {}
+      YearNumber: {}
+    }>>
     shortMonthNames: Tuple<readonly [String, String, String, String, String, String, String, String, String, String, String, String]>
   }>
   maybeFocusedDate: Option<Struct<{
@@ -441,7 +538,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L88)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L88)
 
 ```
 /** Union of the calendar's OutMessages. */
@@ -464,7 +561,7 @@ const OutMessage: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L34)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L34)
 
 ```
 /**
@@ -479,7 +576,7 @@ const ViewMode: Literals<readonly ["Days", "Months", "Years"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L170)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L170)
 
 ```
 /**
@@ -496,7 +593,7 @@ const focusDate: Reflect<Model, CalendarDate>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L210)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L210)
 
 ```
 /**
@@ -510,7 +607,7 @@ const reflectDisabledDates: Reflect<Model, ReadonlyArray<CalendarDate>>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L222)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L222)
 
 ```
 /**
@@ -525,7 +622,7 @@ const reflectDisabledDaysOfWeek: Reflect<Model, ReadonlyArray<Calendar.DayOfWeek
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L199)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L199)
 
 ```
 /**
@@ -539,7 +636,7 @@ const reflectMaxDate: Reflect<Model, Option.Option<CalendarDate>>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L188)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L188)
 
 ```
 /**
@@ -559,7 +656,7 @@ const reflectMinDate: Reflect<Model, Option.Option<CalendarDate>>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/calendar/index.ts#L1333)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/calendar/index.ts#L1353)
 
 ```
 /**
@@ -607,18 +704,5 @@ const view: SubmodelView<Calendar.Model, {
   }
 } | {
   _tag: "CompletedFocusGrid"
-}, Readonly<{
-  daysHeadingButtonLabel: string
-  maybeSelectedDate: Option<{
-    day: number
-    month: number
-    year: number
-  }>
-  monthsHeadingButtonLabel: string
-  nextMonthLabel: string
-  nextYearsPageLabel: string
-  previousMonthLabel: string
-  previousYearsPageLabel: string
-  toView: (attributes: CalendarAttributes) => Html
-}>>
+}, ViewInputs>
 ```

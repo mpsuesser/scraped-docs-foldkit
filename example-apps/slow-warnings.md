@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/slow-warnings
 title: "Slow Warnings"
 description: "Trigger slow update, view, patch, and Subscription dependency warnings at their default thresholds, then inspect them in a visible log."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -86,7 +86,9 @@ export const Message = defineMessageUnion({
 
 export type Message = typeof Message.Type
 
-const slowWarningTarget = new EventTarget()
+const slowWarningTarget: Subscription.TypedEventTarget<{
+  [SLOW_WARNING_EVENT]: CustomEvent<SlowWarningReport>
+}> = new EventTarget()
 
 const burnCpu = (durationMs: number): number => {
   const stopAt = performance.now() + durationMs
@@ -243,10 +245,7 @@ export const init: Runtime.ApplicationInit<Model, Message> = () => ({
 
 export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   slowWarnings: Subscription.persistent(
-    Subscription.fromEventFilterMap<
-      CustomEvent,
-      typeof Message.RecordedSlowWarning.Type
-    >({
+    Subscription.fromEventFilterMap({
       target: slowWarningTarget,
       type: SLOW_WARNING_EVENT,
       toMessage: event =>

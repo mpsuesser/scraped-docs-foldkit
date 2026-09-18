@@ -2,8 +2,8 @@
 url: https://foldkit.dev/elm/foldkit-vs-elm-side-by-side
 title: "Foldkit vs Elm: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and Elm. Same architecture, different host: ports vs Commands, decoders vs Schema, and what each side gives up."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 ## Overview
@@ -17,6 +17,8 @@ Elm is the source of this architecture, and its language provides guarantees Typ
 Read them both
 
 The Foldkit version is in the [examples gallery](https://foldkit.dev/example-apps/pixel-art). The [Elm version source](https://github.com/foldkit/foldkit/tree/main/comparisons/pixel-art-elm) is an Elm 0.19 application with no npm dependencies.
+
+The Elm snippets and the checked-in app use the two-space indentation shown in [Elm’s official examples](https://elm-lang.org/examples). `elm-format` follows a separate convention with four-space indentation.
 
 ## The Architecture You Already Know
 
@@ -39,27 +41,27 @@ The Elm application has 21 `Msg` variants:
 
 ```
 type Msg
-    = PressedCell Int Int
-    | EnteredCell Int Int
-    | LeftCanvas
-    | ReleasedMouse
-    | SelectedColor Int
-    | SelectedTool Tool
-    | SelectedGridSize Int
-    | ToggledMirrorHorizontal
-    | ToggledMirrorVertical
-    | ClickedUndo
-    | ClickedRedo
-    | ClickedHistoryStep Int
-    | ClickedRedoStep Int
-    | ClickedClear
-    | ClickedExport
-    | FailedExportPng String
-    | DismissedErrorDialog
-    | ConfirmedGridSizeChange
-    | DismissedGridSizeDialog
-    | SelectedPaletteTheme Int
-    | ToggledThemePicker
+  = PressedCell Int Int
+  | EnteredCell Int Int
+  | LeftCanvas
+  | ReleasedMouse
+  | SelectedColor Int
+  | SelectedTool Tool
+  | SelectedGridSize Int
+  | ToggledMirrorHorizontal
+  | ToggledMirrorVertical
+  | ClickedUndo
+  | ClickedRedo
+  | ClickedHistoryStep Int
+  | ClickedRedoStep Int
+  | ClickedClear
+  | ClickedExport
+  | FailedExportPng String
+  | DismissedErrorDialog
+  | ConfirmedGridSizeChange
+  | DismissedGridSizeDialog
+  | SelectedPaletteTheme Int
+  | ToggledThemePicker
 ```
 
 ### Foldkit Message union
@@ -112,47 +114,47 @@ The update functions have the same shape.
 ```
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        PressedCell x y ->
-            case model.tool of
-                Brush ->
-                    ( { model
-                        | grid = applyBrush x y model
-                        , undoStack = Grid.pushHistory model.grid model.undoStack
-                        , redoStack = []
-                        , isDrawing = True
-                      }
-                    , Cmd.none
-                    )
+  case msg of
+    PressedCell x y ->
+      case model.tool of
+        Brush ->
+          ( { model
+            | grid = applyBrush x y model
+            , undoStack = Grid.pushHistory model.grid model.undoStack
+            , redoStack = []
+            , isDrawing = True
+            }
+          , Cmd.none
+          )
 
-                Fill ->
-                    withSave
-                        { model
-                            | grid = Grid.floodFill x y model.selectedColorIndex model.grid
-                            , undoStack = Grid.pushHistory model.grid model.undoStack
-                            , redoStack = []
-                        }
+        Fill ->
+          withSave
+            { model
+              | grid = Grid.floodFill x y model.selectedColorIndex model.grid
+              , undoStack = Grid.pushHistory model.grid model.undoStack
+              , redoStack = []
+            }
 
-                Eraser ->
-                    -- ...
-        ClickedUndo ->
-            case model.undoStack of
-                [] ->
-                    ( model, Cmd.none )
+        Eraser ->
+          -- ...
+    ClickedUndo ->
+      case model.undoStack of
+        [] ->
+          ( model, Cmd.none )
 
-                previousGrid :: olderGrids ->
-                    withSave
-                        { model
-                            | grid = previousGrid
-                            , undoStack = olderGrids
-                            , redoStack = model.grid :: model.redoStack
-                        }
+        previousGrid :: olderGrids ->
+          withSave
+            { model
+              | grid = previousGrid
+              , undoStack = olderGrids
+              , redoStack = model.grid :: model.redoStack
+            }
 
-        -- ... 19 more branches
+    -- ... 19 more branches
 
 withSave : Model -> ( Model, Cmd Msg )
 withSave model =
-    ( model, saveCanvas (encodeSavedCanvas model) )
+  ( model, saveCanvas (encodeSavedCanvas model) )
 ```
 
 ### Foldkit update
@@ -213,31 +215,31 @@ The Elm Model uses custom types and `Maybe`:
 
 ```
 type Tool
-    = Brush
-    | Fill
-    | Eraser
+  = Brush
+  | Fill
+  | Eraser
 
 type MirrorMode
-    = MirrorNone
-    | MirrorHorizontal
-    | MirrorVertical
-    | MirrorBoth
+  = MirrorNone
+  | MirrorHorizontal
+  | MirrorVertical
+  | MirrorBoth
 
 type alias Model =
-    { grid : Grid
-    , undoStack : List Grid
-    , redoStack : List Grid
-    , selectedColorIndex : Int
-    , gridSize : Int
-    , tool : Tool
-    , mirrorMode : MirrorMode
-    , isDrawing : Bool
-    , hoveredCell : Maybe Position
-    , exportError : Maybe String
-    , paletteThemeIndex : Int
-    , pendingGridSize : Maybe Int
-    , isThemePickerOpen : Bool
-    }
+  { grid : Grid
+  , undoStack : List Grid
+  , redoStack : List Grid
+  , selectedColorIndex : Int
+  , gridSize : Int
+  , tool : Tool
+  , mirrorMode : MirrorMode
+  , isDrawing : Bool
+  , hoveredCell : Maybe Position
+  , exportError : Maybe String
+  , paletteThemeIndex : Int
+  , pendingGridSize : Maybe Int
+  , isThemePickerOpen : Bool
+  }
 ```
 
 This hand-rolled UI stores Dialog visibility through the presence of `exportError` and `pendingGridSize`. The theme picker uses a separate `isThemePickerOpen` field.
@@ -299,11 +301,11 @@ port exportPngFailed : (String -> msg) -> Sub msg
 -- In update: send a request out, receive the failure (if any) back
 -- as a Msg through the subscription.
 
-        ClickedExport ->
-            ( model, requestExportPng (encodeExportRequest model) )
+    ClickedExport ->
+      ( model, requestExportPng (encodeExportRequest model) )
 
-        FailedExportPng error ->
-            ( { model | exportError = Just error }, Cmd.none )
+    FailedExportPng error ->
+      ( { model | exportError = Just error }, Cmd.none )
 ```
 
 The JavaScript side subscribes to them in `index.html`:
@@ -423,42 +425,42 @@ Elm defines the type, decoder, and encoder separately:
 ```
 init : Decode.Value -> ( Model, Cmd Msg )
 init flags =
-    case Decode.decodeValue savedCanvasDecoder flags of
-        Ok saved ->
-            ( { defaultModel
-                | grid = saved.grid
-                , gridSize = saved.gridSize
-                , paletteThemeIndex = saved.paletteThemeIndex
-                , selectedColorIndex = saved.selectedColorIndex
-              }
-            , Cmd.none
-            )
+  case Decode.decodeValue savedCanvasDecoder flags of
+    Ok saved ->
+      ( { defaultModel
+        | grid = saved.grid
+        , gridSize = saved.gridSize
+        , paletteThemeIndex = saved.paletteThemeIndex
+        , selectedColorIndex = saved.selectedColorIndex
+        }
+      , Cmd.none
+      )
 
-        Err _ ->
-            ( defaultModel, Cmd.none )
+    Err _ ->
+      ( defaultModel, Cmd.none )
 
 savedCanvasDecoder : Decode.Decoder SavedCanvas
 savedCanvasDecoder =
-    Decode.map4 SavedCanvas
-        (Decode.field "grid" gridDecoder)
-        (Decode.field "gridSize" Decode.int)
-        (Decode.field "paletteThemeIndex" Decode.int)
-        (Decode.field "selectedColorIndex" Decode.int)
+  Decode.map4 SavedCanvas
+    (Decode.field "grid" gridDecoder)
+    (Decode.field "gridSize" Decode.int)
+    (Decode.field "paletteThemeIndex" Decode.int)
+    (Decode.field "selectedColorIndex" Decode.int)
 
 gridDecoder : Decode.Decoder Grid
 gridDecoder =
-    Decode.array (Decode.array (Decode.nullable Decode.int))
+  Decode.array (Decode.array (Decode.nullable Decode.int))
 
 -- And the encoder, written by hand in the other direction:
 
 encodeSavedCanvas : Model -> Encode.Value
 encodeSavedCanvas model =
-    Encode.object
-        [ ( "grid", encodeGrid model.grid )
-        , ( "gridSize", Encode.int model.gridSize )
-        , ( "paletteThemeIndex", Encode.int model.paletteThemeIndex )
-        , ( "selectedColorIndex", Encode.int model.selectedColorIndex )
-        ]
+  Encode.object
+    [ ( "grid", encodeGrid model.grid )
+    , ( "gridSize", Encode.int model.gridSize )
+    , ( "paletteThemeIndex", Encode.int model.paletteThemeIndex )
+    , ( "selectedColorIndex", Encode.int model.selectedColorIndex )
+    ]
 ```
 
 The compiler checks the values each function produces, but the decoder and encoder use independent string field names. A mismatch between `"gridSize"` and `"gridsize"` can compile.
@@ -511,25 +513,25 @@ Both frameworks derive external event streams from Model state. The mouse-releas
 ```
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch
-        [ Browser.Events.onKeyDown (keyboardDecoder model)
-        , if model.isDrawing then
-            Browser.Events.onMouseUp (Decode.succeed ReleasedMouse)
+  Sub.batch
+    [ Browser.Events.onKeyDown (keyboardDecoder model)
+    , if model.isDrawing then
+      Browser.Events.onMouseUp (Decode.succeed ReleasedMouse)
 
-          else
-            Sub.none
-        , exportPngFailed FailedExportPng
-        ]
+      else
+      Sub.none
+    , exportPngFailed FailedExportPng
+    ]
 
 keyboardDecoder : Model -> Decode.Decoder Msg
 keyboardDecoder model =
-    Decode.map5 KeyEvent
-        (Decode.field "key" Decode.string)
-        (Decode.field "ctrlKey" Decode.bool)
-        (Decode.field "metaKey" Decode.bool)
-        (Decode.field "shiftKey" Decode.bool)
-        (Decode.field "altKey" Decode.bool)
-        |> Decode.andThen (shortcutFor model)
+  Decode.map5 KeyEvent
+    (Decode.field "key" Decode.string)
+    (Decode.field "ctrlKey" Decode.bool)
+    (Decode.field "metaKey" Decode.bool)
+    (Decode.field "shiftKey" Decode.bool)
+    (Decode.field "altKey" Decode.bool)
+    |> Decode.andThen (shortcutFor model)
 
 -- shortcutFor maps the decoded event to a Msg, or fails the
 -- decoder for keys the app does not care about.
@@ -540,7 +542,7 @@ keyboardDecoder model =
 ```
 export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   undoRedoKeys: Subscription.persistent(
-    Subscription.fromEventFilterMapPreventDefault<KeyboardEvent, Message>({
+    Subscription.fromEventFilterMapPreventDefault({
       target: document,
       type: 'keydown',
       toMessage: toUndoRedoMessage,
@@ -548,7 +550,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   ),
 
   toolKeys: Subscription.persistent(
-    Subscription.fromEventFilterMap<KeyboardEvent, Message>({
+    Subscription.fromEventFilterMap({
       target: document,
       type: 'keydown',
       toMessage: toToolMessage,
@@ -584,32 +586,32 @@ Both implementations use reference-based memoization around the grid. Actual fra
 ```
 toolbarView : Model -> PaletteTheme -> Html Msg
 toolbarView model theme =
-    div [ class "w-full md:w-44 flex flex-col gap-5 flex-shrink-0" ]
-        [ lazy toolSection model.tool
-        , lazy mirrorSection model.mirrorMode
-        , lazy sizeSection model.gridSize
-        , paletteSection model theme
-        , lazy clearCanvasSection model.grid
-        ]
+  div [ class "w-full md:w-44 flex flex-col gap-5 flex-shrink-0" ]
+    [ lazy toolSection model.tool
+    , lazy mirrorSection model.mirrorMode
+    , lazy sizeSection model.gridSize
+    , paletteSection model theme
+    , lazy clearCanvasSection model.grid
+    ]
 
 -- The canvas keys each row and wraps it in lazy5. A row only
 -- re-renders when one of its five arguments changes by reference.
 
-            Html.Keyed.node "div"
-                [ class "cursor-crosshair select-none w-full aspect-square flex flex-col bg-white" ]
-                (Grid.toRows model.grid
-                    |> List.map
-                        (\( y, row ) ->
-                            ( String.fromInt y
-                            , lazy5 rowView
-                                y
-                                row
-                                previewColor
-                                (rowPreviewPositions y previewPositions)
-                                theme.colors
-                            )
-                        )
-                )
+      Html.Keyed.node "div"
+        [ class "cursor-crosshair select-none w-full aspect-square flex flex-col bg-white" ]
+        (Grid.toRows model.grid
+          |> List.map
+            (\( y, row ) ->
+              ( String.fromInt y
+              , lazy5 rowView
+                y
+                row
+                previewColor
+                (rowPreviewPositions y previewPositions)
+                theme.colors
+              )
+            )
+        )
 ```
 
 ### Foldkit createLazy and keyed
@@ -692,31 +694,31 @@ Both cell views attach Message values to event attributes:
 ```
 rowView : Int -> Array Cell -> String -> List Int -> List String -> Html Msg
 rowView y row previewColor previewColumns paletteColors =
-    div [ class "flex flex-1" ]
-        (Array.toIndexedList row
-            |> List.map
-                (\( x, cell ) ->
-                    let
-                        displayColor =
-                            if List.member x previewColumns then
-                                previewColor
+  div [ class "flex flex-1" ]
+    (Array.toIndexedList row
+      |> List.map
+        (\( x, cell ) ->
+          let
+            displayColor =
+              if List.member x previewColumns then
+                previewColor
 
-                            else
-                                cellColor paletteColors cell
-                    in
-                    cellView x y displayColor
-                )
+              else
+                cellColor paletteColors cell
+          in
+          cellView x y displayColor
         )
+    )
 
 cellView : Int -> Int -> String -> Html Msg
 cellView x y backgroundColor =
-    div
-        [ onMouseDown (PressedCell x y)
-        , onMouseEnter (EnteredCell x y)
-        , style "flex" "1"
-        , style "background-color" backgroundColor
-        ]
-        []
+  div
+    [ onMouseDown (PressedCell x y)
+    , onMouseEnter (EnteredCell x y)
+    , style "flex" "1"
+    , style "background-color" backgroundColor
+    ]
+    []
 ```
 
 ```
@@ -779,28 +781,28 @@ Both update functions are pure and easy to call directly. Their effect values di
 ```
 suite : Test
 suite =
-    test "undo restores the previous grid state" <|
-        \() ->
-            let
-                -- The Cmd in each returned tuple is discarded with \`_\`.
-                -- A Cmd is opaque: there is no way to look inside one,
-                -- so there is no way to assert that ReleasedMouse
-                -- actually triggered a save.
-                ( afterPress, _ ) =
-                    update (PressedCell 0 0) defaultModel
+  test "undo restores the previous grid state" <|
+    \() ->
+      let
+        -- The Cmd in each returned tuple is discarded with \`_\`.
+        -- A Cmd is opaque: there is no way to look inside one,
+        -- so there is no way to assert that ReleasedMouse
+        -- actually triggered a save.
+        ( afterPress, _ ) =
+          update (PressedCell 0 0) defaultModel
 
-                ( afterRelease, _ ) =
-                    update ReleasedMouse afterPress
+        ( afterRelease, _ ) =
+          update ReleasedMouse afterPress
 
-                ( afterUndo, _ ) =
-                    update ClickedUndo afterRelease
-            in
-            Expect.all
-                [ \model -> Expect.equal (Grid.cellAt 0 0 model.grid) Nothing
-                , \model -> Expect.equal model.undoStack []
-                , \model -> Expect.equal (List.length model.redoStack) 1
-                ]
-                afterUndo
+        ( afterUndo, _ ) =
+          update ClickedUndo afterRelease
+      in
+      Expect.all
+        [ \model -> Expect.equal (Grid.cellAt 0 0 model.grid) Nothing
+        , \model -> Expect.equal model.undoStack []
+        , \model -> Expect.equal (List.length model.redoStack) 1
+        ]
+        afterUndo
 ```
 
 `Cmd Msg` is opaque, so a direct `elm-test` unit test cannot compare or pattern-match the Command returned by update. The underscores discard it. Removing the save Command from `ReleasedMouse` would not fail this particular unit test.

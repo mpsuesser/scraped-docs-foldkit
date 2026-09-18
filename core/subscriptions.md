@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/subscriptions
 title: "Subscriptions"
 description: "Run ongoing Streams whose lifetime follows Model-derived dependencies. Covers restart behavior, timers, browser events, live dependency reads, and Submodel lifting."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 ## Ongoing Work with a Model-Driven Lifetime
@@ -209,7 +209,7 @@ const subscriptions = Subscription.make<Model, Message>()(entry => ({
       modelToDependencies: model => ({ isListening: model.isListening }),
       dependenciesToStream: ({ isListening }) =>
         Stream.when(
-          Subscription.fromEvent<KeyboardEvent, Message>({
+          Subscription.fromEvent({
             target: window,
             type: 'keydown',
             toMessage: event => Message.PressedKey({ key: event.key }),
@@ -223,9 +223,90 @@ const subscriptions = Subscription.make<Model, Message>()(entry => ({
 
 The `toMessage` mapper runs synchronously in the same call stack as the browser event, so it may call `event.preventDefault()` unless the listener is passive. Some browsers default wheel and touch listeners on global targets to passive, where cancellation is ignored. Pass `options: { passive: false }` when cancelling those events. Pass `target` as a thunk if it may not exist until the scope opens; pass always-present globals such as `window` and `document` directly.
 
-Use `Subscription.fromEventFilterMap` when only some events should dispatch. Its mapper returns `Option.some(message)` to emit or `Option.none()` to ignore the event. For a listener attached to one rendered element, use [Mount](https://foldkit.dev/core/mount) instead.
+The target, the event name, and the event your mapper receives are one fact rather than three. `type` is constrained to the events the target declares, so a misspelled name is a compile error rather than a listener that never fires, and `event` follows from both: `window` plus `'keydown'` gives you a `KeyboardEvent` with no type argument to write. A target with no declared event map, such as a bare `EventTarget`, accepts any name and reports `Event`. Annotate one with `Subscription.TypedEventTarget` to have its own events resolved the same way, `CustomEvent` detail included:
 
-When a handled event should also cancel its default action, use `Subscription.fromEventFilterMapPreventDefault`. Its mapper returns `Option.some(message)` to handle the event or `Option.none()` to leave its default behavior intact. The helper evaluates the mapper, calls `preventDefault()`, and queues the Message before the native listener returns. It registers the listener with `passive: false` by default and rejects `passive: true`, which would make cancellation ineffective.
+```ts
+const slowWarningTarget: Subscription.TypedEventTarget<{
+  'foldkit:slow-warning': CustomEvent<SlowWarningReport>
+}> = new EventTarget()
+```
+
+Annotating a native target adds its declared events without losing the native ones. If a declared event uses the same name as a native event, the declared type takes precedence.
+
+When only some events should become Messages, use `Subscription.fromEventFilterMap`. Its `toMessage` returns `Option.some(message)` to emit a Message or `Option.none()` to ignore the event. A mapper that never emits produces a `Stream<never>`, which still composes wherever a Message-producing Stream is expected.
+
+When a handled event should also cancel its default action, use `Subscription.fromEventFilterMapPreventDefault`. Its mapper returns `Option.some(message)` to handle the event or `Option.none()` to leave its default behavior intact. The helper evaluates the mapper, calls `preventDefault()`, and queues the Message before the native listener returns. It registers the listener with `passive: false` by default and does not accept `passive: true`, which would make cancellation ineffective.
+
+For a listener attached to one rendered element, use [Mount](https://foldkit.dev/core/mount) instead.
+
+## Keyboard Shortcuts
+
+`Subscription.keyboardShortcuts` builds a global `keydown` Stream from a declarative binding table. Use a string for one press, such as `'Escape'` or `'Mod+K'`, and an array for an ordered sequence, such as `['G', 'H']`. Every step in a sequence uses the same grammar, including modifiers.
+
+```
+import { Schema } from 'effect'
+import { Subscription } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+import { defineTaggedUnion } from 'foldkit/schema'
+
+const SearchState = defineTaggedUnion({
+  Closed: {},
+  Open: {},
+})
+
+const Model = Schema.Struct({
+  searchState: SearchState,
+})
+type Model = typeof Model.Type
+
+const Message = defineMessageUnion({
+  PressedSearchShortcut: {},
+  PressedEscape: {},
+  PressedHomeShortcut: {},
+})
+type Message = typeof Message.Type
+
+const subscriptions = Subscription.make<Model, Message>()(entry => ({
+  keyboardShortcuts: entry(
+    { searchState: SearchState },
+    {
+      modelToDependencies: model => ({ searchState: model.searchState }),
+      dependenciesToStream: ({ searchState }) =>
+        Subscription.keyboardShortcuts<Message>({
+          bindings: [
+            {
+              shortcut: 'Mod+K',
+              whileTyping: 'Allow',
+              toMessage: () => Message.PressedSearchShortcut(),
+            },
+            {
+              shortcut: 'Escape',
+              isEnabled: searchState._tag === 'Open',
+              whileTyping: 'Allow',
+              toMessage: () => Message.PressedEscape(),
+            },
+            {
+              shortcut: ['G', 'H'],
+              toMessage: () => Message.PressedHomeShortcut(),
+            },
+          ],
+        }),
+    },
+  ),
+}))
+```
+
+Modifier matching is exact: `'Mod+K'` does not also match Shift-Mod-K. `Mod` resolves to Meta on Apple platforms and Control elsewhere; `modKey` provides a deterministic override when needed. Matching uses the layout-aware `KeyboardEvent.key`, so include `Shift` and the resulting character for shifted punctuation. `Space` and `Plus` name keys that would otherwise be awkward in the `+` -separated syntax.
+
+By default, a binding calls `preventDefault()` and does not fire from an `input`, `textarea`, `select`, or contenteditable composed path. `whileTyping: 'Allow'` opts in shortcuts such as Escape that must work inside an editor. Events during IME composition and held-key repeats are ignored; a one-press binding can opt into repeats with `whenRepeated: 'Allow'`. An event that an element-level handler already canceled is also ignored, so local interactions take precedence over global shortcuts.
+
+### Sequences
+
+Sequences may have any length and expire after one second unless `sequenceTimeout` overrides the duration. The helper rejects duplicate bindings, a one-press shortcut that is also a sequence prefix, and shared sequence prefixes with inconsistent `preventDefault` policies. A mismatched key clears the current sequence and is reconsidered as a fresh press.
+
+### Model-Dependent Shortcuts
+
+The helper returns a Stream. Put a fixed table in `Subscription.persistent`, or construct it from an entry's dependency record when availability follows the Model that owns the entry. Derive `isEnabled` from those dependencies, as the example does for Escape. If a parent owns a condition for a lifted child, declare the shortcut table at that parent or put shortcuts with different parent-owned lifetimes in separate child entries so `Subscription.lift` can gate them individually. If the meaning of a key depends on the Model, dispatch a factual Message such as `PressedEscape` and make the decision in update; `toMessage` should not read application state.
 
 ## Keep a Stream Alive Across Dependency Changes
 

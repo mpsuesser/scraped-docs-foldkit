@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-tabs
 title: "Ui/Tabs"
 description: "API documentation for the Ui/Tabs module."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # Ui/Tabs
@@ -14,7 +14,7 @@ current_date: 2026-09-12T22:55:23.086Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L367)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L380)
 
 ```
 /**
@@ -44,7 +44,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L88)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L88)
 
 ```
 /**
@@ -61,7 +61,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L22)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L22)
 
 ```
 /** Controls whether tabs activate on focus (`Automatic`) or require an explicit selection (`Manual`). */
@@ -72,7 +72,7 @@ type ActivationMode = Literals<readonly ["Automatic", "Manual"]>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L341)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L354)
 
 ```
 /**
@@ -91,7 +91,7 @@ type Bundle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L80)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L80)
 
 ```
 /** Configuration for creating a tabs model with `init`. */
@@ -105,7 +105,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L65)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L65)
 
 ```
 /**
@@ -120,7 +120,7 @@ type OutMessage = Selected<Value>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L156)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L156)
 
 ```
 /**
@@ -145,7 +145,7 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L57)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L57)
 
 ```
 type Selected = Readonly<{
@@ -159,7 +159,7 @@ type Selected = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L137)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L137)
 
 ```
 /**
@@ -183,7 +183,7 @@ type TabInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L171)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L180)
 
 ```
 /**
@@ -196,11 +196,15 @@ type
  *  - `selectedValue`: the active tab, read straight from the parent Model.
  *    `aria-selected`, the `data-selected` marker, and which panel is active
  *    all derive from it.
+ *  - `panelMount`: defaults to `ActiveOnly`, where the consumer renders only
+ *    the active panel. Set `All` when the consumer keeps every panel mounted
+ *    and hides inactive ones, so every tab retains its panel relationship.
  */
 type ViewInputs = Readonly<{
   ariaLabel: string
   isTabDisabled: (value: Value, index: number) => boolean
   orientation: Orientation
+  panelMount: PanelMount
   selectedValue: Value
   tabs: ReadonlyArray<Value>
   toView: (render: RenderInfo<Value>) => Html
@@ -213,7 +217,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L101)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L101)
 
 ```
 /** Moves focus to the tab at the given index. */
@@ -229,7 +233,7 @@ const FocusTab: CommandDefinitionWithArgs<"FocusTab", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L41)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L41)
 
 ```
 /** Union of all messages the tabs component can produce. */
@@ -249,7 +253,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L30)
 
 ```
 /**
@@ -270,7 +274,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L18)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L18)
 
 ```
 /** Controls the tab list layout direction and which arrow keys navigate between tabs. */
@@ -281,7 +285,7 @@ const Orientation: Literals<readonly ["Horizontal", "Vertical"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/ui/src/tabs/index.ts#L65)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L65)
 
 ```
 /**
@@ -294,4 +298,19 @@ const OutMessage: MessageUnion<{
     value: String
   }
 }>
+```
+
+### PanelMount
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/ui/src/tabs/index.ts#L165)
+
+```
+/**
+ * Describes whether a consumer renders only the active tab panel or keeps
+ *  every panel mounted and hides inactive ones. Tab-to-panel references follow
+ *  the rendered panel strategy.
+ */
+const PanelMount: Literals<readonly ["ActiveOnly", "All"]>
 ```

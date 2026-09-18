@@ -2,34 +2,19 @@
 url: https://foldkit.dev/api-reference/subscription
 title: "Subscription"
 description: "API documentation for the Subscription module."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # Subscription
 
 ## Functions
 
-### aggregate
-
-function
-
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L194)
-
-```
-/**
- * Combines multiple Subscriptions records into one. Throws on duplicate
- * keys so a misconfigured aggregate fails loudly at startup rather than
- * silently overriding.
- */
-<Model, Message, Services = never>(): (records: readonly Array<Readonly<Record<string, Subscription<Model, Message, any, Services>>>>) => Subscriptions<Model, Message, Services>
-```
-
 ### animationFrame
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/animationFrame.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/animationFrame.ts#L66)
 
 ```
 /**
@@ -53,13 +38,20 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/fromEvent.ts#L211)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/fromEvent.ts#L382)
 
 ```
 /**
  * Build a Stream that emits a Message for every dispatch of a DOM event,
  * registering the listener when the Stream's scope opens and removing it when
  * the scope closes.
+ * 
+ * The target, the event name, and the event the mapper receives are one fact:
+ * `type` is constrained to the names the target declares, and the mapper's
+ * parameter is what those two resolve to, so annotating it narrows nothing and
+ * cannot contradict the name. A target that is neither annotated nor one
+ * lib.dom declares a map for accepts any name and reports `Event`; annotate it
+ * with TypedEventTarget to resolve its own events.
  * 
  * The listener lifecycle uses `Effect.acquireRelease`. The `addEventListener`
  * call happens inside the acquire Effect, and the matching
@@ -77,14 +69,14 @@ function
  * listener that also cancels the default action of the events it handles,
  * reach for `fromEventFilterMapPreventDefault`.
  */
-<EventType extends Event, Message>(config: FromEventConfig<EventType, Message>): Stream<Message>
+<Target extends EventTarget, Type extends string, Message>(config: FromEventConfig<Target, Type, Message>): Stream<Message>
 ```
 
 ### fromEventFilterMap
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/fromEvent.ts#L143)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/fromEvent.ts#L325)
 
 ```
 /**
@@ -94,7 +86,9 @@ function
  * 
  * This is the filtered variant of `fromEvent`. Its `toMessage` returns
  * `Option.some(message)` to emit and `Option.none()` to ignore the event, so a
- * single listener can react to some dispatches while passing on the rest.
+ * single listener can react to some dispatches while passing on the rest. A
+ * mapper that never emits produces a `Stream<never>`, which composes wherever
+ * a Message-producing Stream is expected.
  * 
  * Reach for this over a downstream `Stream.filterMap` whenever the decision to
  * keep an event is paired with `event.preventDefault()`. The mapper runs
@@ -105,6 +99,13 @@ function
  * listeners on global targets to passive. Pass
  * `options: { passive: false }` explicitly when cancelling those events, or
  * reach for `fromEventFilterMapPreventDefault`, which does so for you.
+ * 
+ * The target, the event name, and the event the mapper receives are one fact:
+ * `type` is constrained to the names the target declares, and the mapper's
+ * parameter is what those two resolve to, so annotating it narrows nothing and
+ * cannot contradict the name. A target that is neither annotated nor one
+ * lib.dom declares a map for accepts any name and reports `Event`; annotate it
+ * with TypedEventTarget to resolve its own events.
  * 
  * The listener lifecycle uses `Effect.acquireRelease`. The `addEventListener`
  * call happens inside the acquire Effect, and the matching
@@ -117,14 +118,14 @@ function
  * `dependenciesToStream` (typically behind `Stream.when`) to gate it on a
  * Model condition.
  */
-<EventType extends Event, Message>(config: FromEventFilterMapConfig<EventType, Message>): Stream<Message>
+<Target extends EventTarget, Type extends string, Message>(config: FromEventFilterMapConfig<Target, Type, Message>): Stream<Message>
 ```
 
 ### fromEventFilterMapPreventDefault
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/fromEvent.ts#L273)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/fromEvent.ts#L451)
 
 ```
 /**
@@ -143,8 +144,14 @@ function
  * Because cancelling is the point, the listener registers with
  * `passive: false` when the config does not say otherwise. This keeps wheel
  * and touch events cancelable when a browser would otherwise make listeners
- * on a global target passive. Passing `passive: true` explicitly contradicts
- * the helper's purpose and throws.
+ * on a global target passive. The config rejects `passive: true`; the runtime
+ * guard also throws for unchecked JavaScript inputs.
+ * 
+ * The target, event name, and mapper parameter are one fact: `type` is
+ * constrained to the names the target declares, and the mapper receives the
+ * event those two resolve to. A target with no declared event map accepts any
+ * name and reports `Event`; annotate it with TypedEventTarget to
+ * resolve its own events.
  * 
  * The listener lifecycle uses `Effect.acquireRelease`. The `addEventListener`
  * call happens inside the acquire Effect, and the matching
@@ -157,14 +164,63 @@ function
  * `dependenciesToStream` (typically behind `Stream.when`) to gate it on a
  * Model condition.
  */
-<EventType extends Event, Message>(config: FromEventFilterMapPreventDefaultConfig<EventType, Message>): Stream<Message>
+<Target extends EventTarget, Type extends string, Message>(config: FromEventFilterMapPreventDefaultConfig<Target, Type, Message>): Stream<Message>
+```
+
+### keyboardShortcuts
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/keyboardShortcuts.ts#L849)
+
+```
+/**
+ * Build a Stream that turns declarative keyboard shortcuts into Messages.
+ * 
+ * A string shortcut describes one key press. Modifiers are joined with `+`:
+ * `'Mod+K'`, `'Control+Shift+P'`, or `'Alt+ArrowDown'`. The supported modifiers
+ * are `Mod`, `Control`, `Meta`, `Alt`, and `Shift`. `Mod` resolves to Meta on
+ * Apple platforms and Control elsewhere; `modKey` can override that choice.
+ * Matching uses `KeyboardEvent.key`, case-insensitively, after the active
+ * keyboard layout has been applied. Use `Space` and `Plus` for those keys.
+ * 
+ * An array describes an ordered sequence of two or more presses. Every press
+ * uses the same grammar, so `['G', 'Shift+G']` is valid. Sequences reset after
+ * one second by default; `sequenceTimeout` accepts any Effect Duration input.
+ * Modifier-only events and repeated keydowns do not advance a sequence.
+ * 
+ * Shortcuts are suppressed by default when the event's composed path contains
+ * an `input`, `textarea`, `select`, or contenteditable element. Set
+ * `whileTyping` to `'Allow'` for a binding that must work there. Events emitted
+ * during IME composition are always ignored. Repeated keydowns are ignored for
+ * one-press shortcuts unless `whenRepeated` is `'Allow'`. An event another
+ * handler already canceled is ignored and clears any sequence in progress.
+ * 
+ * Matched key presses call `preventDefault()` before dispatching. For a
+ * sequence, that policy applies to every matched press. Set `preventDefault`
+ * to `false` to opt out. Sequences sharing a prefix must use the same policy.
+ * Duplicate bindings and a complete shortcut that is also a sequence prefix
+ * are rejected when the Stream is created.
+ * 
+ * This helper returns a Stream, not a complete Subscription entry. Use
+ * `Subscription.persistent` for a fixed table. When availability depends on
+ * the Model that owns the entry, build it inside `dependenciesToStream` and
+ * derive each binding's `isEnabled` from the dependency record. A dependency
+ * change opens a new Stream scope and resets any sequence in progress. If a
+ * parent owns a condition for a lifted child, declare the table at that parent
+ * or put shortcuts with different parent-owned lifetimes in separate child
+ * entries so `Subscription.lift` can gate them individually. If the meaning
+ * of a key depends on the Model, dispatch a factual key Message and decide
+ * what it means in update instead of reading the Model from `toMessage`.
+ */
+<Message>(config: KeyboardShortcutsConfig<Message>): Stream<Message>
 ```
 
 ### lift
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L543)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/subscription.ts#L682)
 
 ```
 /**
@@ -206,7 +262,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L166)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/subscription.ts#L174)
 
 ```
 /**
@@ -227,7 +283,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L226)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/subscription.ts#L365)
 
 ```
 /**
@@ -249,7 +305,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/animationFrame.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/animationFrame.ts#L12)
 
 ```
 /**
@@ -271,7 +327,7 @@ type AnimationFrameConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/subscription.ts#L24)
 
 ```
 /**
@@ -291,7 +347,7 @@ type EntryWithoutKeepAlive = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/fromEvent.ts#L21)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/fromEvent.ts#L146)
 
 ```
 /**
@@ -302,6 +358,10 @@ type
  * opens. Pass a thunk when the target may not exist until the scope opens, or
  * pass the `EventTarget` directly for always-present globals like `window` or
  * `document`.
+ * 
+ * `type` is constrained to the event names the target declares, and
+ * `toMessage`'s parameter is the event those two resolve to. Annotating that
+ * parameter is checked against the resolved event rather than replacing it.
  * 
  * `toMessage(event)` transforms each dispatched event into a Message. The
  * mapper runs synchronously in the same call stack as the browser's event
@@ -314,9 +374,9 @@ type
  */
 type FromEventConfig = Readonly<{
   options: AddEventListenerOptions
-  target: EventTarget | () => EventTarget
-  toMessage: (event: EventType) => Message
-  type: string
+  target: Target | () => Target
+  toMessage: (event: EventOf<Target, Type>) => Message
+  type: Type
 }>
 ```
 
@@ -324,7 +384,7 @@ type FromEventConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/fromEvent.ts#L50)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/fromEvent.ts#L179)
 
 ```
 /**
@@ -335,6 +395,10 @@ type
  * opens. Pass a thunk when the target may not exist until the scope opens, or
  * pass the `EventTarget` directly for always-present globals like `window` or
  * `document`.
+ * 
+ * `type` is constrained to the event names the target declares, and
+ * `toMessage`'s parameter is the event those two resolve to. Annotating that
+ * parameter is checked against the resolved event rather than replacing it.
  * 
  * `toMessage(event)` returns `Option.some(message)` to emit a Message for the
  * event, or `Option.none()` to ignore it. The mapper runs synchronously in the
@@ -347,9 +411,9 @@ type
  */
 type FromEventFilterMapConfig = Readonly<{
   options: AddEventListenerOptions
-  target: EventTarget | () => EventTarget
-  toMessage: (event: EventType) => Option.Option<Message>
-  type: string
+  target: Target | () => Target
+  toMessage: (event: EventOf<Target, Type>) => Option.Option<Message>
+  type: Type
 }>
 ```
 
@@ -357,7 +421,7 @@ type FromEventFilterMapConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/fromEvent.ts#L79)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/fromEvent.ts#L251)
 
 ```
 /**
@@ -369,6 +433,10 @@ type
  * pass the `EventTarget` directly for always-present globals like `window` or
  * `document`.
  * 
+ * `type` is constrained to the event names the target declares, and
+ * `toMessage`'s parameter is the event those two resolve to. Annotating that
+ * parameter is checked against the resolved event rather than replacing it.
+ * 
  * `toMessage(event)` returns `Option.some(message)` to mark the dispatch
  * handled, or `Option.none()` to leave the default behavior intact. For a
  * handled dispatch the helper calls `event.preventDefault()` and queues the
@@ -376,14 +444,15 @@ type
  * `preventDefault()`.
  * 
  * `options.passive` defaults to `false` so `preventDefault()` keeps working
- * for the events browsers would otherwise register as passive. Passing
- * `passive: true` explicitly contradicts the helper's purpose and throws.
+ * for the events browsers would otherwise register as passive. The config
+ * rejects `passive: true`; the runtime guard also throws for unchecked
+ * JavaScript inputs.
  */
 type FromEventFilterMapPreventDefaultConfig = Readonly<{
-  options: AddEventListenerOptions
-  target: EventTarget | () => EventTarget
-  toMessage: (event: EventType) => Option.Option<Message>
-  type: string
+  options: PreventDefaultEventListenerOptions
+  target: Target | () => Target
+  toMessage: (event: EventOf<Target, Type>) => Option.Option<Message>
+  type: Type
 }>
 ```
 
@@ -391,7 +460,7 @@ type FromEventFilterMapPreventDefaultConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L269)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/subscription.ts#L408)
 
 ```
 /**
@@ -409,11 +478,61 @@ type GatedDependencies = Readonly<{
 }>
 ```
 
+### KeyboardShortcut
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/keyboardShortcuts.ts#L19)
+
+```
+/** A single key press or a sequence of two or more key presses. */
+type KeyboardShortcut = string | Readonly<[string, string, ...Array<string>]>
+```
+
+### KeyboardShortcutBinding
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/keyboardShortcuts.ts#L38)
+
+```
+/**
+ * One entry in a keyboardShortcuts binding table.
+ * 
+ * A string describes one key press, such as `'/'`, `'Escape'`, or `'Mod+K'`.
+ * An array describes a sequence of at least two presses, such as
+ * `['G', 'H']` or `['G', 'Shift+G']`.
+ */
+type KeyboardShortcutBinding = BindingBase<Message> & Readonly<{
+  shortcut: string
+  whenRepeated: "Ignore" | "Allow"
+}> | Readonly<{
+  shortcut: Readonly<[string, string, ...Array<string>]>
+  whenRepeated: never
+}>
+```
+
+### KeyboardShortcutsConfig
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/keyboardShortcuts.ts#L53)
+
+```
+/** Configuration for the keyboardShortcuts Stream helper. */
+type KeyboardShortcutsConfig = Readonly<{
+  bindings: ReadonlyArray<KeyboardShortcutBinding<Message>>
+  modKey: ModKey
+  sequenceTimeout: Duration.Input
+  target: EventTarget | () => EventTarget
+}>
+```
+
 ### Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L64)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/subscription.ts#L72)
 
 ```
 /**
@@ -448,9 +567,84 @@ type Subscription = Entry<Model, Message, Dependencies, Services> & Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a124b3451a885f2e58b4477adcd04b2ef9e4795a/packages/foldkit/src/subscription/subscription.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/subscription.ts#L80)
 
 ```
 /** A record of named Subscriptions keyed by dependency field name. */
 type Subscriptions = Readonly<Record<string, Subscription<Model, Message, any, Services>>>
+```
+
+### WhileTyping
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/keyboardShortcuts.ts#L16)
+
+```
+/** Whether a shortcut may fire when its keyboard event comes from an editable element. */
+type WhileTyping = "Suppress" | "Allow"
+```
+
+## Interfaces
+
+### TypedEventTarget
+
+interface
+
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/fromEvent.ts#L25)
+
+```
+/**
+ * An `EventTarget` that declares the events it dispatches, so the `fromEvent`
+ * helpers can resolve an event name to its event type the way they do for
+ * `window`, `document`, and the DOM interfaces lib.dom declares event maps
+ * for.
+ * 
+ * Annotate a target with this and the mapper's parameter follows from the
+ * event name, including a `CustomEvent`'s `detail`. A declared event overrides
+ * the corresponding native event and otherwise augments the target's native
+ * events, so an element that dispatches custom events can be annotated without
+ * losing events such as `click`. Any `EventTarget` is assignable to it, so the
+ * annotation is the only change needed.
+ */
+interface TypedEventTarget {
+  [EventMapMarker]: EventMap
+  addEventListener: unknown
+  dispatchEvent: unknown
+  removeEventListener: unknown
+}
+```
+
+## Constants
+
+### aggregate
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/subscription/subscription.ts#L336)
+
+```
+/**
+ * Combines multiple Subscriptions records into one. Throws on duplicate
+ * keys so a misconfigured aggregate fails loudly at startup rather than
+ * silently overriding.
+ * 
+ * Pass the records directly and the Model, Message, and Services are read
+ * off them. The Model of the first record with a Model dependency is the one
+ * every later record is checked against, so a record from another Model
+ * universe fails at its own argument position. Message and Services widen to
+ * the union across all records, which is what lets a record that needs an
+ * Effect service sit beside records that need none.
+ * 
+ * The result keeps each record's keys and each entry's exact dependency type,
+ * schema, and `keepAliveEquivalence` variant, so a lifted entry's
+ * GatedDependencies survives aggregation.
+ * 
+ * The curried form remains available for a record that has to be typed before
+ * its entries exist, such as a value annotated as
+ * `Subscriptions<Model, Message>` at a module boundary. It erases keys and
+ * per-entry dependency types, so reach for it only when the explicit contract
+ * is the point.
+ */
+const aggregate: () => (records: readonly Array<Readonly<Record<string, Subscription<Model, Message, any, Services>>>>) => Subscriptions<Model, Message, Services>
 ```

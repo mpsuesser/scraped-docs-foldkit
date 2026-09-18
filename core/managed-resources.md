@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/managed-resources
 title: "Managed Resources"
 description: "Acquire a stateful handle while a Model condition holds, expose it to Commands, and release it when dependencies change. Covers Layers and Submodel lifting."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # Managed Resources
@@ -256,7 +256,7 @@ const localManagedResources = ManagedResource.make<Model, Message>()(entry => ({
   }),
 }))
 
-export const managedResources = ManagedResource.aggregate<Model, Message>()(
+export const managedResources = ManagedResource.aggregate(
   videoCallManagedResources,
   localManagedResources,
 )

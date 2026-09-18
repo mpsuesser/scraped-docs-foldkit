@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/anti-patterns
 title: "Anti-patterns"
 description: "Architectural warning signs in Foldkit apps, with idiomatic replacements for ambiguous state, leaky Submodel boundaries, misplaced side effects, stale async results, Command ordering, and live handles."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # Anti-patterns
@@ -334,13 +334,18 @@ Suppose a visitor clicks a refresh button. A Message named `FetchWeather` sounds
 ```
 // ❌ Bad: FetchWeather tells update what to do, not what happened.
 
+import type { Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+
 const Message = defineMessageUnion({
   FetchWeather: {},
 })
+type Message = typeof Message.Type
 
-const handlers = {
-  FetchWeather: () => ({ model, commands: [FetchWeather()] }),
-}
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    FetchWeather: () => ({ model, commands: [FetchWeather()] }),
+  })
 ```
 
 Name the Message `ClickedRefresh`. When update handles it, update may return a Command named `FetchWeather`. Message names describe events that happened; Command names describe work to perform.
@@ -348,13 +353,18 @@ Name the Message `ClickedRefresh`. When update handles it, update may return a C
 ```
 // ✅ Good: the Message records the click. The Command names the work.
 
+import type { Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+
 const Message = defineMessageUnion({
   ClickedRefresh: {},
 })
+type Message = typeof Message.Type
 
-const handlers = {
-  ClickedRefresh: () => ({ model, commands: [FetchWeather()] }),
-}
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedRefresh: () => ({ model, commands: [FetchWeather()] }),
+  })
 ```
 
 See [Event Names](https://foldkit.dev/best-practices/messages#events) and [Command Result Names](https://foldkit.dev/best-practices/messages#command-results) for the complete conventions.
@@ -378,15 +388,20 @@ Name the Message `IgnoredMouseClick` even though its update handler returns the 
 ```
 // ✅ Good: IgnoredMouseClick records the event even when the Model stays unchanged.
 
+import type { Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+
 const Message = defineMessageUnion({
   IgnoredMouseClick: {},
 })
+type Message = typeof Message.Type
 
 const handleMouseClick = () => Message.IgnoredMouseClick()
 
-const handlers = {
-  IgnoredMouseClick: () => ({ model }),
-}
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    IgnoredMouseClick: () => ({ model }),
+  })
 ```
 
 See [Descriptive Results](https://foldkit.dev/best-practices/messages#no-noop) for more examples of Messages whose handlers leave the Model unchanged.
@@ -455,12 +470,15 @@ Suppose saving a draft must finish before the application leaves the editor. Whe
 ```
 // ❌ Bad: both Commands start independently.
 
-const handlers = {
-  ClickedSave: () => ({
-    model,
-    commands: [SaveDraft(), NavigateToDocuments()],
-  }),
-}
+import type { Update } from 'foldkit'
+
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedSave: () => ({
+      model,
+      commands: [SaveDraft(), NavigateToDocuments()],
+    }),
+  })
 ```
 
 Have update return only `SaveDraft`. When `SucceededSaveDraft` reaches update, return `NavigateToDocuments`.
@@ -468,17 +486,20 @@ Have update return only `SaveDraft`. When `SucceededSaveDraft` reaches update, r
 ```
 // ✅ Good: update returns NavigateToDocuments after SaveDraft succeeds.
 
-const handlers = {
-  ClickedSave: () => ({
-    model,
-    commands: [SaveDraft()],
-  }),
+import type { Update } from 'foldkit'
 
-  SucceededSaveDraft: () => ({
-    model,
-    commands: [NavigateToDocuments()],
-  }),
-}
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedSave: () => ({
+      model,
+      commands: [SaveDraft()],
+    }),
+
+    SucceededSaveDraft: () => ({
+      model,
+      commands: [NavigateToDocuments()],
+    }),
+  })
 ```
 
 Return Commands together only when they can run independently. Otherwise, when the first result Message reaches update, have update return the next Command. If no distinct result Message or update decision belongs between two operations, sequence them inside one Command.
@@ -491,25 +512,27 @@ Suppose `FetchSuggestions` is interruptible and a new search should replace the 
 // ❌ Bad: interruption and replacement start independently.
 
 import { Number } from 'effect'
+import type { Update } from 'foldkit'
 
-const handlers = {
-  UpdatedQuery: ({ query }) => {
-    const nextSearchGeneration = Number.increment(model.searchGeneration)
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    UpdatedQuery: ({ query }) => {
+      const nextSearchGeneration = Number.increment(model.searchGeneration)
 
-    return {
-      model: evo(model, {
-        query: () => query,
-        searchGeneration: () => nextSearchGeneration,
-      }),
-      commands: [
-        FetchSuggestions.Interrupt(() =>
-          Message.CompletedCancelFetchSuggestions(),
-        ),
-        FetchSuggestions({ query, generation: nextSearchGeneration }),
-      ],
-    }
-  },
-}
+      return {
+        model: evo(model, {
+          query: () => query,
+          searchGeneration: () => nextSearchGeneration,
+        }),
+        commands: [
+          FetchSuggestions.Interrupt(() =>
+            Message.CompletedCancelFetchSuggestions(),
+          ),
+          FetchSuggestions({ query, generation: nextSearchGeneration }),
+        ],
+      }
+    },
+  })
 ```
 
 On the first query change, move the search from `Running` to `Cancelling`, increment its generation, and return only the Interrupt. Further query changes while `Cancelling` update the stored query without dispatching another Interrupt. When `CompletedCancelFetchSuggestions` reaches update, return one `FetchSuggestions` Command with the latest query and generation from the Model.
@@ -522,38 +545,39 @@ import type { Update } from 'foldkit'
 
 type UpdateReturn = Update.Return<Model, Message>
 
-const handlers = {
-  UpdatedQuery: ({ query }) =>
-    SearchState.match<UpdateReturn>(model.searchState, {
-      Running: () => ({
-        model: evo(model, {
-          query: () => query,
-          searchGeneration: Number.increment,
-          searchState: () => SearchState.Cancelling(),
+const update = (model: Model, message: Message) =>
+  Message.match<UpdateReturn>(message, {
+    UpdatedQuery: ({ query }) =>
+      SearchState.match<UpdateReturn>(model.searchState, {
+        Running: () => ({
+          model: evo(model, {
+            query: () => query,
+            searchGeneration: Number.increment,
+            searchState: () => SearchState.Cancelling(),
+          }),
+          commands: [
+            FetchSuggestions.Interrupt(() =>
+              Message.CompletedCancelFetchSuggestions(),
+            ),
+          ],
         }),
-        commands: [
-          FetchSuggestions.Interrupt(() =>
-            Message.CompletedCancelFetchSuggestions(),
-          ),
-        ],
+        Cancelling: () => ({
+          model: evo(model, { query: () => query }),
+        }),
       }),
-      Cancelling: () => ({
-        model: evo(model, { query: () => query }),
-      }),
-    }),
 
-  CompletedCancelFetchSuggestions: () => ({
-    model: evo(model, {
-      searchState: () => SearchState.Running(),
-    }),
-    commands: [
-      FetchSuggestions({
-        query: model.query,
-        generation: model.searchGeneration,
+    CompletedCancelFetchSuggestions: () => ({
+      model: evo(model, {
+        searchState: () => SearchState.Running(),
       }),
-    ],
-  }),
-}
+      commands: [
+        FetchSuggestions({
+          query: model.query,
+          generation: model.searchGeneration,
+        }),
+      ],
+    }),
+  })
 ```
 
 The old `FetchSuggestions` Command may finish just before the Interrupt runs, leaving `SucceededFetchSuggestions` already queued. Incrementing the generation before interruption makes that completion stale. The result handler must still compare the result's generation with the current Model before accepting it. See [Include Enough Context in Command Result Messages](#reject-stale-async-results) and [Sequencing Replacement Work](https://foldkit.dev/core/commands#sequencing-replacement-work) for both parts of the protocol.
@@ -565,19 +589,24 @@ A parent stores a Submodel's Model, but the child owns every transition of that 
 ```
 // ❌ Bad: the parent changes the Settings Model directly.
 
-const handlers = {
-  ClickedResetSettings: () => ({
-    model: evo(model, {
-      settings: settings => evo(settings, { theme: () => 'Light' }),
+import type { Update } from 'foldkit'
+
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedResetSettings: () => ({
+      model: evo(model, {
+        settings: settings => evo(settings, { theme: () => 'Light' }),
+      }),
     }),
-  }),
-}
+  })
 ```
 
 The direct change may skip validation, Commands, or OutMessages that the child needs. Importing an internal child Message does not fix the boundary: it turns that private event into an API the parent depends on.
 
 ```
 // ❌ Bad: the parent imports and constructs an internal Settings Message.
+
+import { Update } from 'foldkit'
 
 import { Message as SettingsMessage } from './settings/message'
 
@@ -588,10 +617,11 @@ const foldSettings = Update.foldChild({
   toParentMessage: message => Message.GotSettingsMessage({ message }),
 })
 
-const handlers = {
-  ClickedResetSettings: () =>
-    foldSettings(model, SettingsMessage.ChangedTheme({ theme: 'Light' })),
-}
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedResetSettings: () =>
+      foldSettings(model, SettingsMessage.ChangedTheme({ theme: 'Light' })),
+  })
 ```
 
 Manually copying the child Model from a helper result causes a separate problem. The parent can keep the next child Model while silently discarding Commands returned with it.
@@ -599,17 +629,20 @@ Manually copying the child Model from a helper result causes a separate problem.
 ```
 // ❌ Bad: manual copying drops the Commands returned with the child Model.
 
-const handlers = {
-  ClickedResetSettings: () => {
-    const settingsReset = Settings.setTheme(model.settings, 'Light')
+import type { Update } from 'foldkit'
 
-    return {
-      model: evo(model, {
-        settings: () => settingsReset.model,
-      }),
-    }
-  },
-}
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedResetSettings: () => {
+      const settingsReset = Settings.setTheme(model.settings, 'Light')
+
+      return {
+        model: evo(model, {
+          settings: () => settingsReset.model,
+        }),
+      }
+    },
+  })
 ```
 
 Export a helper from the child for transitions the parent is allowed to request. The helper constructs the internal Message and immediately passes it through the child's update function. The parent calls the helper without importing the child's Message constructor.
@@ -619,10 +652,13 @@ Export a helper from the child for transitions the parent is allowed to request.
 
 // SETTINGS SUBMODEL
 
+import { Update } from 'foldkit'
+
 import { Message as SettingsMessage } from './message'
+import { update as updateSettings } from './update'
 
 export const setTheme = (model: Model, theme: Theme) =>
-  update(model, SettingsMessage.ChangedTheme({ theme }))
+  updateSettings(model, SettingsMessage.ChangedTheme({ theme }))
 
 // PARENT UPDATE
 
@@ -633,13 +669,14 @@ const foldSettingsTheme = Update.foldChild({
   toParentMessage: message => Message.GotSettingsMessage({ message }),
 })
 
-const handlers = {
-  ClickedResetSettings: () => foldSettingsTheme(model, 'Light'),
-}
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedResetSettings: () => foldSettingsTheme(model, 'Light'),
+  })
 ```
 
 `Update.foldChild` and `Update.foldChildStep` write the returned child Model into the parent and lift the child's Commands. When the child can emit OutMessages, pass `foldOutMessage` so the parent handles every variant instead of accidentally omitting one. The [Submodel guide](https://foldkit.dev/core/submodel) explains child Messages and OutMessages. [Informing Submodels](https://foldkit.dev/patterns/informing-submodels) covers parent-owned facts that a child needs to hear about.
 
 ## Know What Linting Can Catch
 
-The [Foldkit linter](https://foldkit.dev/tooling/oxlint-plugin) can recognize code shapes such as a module-level `let`, `Date.now()` inside update, a parent constructing a child Message, or a Mount whose `execute` function never uses its element. It cannot decide whether two domain states may coexist, whether an async result can become stale, or which part of an application should own a value. Those questions still require design review.
+The [Foldkit linter](https://foldkit.dev/tooling/oxlint-plugin) can recognize code shapes such as a module-level `let`, `Date.now()` inside update, a parent constructing a child Message, or a Mount whose `execute` function never uses its element. It also flags direct child Model edits and manual child Return copies when an in-file fold establishes the Submodel boundary. It cannot decide whether two domain states may coexist, whether an async result can become stale, or which part of an application should own a value without that boundary evidence. Those questions still require design review.

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/subscription-organization
 title: "Subscription Organization"
 description: "Organize Subscription records by ownership and lift child Subscriptions through nested Model and Message types."
-access_date: 2026-09-05T19:30:16.678Z
-current_date: 2026-09-05T19:30:16.678Z
+access_date: 2026-09-18T04:36:53.681Z
+current_date: 2026-09-18T04:36:53.681Z
 ---
 
 # Subscription Organization
@@ -80,7 +80,7 @@ A child exports a Subscriptions record.
 
 `Subscription.aggregate`
 
-Combines records and throws at startup when two entries use the same key.
+Combines records, infers their shared types, and rejects duplicate keys at startup.
 
 A level has more than one local or lifted record.
 
@@ -176,7 +176,7 @@ const localSubscriptions = Subscription.make<Model, Message>()(entry => ({
   ),
 }))
 
-export const subscriptions = Subscription.aggregate<Model, Message>()(
+export const subscriptions = Subscription.aggregate(
   themeMenuSubscriptions,
   localSubscriptions,
 )
@@ -222,7 +222,7 @@ const localSubscriptions = Subscription.make<Model, Message>()(entry => ({
   ),
 }))
 
-export const subscriptions = Subscription.aggregate<Model, Message>()(
+export const subscriptions = Subscription.aggregate(
   settingsSubscriptions,
   localSubscriptions,
 )
@@ -251,9 +251,7 @@ const settingsSubscriptions = Subscription.lift(Settings.subscriptions)<
   when: ({ route }) => route._tag === 'Settings',
 })
 
-export const subscriptions = Subscription.aggregate<Model, Message>()(
-  settingsSubscriptions,
-)
+export const subscriptions = Subscription.aggregate(settingsSubscriptions)
 ```
 
 Closing a gate tears down the Stream. Foldkit also stops calling the child's `modelToDependencies` until the gate reopens, so hidden child changes do not restart it.
@@ -278,9 +276,7 @@ const roomSubscriptions = Subscription.lift(Room.subscriptions)({
   when: { roomKeyboard: ({ route }) => route._tag === 'Room' },
 })
 
-export const subscriptions = Subscription.aggregate<Model, Message>()(
-  roomSubscriptions,
-)
+export const subscriptions = Subscription.aggregate(roomSubscriptions)
 ```
 
 The parent owns `when`. The child keeps its child-owned conditions in its own Subscription definition.
