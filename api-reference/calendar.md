@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/calendar
 title: "Calendar"
 description: "API documentation for the Calendar module."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-18T16:33:34.359Z
+current_date: 2026-09-18T16:33:34.359Z
 ---
 
 # Calendar
@@ -14,7 +14,7 @@ current_date: 2026-09-18T04:36:53.681Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/info.ts#L60)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/info.ts#L60)
 
 ```
 /** Returns the day of the week for a calendar date. */
@@ -29,7 +29,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/calendarDate.ts#L37)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/calendarDate.ts#L37)
 
 ```
 /**
@@ -46,7 +46,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/info.ts#L89)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/info.ts#L89)
 
 ```
 /** Returns the first day of the month containing `self`. */
@@ -65,7 +65,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/calendarDate.ts#L155)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/calendarDate.ts#L155)
 
 ```
 /**
@@ -86,7 +86,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/calendarDate.ts#L141)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/calendarDate.ts#L141)
 
 ```
 /**
@@ -104,7 +104,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/calendarDate.ts#L20)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/calendarDate.ts#L20)
 
 ```
 /**
@@ -121,7 +121,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/info.ts#L107)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/info.ts#L107)
 
 ```
 /**
@@ -143,7 +143,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/calendarDate.ts#L115)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/calendarDate.ts#L115)
 
 ```
 /**
@@ -166,7 +166,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/calendarDate.ts#L186)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/calendarDate.ts#L186)
 
 ```
 /**
@@ -191,7 +191,7 @@ function
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/calendarDate.ts#L67)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/calendarDate.ts#L67)
 
 ```
 /**
@@ -216,7 +216,7 @@ const CalendarDate: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/calendarDate.ts#L211)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/calendarDate.ts#L211)
 
 ```
 /**
@@ -238,7 +238,7 @@ const CalendarDateFromIsoString: decodeTo<Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/locale.ts#L78)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/locale.ts#L78)
 
 ```
 /**
@@ -266,7 +266,7 @@ const DateFormat: NonEmptyArray<TaggedUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/locale.ts#L44)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/locale.ts#L44)
 
 ```
 /**
@@ -299,7 +299,7 @@ const DatePart: TaggedUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/info.ts#L10)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/info.ts#L10)
 
 ```
 /**
@@ -313,7 +313,7 @@ const DayOfWeek: Literals<readonly ["Sunday", "Monday", "Tuesday", "Wednesday", 
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/comparison.ts#L36)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/comparison.ts#L36)
 
 ```
 /** Value-based equivalence for calendar dates. */
@@ -324,7 +324,7 @@ const Equivalence: Equivalence_.Equivalence<CalendarDate>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/locale.ts#L106)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/locale.ts#L106)
 
 ```
 /**
@@ -478,7 +478,7 @@ const LocaleConfig: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/locale.ts#L83)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/locale.ts#L83)
 
 ```
 /** A non-empty format restricted to month and year parts. */
@@ -574,7 +574,7 @@ const MonthYearFormat: NonEmptyArray<Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/comparison.ts#L27)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/comparison.ts#L27)
 
 ```
 /**
@@ -589,7 +589,7 @@ const Order: EffectOrder.Order<CalendarDate>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/arithmetic.ts#L76)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/arithmetic.ts#L76)
 
 ```
 /**
@@ -611,7 +611,7 @@ const addDays: (n: number) => (self: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/arithmetic.ts#L124)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/arithmetic.ts#L124)
 
 ```
 /**
@@ -636,7 +636,7 @@ const addMonths: (n: number) => (self: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/arithmetic.ts#L165)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/arithmetic.ts#L165)
 
 ```
 /**
@@ -659,7 +659,7 @@ const addYears: (n: number) => (self: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/comparison.ts#L165)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/comparison.ts#L165)
 
 ```
 /** Returns `true` when `self` is within the inclusive range `[minimum, maximum]`. */
@@ -677,7 +677,7 @@ const between: (options: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/comparison.ts#L205)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/comparison.ts#L205)
 
 ```
 /**
@@ -703,7 +703,7 @@ const clamp: (options: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/arithmetic.ts#L224)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/arithmetic.ts#L224)
 
 ```
 /**
@@ -726,7 +726,7 @@ const daysSince: (start: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/arithmetic.ts#L198)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/arithmetic.ts#L198)
 
 ```
 /**
@@ -748,7 +748,7 @@ const daysUntil: (end: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/locale.ts#L125)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/locale.ts#L125)
 
 ```
 /**
@@ -763,7 +763,7 @@ const defaultEnglishLocale: LocaleConfig
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/info.ts#L142)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/info.ts#L142)
 
 ```
 /** Returns the end-of-week date — six days after the start of the week. */
@@ -782,7 +782,7 @@ const endOfWeek: (firstDayOfWeek: "Sunday" | "Monday" | "Tuesday" | "Wednesday" 
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/locale.ts#L263)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/locale.ts#L263)
 
 ```
 /**
@@ -847,7 +847,7 @@ const format: (locale: Calendar.LocaleConfig, dateFormat: readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/locale.ts#L326)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/locale.ts#L326)
 
 ```
 /**
@@ -866,7 +866,7 @@ const formatAriaLabel: (locale: Calendar.LocaleConfig) => (self: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/locale.ts#L295)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/locale.ts#L295)
 
 ```
 /**
@@ -884,7 +884,7 @@ const formatLong: (locale: Calendar.LocaleConfig) => (self: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/locale.ts#L349)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/locale.ts#L349)
 
 ```
 /**
@@ -906,7 +906,7 @@ const formatMonthYear: (locale: Calendar.LocaleConfig) => (self: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/locale.ts#L306)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/locale.ts#L306)
 
 ```
 /**
@@ -924,7 +924,7 @@ const formatShort: (locale: Calendar.LocaleConfig) => (self: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/comparison.ts#L81)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/comparison.ts#L81)
 
 ```
 /** Returns `true` when `self` is strictly after `that`. */
@@ -943,7 +943,7 @@ const isAfter: (that: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/comparison.ts#L103)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/comparison.ts#L103)
 
 ```
 /** Returns `true` when `self` is after or equal to `that`. */
@@ -962,7 +962,7 @@ const isAfterOrEqual: (that: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/comparison.ts#L70)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/comparison.ts#L70)
 
 ```
 /** Returns `true` when `self` is strictly before `that`. */
@@ -981,7 +981,7 @@ const isBefore: (that: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/comparison.ts#L92)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/comparison.ts#L92)
 
 ```
 /** Returns `true` when `self` is before or equal to `that`. */
@@ -1000,7 +1000,7 @@ const isBeforeOrEqual: (that: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/calendarDate.ts#L98)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/calendarDate.ts#L98)
 
 ```
 /**
@@ -1014,7 +1014,7 @@ const isCalendarDate: (value: unknown) => unknown
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/comparison.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/comparison.ts#L51)
 
 ```
 /** Returns `true` when two calendar dates represent the same day. */
@@ -1033,7 +1033,7 @@ const isEqual: (that: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/comparison.ts#L136)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/comparison.ts#L136)
 
 ```
 /** Returns the later of two calendar dates. */
@@ -1056,7 +1056,7 @@ const max: (that: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/comparison.ts#L126)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/comparison.ts#L126)
 
 ```
 /** Returns the earlier of two calendar dates. */
@@ -1079,7 +1079,7 @@ const min: (that: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/info.ts#L126)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/info.ts#L126)
 
 ```
 /**
@@ -1102,7 +1102,7 @@ const startOfWeek: (firstDayOfWeek: "Sunday" | "Monday" | "Tuesday" | "Wednesday
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/arithmetic.ts#L98)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/arithmetic.ts#L98)
 
 ```
 /** Subtracts `n` days from a calendar date. Equivalent to `addDays(self, -n)`. */
@@ -1121,7 +1121,7 @@ const subtractDays: (n: number) => (self: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/arithmetic.ts#L141)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/arithmetic.ts#L141)
 
 ```
 /** Subtracts `n` months from a calendar date. Equivalent to `addMonths(self, -n)`. */
@@ -1140,7 +1140,7 @@ const subtractMonths: (n: number) => (self: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/arithmetic.ts#L175)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/arithmetic.ts#L175)
 
 ```
 /** Subtracts `n` years from a calendar date. Equivalent to `addYears(self, -n)`. */
@@ -1159,7 +1159,7 @@ const subtractYears: (n: number) => (self: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7a3180b90d4eff772fa22928f31009e7dda9ff8f/packages/foldkit/src/calendar/today.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/71e9b47d6caba59367961fe61f55a882af1faa04/packages/foldkit/src/calendar/today.ts#L29)
 
 ```
 /**

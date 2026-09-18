@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/dialog
 title: "Dialog"
 description: "A modal dialog backed by the native dialog element with focus trapping and scroll locking."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-18T16:33:34.359Z
+current_date: 2026-09-18T16:33:34.359Z
 ---
 
 ## Overview
@@ -146,28 +146,6 @@ const view = (h: HtmlBuilder<Message>) =>
     ],
   )
 ```
-
-### Initially open
-
-`Dialog.init()` always creates a closed Dialog. An initially open Dialog previously used:
-
-```
-const dialog = Dialog.init({ id: 'confirm', isOpen: true })
-```
-
-Use `Dialog.boot()` instead. `boot()` returns the open Model together with the `ShowDialog` Command and `Opened` OutMessage produced by the normal update path.
-
-Pass the boot result to `Update.foldChildInit`. Its adapters construct the parent Model, map the child Commands into the parent Message type, and fold the OutMessage through the same `foldDialogOutMessage` used by the parent update. This ensures an `Opened` arm with parent behavior also runs during initialization; a parent with no behavior for that fact keeps an explicit no-op `Opened` arm.
-
-```
-return Update.foldChildInit(Dialog.boot({ id: 'confirm' }), {
-  toParentModel: dialog => ({ dialog }),
-  toParentMessage: toGotDialogMessage,
-  foldOutMessage: foldDialogOutMessage,
-})
-```
-
-The mapped `ShowDialog` Command acquires background isolation, scroll locking, focus trapping, stack registration, and runtime cleanup after the first render commits. The Dialog's Mount reacquires those resources when development Model preservation restores an open Dialog without replaying initialization Commands.
 
 ### Animated
 
@@ -557,6 +535,20 @@ When `isAnimated` is true, enter/leave animations flow through the [Animation](h
 | `data-transition` | Present during any animation phase. |
 | `data-enter` | Present during the enter animation. |
 | `data-leave` | Present during the leave animation. |
+
+## Starting with an Open Dialog
+
+Use `Dialog.boot()` when a Dialog should be open when the application starts. Pass its result to `Update.foldChildInit` so the parent incorporates the Dialog Model, maps its Commands to the parent Message type, and handles its `Opened` OutMessage.
+
+```
+return Update.foldChildInit(Dialog.boot({ id: 'confirm' }), {
+  toParentModel: dialog => ({ dialog }),
+  toParentMessage: toGotDialogMessage,
+  foldOutMessage: foldDialogOutMessage,
+})
+```
+
+See [Folding Update with Update.foldChild](https://foldkit.dev/core/submodel#fold-child) for the general child-initialization pattern.
 
 ## Keyboard Interaction
 
