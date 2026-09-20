@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-disclosure
 title: "Ui/Disclosure"
 description: "API documentation for the Ui/Disclosure module."
-access_date: 2026-09-18T18:12:22.916Z
-current_date: 2026-09-18T18:12:22.916Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Ui/Disclosure
@@ -14,7 +14,7 @@ current_date: 2026-09-18T18:12:22.916Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/ui/src/disclosure/index.ts#L10)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/disclosure/index.ts#L10)
 
 ```
 /**
@@ -30,7 +30,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/ui/src/disclosure/index.ts#L96)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/disclosure/index.ts#L96)
 
 ```
 /**
@@ -54,7 +54,7 @@ function
  * 
  *  // In update:
  *  ToggledDetails: ({ isOpen }) => ({
- *    model: evo(model, { isDetailsOpen: () => isOpen }),
+ *    model: modifyFields(model, { isDetailsOpen: () => isOpen }),
  *  }),
  *  ```
  */
@@ -70,11 +70,11 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/ui/src/disclosure/index.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/disclosure/index.ts#L48)
 
 ```
 /**
- * Options for DisclosureAttributes.animatePanel.
+ * Options for `DisclosureAttributes.animatePanel`.
  * 
  *  - `peek`: a CSS height the collapsed panel keeps, such as `'7.5em'` for
  *    five lines at a 1.5 leading. The visible content is an inert preview;
@@ -89,7 +89,7 @@ type AnimatePanelOptions = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/ui/src/disclosure/index.ts#L26)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/disclosure/index.ts#L26)
 
 ```
 /**
@@ -115,7 +115,7 @@ type DisclosureAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/ui/src/disclosure/index.ts#L63)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/disclosure/index.ts#L63)
 
 ```
 /**

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/stopwatch
 title: "Stopwatch"
 description: "A stopwatch with start, stop, and reset. Demonstrates a time-based Subscription."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -34,7 +34,7 @@ import {
 import { Command, Runtime, Subscription, type Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Button } from '@foldkit/ui'
 
@@ -94,20 +94,20 @@ export const update = (model: Model, message: Message) =>
     }),
 
     CompletedDetermineStartTime: ({ startTime }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         isRunning: () => true,
         startTime: () => startTime,
       }),
     }),
 
     ClickedStop: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         isRunning: () => false,
       }),
     }),
 
     ClickedReset: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         elapsedMs: () => 0,
         isRunning: () => false,
         startTime: () => 0,
@@ -120,7 +120,7 @@ export const update = (model: Model, message: Message) =>
     }),
 
     CompletedDetermineTickTime: ({ elapsedMs }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         elapsedMs: () => elapsedMs,
       }),
     }),

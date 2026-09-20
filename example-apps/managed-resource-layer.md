@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/managed-resource-layer
 title: "Managed Resource Layer"
 description: "A layer-backed ManagedResource starts a ComputeEngine service from an Effect Layer, exposes it to Commands, and runs Layer finalizers when the Model turns it off."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -39,7 +39,7 @@ import { Command, ManagedResource, Runtime, type Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { defineTaggedUnion } from 'foldkit/schema'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { BrowserCrypto } from '@effect/platform-browser'
 import { Button } from '@foldkit/ui'
@@ -125,15 +125,15 @@ export const Compute = Command.define('Compute', {
 export const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message, EngineService>>(message, {
     ClickedStartEngine: () => ({
-      model: evo(model, { engine: () => EngineState.Booting() }),
+      model: modifyFields(model, { engine: () => EngineState.Booting() }),
     }),
 
     ClickedStopEngine: () => ({
-      model: evo(model, { engine: () => EngineState.Off() }),
+      model: modifyFields(model, { engine: () => EngineState.Off() }),
     }),
 
     StartedEngine: ({ engineId }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         engine: () => EngineState.Ready({ engineId }),
       }),
     }),
@@ -141,19 +141,23 @@ export const update = (model: Model, message: Message) =>
     StoppedEngine: () => ({ model }),
 
     FailedStartEngine: ({ reason }) => ({
-      model: evo(model, { engine: () => EngineState.Failed({ reason }) }),
+      model: modifyFields(model, {
+        engine: () => EngineState.Failed({ reason }),
+      }),
     }),
 
     ClickedCompute: () => {
       const nextComputeCount = Number.increment(model.computeCount)
       return {
-        model: evo(model, { computeCount: () => nextComputeCount }),
+        model: modifyFields(model, { computeCount: () => nextComputeCount }),
         commands: [Compute({ value: nextComputeCount })],
       }
     },
 
     CompletedCompute: ({ result }) => ({
-      model: evo(model, { maybeSquareResult: () => Option.some(result) }),
+      model: modifyFields(model, {
+        maybeSquareResult: () => Option.some(result),
+      }),
     }),
 
     SkippedCompute: () => ({ model }),

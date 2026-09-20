@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/field-validation
 title: "Field Validation"
 description: "Model each field as NotValidated, Validating, Invalid, or Valid. Compose synchronous and asynchronous Rules, cross-field checks, and form-level validation."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Field Validation
@@ -98,19 +98,19 @@ const validateCompanyName = (
 
 ## Applying Validation
 
-Call `validate(rules)(value)` to validate a value against a bundle of rules. It returns one of the four `Field` variants, failing fast at the first rule that fails. Use it in your update function with `evo` to set the field state.
+Call `validate(rules)(value)` to validate a value against a bundle of rules. It returns one of the four `Field` variants, failing fast at the first rule that fails. Use it in your update function with `modifyFields` to set the field state.
 
 ```
 import { Update } from 'foldkit'
 import { validate } from 'foldkit/fieldValidation'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const validateUsername = validate(usernameRules)
 
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ChangedUsername: ({ value }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         username: () => validateUsername(value),
       }),
     }),
@@ -171,7 +171,7 @@ For server-side checks like “Is this email taken?”, use the `Validating` sta
 import { Effect, Match, Number, Schema } from 'effect'
 import { Command, Update } from 'foldkit'
 import { Invalid, Valid, Validating, validate } from 'foldkit/fieldValidation'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const validateEmail = validate(emailRules)
 
@@ -213,14 +213,14 @@ const update = (model: Model, message: Message) =>
 
       return Match.value(syncResult).pipe(
         Match.tag('Valid', () => ({
-          model: evo(model, {
+          model: modifyFields(model, {
             email: () => Validating({ value }),
             emailValidationId: () => validationId,
           }),
           commands: [CheckEmailAvailable({ email: value, validationId })],
         })),
         Match.orElse(() => ({
-          model: evo(model, {
+          model: modifyFields(model, {
             email: () => syncResult,
             emailValidationId: () => validationId,
           }),
@@ -230,7 +230,7 @@ const update = (model: Model, message: Message) =>
 
     CompletedCheckEmailAvailable: ({ validationId, field }) => {
       if (validationId === model.emailValidationId) {
-        return { model: evo(model, { email: () => field }) }
+        return { model: modifyFields(model, { email: () => field }) }
       } else {
         return { model }
       }
@@ -279,7 +279,7 @@ import {
   makeRules,
   validate,
 } from 'foldkit/fieldValidation'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const passwordRules = makeRules({
   required: 'Password is required',
@@ -305,7 +305,7 @@ const validateConfirmPassword = (
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ChangedPassword: ({ value }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         password: () => validatePassword(value),
         confirmPassword: confirmPassword =>
           confirmPassword._tag === 'NotValidated'
@@ -315,7 +315,7 @@ const update = (model: Model, message: Message) =>
     }),
 
     ChangedConfirmPassword: ({ value }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         confirmPassword: () =>
           validateConfirmPassword(model.password.value, value),
       }),

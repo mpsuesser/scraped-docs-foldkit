@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/file-drop
 title: "File Drop"
 description: "Headless file drop zone that accepts drag-and-drop plus click-to-browse via a hidden native file input."
-access_date: 2026-09-05T19:30:16.678Z
-current_date: 2026-09-05T19:30:16.678Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -28,7 +28,7 @@ import { Array, Option, Schema } from 'effect'
 import { File, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { FileDrop } from '@foldkit/ui'
 
@@ -63,7 +63,7 @@ const foldFileDropOutMessage = FileDrop.OutMessage.match<
   ReceivedFiles:
     ({ files }) =>
     model => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         uploadedFiles: Array.appendAll(files),
       }),
     }),
@@ -78,7 +78,8 @@ const foldFileDropOutMessage = FileDrop.OutMessage.match<
 const foldFileDrop = Update.foldChild({
   update: FileDrop.update,
   read: (model: Model) => Option.some(model.uploader),
-  write: (model, nextUploader) => evo(model, { uploader: () => nextUploader }),
+  write: (model, nextUploader) =>
+    modifyFields(model, { uploader: () => nextUploader }),
   toParentMessage: message => Message.GotFileDropMessage({ message }),
   foldOutMessage: foldFileDropOutMessage,
 })

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/popover
 title: "Popover"
 description: "An anchored floating panel for arbitrary content, with dismissal, focus return, portaling, and optional modal behavior."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -30,7 +30,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Popover } from '@foldkit/ui'
 
@@ -77,7 +77,8 @@ const foldPopoverOutMessage = Popover.OutMessage.match<
 const foldPopover = Update.foldChild({
   update: Popover.update,
   read: (model: Model) => Option.some(model.popover),
-  write: (model, nextPopover) => evo(model, { popover: () => nextPopover }),
+  write: (model, nextPopover) =>
+    modifyFields(model, { popover: () => nextPopover }),
   toParentMessage: message => Message.GotPopoverMessage({ message }),
   foldOutMessage: foldPopoverOutMessage,
 })
@@ -251,7 +252,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Popover } from '@foldkit/ui'
 
@@ -294,7 +295,7 @@ const foldAccountPopover = Update.foldChild({
   update: Popover.update,
   read: (model: Model) => Option.some(model.accountPopover),
   write: (model, nextAccountPopover) =>
-    evo(model, { accountPopover: () => nextAccountPopover }),
+    modifyFields(model, { accountPopover: () => nextAccountPopover }),
   toParentMessage: message => Message.GotAccountPopoverMessage({ message }),
   foldOutMessage: foldPopoverOutMessage,
 })
@@ -303,7 +304,9 @@ const foldAccountDetailsPopover = Update.foldChild({
   update: Popover.update,
   read: (model: Model) => Option.some(model.accountDetailsPopover),
   write: (model, nextAccountDetailsPopover) =>
-    evo(model, { accountDetailsPopover: () => nextAccountDetailsPopover }),
+    modifyFields(model, {
+      accountDetailsPopover: () => nextAccountDetailsPopover,
+    }),
   toParentMessage: message =>
     Message.GotAccountDetailsPopoverMessage({ message }),
   foldOutMessage: foldPopoverOutMessage,

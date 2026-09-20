@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/drag-and-drop
 title: "Drag and Drop"
 description: "Accessible drag and drop with keyboard support, auto-scrolling, and screen reader announcements."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -36,7 +36,7 @@ import { Option, Schema } from 'effect'
 import { Subscription, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { DragAndDrop } from '@foldkit/ui'
 
@@ -77,7 +77,7 @@ const foldDragAndDropOutMessage = DragAndDrop.OutMessage.match<
   Reordered:
     ({ itemId, fromIndex, toIndex }) =>
     model => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         // reorder is your own function that moves the item
         items: items => reorder(items, itemId, fromIndex, toIndex),
       }),
@@ -96,7 +96,7 @@ const foldDragAndDrop = Update.foldChild({
   update: DragAndDrop.update,
   read: (model: Model) => Option.some(model.dragAndDrop),
   write: (model, nextDragAndDrop) =>
-    evo(model, { dragAndDrop: () => nextDragAndDrop }),
+    modifyFields(model, { dragAndDrop: () => nextDragAndDrop }),
   toParentMessage: message => Message.GotDragAndDropMessage({ message }),
   foldOutMessage: foldDragAndDropOutMessage,
 })

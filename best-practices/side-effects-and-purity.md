@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/side-effects-and-purity
 title: "Side Effects & Purity"
 description: "Keep update and view deterministic by confining outside work to Commands, Subscriptions, Mounts, ManagedResources, and other Runtime-managed boundaries."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Side Effects and Purity
@@ -23,7 +23,7 @@ Effectful work lives at boundaries managed by the Runtime. Depending on the boun
 - [Resources](https://foldkit.dev/core/resources) provide app-lifetime services shared by Commands, Subscriptions, Mounts, and Flags.
 - [ManagedResource](https://foldkit.dev/core/managed-resources) acquires a typed stateful handle while a Model condition holds. Commands and Subscriptions can use that handle while it is live.
 
-These descriptions do nothing until the Runtime starts them. One narrow exception stays inside its boundary: a DOM-event mapper may need to perform synchronous browser work before returning a Message. Use `Subscription.fromEventFilterMapPreventDefault` when handling an event should also cancel its default action. The helper runs its mapper and calls `preventDefault()` inside the browser's dispatch, while a downstream `Stream` operator runs too late to cancel the event.
+These descriptions do nothing until the Runtime starts them. One narrow exception stays inside its boundary: a DOM-event mapper may need to perform synchronous browser work before returning a value. Use `Subscription.fromEventFilterMapPreventDefault` when handling an event should also cancel its default action. The helper runs `filterMapEvent` and calls `preventDefault()` inside the browser's dispatch, while a downstream `Stream` operator runs too late to cancel the event. `Subscription.make` checks that the final Stream emits Messages.
 
 A [CustomElement](https://foldkit.dev/core/custom-element) binding remains declarative. Properties flow from the Model into the native element, and its events return as Messages. The browser owns the custom element's internal implementation.
 
@@ -90,7 +90,7 @@ Update reads the current Model and one Message. It returns a new Model plus desc
 
 ```
 import { type Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Message } from './message'
 import type { Model } from './model'
@@ -100,7 +100,7 @@ const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     OpenedDialog: () => {
       document.querySelector<HTMLInputElement>('#search-input')?.focus()
-      return { model: evo(model, { dialogState: () => 'Open' }) }
+      return { model: modifyFields(model, { dialogState: () => 'Open' }) }
     },
   })
 ```
@@ -108,7 +108,7 @@ const update = (model: Model, message: Message) =>
 ```
 import { Effect } from 'effect'
 import { Command, Dom, type Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Message } from './message'
 import type { Model } from './model'
@@ -125,7 +125,7 @@ const FocusSearchInput = Command.define('FocusSearchInput', {
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     OpenedDialog: () => ({
-      model: evo(model, { dialogState: () => 'Open' }),
+      model: modifyFields(model, { dialogState: () => 'Open' }),
       commands: [FocusSearchInput()],
     }),
     CompletedFocusSearchInput: () => ({ model }),
@@ -142,7 +142,7 @@ This version generates a different position each time update receives the same i
 
 ```
 import { type Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { GRID_SIZE } from './constants'
 import { Message } from './message'
@@ -154,7 +154,7 @@ const update = (model: Model, message: Message) =>
     RequestedApple: () => {
       const x = Math.floor(Math.random() * GRID_SIZE)
       const y = Math.floor(Math.random() * GRID_SIZE)
-      return { model: evo(model, { apple: () => ({ x, y }) }) }
+      return { model: modifyFields(model, { apple: () => ({ x, y }) }) }
     },
   })
 ```
@@ -164,7 +164,7 @@ The pure version returns `GenerateApplePosition`. Its Effect generates the coord
 ```
 import { Effect, Random } from 'effect'
 import { Command, type Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { GRID_SIZE } from './constants'
 import { Message } from './message'
@@ -184,7 +184,7 @@ const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     RequestedApple: () => ({ model, commands: [GenerateApplePosition()] }),
     CompletedGenerateApplePosition: ({ position }) => ({
-      model: evo(model, { apple: () => position }),
+      model: modifyFields(model, { apple: () => position }),
     }),
   })
 ```

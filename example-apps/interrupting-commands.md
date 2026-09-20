@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/interrupting-commands
 title: "Interrupting Commands"
 description: "Simulated file uploads driven by interruptible Commands. Cancel one upload, cancel every upload in flight, or restart a cancelled upload through a keyed interrupt registry and an outcome-carrying result Message."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -37,7 +37,7 @@ import {
 import { Command, Runtime, type Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 // MODEL
 
@@ -140,7 +140,9 @@ export const CancelUploadFile = ({ uploadId }: UploadKey) =>
 
 const setStatusForId = (uploadId: number, status: UploadStatus) =>
   Array.map((upload: Upload) =>
-    upload.id === uploadId ? evo(upload, { status: () => status }) : upload,
+    upload.id === uploadId
+      ? modifyFields(upload, { status: () => status })
+      : upload,
   )
 
 type UpdateReturn = Update.Return<Model, Message>
@@ -156,7 +158,7 @@ export const update = (model: Model, message: Message) =>
         status: 'Uploading',
       })
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           uploadId: Number.increment,
           uploads: Array.append(startedUpload),
         }),
@@ -194,7 +196,7 @@ export const update = (model: Model, message: Message) =>
         Option.match({
           onNone: () => ({ model }),
           onSome: upload => ({
-            model: evo(model, {
+            model: modifyFields(model, {
               uploads: setStatusForId(uploadId, 'Uploading'),
             }),
             commands: [
@@ -205,13 +207,13 @@ export const update = (model: Model, message: Message) =>
       ),
 
     SucceededUploadFile: ({ uploadId }) => ({
-      model: evo(model, { uploads: setStatusForId(uploadId, 'Done') }),
+      model: modifyFields(model, { uploads: setStatusForId(uploadId, 'Done') }),
     }),
 
     CompletedCancelUploadFile: ({ uploadId, outcome }) =>
       Command.Interruptible.Outcome.match<UpdateReturn>(outcome, {
         Interrupted: () => ({
-          model: evo(model, {
+          model: modifyFields(model, {
             uploads: setStatusForId(uploadId, 'Cancelled'),
           }),
         }),

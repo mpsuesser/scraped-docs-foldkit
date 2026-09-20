@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Split a large application into child state machines while preserving parent-to-child Message flow. Covers Update.foldChild, h.submodel, OutMessages, reflection, testing, and DevTools."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## When to Create a Submodel
@@ -38,7 +38,7 @@ A child Submodel does not know which parent embeds it. This Settings Submodel ow
 import { Schema } from 'effect'
 import { type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 // MODEL
 
@@ -69,13 +69,13 @@ export type Message = typeof Message.Type
 export const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ChangedTheme: ({ theme }) => ({
-      model: evo(model, { theme: () => theme }),
+      model: modifyFields(model, { theme: () => theme }),
     }),
     ChangedFontSize: ({ fontSize }) => ({
-      model: evo(model, { fontSize: () => fontSize }),
+      model: modifyFields(model, { fontSize: () => fontSize }),
     }),
     ToggledNotifications: () => ({
-      model: evo(model, { notificationsEnabled: enabled => !enabled }),
+      model: modifyFields(model, { notificationsEnabled: enabled => !enabled }),
     }),
   })
 ```
@@ -102,15 +102,15 @@ export type Model = typeof Model.Type
 
 ### Never Bypass the Child’s Update
 
-The parent stores the child Model, but the child still owns it. Do not use [evo](https://foldkit.dev/best-practices/immutability#immutable-updates) to change fields inside that slice from the parent.
+The parent stores the child Model, but the child still owns it. Do not use [modifyFields](https://foldkit.dev/best-practices/immutability#immutable-updates) to change fields inside that slice from the parent.
 
 ```
 // ❌ Don't reach into the child's Model from the parent's update.
 // This bypasses Settings.update, so its invariants, Commands,
 // and OutMessages are skipped.
 ClickedResetSettings: () => ({
-  model: evo(model, {
-    settings: settings => evo(settings, { theme: () => 'Light' }),
+  model: modifyFields(model, {
+    settings: settings => modifyFields(settings, { theme: () => 'Light' }),
   }),
 })
 ```
@@ -130,7 +130,8 @@ export const setTheme = (model: Model, theme: Theme) =>
 const foldSettingsTheme = Update.foldChild({
   update: Settings.setTheme,
   read: (model: Model) => Option.some(model.settings),
-  write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
+  write: (model, nextSettings) =>
+    modifyFields(model, { settings: () => nextSettings }),
   toParentMessage: message => Message.GotSettingsMessage({ message }),
 })
 
@@ -182,12 +183,13 @@ The resulting fold reads the child, runs its update, writes it back, and lifts i
 ```
 import { Option } from 'effect'
 import { Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const foldSettings = Update.foldChild({
   update: Settings.update,
   read: (model: Model) => Option.some(model.settings),
-  write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
+  write: (model, nextSettings) =>
+    modifyFields(model, { settings: () => nextSettings }),
   toParentMessage: message => GotSettingsMessage({ message }),
 })
 
@@ -206,7 +208,7 @@ Use `Update.foldChildStep` for an entry point that takes only the child Model, s
 ```
 import { Option } from 'effect'
 import { Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const toParentDialogOutMessage = Dialog.OutMessage.match<
   OutMessage | undefined
@@ -218,7 +220,8 @@ const toParentDialogOutMessage = Dialog.OutMessage.match<
 const foldDialogClose = Update.foldChildStep({
   update: Dialog.close,
   read: (model: Model) => Option.some(model.dialog),
-  write: (model, nextDialog) => evo(model, { dialog: () => nextDialog }),
+  write: (model, nextDialog) =>
+    modifyFields(model, { dialog: () => nextDialog }),
   toParentMessage: message => Message.GotDialogMessage({ message }),
   toParentOutMessage: toParentDialogOutMessage,
 })
@@ -478,7 +481,7 @@ For a fixed set, give each child its own Model field and `slotId`. For a dynamic
 import { Array, Option } from 'effect'
 import { Update } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Applicant } from './applicant'
 import { GotApplicantMessage, type Message } from './message'
@@ -516,10 +519,10 @@ const foldApplicant = (entryId: string) =>
         applicant => applicant.entry,
       ),
     write: (model, nextEntry) =>
-      evo(model, {
+      modifyFields(model, {
         applicants: Array.map(applicant =>
           applicant.id === entryId
-            ? evo(applicant, { entry: () => nextEntry })
+            ? modifyFields(applicant, { entry: () => nextEntry })
             : applicant,
         ),
       }),
@@ -601,7 +604,7 @@ Add a third `context` argument when child update needs the current parent value 
 ```
 import { Option } from 'effect'
 import { Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Message } from '../../message'
 import type { Model as AppModel } from '../../model'
@@ -622,7 +625,7 @@ export const update = (
     message,
     {
       ChangedTheme: ({ theme }) => ({
-        model: evo(model, { theme: () => theme }),
+        model: modifyFields(model, { theme: () => theme }),
         commands: [PersistSettings({ userId: context.currentUser.id, theme })],
       }),
       // ...other arms
@@ -637,7 +640,7 @@ const foldSettings = (currentUser: User) =>
       update(settings, message, { currentUser }),
     read: (model: AppModel) => Option.some(model.settings),
     write: (model, nextSettings) =>
-      evo(model, { settings: () => nextSettings }),
+      modifyFields(model, { settings: () => nextSettings }),
     toParentMessage: message => Message.GotSettingsMessage({ message }),
   })
 
@@ -713,7 +716,7 @@ Do not unpack a child update, helper, init, or boot result by hand. Destructurin
 ```
 import { Option } from 'effect'
 import { Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const foldLoginOutMessage = Login.OutMessage.match<Update.Step<Model, Message>>(
   {
@@ -729,7 +732,7 @@ const foldLoginOutMessage = Login.OutMessage.match<Update.Step<Model, Message>>(
 const foldLogin = Update.foldChild({
   update: Login.update,
   read: (model: Model) => Option.some(model.login),
-  write: (model, nextLogin) => evo(model, { login: () => nextLogin }),
+  write: (model, nextLogin) => modifyFields(model, { login: () => nextLogin }),
   toParentMessage: message => GotLoginMessage({ message }),
   foldOutMessage: foldLoginOutMessage,
 })
@@ -783,13 +786,13 @@ OutMessages move facts from child to parent. A `reflect*` helper handles the inb
 
 A `reflect*` helper returns the child Model directly. It does not return Commands or an OutMessage. The external value is already the source of truth, so emitting it back could create a write loop.
 
-Define reflect helpers with `Function.dual` so they work point-free in [evo](https://foldkit.dev/best-practices/immutability#immutable-updates). Here the URL owns the price range, and the parent reflects that range onto a Slider.
+Define reflect helpers with `Function.dual` so they work point-free in [modifyFields](https://foldkit.dev/best-practices/immutability#immutable-updates). Here the URL owns the price range, and the parent reflects that range onto a Slider.
 
 ```
 ChangedUrl: ({ route }) => ({
-  model: evo(model, {
+  model: modifyFields(model, {
     // The URL owns the price bounds, so reflect them onto the Slider. reflectRange
-    // returns Model (point-free in evo) and emits nothing, so it can't echo the
+    // returns Model (point-free in modifyFields) and emits nothing, so it can't echo the
     // route back and loop.
     priceSlider: Slider.reflectRange({
       min: route.minPrice,

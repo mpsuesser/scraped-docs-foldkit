@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/project-organization
 title: "Project Organization"
 description: "Start with one main module, then separate Messages, Commands, Submodels, and Subscriptions when ownership or file size makes the split useful."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Project Organization
@@ -88,7 +88,7 @@ Put shared business concepts in `domain/`. Each module owns its Schema and pure 
 ```
 // domain/cart.ts
 import { Array, Option, Schema } from 'effect'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { CartItem, Item } from './item'
 
@@ -108,7 +108,7 @@ export const addItem =
       onSome: () =>
         Array.map(cart, cartItem =>
           cartItem.item.id === item.id
-            ? evo(cartItem, { quantity: quantity => quantity + 1 })
+            ? modifyFields(cartItem, { quantity: quantity => quantity + 1 })
             : cartItem,
         ),
     })

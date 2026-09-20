@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/coming-from-tanstack-query
 title: "Coming from TanStack Query"
 description: "Foldkit has no useQuery. AsyncData models remote values, while caching, refetching, invalidation, deduplication, and request races remain visible application policy."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 TanStack Query is excellent at what it does. It combines remote data, a keyed cache, and fetching policy behind hooks and a `QueryClient`. Foldkit has no `useQuery`, and it does not need one.
@@ -77,13 +77,13 @@ Match.tagsExhaustive({
     Option.match(AsyncData.revalidateOrLoad(model.posts), {
       onNone: () => ({ model }),
       onSome: nextPosts => ({
-        model: evo(model, { posts: () => nextPosts }),
+        model: modifyFields(model, { posts: () => nextPosts }),
         commands: [FetchPosts()],
       }),
     }),
 
   SettledFetchPosts: ({ result }) => ({
-    model: evo(model, { posts: AsyncData.settle(result) }),
+    model: modifyFields(model, { posts: AsyncData.settle(result) }),
   }),
 })
 ```
@@ -126,7 +126,7 @@ import { Effect, Schema, pipe } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
 import { AsyncData, Command, Http, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const SearchResult = Schema.Struct({ id: Schema.String, title: Schema.String })
 
@@ -183,7 +183,7 @@ const Search = Command.define('Search', {
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     UpdatedQuery: ({ query }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         queryInput: () => query,
         searchResults: () => SearchResultsData.Loading(),
       }),
@@ -194,7 +194,9 @@ const update = (model: Model, message: Message) =>
       if (query !== model.queryInput) {
         return { model }
       }
-      return { model: evo(model, { searchResults: AsyncData.settle(result) }) }
+      return {
+        model: modifyFields(model, { searchResults: AsyncData.settle(result) }),
+      }
     },
   })
 ```

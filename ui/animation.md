@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/animation
 title: "Animation"
 description: "Coordinates CSS enter/leave animations via a state machine and data attributes. Works with both CSS transitions and keyframe animations."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -40,7 +40,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Animation } from '@foldkit/ui'
 
@@ -107,7 +107,7 @@ const foldAnimation = Update.foldChild({
   update: Animation.update,
   read: (model: Model) => Option.some(model.animation),
   write: (model, nextAnimation) =>
-    evo(model, { animation: () => nextAnimation }),
+    modifyFields(model, { animation: () => nextAnimation }),
   toParentMessage: message => Message.GotAnimationMessage({ message }),
   foldOutMessage: foldAnimationOutMessage,
 })
@@ -119,7 +119,7 @@ const foldAnimationShow = Update.foldChildStep({
   update: Animation.show,
   read: (model: Model) => Option.some(model.animation),
   write: (model, nextAnimation) =>
-    evo(model, { animation: () => nextAnimation }),
+    modifyFields(model, { animation: () => nextAnimation }),
   toParentMessage: message => Message.GotAnimationMessage({ message }),
 })
 
@@ -127,7 +127,7 @@ const foldAnimationHide = Update.foldChildStep({
   update: Animation.hide,
   read: (model: Model) => Option.some(model.animation),
   write: (model, nextAnimation) =>
-    evo(model, { animation: () => nextAnimation }),
+    modifyFields(model, { animation: () => nextAnimation }),
   toParentMessage: message => Message.GotAnimationMessage({ message }),
 })
 

@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/update
 title: "Update"
-description: "Handle every Message with a pure update function that returns the next Model and Commands. Use Match and evo to keep transitions exhaustive and immutable."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+description: "Handle every Message with a pure update function that returns the next Model and Commands. Use Match and modifyFields to keep transitions exhaustive and immutable."
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## One Function Defines Every Transition
@@ -18,25 +18,25 @@ Use a `defineTaggedUnion` or `defineRouteUnion` namespace's `match` for exhausti
 
 ```
 import { type Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 // UPDATE
 
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedDecrement: () => ({
-      model: evo(model, { count: count => count - 1 }),
+      model: modifyFields(model, { count: count => count - 1 }),
     }),
     ClickedIncrement: () => ({
-      model: evo(model, { count: count => count + 1 }),
+      model: modifyFields(model, { count: count => count + 1 }),
     }),
-    ClickedReset: () => ({ model: evo(model, { count: () => 0 }) }),
+    ClickedReset: () => ({ model: modifyFields(model, { count: () => 0 }) }),
   })
 ```
 
 Each branch describes one transition. `ClickedDecrement` and `ClickedIncrement` transform the current count. `ClickedReset` replaces it with zero. This version of the counter has no side effects, so all three omit `commands`.
 
-The branches build their next Model with [evo](https://foldkit.dev/best-practices/immutability#immutable-updates). Each named field receives a function from its current value to its next value. Omitted fields keep their existing values and references, so the same update style continues to work as the Model grows.
+The branches build their next Model with [modifyFields](https://foldkit.dev/best-practices/immutability#immutable-updates). Each named field receives a function from its current value to its next value. Omitted fields keep their existing values and references, so the same update style continues to work as the Model grows.
 
 Update returns a record containing the next Model and, when needed, an array of Commands. A Command describes one side effect, such as an HTTP request, timer, or browser API call. The [Commands](https://foldkit.dev/core/commands) page adds a delayed reset and puts the optional `commands` field to work.
 
@@ -46,7 +46,7 @@ Return Commands beside the next Model from the Message branch that requests the 
 
 ```
 import { type Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
@@ -54,7 +54,7 @@ const update = (model: Model, message: Message) =>
       const nextCount = model.count + 1
 
       return {
-        model: evo(model, { count: () => nextCount }),
+        model: modifyFields(model, { count: () => nextCount }),
         commands: [PersistCount({ count: nextCount })],
       }
     },
@@ -100,7 +100,7 @@ TypeScript rejects this manual composition when the enclosing update returns `Up
 const dialogOpen = openDialog(model)
 
 return {
-  model: evo(dialogOpen.model, { isSubmitting: () => false }),
+  model: modifyFields(dialogOpen.model, { isSubmitting: () => false }),
   // Type error: with exactOptionalPropertyTypes, this property must be
   // omitted when dialogOpen.commands is undefined.
   commands: dialogOpen.commands,
@@ -115,7 +115,7 @@ This error often points to update results being composed by hand. When both oper
 return Update.combine(model, [
   openDialog,
   stepModel => ({
-    model: evo(stepModel, { isSubmitting: () => false }),
+    model: modifyFields(stepModel, { isSubmitting: () => false }),
   }),
 ])
 ```
@@ -128,7 +128,7 @@ Use `Update.combine` when two or more operations transform the same Model and a 
 return Update.combine(model, [
   foldDialogClose,
   stepModel => ({
-    model: evo(stepModel, { isSubmitting: () => false }),
+    model: modifyFields(stepModel, { isSubmitting: () => false }),
   }),
 ])
 ```
@@ -150,7 +150,7 @@ const foldSearchOutMessage = Search.OutMessage.match<
   PreparedResults:
     ({ documentId }) =>
     model => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         maybeSelectedDocumentId: () => Option.some(documentId),
       }),
     }),
@@ -162,7 +162,7 @@ const foldEditorOutMessage = Editor.OutMessage.match<
   OpenedDocument:
     ({ documentId }) =>
     model => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         maybeOpenedDocumentId: () => Option.some(documentId),
       }),
     }),
@@ -298,7 +298,7 @@ const foldEndDateOutMessage = DatePicker.OutMessage.match<
   SelectedDate:
     ({ date }) =>
     model => {
-      const nextModel = evo(model, {
+      const nextModel = modifyFields(model, {
         maybeEndDate: () => Option.some(date),
       })
 

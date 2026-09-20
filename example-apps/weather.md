@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/weather
 title: "Weather"
 description: "Look up weather by ZIP code. Demonstrates HTTP requests and loading states."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -26,7 +26,7 @@ import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
 import { AsyncData, Command, Http, Runtime, type Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Button, Input } from '@foldkit/ui'
 
@@ -65,7 +65,7 @@ export type Message = typeof Message.Type
 export const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     UpdatedZipCodeInput: ({ value }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         zipCodeInput: () => value,
       }),
     }),
@@ -75,7 +75,7 @@ export const update = (model: Model, message: Message) =>
         return { model }
       }
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           weather: () => WeatherAsyncData.Loading(),
         }),
         commands: [FetchWeather({ zipCode: model.zipCodeInput })],
@@ -83,13 +83,13 @@ export const update = (model: Model, message: Message) =>
     },
 
     SucceededFetchWeather: ({ weather }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         weather: () => WeatherAsyncData.Success({ data: weather }),
       }),
     }),
 
     FailedFetchWeather: ({ error }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         weather: () => WeatherAsyncData.Failure({ error }),
       }),
     }),

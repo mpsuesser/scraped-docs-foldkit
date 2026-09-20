@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/foldkit-vs-react-effect-atom
 title: "Foldkit vs React + Effect Atom"
 description: "Two Effect-native architectures: Effect Atom distributes state across reactive cells inside React, while Foldkit builds the application around one Model and update function."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Foldkit vs React + Effect Atom
@@ -114,13 +114,13 @@ type Message = typeof Message.Type
 export const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     AddedTodo: () => ({
-      model: evo(model, { todos: Array.append(emptyTodo()) }),
+      model: modifyFields(model, { todos: Array.append(emptyTodo()) }),
     }),
     ClearedDoneTodos: () => ({
-      model: evo(model, { todos: Array.filter(todo => !todo.done) }),
+      model: modifyFields(model, { todos: Array.filter(todo => !todo.done) }),
     }),
     SelectedFilter: ({ filter }) => ({
-      model: evo(model, { filter: () => filter }),
+      model: modifyFields(model, { filter: () => filter }),
     }),
   })
 ```
@@ -215,14 +215,18 @@ const FetchUser = Command.define('FetchUser', {
 export const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedLoadUser: () => ({
-      model: evo(model, { user: () => UserAsyncData.Loading() }),
+      model: modifyFields(model, { user: () => UserAsyncData.Loading() }),
       commands: [FetchUser()],
     }),
     SucceededLoadUser: ({ user }) => ({
-      model: evo(model, { user: () => UserAsyncData.Success({ data: user }) }),
+      model: modifyFields(model, {
+        user: () => UserAsyncData.Success({ data: user }),
+      }),
     }),
     FailedLoadUser: ({ error }) => ({
-      model: evo(model, { user: () => UserAsyncData.Failure({ error }) }),
+      model: modifyFields(model, {
+        user: () => UserAsyncData.Failure({ error }),
+      }),
     }),
   })
 ```
@@ -312,7 +316,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
           Subscription.fromEvent({
             target: document,
             type: 'mouseup',
-            toMessage: () => ReleasedMouse(),
+            mapEvent: () => ReleasedMouse(),
           }),
           Effect.sync(() => isDrawing),
         ),

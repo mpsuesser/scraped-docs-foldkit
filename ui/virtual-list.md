@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/virtual-list
 title: "Virtual List"
 description: "Render only visible rows plus overscan while spacers preserve scroll geometry. Supports fixed and variable row heights, measurement, and programmatic scrolling."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -32,7 +32,7 @@ import { Option, Schema } from 'effect'
 import { Subscription, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { VirtualList } from '@foldkit/ui'
 
@@ -68,7 +68,7 @@ const foldActivityList = Update.foldChild({
   update: VirtualList.update,
   read: (model: Model) => Option.some(model.activityList),
   write: (model, nextActivityList) =>
-    evo(model, { activityList: () => nextActivityList }),
+    modifyFields(model, { activityList: () => nextActivityList }),
   toParentMessage: message => Message.GotActivityListMessage({ message }),
 })
 
@@ -76,7 +76,7 @@ const foldActivityListScrollToIndex = Update.foldChild({
   update: VirtualList.scrollToIndex,
   read: (model: Model) => Option.some(model.activityList),
   write: (model, nextActivityList) =>
-    evo(model, { activityList: () => nextActivityList }),
+    modifyFields(model, { activityList: () => nextActivityList }),
   toParentMessage: message => Message.GotActivityListMessage({ message }),
 })
 
@@ -161,7 +161,7 @@ Mixed-height rows: every fourth row is taller and shows a summary
 import { Option } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { VirtualList } from '@foldkit/ui'
 
@@ -253,7 +253,7 @@ const foldActivityListScrollToIndexVariable = Update.foldChild({
     ),
   read: (model: Model) => Option.some(model.activityList),
   write: (model, nextActivityList) =>
-    evo(model, { activityList: () => nextActivityList }),
+    modifyFields(model, { activityList: () => nextActivityList }),
   toParentMessage: message => Message.GotActivityListMessage({ message }),
 })
 

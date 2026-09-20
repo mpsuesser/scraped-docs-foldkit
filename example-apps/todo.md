@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/todo
 title: "Todo"
 description: "A todo list persisted in localStorage. Add, complete, and delete tasks."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -37,7 +37,7 @@ import { Command, Runtime, type Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { defineTaggedUnion } from 'foldkit/schema'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { BrowserKeyValueStore } from '@effect/platform-browser'
 import { Button, Checkbox, Input } from '@foldkit/ui'
@@ -127,13 +127,13 @@ type UpdateReturn = Update.Return<Model, Message>
 export const update = (model: Model, message: Message) =>
   Message.match<UpdateReturn>(message, {
     UpdatedNewTodo: ({ text }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         newTodoText: () => text,
       }),
     }),
 
     UpdatedEditingTodo: ({ text }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         editing: () =>
           EditingState.match(model.editing, {
             NotEditing: () => model.editing,
@@ -164,7 +164,7 @@ export const update = (model: Model, message: Message) =>
       const updatedTodos = [...model.todos, newTodo]
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           todos: () => updatedTodos,
           newTodoText: () => '',
         }),
@@ -176,7 +176,7 @@ export const update = (model: Model, message: Message) =>
       const updatedTodos = Array.filter(model.todos, todo => todo.id !== id)
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           todos: () => updatedTodos,
         }),
         commands: [SaveTodos({ todos: updatedTodos })],
@@ -186,12 +186,12 @@ export const update = (model: Model, message: Message) =>
     ToggledTodo: ({ id }) => {
       const updatedTodos = Array.map(model.todos, todo =>
         todo.id === id
-          ? evo(todo, { completed: completed => !completed })
+          ? modifyFields(todo, { completed: completed => !completed })
           : todo,
       )
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           todos: () => updatedTodos,
         }),
         commands: [SaveTodos({ todos: updatedTodos })],
@@ -201,7 +201,7 @@ export const update = (model: Model, message: Message) =>
     StartedEditing: ({ id }) => {
       const maybeTodo = Array.findFirst(model.todos, todo => todo.id === id)
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           editing: () =>
             EditingState.Editing({
               id,
@@ -221,7 +221,7 @@ export const update = (model: Model, message: Message) =>
         Editing: ({ id, text }) => {
           if (String.isEmpty(String.trim(text))) {
             return {
-              model: evo(model, {
+              model: modifyFields(model, {
                 editing: () => EditingState.NotEditing(),
               }),
             }
@@ -229,12 +229,12 @@ export const update = (model: Model, message: Message) =>
 
           const updatedTodos = Array.map(model.todos, todo =>
             todo.id === id
-              ? evo(todo, { text: () => String.trim(text) })
+              ? modifyFields(todo, { text: () => String.trim(text) })
               : todo,
           )
 
           return {
-            model: evo(model, {
+            model: modifyFields(model, {
               todos: () => updatedTodos,
               editing: () => EditingState.NotEditing(),
             }),
@@ -244,7 +244,7 @@ export const update = (model: Model, message: Message) =>
       }),
 
     CancelledEdit: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         editing: () => EditingState.NotEditing(),
       }),
     }),
@@ -252,13 +252,13 @@ export const update = (model: Model, message: Message) =>
     ToggledAll: () => {
       const allCompleted = Array.every(model.todos, todo => todo.completed)
       const updatedTodos = Array.map(model.todos, todo =>
-        evo(todo, {
+        modifyFields(todo, {
           completed: () => !allCompleted,
         }),
       )
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           todos: () => updatedTodos,
         }),
         commands: [SaveTodos({ todos: updatedTodos })],
@@ -269,7 +269,7 @@ export const update = (model: Model, message: Message) =>
       const updatedTodos = Array.filter(model.todos, todo => !todo.completed)
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           todos: () => updatedTodos,
         }),
         commands: [SaveTodos({ todos: updatedTodos })],
@@ -277,13 +277,13 @@ export const update = (model: Model, message: Message) =>
     },
 
     SelectedFilter: ({ filter }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         filter: () => filter,
       }),
     }),
 
     SucceededSaveTodos: ({ todos }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         todos: () => todos,
       }),
     }),

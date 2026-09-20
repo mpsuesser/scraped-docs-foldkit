@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/http
 title: "Http"
 description: "Provide a Fetch-backed HttpClient to Commands while keeping browser requests CORS-simple by disabling trace header propagation unless it is required."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Http
@@ -33,7 +33,7 @@ import { Effect, Schema } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
 import { Command, Http, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const Message = defineMessageUnion({
   ClickedFetchCount: {},
@@ -69,7 +69,7 @@ const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedFetchCount: () => ({ model, commands: [FetchCount()] }),
     SucceededFetchCount: ({ count }) => ({
-      model: evo(model, { count: () => count }),
+      model: modifyFields(model, { count: () => count }),
     }),
     FailedFetchCount: () => ({ model }),
   })

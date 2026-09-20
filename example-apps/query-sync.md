@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/query-sync
 title: "Query Sync"
 description: "A filterable dinosaur table where every control syncs to URL query parameters. Schema transforms accept valid states and replace invalid parameters with declared defaults."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -42,7 +42,7 @@ import { defineMessageUnion } from 'foldkit/message'
 import { UrlRequest, load, pushUrl, replaceUrl } from 'foldkit/navigation'
 import { defineRouteUnion } from 'foldkit/route'
 import { defineTaggedUnion } from 'foldkit/schema'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 import { Url, toString as urlToString } from 'foldkit/url'
 
 import { Button, Input, Listbox } from '@foldkit/ui'
@@ -327,7 +327,7 @@ const foldDietListbox = Update.foldChild({
   update: DietListbox.update,
   read: (model: Model) => Option.some(model.dietListbox),
   write: (model, nextDietListbox) =>
-    evo(model, { dietListbox: () => nextDietListbox }),
+    modifyFields(model, { dietListbox: () => nextDietListbox }),
   toParentMessage: message => Message.GotDietListboxMessage({ message }),
   foldOutMessage: foldDietListboxOutMessage,
 })
@@ -355,7 +355,7 @@ const foldPeriodListbox = Update.foldChild({
   update: PeriodListbox.update,
   read: (model: Model) => Option.some(model.periodListbox),
   write: (model, nextPeriodListbox) =>
-    evo(model, { periodListbox: () => nextPeriodListbox }),
+    modifyFields(model, { periodListbox: () => nextPeriodListbox }),
   toParentMessage: message => Message.GotPeriodListboxMessage({ message }),
   foldOutMessage: foldPeriodListboxOutMessage,
 })
@@ -381,7 +381,7 @@ export const update = (model: Model, message: Message) =>
     ChangedUrl: ({ url }) => {
       const nextRoute = urlToAppRoute(url)
 
-      return { model: evo(model, { route: () => nextRoute }) }
+      return { model: modifyFields(model, { route: () => nextRoute }) }
     },
 
     ChangedSearchInput: ({ value }) => {

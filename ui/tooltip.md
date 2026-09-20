@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/tooltip
 title: "Tooltip"
 description: "Non-interactive floating label that appears on hover or focus and hides on leave, blur, or Escape."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -28,7 +28,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Tooltip } from '@foldkit/ui'
 
@@ -74,7 +74,8 @@ const foldTooltipOutMessage = Tooltip.OutMessage.match<
 const foldTooltip = Update.foldChild({
   update: Tooltip.update,
   read: (model: Model) => Option.some(model.tooltip),
-  write: (model, nextTooltip) => evo(model, { tooltip: () => nextTooltip }),
+  write: (model, nextTooltip) =>
+    modifyFields(model, { tooltip: () => nextTooltip }),
   toParentMessage: message => Message.GotTooltipMessage({ message }),
   foldOutMessage: foldTooltipOutMessage,
 })
@@ -192,7 +193,7 @@ Use `reflectShowDelay` when parent-owned configuration changes the Tooltip's del
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `reflectShowDelay` | `(model: Model, showDelay: Duration.Input) => Model` | — | Reflects an externally-sourced hover show-delay onto the Model (a user preference, a restored setting) without emitting an OutMessage. Accepts any Effect Duration input; a bare number is milliseconds. The new delay applies on the next hover. Dual: pass just the delay for a point-free setter in an evo callback. |
+| `reflectShowDelay` | `(model: Model, showDelay: Duration.Input) => Model` | — | Reflects an externally-sourced hover show-delay onto the Model (a user preference, a restored setting) without emitting an OutMessage. Accepts any Effect Duration input; a bare number is milliseconds. The new delay applies on the next hover. Dual: pass just the delay for a point-free setter in a modifyFields callback. |
 
 ### OutMessage
 

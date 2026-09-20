@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/counter-example
 title: "Counter Example"
 description: "Build and trace a minimal Counter through its Model, Message Schema, update, view, init, and Runtime wiring."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # A Simple Counter Example
@@ -19,7 +19,7 @@ import { Schema } from 'effect'
 import { Runtime, type Update } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 // MODEL
 
@@ -42,12 +42,12 @@ export type Message = typeof Message.Type
 export const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedDecrement: () => ({
-      model: evo(model, { count: count => count - 1 }),
+      model: modifyFields(model, { count: count => count - 1 }),
     }),
     ClickedIncrement: () => ({
-      model: evo(model, { count: count => count + 1 }),
+      model: modifyFields(model, { count: count => count + 1 }),
     }),
-    ClickedReset: () => ({ model: evo(model, { count: () => 0 }) }),
+    ClickedReset: () => ({ model: modifyFields(model, { count: () => 0 }) }),
   })
 
 // INIT

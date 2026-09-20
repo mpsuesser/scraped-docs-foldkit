@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/freeze-model
 title: "Freeze Model"
 description: "Deep-freeze the Model in development to catch accidental mutation at the write site. Covers what is frozen and the Runtime cost."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Freeze Model
@@ -28,4 +28,4 @@ Foldkit freezes values selectively:
 
 Messages are not frozen. The guardrail applies only to the Model.
 
-Already-frozen values are skipped. Because `evo` preserves unchanged branches by reference, each update freezes only the newly created plain objects and arrays.
+Already-frozen values are skipped. Because `modifyFields` preserves unchanged branches by reference, each update freezes only the newly created plain objects and arrays.

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/radio-group
 title: "Radio Group"
 description: "A selection Submodel for radio options, with roving tabindex, keyboard navigation, and read-only behavior."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -52,7 +52,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { RadioGroup } from '@foldkit/ui'
 
@@ -108,7 +108,9 @@ const foldPlanRadioGroupOutMessage = RadioGroup.OutMessage.match<
 >({
   Selected:
     ({ value }) =>
-    model => ({ model: evo(model, { maybePlan: () => Option.some(value) }) }),
+    model => ({
+      model: modifyFields(model, { maybePlan: () => Option.some(value) }),
+    }),
 })
 
 // Update.foldChild wires the child into the parent: it runs the child update,
@@ -118,7 +120,7 @@ const foldPlanRadioGroup = Update.foldChild({
   update: PlanRadioGroup.update,
   read: (model: Model) => Option.some(model.planRadioGroup),
   write: (model, nextPlanRadioGroup) =>
-    evo(model, { planRadioGroup: () => nextPlanRadioGroup }),
+    modifyFields(model, { planRadioGroup: () => nextPlanRadioGroup }),
   toParentMessage: message => Message.GotPlanRadioGroupMessage({ message }),
   foldOutMessage: foldPlanRadioGroupOutMessage,
 })

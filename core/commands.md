@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/commands
 title: "Commands"
 description: "Describe one-shot Effects caused by Messages, map their results back into Messages, test them as values, and interrupt keyed work when needed."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Commands
@@ -24,7 +24,7 @@ The counter has returned an empty Commands array so far. A delayed reset puts th
 import { Effect } from 'effect'
 import { Command, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const Message = defineMessageUnion({
   ClickedResetAfterDelay: {},
@@ -47,7 +47,9 @@ const DelayReset = Command.define(
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedResetAfterDelay: () => ({ model, commands: [DelayReset()] }),
-    CompletedDelayReset: () => ({ model: evo(model, { count: () => 0 }) }),
+    CompletedDelayReset: () => ({
+      model: modifyFields(model, { count: () => 0 }),
+    }),
   })
 ```
 
@@ -100,7 +102,7 @@ import { Effect, Schema } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
 import { Command, Http, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const Message = defineMessageUnion({
   ClickedFetchCount: {},
@@ -136,7 +138,7 @@ const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedFetchCount: () => ({ model, commands: [FetchCount()] }),
     SucceededFetchCount: ({ count }) => ({
-      model: evo(model, { count: () => count }),
+      model: modifyFields(model, { count: () => count }),
     }),
     FailedFetchCount: () => ({ model }),
   })
@@ -159,7 +161,7 @@ import { Effect, Schema } from 'effect'
 import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
 import { Command, Http, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const Message = defineMessageUnion({
   SubmittedWeatherForm: {},
@@ -199,7 +201,7 @@ const update = (model: Model, message: Message) =>
       commands: [FetchWeather({ zipCode: model.zipCodeInput })],
     }),
     SucceededFetchWeather: ({ weather }) => ({
-      model: evo(model, { weather: () => weather }),
+      model: modifyFields(model, { weather: () => weather }),
     }),
     FailedFetchWeather: () => ({ model }),
   })
@@ -224,7 +226,7 @@ Foldkit prefixes a derived key with the Command name, so definitions with distin
 import { Array, Effect, Schema } from 'effect'
 import { Command, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const Message = defineMessageUnion({
   ClickedCancelUpload: { uploadId: Schema.Number },
@@ -260,7 +262,9 @@ const UploadFile = Command.define('UploadFile', {
 
 const setStatusForId = (uploadId: number, status: UploadStatus) =>
   Array.map((upload: Upload) =>
-    upload.id === uploadId ? evo(upload, { status: () => status }) : upload,
+    upload.id === uploadId
+      ? modifyFields(upload, { status: () => status })
+      : upload,
   )
 
 type UpdateReturn = Update.Return<Model, Message>
@@ -281,7 +285,7 @@ const update = (model: Model, message: Message) =>
         // The upload was stopped. Its result Message will never arrive,
         // so this branch owns the state transition.
         Interrupted: () => ({
-          model: evo(model, {
+          model: modifyFields(model, {
             uploads: setStatusForId(uploadId, 'Cancelled'),
           }),
         }),
@@ -290,10 +294,12 @@ const update = (model: Model, message: Message) =>
         NotFound: () => ({ model }),
       }),
     SucceededUploadFile: ({ uploadId }) => ({
-      model: evo(model, { uploads: setStatusForId(uploadId, 'Done') }),
+      model: modifyFields(model, { uploads: setStatusForId(uploadId, 'Done') }),
     }),
     FailedUploadFile: ({ uploadId }) => ({
-      model: evo(model, { uploads: setStatusForId(uploadId, 'Failed') }),
+      model: modifyFields(model, {
+        uploads: setStatusForId(uploadId, 'Failed'),
+      }),
     }),
   })
 ```
@@ -363,7 +369,7 @@ Wait for cancellation to finish before starting the replacement. Commands return
 import { Number } from 'effect'
 import type { Update } from 'foldkit'
 import { defineTaggedUnion } from 'foldkit/schema'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const SearchState = defineTaggedUnion({
   Idle: {},
@@ -381,7 +387,7 @@ const update = (model: Model, message: Message) =>
           const nextGeneration = Number.increment(model.generation)
 
           return {
-            model: evo(model, {
+            model: modifyFields(model, {
               query: () => query,
               generation: () => nextGeneration,
               searchState: () => SearchState.Running(),
@@ -390,7 +396,7 @@ const update = (model: Model, message: Message) =>
           }
         },
         Running: () => ({
-          model: evo(model, {
+          model: modifyFields(model, {
             query: () => query,
             generation: Number.increment,
             searchState: () => SearchState.Cancelling(),
@@ -402,12 +408,12 @@ const update = (model: Model, message: Message) =>
           ],
         }),
         Cancelling: () => ({
-          model: evo(model, { query: () => query }),
+          model: modifyFields(model, { query: () => query }),
         }),
       }),
 
     CompletedCancelFetchSuggestions: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         searchState: () => SearchState.Running(),
       }),
       commands: [
@@ -424,7 +430,7 @@ const update = (model: Model, message: Message) =>
       }
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           searchState: () => SearchState.Idle(),
           suggestions: () => suggestions,
         }),
@@ -436,7 +442,7 @@ const update = (model: Model, message: Message) =>
       }
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           searchState: () => SearchState.Idle(),
         }),
       }

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/file
 title: "File"
 description: "Read and select browser files through an opaque File type, with event attributes for native inputs and drop zones."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -84,7 +84,7 @@ import { Array, Option, Schema } from 'effect'
 import { File, Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { FileDrop } from '@foldkit/ui'
 
@@ -119,7 +119,7 @@ const foldFileDropOutMessage = FileDrop.OutMessage.match<
   ReceivedFiles:
     ({ files }) =>
     model => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         uploadedFiles: Array.appendAll(files),
       }),
     }),
@@ -134,7 +134,8 @@ const foldFileDropOutMessage = FileDrop.OutMessage.match<
 const foldFileDrop = Update.foldChild({
   update: FileDrop.update,
   read: (model: Model) => Option.some(model.uploader),
-  write: (model, nextUploader) => evo(model, { uploader: () => nextUploader }),
+  write: (model, nextUploader) =>
+    modifyFields(model, { uploader: () => nextUploader }),
   toParentMessage: message => Message.GotFileDropMessage({ message }),
   foldOutMessage: foldFileDropOutMessage,
 })

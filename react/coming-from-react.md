@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/coming-from-react
 title: "Coming from React"
 description: "See how Foldkit replaces component-owned state and Effects with one Model, Messages, update, Commands, Subscriptions, and Submodels."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Coming from React
@@ -42,7 +42,7 @@ import { Schema } from 'effect'
 import { type Update } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 // MODEL - Your entire application state
 
@@ -63,7 +63,7 @@ type Message = typeof Message.Type
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedIncrement: () => ({
-      model: evo(model, { count: count => count + 1 }),
+      model: modifyFields(model, { count: count => count + 1 }),
     }),
   })
 
@@ -139,7 +139,7 @@ import { Duration, Effect, Schema, Stream } from 'effect'
 import { Subscription, type Update } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const TICK_INTERVAL_MS = 1000
 
@@ -185,14 +185,16 @@ const subscriptions = Subscription.make<Model, Message>()(entry => ({
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedIncrement: () => ({
-      model: evo(model, { count: count => count + 1 }),
+      model: modifyFields(model, { count: count => count + 1 }),
     }),
     ClickedToggleAutoCount: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         isAutoCounting: isAutoCounting => !isAutoCounting,
       }),
     }),
-    Ticked: () => ({ model: evo(model, { count: count => count + 1 }) }),
+    Ticked: () => ({
+      model: modifyFields(model, { count: count => count + 1 }),
+    }),
   })
 
 // VIEW
@@ -282,7 +284,7 @@ import { Duration, Effect, Schema, Stream } from 'effect'
 import { Subscription, type Update } from 'foldkit'
 import type { Document, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const TICK_INTERVAL_MS = 1000
 
@@ -330,16 +332,18 @@ const subscriptions = Subscription.make<Model, Message>()(entry => ({
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedIncrement: () => ({
-      model: evo(model, { count: count => count + model.step }),
+      model: modifyFields(model, { count: count => count + model.step }),
     }),
     ClickedToggleAutoCount: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         isAutoCounting: isAutoCounting => !isAutoCounting,
       }),
     }),
-    ChangedStep: ({ step }) => ({ model: evo(model, { step: () => step }) }),
+    ChangedStep: ({ step }) => ({
+      model: modifyFields(model, { step: () => step }),
+    }),
     Ticked: () => ({
-      model: evo(model, { count: count => count + model.step }),
+      model: modifyFields(model, { count: count => count + model.step }),
     }),
   })
 

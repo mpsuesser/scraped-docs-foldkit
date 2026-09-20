@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/switch
 title: "Switch"
 description: "A stateless, controlled toggle for immediate on-and-off actions, with keyboard behavior and switch semantics."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -27,7 +27,7 @@ Get notified when something important happens.
 import { Schema } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Switch } from '@foldkit/ui'
 
@@ -55,7 +55,7 @@ const Message = defineMessageUnion({
 // This is the moment to persist the preference, sync to a backend, or fire
 // analytics.
 ToggledNotifications: ({ isChecked }) => ({
-  model: evo(model, { notificationsEnabled: () => isChecked }),
+  model: modifyFields(model, { notificationsEnabled: () => isChecked }),
 })
 
 // Inside your view function, render the switch with Switch.view. It reads the

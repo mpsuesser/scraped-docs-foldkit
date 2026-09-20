@@ -2,8 +2,8 @@
 url: https://foldkit.dev/tooling/oxlint-plugin
 title: "Oxlint Plugin"
 description: "Install and configure @foldkit/oxlint-plugin, then see what each Foldkit-specific rule accepts and rejects."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Oxlint Plugin
@@ -319,25 +319,25 @@ const computedCommands = { model, commands: buildCommands(model) }
 const normalizedCommands = { model, commands: optionalCommands ?? [] }
 ```
 
-### foldkit/no-spread-in-evo
+### foldkit/no-spread-in-modify-fields
 
-Rejects object spreads inside an evo updater. Evolve nested fields with a nested evo instead.
+Rejects object spreads inside a modifyFields updater. Evolve nested fields with a nested modifyFields instead.
 
 ```
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 // ❌ Bad
-// Spreading a nested field inside evo defeats the point of evo.
+// Spreading a nested field inside modifyFields defeats the point of modifyFields.
 const badUpdate = (model: Model) =>
-  evo(model, {
+  modifyFields(model, {
     user: () => ({ ...model.user, name: 'Ada' }),
   })
 
 // ✅ Good
-// Evolve the nested field with a nested evo.
+// Evolve the nested field with a nested modifyFields.
 const goodUpdate = (model: Model) =>
-  evo(model, {
-    user: user => evo(user, { name: () => 'Ada' }),
+  modifyFields(model, {
+    user: user => modifyFields(user, { name: () => 'Ada' }),
   })
 ```
 
@@ -584,7 +584,7 @@ const goodRows = (tags: ReadonlyArray<Tag>, h: HtmlBuilder<Message>) =>
 
 Flags `preventDefault()` inside callbacks passed to `Stream.map`, `Stream.mapEffect`, `Stream.filterMap`, `Stream.filterMapEffect`, `Stream.filter`, `Stream.filterEffect`, or `Stream.tap`. A DOM event placed into a callback-backed Stream is queued before downstream operators run, so cancellation there happens after the native listener returns and may be too late for the browser.
 
-Use `Subscription.fromEventFilterMapPreventDefault` instead. Its mapper returns `Option.some(message)` for a handled event or `Option.none()` for an event the browser should handle normally. Foldkit calls `preventDefault()` for handled events before the native listener returns.
+Use `Subscription.fromEventFilterMapPreventDefault` instead. Its `filterMapEvent` mapper returns `Option.some(value)` for a handled event or `Option.none()` for an event the browser should handle normally. Foldkit calls `preventDefault()` for handled events before the native listener returns.
 
 The rule recognizes inline callbacks and functions declared in the same module. It is intentionally conservative about the Stream's source. Suppress it when the value is not a DOM event or the Stream is deliberately executed synchronously inside a native listener.
 
@@ -609,7 +609,7 @@ const keyboardBad = Stream.fromEventListener<KeyboardEvent>(
 const keyboardGood = Subscription.fromEventFilterMapPreventDefault({
   target: document,
   type: 'keydown',
-  toMessage: event =>
+  filterMapEvent: event =>
     event.key === 'Tab'
       ? Option.some(Message.PressedKey({ key: event.key }))
       : Option.none(),
@@ -734,7 +734,7 @@ The rule fixes straightforward object literals. If removal could disturb a comme
 ```
 import { Option } from 'effect'
 import { Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import * as Settings from './settings'
 
@@ -742,7 +742,8 @@ import * as Settings from './settings'
 const badFoldSettings = Update.foldChild({
   update: Settings.setTheme,
   read: (model: Model) => Option.some(model.settings),
-  write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
+  write: (model, nextSettings) =>
+    modifyFields(model, { settings: () => nextSettings }),
   toParentMessage: message => Message.GotSettingsMessage({ message }),
   foldOutMessage: foldSettingsOutMessage,
   // This mapper directly returns undefined, so it forwards no OutMessage.
@@ -755,7 +756,8 @@ const badFoldSettings = Update.foldChild({
 const foldSettings = Update.foldChild({
   update: Settings.setTheme,
   read: (model: Model) => Option.some(model.settings),
-  write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
+  write: (model, nextSettings) =>
+    modifyFields(model, { settings: () => nextSettings }),
   toParentMessage: message => Message.GotSettingsMessage({ message }),
   foldOutMessage: foldSettingsOutMessage,
 })
@@ -892,7 +894,7 @@ const badAliasRouting = () => GotChildMessage({ message: clickedSave() })
 const foldChildSave = Update.foldChildStep({
   update: Child.save,
   read: model => Option.some(model.child),
-  write: (model, nextChild) => evo(model, { child: () => nextChild }),
+  write: (model, nextChild) => modifyFields(model, { child: () => nextChild }),
   toParentMessage: message => GotChildMessage({ message }),
 })
 
@@ -901,26 +903,27 @@ const goodRouting = model => foldChildSave(model)
 
 ### foldkit/no-direct-submodel-state-update
 
-Flags a parent update that uses nested `evo` to change a known Submodel field directly. The child update does not run, so validation, Commands, and OutMessages can be skipped. The rule establishes ownership from a module-scope `Update.foldChild` or `Update.foldChildStep` whose `read` and `write` point to the same field, then checks the parent Model passed through that fold. It leaves an unrelated Model with the same field name, fold `write` callbacks, and child-owned silent `reflect*` helpers alone.
+Flags a parent update that uses nested `modifyFields` to change a known Submodel field directly. The child update does not run, so validation, Commands, and OutMessages can be skipped. The rule establishes ownership from a module-scope `Update.foldChild` or `Update.foldChildStep` whose `read` and `write` point to the same field, then checks the parent Model passed through that fold. It leaves an unrelated Model with the same field name, fold `write` callbacks, and child-owned silent `reflect*` helpers alone.
 
 ```
 import { Option } from 'effect'
 import { Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import * as Settings from './settings'
 
 const foldSettingsTheme = Update.foldChild({
   update: Settings.setTheme,
   read: model => Option.some(model.settings),
-  write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
+  write: (model, nextSettings) =>
+    modifyFields(model, { settings: () => nextSettings }),
   toParentMessage: message => Message.GotSettingsMessage({ message }),
 })
 
 // ❌ Bad: the parent changes a child field without running Settings.update.
 const badReset = model => ({
-  model: evo(model, {
-    settings: settings => evo(settings, { theme: () => 'Light' }),
+  model: modifyFields(model, {
+    settings: settings => modifyFields(settings, { theme: () => 'Light' }),
   }),
 })
 
@@ -930,19 +933,20 @@ const goodReset = model => foldSettingsTheme(model, 'Light')
 
 ### foldkit/require-fold-for-child-update-result
 
-Flags a parent that copies only `.model` from a child helper or update result into its own Model instead of folding the complete result. This can silently discard Commands or an OutMessage. The rule requires an in-file `Update.foldChild` or `Update.foldChildStep` whose `update`, `read`, and `write` establish the child module and field, then follows a local result from that child's helper into the matching `evo` field. The field need not be named after the module: `Products.update(model.productsPage)` is one example. It leaves unrelated helpers, initial Model assembly, fold `write` callbacks, and child-owned silent `reflect*` helpers alone. It does not infer direct helper imports or parent assembly outside `evo`.
+Flags a parent that copies only `.model` from a child helper or update result into its own Model instead of folding the complete result. This can silently discard Commands or an OutMessage. The rule requires an in-file `Update.foldChild` or `Update.foldChildStep` whose `update`, `read`, and `write` establish the child module and field, then follows a local result from that child's helper into the matching `modifyFields` field. The field need not be named after the module: `Products.update(model.productsPage)` is one example. It leaves unrelated helpers, initial Model assembly, fold `write` callbacks, and child-owned silent `reflect*` helpers alone. It does not infer direct helper imports or parent assembly outside `modifyFields`.
 
 ```
 import { Option } from 'effect'
 import { Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import * as Settings from './settings'
 
 const foldSettingsTheme = Update.foldChild({
   update: Settings.setTheme,
   read: model => Option.some(model.settings),
-  write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
+  write: (model, nextSettings) =>
+    modifyFields(model, { settings: () => nextSettings }),
   toParentMessage: message => Message.GotSettingsMessage({ message }),
 })
 
@@ -950,7 +954,7 @@ const foldSettingsTheme = Update.foldChild({
 const badReset = model => {
   const settingsReset = Settings.setTheme(model.settings, 'Light')
 
-  return { model: evo(model, { settings: () => settingsReset.model }) }
+  return { model: modifyFields(model, { settings: () => settingsReset.model }) }
 }
 
 // ✅ Good: the fold preserves the complete child update result.

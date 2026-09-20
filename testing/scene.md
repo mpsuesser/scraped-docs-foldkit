@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/scene
 title: "Scene"
 description: "Drive the rendered VNode tree with accessible locators, dispatch interactions, resolve lifecycle results, and assert on the resulting HTML."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Scene
@@ -307,7 +307,7 @@ Invokes
 
 with optional
 
-`{ pointerType, button, screenX, screenY }`
+`{ pointerType, button, screenX, screenY, clientX, clientY, pointerId }`
 
 (bubbles to ancestors)
 

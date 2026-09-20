@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/informing-submodels
 title: "Informing Submodels"
 description: "Relay a change a Submodel does not own (a URL, a server push, an auth change) through a helper it exposes, so it can update its own state in response."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Informing Submodels
@@ -34,7 +34,7 @@ Update copies the route query into the input, records it in recent searches, and
 import { Option, Schema, String } from 'effect'
 import { type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { PeopleRoute } from './route'
 
@@ -62,7 +62,7 @@ export type Message = typeof Message.Type
 export const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ChangedSearchInput: ({ value }) => ({
-      model: evo(model, { searchInput: () => value }),
+      model: modifyFields(model, { searchInput: () => value }),
     }),
 
     SubmittedSearch: () => ({
@@ -80,7 +80,7 @@ export const update = (model: Model, message: Message) =>
     ChangedRoute: ({ route }) => {
       const searchText = Option.getOrElse(route.searchText, () => '')
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           searchInput: () => searchText,
           searchHistory: searchHistory =>
             addSearchToHistory(searchHistory, searchText),
@@ -91,7 +91,9 @@ export const update = (model: Model, message: Message) =>
     },
 
     SucceededFetchPeople: ({ query, people }) => ({
-      model: evo(model, { results: () => SearchLoaded({ query, people }) }),
+      model: modifyFields(model, {
+        results: () => SearchLoaded({ query, people }),
+      }),
     }),
   })
 
@@ -110,7 +112,7 @@ The root defines one fold for regular People Messages and another for `informRou
 ```
 import { Match, Option } from 'effect'
 import { Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { People } from './page'
 
@@ -118,7 +120,7 @@ const foldPeople = Update.foldChild({
   update: People.update,
   read: (model: Model) => Option.some(model.peoplePage),
   write: (model, nextPeoplePage) =>
-    evo(model, { peoplePage: () => nextPeoplePage }),
+    modifyFields(model, { peoplePage: () => nextPeoplePage }),
   toParentMessage: message => Message.GotPeopleMessage({ message }),
 })
 
@@ -126,13 +128,13 @@ const foldPeopleRouteChanged = Update.foldChild({
   update: People.informRouteChanged,
   read: (model: Model) => Option.some(model.peoplePage),
   write: (model, nextPeoplePage) =>
-    evo(model, { peoplePage: () => nextPeoplePage }),
+    modifyFields(model, { peoplePage: () => nextPeoplePage }),
   toParentMessage: message => Message.GotPeopleMessage({ message }),
 })
 
 const setRoute =
   (nextRoute: AppRoute): Update.Step<Model, Message> =>
-  model => ({ model: evo(model, { route: () => nextRoute }) })
+  model => ({ model: modifyFields(model, { route: () => nextRoute }) })
 
 export const update = (model: Model, message: Message) =>
   Message.match<UpdateReturn>(message, {

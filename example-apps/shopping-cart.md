@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/shopping-cart
 title: "Shopping Cart"
 description: "An e-commerce application with a product listing, cart management, and checkout flow."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -26,7 +26,7 @@ import { Command, Runtime, Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { UrlRequest, load, pushUrl } from 'foldkit/navigation'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 import { Url, toString as urlToString } from 'foldkit/url'
 
 import { products } from './data/products'
@@ -110,16 +110,16 @@ const foldProductsOutMessage = Products.OutMessage.match<
 >({
   AddedToCart:
     ({ item }) =>
-    model => ({ model: evo(model, { cart: Cart.addItem(item) }) }),
+    model => ({ model: modifyFields(model, { cart: Cart.addItem(item) }) }),
   IncrementedQuantity:
     ({ itemId }) =>
     model => ({
-      model: evo(model, { cart: Cart.incrementQuantity(itemId) }),
+      model: modifyFields(model, { cart: Cart.incrementQuantity(itemId) }),
     }),
   DecrementedQuantity:
     ({ itemId }) =>
     model => ({
-      model: evo(model, { cart: Cart.decrementQuantity(itemId) }),
+      model: modifyFields(model, { cart: Cart.decrementQuantity(itemId) }),
     }),
 })
 
@@ -127,7 +127,7 @@ const foldProducts = Update.foldChild({
   update: Products.update,
   read: (model: Model) => Option.some(model.productsPage),
   write: (model, nextProductsPage) =>
-    evo(model, { productsPage: () => nextProductsPage }),
+    modifyFields(model, { productsPage: () => nextProductsPage }),
   toParentMessage: message => Message.GotProductsMessage({ message }),
   foldOutMessage: foldProductsOutMessage,
 })
@@ -151,7 +151,7 @@ export const update = (model: Model, message: Message) =>
       }),
 
     ChangedUrl: ({ url }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         route: () => urlToAppRoute(url),
       }),
     }),
@@ -159,37 +159,37 @@ export const update = (model: Model, message: Message) =>
     GotProductsMessage: ({ message }) => foldProducts(model, message),
 
     ClickedIncrementQuantity: ({ itemId }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         cart: Cart.incrementQuantity(itemId),
       }),
     }),
 
     ClickedDecrementQuantity: ({ itemId }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         cart: Cart.decrementQuantity(itemId),
       }),
     }),
 
     ClickedRemoveCartItem: ({ itemId }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         cart: Cart.removeItem(itemId),
       }),
     }),
 
     ClickedClearCart: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         cart: () => [],
       }),
     }),
 
     UpdatedDeliveryInstructions: ({ value }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         deliveryInstructions: () => value,
       }),
     }),
 
     ClickedPlaceOrder: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         orderPlaced: () => true,
         cart: () => [],
         deliveryInstructions: () => '',

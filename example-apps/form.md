@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/form
 title: "Form"
 description: "A form with field validation, error states, and asynchronous submission."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -38,7 +38,7 @@ import {
 import { type Attribute, Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { defineTaggedUnion } from 'foldkit/schema'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Button, Input, Textarea } from '@foldkit/ui'
 
@@ -145,7 +145,7 @@ const isFormValid = (model: Model): boolean =>
 export const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     UpdatedName: ({ value }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         name: () => validateName(value),
       }),
     }),
@@ -155,14 +155,14 @@ export const update = (model: Model, message: Message) =>
 
       if (validateEmailResult._tag === 'Valid') {
         return {
-          model: evo(model, {
+          model: modifyFields(model, {
             email: () => Validating({ value }),
           }),
           commands: [ValidateEmail({ email: value })],
         }
       } else {
         return {
-          model: evo(model, {
+          model: modifyFields(model, {
             email: () => validateEmailResult,
           }),
         }
@@ -172,7 +172,7 @@ export const update = (model: Model, message: Message) =>
     CompletedValidateEmail: ({ field }) => {
       if (field.value === model.email.value) {
         return {
-          model: evo(model, {
+          model: modifyFields(model, {
             email: () => field,
           }),
         }
@@ -182,7 +182,7 @@ export const update = (model: Model, message: Message) =>
     },
 
     UpdatedMessageText: ({ value }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         messageText: () => Valid({ value }),
       }),
     }),
@@ -197,7 +197,7 @@ export const update = (model: Model, message: Message) =>
       }
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           submission: () => Submission.Submitting(),
         }),
         commands: [
@@ -211,7 +211,7 @@ export const update = (model: Model, message: Message) =>
     },
 
     SucceededSubmitForm: ({ name }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         submission: () =>
           Submission.SubmitSuccess({
             confirmationText: `Welcome to the waitlist, ${name}! We'll be in touch soon.`,
@@ -220,7 +220,7 @@ export const update = (model: Model, message: Message) =>
     }),
 
     FailedSubmitForm: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         submission: () =>
           Submission.SubmitError({
             error:

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/combobox
 title: "Combobox"
 description: "A searchable selection Submodel with parent-controlled filtering, single-select and multi-select modes, and anchored positioning."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -34,7 +34,7 @@ import { Array, Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import { type HtmlBuilder, childAttributes } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Combobox } from '@foldkit/ui'
 
@@ -79,7 +79,9 @@ const foldComboboxOutMessage = Combobox.OutMessage.match<
 >({
   Selected:
     ({ value }) =>
-    model => ({ model: evo(model, { maybeCity: () => Option.some(value) }) }),
+    model => ({
+      model: modifyFields(model, { maybeCity: () => Option.some(value) }),
+    }),
   ClearedSelection: () => model => ({ model }),
 })
 
@@ -90,7 +92,8 @@ const foldComboboxOutMessage = Combobox.OutMessage.match<
 const foldCombobox = Update.foldChild({
   update: CityCombobox.update,
   read: (model: Model) => Option.some(model.combobox),
-  write: (model, nextCombobox) => evo(model, { combobox: () => nextCombobox }),
+  write: (model, nextCombobox) =>
+    modifyFields(model, { combobox: () => nextCombobox }),
   toParentMessage: message => Message.GotComboboxMessage({ message }),
   foldOutMessage: foldComboboxOutMessage,
 })
@@ -195,7 +198,7 @@ import { Array, Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import { type HtmlBuilder, childAttributes } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Combobox } from '@foldkit/ui'
 
@@ -241,7 +244,7 @@ const foldComboboxMultiOutMessage = Combobox.OutMessage.match<
   Selected:
     ({ value }) =>
     model => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         selectedCities: selectedCities =>
           Array.contains(selectedCities, value)
             ? Array.filter(selectedCities, city => city !== value)
@@ -259,7 +262,7 @@ const foldComboboxMulti = Update.foldChild({
   update: CitiesCombobox.update,
   read: (model: Model) => Option.some(model.comboboxMulti),
   write: (model, nextComboboxMulti) =>
-    evo(model, { comboboxMulti: () => nextComboboxMulti }),
+    modifyFields(model, { comboboxMulti: () => nextComboboxMulti }),
   toParentMessage: message => Message.GotComboboxMultiMessage({ message }),
   foldOutMessage: foldComboboxMultiOutMessage,
 })

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/web-components
 title: "Web Components"
 description: "A QR code designer integrates two third-party web components through CustomElement.define. The color picker emits CustomEvents as Messages, the QR element receives typed properties, and both communicate through the Model."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -30,7 +30,7 @@ import { Schema } from 'effect'
 import { CustomElement, Runtime, type Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 import 'vanilla-colorful/hex-color-picker.js'
 
 import { Button, Input } from '@foldkit/ui'
@@ -74,13 +74,13 @@ export const init: Runtime.ApplicationInit<Model, Message> = () => ({
 export const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     UpdatedContent: ({ value }) => ({
-      model: evo(model, { content: () => value }),
+      model: modifyFields(model, { content: () => value }),
     }),
     ChangedFillColor: ({ value }) => ({
-      model: evo(model, { fillColor: () => value }),
+      model: modifyFields(model, { fillColor: () => value }),
     }),
     ChangedBackgroundColor: ({ value }) => ({
-      model: evo(model, { backgroundColor: () => value }),
+      model: modifyFields(model, { backgroundColor: () => value }),
     }),
   })
 

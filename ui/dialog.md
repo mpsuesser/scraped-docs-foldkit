@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/dialog
 title: "Dialog"
 description: "A modal dialog backed by the native dialog element with focus trapping and scroll locking."
-access_date: 2026-09-18T16:33:34.359Z
-current_date: 2026-09-18T16:33:34.359Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -28,7 +28,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Dialog } from '@foldkit/ui'
 
@@ -66,7 +66,7 @@ const foldDialogOutMessage = Dialog.OutMessage.match<
 
 const readDialog = (model: Model) => Option.some(model.dialog)
 const writeDialog = (model: Model, dialog: Dialog.Model): Model =>
-  evo(model, { dialog: () => dialog })
+  modifyFields(model, { dialog: () => dialog })
 const toGotDialogMessage = (message: Dialog.Message): Message =>
   Message.GotDialogMessage({ message })
 
@@ -159,7 +159,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Dialog } from '@foldkit/ui'
 
@@ -196,7 +196,8 @@ const foldDialogOutMessage = Dialog.OutMessage.match<
 const foldDialog = Update.foldChild({
   update: Dialog.update,
   read: (model: Model) => Option.some(model.dialog),
-  write: (model, nextDialog) => evo(model, { dialog: () => nextDialog }),
+  write: (model, nextDialog) =>
+    modifyFields(model, { dialog: () => nextDialog }),
   toParentMessage: message => Message.GotDialogMessage({ message }),
   foldOutMessage: foldDialogOutMessage,
 })
@@ -379,7 +380,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Dialog } from '@foldkit/ui'
 
@@ -418,7 +419,7 @@ const foldConfirmDialogOutMessage = Dialog.OutMessage.match<
 
 const readConfirmDialog = (model: Model) => Option.some(model.confirmDialog)
 const writeConfirmDialog = (model: Model, confirmDialog: Dialog.Model): Model =>
-  evo(model, { confirmDialog: () => confirmDialog })
+  modifyFields(model, { confirmDialog: () => confirmDialog })
 const toGotConfirmDialogMessage = (message: Dialog.Message): Message =>
   Message.GotConfirmDialogMessage({ message })
 

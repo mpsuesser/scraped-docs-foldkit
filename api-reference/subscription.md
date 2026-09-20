@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/subscription
 title: "Subscription"
 description: "API documentation for the Subscription module."
-access_date: 2026-09-18T18:12:22.916Z
-current_date: 2026-09-18T18:12:22.916Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Subscription
@@ -14,7 +14,7 @@ current_date: 2026-09-18T18:12:22.916Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/animationFrame.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/animationFrame.ts#L66)
 
 ```
 /**
@@ -38,11 +38,11 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L382)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L394)
 
 ```
 /**
- * Build a Stream that emits a Message for every dispatch of a DOM event,
+ * Build a Stream that emits a value for every dispatch of a DOM event,
  * registering the listener when the Stream's scope opens and removing it when
  * the scope closes.
  * 
@@ -62,33 +62,34 @@ function
  * `Subscription.persistent` for a listener whose lifetime spans the whole
  * Subscriptions record, or plug it into a `Subscription.make` entry's
  * `dependenciesToStream` (typically behind `Stream.when`) to gate it on a
- * Model condition.
+ * Model condition. The mapper's output type is inferred (even a raw Event is
+ * accepted here); `Subscription.make` checks the final Stream against the
+ * application's Message type.
  * 
  * For a listener that reacts to only some events, reach for
- * `fromEventFilterMap`, whose mapper returns `Option<Message>`. For a
+ * `fromEventFilterMap`, whose mapper returns `Option<Output>`. For a
  * listener that also cancels the default action of the events it handles,
  * reach for `fromEventFilterMapPreventDefault`.
  */
-<Target extends EventTarget, Type extends string, Message>(config: FromEventConfig<Target, Type, Message>): Stream<Message>
+<Target extends EventTarget, Type extends string, Output>(config: FromEventConfig<Target, Type, Output>): Stream<Output>
 ```
 
 ### fromEventFilterMap
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L325)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L335)
 
 ```
 /**
- * Build a Stream that emits a Message for the dispatches of a DOM event the
+ * Build a Stream that emits a value for the dispatches of a DOM event the
  * mapper chooses to keep, registering the listener when the Stream's scope
  * opens and removing it when the scope closes.
  * 
- * This is the filtered variant of `fromEvent`. Its `toMessage` returns
- * `Option.some(message)` to emit and `Option.none()` to ignore the event, so a
+ * This is the filtered variant of `fromEvent`. Its `filterMapEvent` returns
+ * `Option.some(value)` to emit and `Option.none()` to ignore the event, so a
  * single listener can react to some dispatches while passing on the rest. A
- * mapper that never emits produces a `Stream<never>`, which composes wherever
- * a Message-producing Stream is expected.
+ * mapper that never emits produces a `Stream<never>`.
  * 
  * Reach for this over a downstream `Stream.filterMap` whenever the decision to
  * keep an event is paired with `event.preventDefault()`. The mapper runs
@@ -116,28 +117,30 @@ function
  * `Subscription.persistent` for a listener whose lifetime spans the whole
  * Subscriptions record, or plug it into a `Subscription.make` entry's
  * `dependenciesToStream` (typically behind `Stream.when`) to gate it on a
- * Model condition.
+ * Model condition. The mapper's output type is inferred (even a raw Event is
+ * accepted here); `Subscription.make` checks the final Stream against the
+ * application's Message type.
  */
-<Target extends EventTarget, Type extends string, Message>(config: FromEventFilterMapConfig<Target, Type, Message>): Stream<Message>
+<Target extends EventTarget, Type extends string, Output>(config: FromEventFilterMapConfig<Target, Type, Output>): Stream<Output>
 ```
 
 ### fromEventFilterMapPreventDefault
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L451)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L465)
 
 ```
 /**
- * Build a Stream that emits a Message for the dispatches of a DOM event the
+ * Build a Stream that emits a value for the dispatches of a DOM event the
  * mapper marks handled, calling `event.preventDefault()` on each of them,
  * registering the listener when the Stream's scope opens and removing it when
  * the scope closes.
  * 
  * This is the cancelling variant of `fromEventFilterMap`, mirroring
- * `h.OnKeyDownPreventDefault` from `foldkit/html`. Its `toMessage` returns
- * `Option.some(message)` to mark a dispatch handled. The helper evaluates the
- * mapper, calls `event.preventDefault()`, and queues the Message before the
+ * `h.OnKeyDownPreventDefault` from `foldkit/html`. Its `filterMapEvent` returns
+ * `Option.some(value)` to mark a dispatch handled. The helper evaluates the
+ * mapper, calls `event.preventDefault()`, and queues the value before the
  * native listener returns. `Option.none()` leaves the default behavior intact.
  * The mapper never calls `preventDefault()` itself.
  * 
@@ -162,20 +165,24 @@ function
  * `Subscription.persistent` for a listener whose lifetime spans the whole
  * Subscriptions record, or plug it into a `Subscription.make` entry's
  * `dependenciesToStream` (typically behind `Stream.when`) to gate it on a
- * Model condition.
+ * Model condition. The mapper's output type is inferred (even a raw Event is
+ * accepted here); `Subscription.make` checks the final Stream against the
+ * application's Message type.
  */
-<Target extends EventTarget, Type extends string, Message>(config: FromEventFilterMapPreventDefaultConfig<Target, Type, Message>): Stream<Message>
+<Target extends EventTarget, Type extends string, Output>(config: FromEventFilterMapPreventDefaultConfig<Target, Type, Output>): Stream<Output>
 ```
 
 ### keyBindings
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/keyBindings.ts#L844)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/keyBindings.ts#L846)
 
 ```
 /**
- * Build a Stream that turns declarative key bindings into Messages.
+ * Build a Stream that maps declarative key bindings to values. The output is
+ * inferred from each binding's `mapEvent` callback; `Subscription.make`
+ * checks that the final Stream emits the application's Message type.
  * 
  * A string describes one key press. Modifiers are joined with `+`:
  * `'Mod+K'`, `'Control+Shift+P'`, or `'Alt+ArrowDown'`. The supported modifiers
@@ -211,16 +218,16 @@ function
  * or put bindings with different parent-owned lifetimes in separate child
  * entries so `Subscription.lift` can gate them individually. If the meaning
  * of a key depends on the Model, dispatch a factual key Message and decide
- * what it means in update instead of reading the Model from `toMessage`.
+ * what it means in update instead of reading the Model from `mapEvent`.
  */
-<Message>(config: KeyBindingsConfig<Message>): Stream<Message>
+<Output>(config: KeyBindingsConfig<Output>): Stream<Output>
 ```
 
 ### lift
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L682)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L682)
 
 ```
 /**
@@ -262,7 +269,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L174)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L174)
 
 ```
 /**
@@ -283,7 +290,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L365)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L365)
 
 ```
 /**
@@ -305,7 +312,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/animationFrame.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/animationFrame.ts#L12)
 
 ```
 /**
@@ -323,11 +330,26 @@ type AnimationFrameConfig = Readonly<{
 }>
 ```
 
+### EntryGates
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L419)
+
+```
+/**
+ * The per-entry form of a lift's `when`: a partial map from entry name to
+ * gate. Entries the map names are gated, and entries it omits are lifted
+ * ungated.
+ */
+type EntryGates = Readonly<Partial<Record<keyof Subscriptions, WhenPredicate<ParentModel>>>>
+```
+
 ### EntryWithoutKeepAlive
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L24)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L24)
 
 ```
 /**
@@ -347,7 +369,7 @@ type EntryWithoutKeepAlive = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L146)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L149)
 
 ```
 /**
@@ -360,10 +382,10 @@ type
  * `document`.
  * 
  * `type` is constrained to the event names the target declares, and
- * `toMessage`'s parameter is the event those two resolve to. Annotating that
+ * `mapEvent`'s parameter is the event those two resolve to. Annotating that
  * parameter is checked against the resolved event rather than replacing it.
  * 
- * `toMessage(event)` transforms each dispatched event into a Message. The
+ * `mapEvent(event)` transforms each dispatched event into a Stream value. The
  * mapper runs synchronously in the same call stack as the browser's event
  * dispatch, so calling `event.preventDefault()` inside it takes effect,
  * unless the listener is passive. Some browsers default wheel and touch
@@ -371,11 +393,14 @@ type
  * ignored. Pass `options: { passive: false }` explicitly when cancelling
  * those events, or reach for `fromEventFilterMapPreventDefault`, which does
  * so for you.
+ * 
+ * The output type is inferred from the mapper; `Subscription.make` checks
+ * that the final Stream emits the application's Message type.
  */
 type FromEventConfig = Readonly<{
+  mapEvent: (event: EventOf<Target, Type>) => Output
   options: AddEventListenerOptions
   target: Target | () => Target
-  toMessage: (event: EventOf<Target, Type>) => Message
   type: Type
 }>
 ```
@@ -384,7 +409,7 @@ type FromEventConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L179)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L185)
 
 ```
 /**
@@ -397,10 +422,10 @@ type
  * `document`.
  * 
  * `type` is constrained to the event names the target declares, and
- * `toMessage`'s parameter is the event those two resolve to. Annotating that
+ * `filterMapEvent`'s parameter is the event those two resolve to. Annotating that
  * parameter is checked against the resolved event rather than replacing it.
  * 
- * `toMessage(event)` returns `Option.some(message)` to emit a Message for the
+ * `filterMapEvent(event)` returns `Option.some(value)` to emit a value for the
  * event, or `Option.none()` to ignore it. The mapper runs synchronously in the
  * same call stack as the browser's event dispatch, so calling
  * `event.preventDefault()` inside it takes effect, unless the listener is
@@ -408,11 +433,14 @@ type
  * to passive, where `preventDefault()` is ignored. Pass
  * `options: { passive: false }` explicitly when cancelling those events, or
  * reach for `fromEventFilterMapPreventDefault`, which does so for you.
+ * 
+ * The output type is inferred from the mapper; `Subscription.make` checks
+ * that the final Stream emits the application's Message type.
  */
 type FromEventFilterMapConfig = Readonly<{
+  filterMapEvent: (event: EventOf<Target, Type>) => Option.Option<Output>
   options: AddEventListenerOptions
   target: Target | () => Target
-  toMessage: (event: EventOf<Target, Type>) => Option.Option<Message>
   type: Type
 }>
 ```
@@ -421,7 +449,7 @@ type FromEventFilterMapConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L251)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L260)
 
 ```
 /**
@@ -434,24 +462,27 @@ type
  * `document`.
  * 
  * `type` is constrained to the event names the target declares, and
- * `toMessage`'s parameter is the event those two resolve to. Annotating that
+ * `filterMapEvent`'s parameter is the event those two resolve to. Annotating that
  * parameter is checked against the resolved event rather than replacing it.
  * 
- * `toMessage(event)` returns `Option.some(message)` to mark the dispatch
+ * `filterMapEvent(event)` returns `Option.some(value)` to mark the dispatch
  * handled, or `Option.none()` to leave the default behavior intact. For a
  * handled dispatch the helper calls `event.preventDefault()` and queues the
- * Message before the listener returns; the mapper itself never calls
+ * value before the listener returns; the mapper itself never calls
  * `preventDefault()`.
  * 
  * `options.passive` defaults to `false` so `preventDefault()` keeps working
  * for the events browsers would otherwise register as passive. The config
  * rejects `passive: true`; the runtime guard also throws for unchecked
  * JavaScript inputs.
+ * 
+ * The output type is inferred from the mapper; `Subscription.make` checks
+ * that the final Stream emits the application's Message type.
  */
 type FromEventFilterMapPreventDefaultConfig = Readonly<{
+  filterMapEvent: (event: EventOf<Target, Type>) => Option.Option<Output>
   options: PreventDefaultEventListenerOptions
   target: Target | () => Target
-  toMessage: (event: EventOf<Target, Type>) => Option.Option<Message>
   type: Type
 }>
 ```
@@ -460,7 +491,7 @@ type FromEventFilterMapPreventDefaultConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L408)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L408)
 
 ```
 /**
@@ -482,7 +513,7 @@ type GatedDependencies = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/keyBindings.ts#L36)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/keyBindings.ts#L36)
 
 ```
 /**
@@ -492,7 +523,7 @@ type
  * An array describes a sequence of at least two presses, such as
  * `['G', 'H']` or `['G', 'Shift+G']`.
  */
-type KeyBinding = BindingBase<Message> & Readonly<{
+type KeyBinding = BindingBase<Output> & Readonly<{
   keys: string
   whenRepeated: "Ignore" | "Allow"
 }> | Readonly<{
@@ -505,12 +536,12 @@ type KeyBinding = BindingBase<Message> & Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/keyBindings.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/keyBindings.ts#L51)
 
 ```
 /** Configuration for the keyBindings Stream helper. */
 type KeyBindingsConfig = Readonly<{
-  bindings: ReadonlyArray<KeyBinding<Message>>
+  bindings: ReadonlyArray<KeyBinding<Output>>
   modKey: ModKey
   sequenceTimeout: Duration.Input
   target: EventTarget | () => EventTarget
@@ -521,7 +552,7 @@ type KeyBindingsConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/keyBindings.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/keyBindings.ts#L19)
 
 ```
 /** A single key press or a sequence of two or more key presses. */
@@ -532,7 +563,7 @@ type KeySequence = string | Readonly<[string, string, ...Array<string>]>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L72)
 
 ```
 /**
@@ -567,7 +598,7 @@ type Subscription = Entry<Model, Message, Dependencies, Services> & Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L80)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L80)
 
 ```
 /** A record of named Subscriptions keyed by dependency field name. */
@@ -578,7 +609,7 @@ type Subscriptions = Readonly<Record<string, Subscription<Model, Message, any, S
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/keyBindings.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/keyBindings.ts#L16)
 
 ```
 /** Whether a key binding may fire when its event comes from an editable element. */
@@ -591,7 +622,7 @@ type WhileTyping = "Suppress" | "Allow"
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/fromEvent.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L25)
 
 ```
 /**
@@ -621,7 +652,7 @@ interface TypedEventTarget {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/subscription/subscription.ts#L336)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L336)
 
 ```
 /**

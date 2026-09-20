@@ -2,8 +2,8 @@
 url: https://foldkit.dev/elm/foldkit-vs-elm-side-by-side
 title: "Foldkit vs Elm: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and Elm. Same architecture, different host: ports vs Commands, decoders vs Schema, and what each side gives up."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -168,7 +168,7 @@ export const update = (model: Model, message: Message) =>
       Match.value(model.tool).pipe(
         withUpdateReturn,
         Match.when('Brush', () => ({
-          model: evo(model, {
+          model: modifyFields(model, {
             grid: () => applyBrush(model, x, y),
             undoStack: () => pushHistory(model.undoStack, model.grid),
             redoStack: () => [],
@@ -176,7 +176,7 @@ export const update = (model: Model, message: Message) =>
           }),
         })),
         Match.when('Fill', () => {
-          const nextModel = evo(model, {
+          const nextModel = modifyFields(model, {
             grid: () => applyFill(model, x, y),
             undoStack: () => pushHistory(model.undoStack, model.grid),
             redoStack: () => [],
@@ -189,7 +189,7 @@ export const update = (model: Model, message: Message) =>
       Array.match(model.undoStack, {
         onEmpty: () => ({ model }),
         onNonEmpty: nonEmptyUndoStack => {
-          const nextModel = evo(model, {
+          const nextModel = modifyFields(model, {
             grid: () => Array.lastNonEmpty(nonEmptyUndoStack),
             undoStack: () => Array.initNonEmpty(nonEmptyUndoStack),
             redoStack: Array.append(model.grid),
@@ -201,11 +201,11 @@ export const update = (model: Model, message: Message) =>
   })
 ```
 
-`case msg of` becomes `Message.match`. Elm record updates become `evo` transformations. `( model, Cmd.none )` becomes `{ model }`.
+`case msg of` becomes `Message.match`. Elm record updates become `modifyFields` transformations. `( model, Cmd.none )` becomes `{ model }`.
 
 Elm enforces exhaustive pattern matching as part of the language. Foldkit obtains the same compile-time failure at a match written with `Message.match`. That is the required Foldkit update style, but TypeScript itself does not prevent someone from writing a non-exhaustive alternative.
 
-Elm record updates and `evo` both preserve references to unchanged nested values. The rendering section shows how each application uses that reference stability.
+Elm record updates and `modifyFields` both preserve references to unchanged nested values. The rendering section shows how each application uses that reference stability.
 
 ## The Model: Custom Types vs Schema
 
@@ -545,7 +545,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
     Subscription.fromEventFilterMapPreventDefault({
       target: document,
       type: 'keydown',
-      toMessage: toUndoRedoMessage,
+      filterMapEvent: toUndoRedoMessage,
     }),
   ),
 
@@ -553,7 +553,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
     Subscription.fromEventFilterMap({
       target: document,
       type: 'keydown',
-      toMessage: toToolMessage,
+      filterMapEvent: toToolMessage,
     }),
   ),
 
@@ -639,7 +639,7 @@ const lazyRow = createKeyedLazy()
 
 // Each args array is compared element-by-element against the previous render.
 // If every arg is reference-equal, the view function isn't called at all.
-// evo() preserves references for unchanged Model fields, so the check just
+// modifyFields() preserves references for unchanged Model fields, so the check just
 // works, and the builder is the same object every render, so passing it
 // through the args never invalidates the cache.
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => {

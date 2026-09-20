@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/personal-blog
 title: "Personal Blog"
 description: "A blog whose prose lives in Markdown files. The @foldkit/markdown Vite plugin compiles each file into a typed document, per-node view overrides style the result, and directive islands place a live Counter Submodel and Note callout between paragraphs."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -33,7 +33,7 @@ import { Command, Runtime, Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { UrlRequest, load, pushUrl } from 'foldkit/navigation'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 import { Url, toString as urlToString } from 'foldkit/url'
 
 import * as Markdown from '@foldkit/markdown'
@@ -94,7 +94,8 @@ type UpdateReturn = Update.Return<Model, Message>
 const foldCounter = Update.foldChild({
   update: Counter.update,
   read: (model: Model) => Option.some(model.counter),
-  write: (model, nextCounter) => evo(model, { counter: () => nextCounter }),
+  write: (model, nextCounter) =>
+    modifyFields(model, { counter: () => nextCounter }),
   toParentMessage: message => Message.GotCounterMessage({ message }),
 })
 
@@ -114,7 +115,7 @@ export const update = (model: Model, message: Message) =>
 
     ChangedUrl: ({ url }) => {
       const nextRoute = Route.urlToAppRoute(url)
-      return { model: evo(model, { route: () => nextRoute }) }
+      return { model: modifyFields(model, { route: () => nextRoute }) }
     },
 
     GotCounterMessage: ({ message }) => foldCounter(model, message),

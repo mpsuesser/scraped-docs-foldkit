@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/ssr
 title: "Server-Side Rendering"
 description: "A server renders each request into HTML using Flags read from a cookie, and the client hydrates with the exact values the server used. Reload the page and your latest count arrives already in the markup, before any JavaScript runs."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -29,7 +29,7 @@ import { Effect, Schema } from 'effect'
 import { Command, Runtime, type Update } from 'foldkit'
 import { type Document, type Html, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Button } from '@foldkit/ui'
 
@@ -70,14 +70,14 @@ export const update = (model: Model, message: Message) =>
     ClickedDecrement: () => {
       const nextCount = model.count - 1
       return {
-        model: evo(model, { count: () => nextCount }),
+        model: modifyFields(model, { count: () => nextCount }),
         commands: [PersistCount({ count: nextCount })],
       }
     },
     ClickedIncrement: () => {
       const nextCount = model.count + 1
       return {
-        model: evo(model, { count: () => nextCount }),
+        model: modifyFields(model, { count: () => nextCount }),
         commands: [PersistCount({ count: nextCount })],
       }
     },

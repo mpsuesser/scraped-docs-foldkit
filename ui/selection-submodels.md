@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/selection-submodels
 title: "Selection Submodels"
 description: "Use create<Item>() factories to keep one item type across a selection Submodel’s view, update, programmatic helpers, and OutMessages."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -24,7 +24,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Listbox } from '@foldkit/ui'
 
@@ -69,7 +69,9 @@ const foldListboxOutMessage = Listbox.OutMessage.match<
 >({
   Selected:
     ({ value }) =>
-    model => ({ model: evo(model, { maybePlan: () => Option.some(value) }) }),
+    model => ({
+      model: modifyFields(model, { maybePlan: () => Option.some(value) }),
+    }),
 })
 
 // Update.foldChild wires the child into the parent: it delegates keyboard
@@ -79,7 +81,8 @@ const foldListboxOutMessage = Listbox.OutMessage.match<
 const foldListbox = Update.foldChild({
   update: PlanListbox.update,
   read: (model: Model) => Option.some(model.listbox),
-  write: (model, nextListbox) => evo(model, { listbox: () => nextListbox }),
+  write: (model, nextListbox) =>
+    modifyFields(model, { listbox: () => nextListbox }),
   toParentMessage: message => Message.GotListboxMessage({ message }),
   foldOutMessage: foldListboxOutMessage,
 })

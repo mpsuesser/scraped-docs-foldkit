@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/view-transitions
 title: "View Transitions"
 description: "Animated route changes with the View Transitions API. Transition types control direction-aware slides, and a shared element morphs from gallery card to detail hero."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -29,7 +29,7 @@ import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { UrlRequest, load, pushUrl } from 'foldkit/navigation'
 import { Transition } from 'foldkit/route'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 import { Url, toString as urlToString } from 'foldkit/url'
 
 import { Artwork, artworks, findArtwork } from './artwork'
@@ -101,11 +101,11 @@ export const update = (model: Model, message: Message) =>
       }),
 
     ChangedUrl: ({ url }) => ({
-      model: evo(model, { route: () => urlToAppRoute(url) }),
+      model: modifyFields(model, { route: () => urlToAppRoute(url) }),
     }),
 
     UpdatedFilterText: ({ filterText }) => ({
-      model: evo(model, { filterText: () => filterText }),
+      model: modifyFields(model, { filterText: () => filterText }),
     }),
   })
 

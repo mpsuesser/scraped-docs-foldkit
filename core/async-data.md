@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/async-data
 title: "Async Data"
 description: "A six-state value type for asynchronously loaded data in the Model: Idle, Loading, Refreshing, Failure, Stale, and Success, with stale-while-revalidate and keep-stale-on-failure built in."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 `foldkit/asyncData` is a plain value type in the spirit of Effect’s `Option` and `Result`, built for data that arrives asynchronously. This page introduces the state model and the combinators you reach for most. The [API Reference](https://foldkit.dev/api-reference/async-data) has the exhaustive catalog.
@@ -134,19 +134,19 @@ AsyncData.matchData(model.allNotes, {
 ```
 import { Array, HashMap, Option } from 'effect'
 import { AsyncData } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 export const prependNewNote =
   (note: Note) =>
   (model: Model): Model =>
     Option.match(note.maybeNotebookId, {
       onNone: () =>
-        evo(model, {
+        modifyFields(model, {
           allNotes: allNotes =>
             AsyncData.map(allNotes, noteList => Array.prepend(noteList, note)),
         }),
       onSome: notebookId =>
-        evo(model, {
+        modifyFields(model, {
           notesByNotebook: notesByNotebook =>
             HashMap.modify(notesByNotebook, notebookId, notes =>
               AsyncData.map(notes, noteList => Array.prepend(noteList, note)),
@@ -187,7 +187,7 @@ const enterNotebooksRoute = (model: Model): Update.Return<Model, Message> =>
   Option.match(AsyncData.revalidateOrLoad(model.notebooks), {
     onNone: () => ({ model }),
     onSome: nextNotebooks => ({
-      model: evo(model, { notebooks: () => nextNotebooks }),
+      model: modifyFields(model, { notebooks: () => nextNotebooks }),
       commands: [LoadNotebooks()],
     }),
   })
@@ -200,7 +200,7 @@ const revalidateAllNotes = (model: Model): Update.Return<Model, Message> =>
   Option.match(AsyncData.revalidate(model.allNotes), {
     onNone: () => ({ model }),
     onSome: refreshingAllNotes => ({
-      model: evo(model, { allNotes: () => refreshingAllNotes }),
+      model: modifyFields(model, { allNotes: () => refreshingAllNotes }),
       commands: [LoadAllNotes()],
     }),
   })
@@ -213,7 +213,7 @@ const enterStatsRoute = (model: Model): Update.Return<Model, Message> =>
   Option.match(AsyncData.loadIfMissing(model.stats), {
     onNone: () => ({ model }),
     onSome: loadingStats => ({
-      model: evo(model, { stats: () => loadingStats }),
+      model: modifyFields(model, { stats: () => loadingStats }),
       commands: [LoadStats()],
     }),
   })
@@ -243,10 +243,14 @@ const LoadAllNotes = Command.define('LoadAllNotes', {
 
 Match.tagsExhaustive({
   SucceededLoadAllNotes: ({ notes }) => ({
-    model: evo(model, { allNotes: () => AsyncData.Success({ data: notes }) }),
+    model: modifyFields(model, {
+      allNotes: () => AsyncData.Success({ data: notes }),
+    }),
   }),
   FailedLoadAllNotes: ({ error }) => ({
-    model: evo(model, { allNotes: () => AsyncData.Failure({ error }) }),
+    model: modifyFields(model, {
+      allNotes: () => AsyncData.Failure({ error }),
+    }),
   }),
 })
 ```
@@ -265,7 +269,7 @@ const LoadAllNotes = Command.define('LoadAllNotes', {
 
 Match.tagsExhaustive({
   SettledLoadAllNotes: ({ result }) => ({
-    model: evo(model, {
+    model: modifyFields(model, {
       allNotes: previous => AsyncData.settle(previous, result),
     }),
   }),

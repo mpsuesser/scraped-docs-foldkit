@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/checkbox
 title: "Checkbox"
 description: "Accessible checkbox with indeterminate state support."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -29,7 +29,7 @@ You agree to our Terms of Service and Privacy Policy.
 import { Schema } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Checkbox } from '@foldkit/ui'
 
@@ -57,7 +57,7 @@ const Message = defineMessageUnion({
 // This is the moment to fire analytics, validate a form, or push the value
 // to a backend.
 ToggledTerms: ({ isChecked }) => ({
-  model: evo(model, { acceptedTerms: () => isChecked }),
+  model: modifyFields(model, { acceptedTerms: () => isChecked }),
 })
 
 // Inside your view function, render the checkbox with Checkbox.view. It reads
@@ -108,7 +108,7 @@ Pass `isIndeterminate: true` to show a mixed state. This is typically computed f
 import { Schema } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Checkbox } from '@foldkit/ui'
 
@@ -140,7 +140,7 @@ const Message = defineMessageUnion({
 // In the corresponding Message.match handler, toggling "Select All"
 // writes the same value to every child:
 ToggledSelectAll: ({ isChecked }) => ({
-  model: evo(model, {
+  model: modifyFields(model, {
     optionA: () => isChecked,
     optionB: () => isChecked,
   }),

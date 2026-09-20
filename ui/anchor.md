@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/anchor
 title: "Anchor"
 description: "Position and portal floating panels with the same Floating UI runtime used by Listbox, Combobox, Menu, Popover, Tooltip, and Date Picker."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Anchor
@@ -114,7 +114,7 @@ const view = (h: HtmlBuilder<Message>): Html =>
 
 Two details decide whether the panel behaves:
 
-The trigger needs a stable id. `anchorSetup` resolves the button by `buttonId` through the element's own root, so a panel rendered inside a shadow root finds a trigger in that same shadow root. A document-scoped lookup would not. When the lookup misses, `anchorSetup` returns a cleanup that does nothing and never positions anything, which leaves the panel hidden with no error reported. A panel that mounts but never appears is the symptom of a `buttonId` that does not match the trigger.
+The trigger needs a stable id. `anchorSetup` resolves the button by `buttonId` through the element's own root, so a panel rendered inside a shadow root finds a trigger in that same shadow root. A document-scoped lookup would not. If the id does not resolve, or the trigger or panel is not an HTML element, `anchorSetup` reports the specific problem to the console and returns a cleanup that does nothing. The panel remains hidden. A failed positioning tick also reports an error; the panel stays hidden until a later tick succeeds.
 
 The panel must start hidden. `anchorSetup` clears `visibility` after the first position resolves, which means the element is expected to render at `visibility: hidden`. Skip it and the panel paints at the top left corner for a frame before Floating UI places it.
 
@@ -246,7 +246,7 @@ Building on Anchor means owning the parts the components already handle: open an
 
 `(element: Element, config: SetupConfig) => () => void`
 
-Positions an element against the trigger named by `config.buttonId`, portals it unless `anchor.portal` is `false`, and returns a cleanup. Call it inside `Effect.sync` in a Mount and register the cleanup with `Effect.acquireRelease`.
+Positions an HTML element against the HTML trigger named by `config.buttonId`, portals it unless `anchor.portal` is `false`, and returns a cleanup. A missing trigger or non-HTML element is reported to the console, and no positioning starts. Call it inside `Effect.sync` in a Mount and register the cleanup with `Effect.acquireRelease`.
 
 ### AnchorConfig
 

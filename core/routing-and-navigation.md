@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/routing-and-navigation
 title: "Routing & Navigation"
 description: "Define routes with bidirectional parser combinators that decode URLs into typed values and build URLs from Schema-validated parameters."
-access_date: 2026-09-12T22:55:23.086Z
-current_date: 2026-09-12T22:55:23.086Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Routing & Navigation
@@ -109,7 +109,7 @@ Combine routers with `Route.oneOf` and create a parser with a fallback for unmat
 
 ```
 import { Route, Runtime } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 import { Url } from 'foldkit/url'
 
 // Combine routers. A route matches only when it consumes the whole URL.
@@ -129,7 +129,7 @@ const init: Runtime.RoutingApplicationInit<Model, Message> = (url: Url) => {
 
 // In your update function, handle URL changes:
 ChangedUrl: ({ url }) => ({
-  model: evo(model, {
+  model: modifyFields(model, {
     route: () => urlToAppRoute(url),
   }),
 })
@@ -456,7 +456,7 @@ import { Effect, Schema, pipe } from 'effect'
 import { Command, Navigation, Route, type Update, Url } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 import { defineRouteUnion, int, literal, slash } from 'foldkit/route'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 // ROUTE
 
@@ -531,7 +531,7 @@ const update = (model: Model, message: Message) =>
       }),
 
     ChangedUrl: ({ url }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         route: () => urlToAppRoute(url),
       }),
     }),
@@ -553,7 +553,7 @@ Both code paths resolve a URL into a route, and both should produce the same rou
 ```
 import { Match, Option } from 'effect'
 import { Command, Runtime } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 import { Url } from 'foldkit/url'
 
 // Route-driven Commands live in one helper...
@@ -578,7 +578,7 @@ const init: Runtime.RoutingApplicationInit<Model, Message> = (url: Url) => {
 ChangedUrl: ({ url }) => {
   const route = urlToAppRoute(url)
   return {
-    model: evo(model, { route: () => route }),
+    model: modifyFields(model, { route: () => route }),
     commands: commandsForRoute(route),
   }
 }
@@ -597,7 +597,7 @@ The route union is inferred from the transition argument and the tag is checked 
 ```
 import { Command, Runtime } from 'foldkit'
 import { Transition } from 'foldkit/route'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 import { Url } from 'foldkit/url'
 
 // Entry-only Commands ask about the transition, not the route alone...
@@ -619,7 +619,7 @@ const init: Runtime.RoutingApplicationInit<Model, Message> = (url: Url) => {
 ChangedUrl: ({ url }) => {
   const nextRoute = urlToAppRoute(url)
   return {
-    model: evo(model, { route: () => nextRoute }),
+    model: modifyFields(model, { route: () => nextRoute }),
     commands: commandsForTransition(Transition.make(model.route, nextRoute)),
   }
 }

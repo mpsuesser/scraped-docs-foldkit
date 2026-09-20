@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/calendar
 title: "Calendar"
 description: "Accessible inline calendar grid with 2D keyboard navigation, locale-aware headers, and min/max/disabled-date constraints."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## An Inline Calendar You Render
@@ -56,7 +56,7 @@ import { Effect, Match, Option, Schema } from 'effect'
 import { Calendar, Update } from 'foldkit'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Calendar as UiCalendar } from '@foldkit/ui'
 
@@ -116,7 +116,9 @@ const foldCalendarOutMessage = UiCalendar.OutMessage.match<
   SelectedDate:
     ({ date }) =>
     model => ({
-      model: evo(model, { maybeSelectedDate: () => Option.some(date) }),
+      model: modifyFields(model, {
+        maybeSelectedDate: () => Option.some(date),
+      }),
     }),
   // The child has emitted \`ChangedViewMonth\`. In this arm the parent can
   // update its own state or dispatch its own Commands, for example
@@ -132,7 +134,7 @@ const foldCalendar = Update.foldChild({
   update: UiCalendar.update,
   read: (model: Model) => Option.some(model.calendarDemo),
   write: (model, nextCalendarDemo) =>
-    evo(model, { calendarDemo: () => nextCalendarDemo }),
+    modifyFields(model, { calendarDemo: () => nextCalendarDemo }),
   toParentMessage: message => Message.GotCalendarMessage({ message }),
   foldOutMessage: foldCalendarOutMessage,
 })
@@ -580,7 +582,7 @@ Use `SelectedDate` to update the parent-owned selection. Use `ChangedViewMonth` 
 
 ### Programmatic Helpers
 
-`selectDate` is a child entry point. Fold it into the parent with `Update.foldChild` because it takes a date as input. The Model-only helpers make silent state adjustments and can be used as point-free `evo` setters.
+`selectDate` is a child entry point. Fold it into the parent with `Update.foldChild` because it takes a date as input. The Model-only helpers make silent state adjustments and can be used as point-free `modifyFields` setters.
 
 | Name | Type | Behavior |
 | --- | --- | --- |

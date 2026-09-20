@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/snake
 title: "Snake"
 description: "The classic snake game. Keyboard input, game loop, and collision detection."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -34,7 +34,7 @@ import {
 import { Command, Runtime, Subscription, type Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { GAME, GAME_SPEED } from './constants'
 import { Apple, Direction, Position, Snake } from './domain'
@@ -121,7 +121,7 @@ export const update = (model: Model, message: Message) =>
 
             if (model.gameState === 'Playing') {
               return {
-                model: evo(model, {
+                model: modifyFields(model, {
                   nextDirection: () => nextDirection,
                 }),
               }
@@ -140,7 +140,7 @@ export const update = (model: Model, message: Message) =>
             Match.exhaustive,
           )
           return {
-            model: evo(model, {
+            model: modifyFields(model, {
               gameState: () => nextGameState,
             }),
           }
@@ -149,7 +149,7 @@ export const update = (model: Model, message: Message) =>
           const nextSnake = Snake.create(GAME.INITIAL_POSITION)
 
           return {
-            model: evo(model, {
+            model: modifyFields(model, {
               snake: () => nextSnake,
               direction: () => GAME.INITIAL_DIRECTION,
               nextDirection: () => GAME.INITIAL_DIRECTION,
@@ -183,7 +183,7 @@ export const update = (model: Model, message: Message) =>
 
       if (Snake.hasCollision(nextSnake)) {
         return {
-          model: evo(model, {
+          model: modifyFields(model, {
             gameState: () => 'GameOver',
             highScore: highScore => Math.max(model.points, highScore),
           }),
@@ -195,7 +195,7 @@ export const update = (model: Model, message: Message) =>
         : []
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           snake: () => nextSnake,
           direction: () => currentDirection,
           points: points =>
@@ -206,7 +206,7 @@ export const update = (model: Model, message: Message) =>
     },
 
     PausedGame: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         gameState: gameState =>
           gameState === 'Playing' ? 'Paused' : 'Playing',
       }),
@@ -217,7 +217,7 @@ export const update = (model: Model, message: Message) =>
       const nextSnake = Snake.create(startPosition)
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           snake: () => nextSnake,
           direction: () => 'Right',
           nextDirection: () => 'Right',
@@ -229,7 +229,7 @@ export const update = (model: Model, message: Message) =>
     },
 
     CompletedGenerateApplePosition: ({ position }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         apple: () => position,
       }),
     }),
@@ -278,7 +278,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
     Subscription.fromEventFilterMapPreventDefault({
       target: document,
       type: 'keydown',
-      toMessage: keyboardEvent =>
+      filterMapEvent: keyboardEvent =>
         Option.some(Message.PressedKey({ key: keyboardEvent.key })),
     }),
   ),

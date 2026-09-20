@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view-memoization
 title: "View Memoization"
 description: "Skip stable view subtrees with createLazy and createKeyedLazy, choose cache keys by entity identity, and profile before adding memoization."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # View Memoization
@@ -78,7 +78,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) => ({
 
 Both the view function and the lazy slot must stay at module scope. Defining either inside view creates a new reference on every render, so the cache always misses.
 
-Arguments are compared by reference, not by value. This works with [evo](https://foldkit.dev/best-practices/immutability#immutable-updates): an unchanged Model branch keeps its reference, so a lazy view receiving that branch can reuse its VNode.
+Arguments are compared by reference, not by value. This works with [modifyFields](https://foldkit.dev/best-practices/immutability#immutable-updates): an unchanged Model branch keeps its reference, so a lazy view receiving that branch can reuse its VNode.
 
 ## createKeyedLazy
 

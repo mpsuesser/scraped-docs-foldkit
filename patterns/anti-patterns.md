@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/anti-patterns
 title: "Anti-patterns"
 description: "Architectural warning signs in Foldkit apps, with idiomatic replacements for ambiguous state, leaky Submodel boundaries, misplaced side effects, stale async results, Command ordering, and live handles."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Anti-patterns
@@ -85,7 +85,7 @@ Suppose the Model stores `items`, the current `query`, and a filtered copy named
 import { Schema } from 'effect'
 import type { Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const Item = Schema.Struct({ id: Schema.String, name: Schema.String })
 
@@ -104,7 +104,7 @@ type Message = typeof Message.Type
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     UpdatedQuery: ({ query }) => ({
-      model: evo(model, { query: () => query }),
+      model: modifyFields(model, { query: () => query }),
     }),
   })
 ```
@@ -185,14 +185,14 @@ Calling `fetch` inside view starts another request whenever Foldkit renders that
 // ❌ Bad: update performs a DOM effect during the state transition.
 
 import type { Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedOpenDialog: () => {
       document.querySelector<HTMLInputElement>('#search-input')?.focus()
 
-      return { model: evo(model, { dialogState: () => 'Open' }) }
+      return { model: modifyFields(model, { dialogState: () => 'Open' }) }
     },
   })
 ```
@@ -204,7 +204,7 @@ Keep init, update, and view deterministic. The `ClickedOpenDialog` handler shoul
 
 import { Effect } from 'effect'
 import { Command, Dom, type Update } from 'foldkit'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const FocusSearchInput = Command.define('FocusSearchInput', {
   messages: [Message.CompletedFocusSearchInput],
@@ -217,7 +217,7 @@ const FocusSearchInput = Command.define('FocusSearchInput', {
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedOpenDialog: () => ({
-      model: evo(model, { dialogState: () => 'Open' }),
+      model: modifyFields(model, { dialogState: () => 'Open' }),
       commands: [FocusSearchInput()],
     }),
     CompletedFocusSearchInput: () => ({ model }),
@@ -416,7 +416,7 @@ Imagine that a visitor searches for `ca` and then immediately searches for `cat`
 import { Schema } from 'effect'
 import type { Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const Message = defineMessageUnion({
   SucceededSearch: { suggestions: Schema.Array(Schema.String) },
@@ -426,7 +426,7 @@ type Message = typeof Message.Type
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     SucceededSearch: ({ suggestions }) => ({
-      model: evo(model, { suggestions: () => suggestions }),
+      model: modifyFields(model, { suggestions: () => suggestions }),
     }),
   })
 ```
@@ -439,7 +439,7 @@ Assign each search an incrementing generation number and include it in `Succeede
 import { Schema } from 'effect'
 import type { Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const Message = defineMessageUnion({
   SucceededSearch: {
@@ -456,7 +456,7 @@ const update = (model: Model, message: Message) =>
         return { model }
       }
 
-      return { model: evo(model, { suggestions: () => suggestions }) }
+      return { model: modifyFields(model, { suggestions: () => suggestions }) }
     },
   })
 ```
@@ -520,7 +520,7 @@ const update = (model: Model, message: Message) =>
       const nextSearchGeneration = Number.increment(model.searchGeneration)
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           query: () => query,
           searchGeneration: () => nextSearchGeneration,
         }),
@@ -550,7 +550,7 @@ const update = (model: Model, message: Message) =>
     UpdatedQuery: ({ query }) =>
       SearchState.match<UpdateReturn>(model.searchState, {
         Running: () => ({
-          model: evo(model, {
+          model: modifyFields(model, {
             query: () => query,
             searchGeneration: Number.increment,
             searchState: () => SearchState.Cancelling(),
@@ -562,12 +562,12 @@ const update = (model: Model, message: Message) =>
           ],
         }),
         Cancelling: () => ({
-          model: evo(model, { query: () => query }),
+          model: modifyFields(model, { query: () => query }),
         }),
       }),
 
     CompletedCancelFetchSuggestions: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         searchState: () => SearchState.Running(),
       }),
       commands: [
@@ -594,8 +594,8 @@ import type { Update } from 'foldkit'
 const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedResetSettings: () => ({
-      model: evo(model, {
-        settings: settings => evo(settings, { theme: () => 'Light' }),
+      model: modifyFields(model, {
+        settings: settings => modifyFields(settings, { theme: () => 'Light' }),
       }),
     }),
   })
@@ -613,7 +613,8 @@ import { Message as SettingsMessage } from './settings/message'
 const foldSettings = Update.foldChild({
   update: Settings.update,
   read: (model: Model) => Option.some(model.settings),
-  write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
+  write: (model, nextSettings) =>
+    modifyFields(model, { settings: () => nextSettings }),
   toParentMessage: message => Message.GotSettingsMessage({ message }),
 })
 
@@ -637,7 +638,7 @@ const update = (model: Model, message: Message) =>
       const settingsReset = Settings.setTheme(model.settings, 'Light')
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           settings: () => settingsReset.model,
         }),
       }
@@ -665,7 +666,8 @@ export const setTheme = (model: Model, theme: Theme) =>
 const foldSettingsTheme = Update.foldChild({
   update: Settings.setTheme,
   read: (model: Model) => Option.some(model.settings),
-  write: (model, nextSettings) => evo(model, { settings: () => nextSettings }),
+  write: (model, nextSettings) =>
+    modifyFields(model, { settings: () => nextSettings }),
   toParentMessage: message => Message.GotSettingsMessage({ message }),
 })
 
@@ -676,6 +678,175 @@ const update = (model: Model, message: Message) =>
 ```
 
 `Update.foldChild` and `Update.foldChildStep` write the returned child Model into the parent and lift the child's Commands. When the child can emit OutMessages, pass `foldOutMessage` so the parent handles every variant instead of accidentally omitting one. The [Submodel guide](https://foldkit.dev/core/submodel) explains child Messages and OutMessages. [Informing Submodels](https://foldkit.dev/patterns/informing-submodels) covers parent-owned facts that a child needs to hear about.
+
+## Fold Child Initialization Results Completely
+
+A child `init` or `boot` can return a Model, Commands, and an OutMessage. Here, `Settings.boot` applies a Message through `update` and returns all three:
+
+```
+// settings.ts
+
+export const Theme = Schema.Literals(['Light', 'Dark'])
+export type Theme = typeof Theme.Type
+
+const BootArgs = Schema.Struct({ theme: Theme })
+type BootArgs = typeof BootArgs.Type
+
+export const Message = defineMessageUnion({
+  RestoredTheme: { theme: Theme },
+  CompletedRefreshAvailableThemes: {},
+})
+
+export const OutMessage = defineMessageUnion({
+  RestoredTheme: { theme: Theme },
+})
+
+export const init = () => ({ model: Model.make({ theme: 'Light' }) })
+
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.ReturnWithOutMessage<Model, Message, OutMessage>>(
+    message,
+    {
+      RestoredTheme: ({ theme }) => ({
+        model: modifyFields(model, { theme: () => theme }),
+        commands: [RefreshAvailableThemes()],
+        outMessage: OutMessage.RestoredTheme({ theme }),
+      }),
+      CompletedRefreshAvailableThemes: () => ({ model }),
+    },
+  )
+
+export const boot = ({ theme }: BootArgs) =>
+  update(init().model, Message.RestoredTheme({ theme }))
+```
+
+Both parent examples below use this same Settings Submodel. Copying its Model and mapping its Commands by hand can silently drop the OutMessage:
+
+```
+// ❌ Bad: copying the Model and Commands drops the RestoredTheme OutMessage.
+
+// main.ts
+
+const init = (username: string, savedTheme: Settings.Theme) => {
+  const settingsBoot = Settings.boot({ theme: savedTheme })
+  const commands = Command.mapMessages(settingsBoot.commands, message =>
+    Message.GotSettingsMessage({ message }),
+  )
+
+  // ❌ The parent keeps the Model and Commands but drops settingsBoot.outMessage.
+  return {
+    model: Model.make({
+      username,
+      settings: settingsBoot.model,
+      maybeRestoredTheme: Option.none(),
+    }),
+    commands,
+  }
+}
+```
+
+`Update.foldChildInit` keeps the three parts together. Give it a `toParentModel` that installs the child Model and an exhaustive, named OutMessage fold. Keep separate parent-owned setup in its own Step rather than hiding it in `toParentModel`:
+
+```
+// ✅ Good: fold the complete child result, then handle its OutMessage.
+
+// main.ts
+
+const applyRestoredTheme =
+  (theme: Settings.Theme): Update.Step<Model, Message> =>
+  stepModel => ({ model: stepModel, commands: [ApplyTheme({ theme })] })
+
+const recordRestoredTheme =
+  (theme: Settings.Theme): Update.Step<Model, Message> =>
+  stepModel => ({
+    model: modifyFields(stepModel, {
+      maybeRestoredTheme: () => Option.some(theme),
+    }),
+  })
+
+const foldSettingsOutMessage = Settings.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  RestoredTheme:
+    ({ theme }) =>
+    stepModel =>
+      Update.combine(stepModel, [
+        recordRestoredTheme(theme),
+        applyRestoredTheme(theme),
+      ]),
+})
+
+const init = (username: string, savedTheme: Settings.Theme) => {
+  const settingsBoot = Settings.boot({ theme: savedTheme })
+
+  // ✅ Keep the complete child result instead of copying selected fields.
+  return Update.foldChildInit(settingsBoot, {
+    toParentModel: settings =>
+      Model.make({ username, settings, maybeRestoredTheme: Option.none() }),
+    toParentMessage: message => Message.GotSettingsMessage({ message }),
+    // ✅ Handle the RestoredTheme OutMessage returned by Settings.boot.
+    foldOutMessage: foldSettingsOutMessage,
+  })
+}
+```
+
+The helper lifts the child's Commands, then runs the OutMessage fold against the completed parent Model. Its returned Command array puts lifted child Commands before Commands from the fold; the Runtime starts those Commands independently, so array order does not sequence their execution or completion. See [Folding Update](https://foldkit.dev/core/submodel#fold-child) and [Composing Update Steps](https://foldkit.dev/core/update#composing-update-steps).
+
+Assembling one complete parent Model from several independent child init results is valid. Use `Update.foldChildInits` to construct that Model once and handle each child's OutMessage against it. Each local fold receives the Model produced by the preceding fold, so later folds preserve earlier changes:
+
+```
+const foldSearchOutMessage = Search.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  PreparedResults:
+    ({ documentId }) =>
+    model => ({
+      model: modifyFields(model, {
+        maybeSelectedDocumentId: () => Option.some(documentId),
+      }),
+    }),
+})
+
+const foldEditorOutMessage = Editor.OutMessage.match<
+  Update.Step<Model, Message>
+>({
+  OpenedDocument:
+    ({ documentId }) =>
+    model => ({
+      model: modifyFields(model, {
+        maybeOpenedDocumentId: () => Option.some(documentId),
+      }),
+    }),
+})
+
+return Update.foldChildInits(
+  {
+    search: Search.boot(),
+    editor: Editor.boot(),
+  },
+  {
+    toParentModel: ({ search, editor }) =>
+      Model.make({
+        search,
+        editor,
+        maybeSelectedDocumentId: Option.none(),
+        maybeOpenedDocumentId: Option.none(),
+      }),
+    folds: {
+      search: {
+        toParentMessage: message => Message.GotSearchMessage({ message }),
+        foldOutMessage: foldSearchOutMessage,
+      },
+      editor: {
+        toParentMessage: message => Message.GotEditorMessage({ message }),
+        foldOutMessage: foldEditorOutMessage,
+      },
+    },
+  },
+)
+```
+
+If any child fold can emit a parent OutMessage, `resolveOutMessage` must decide which single parent OutMessage, if any, to emit from those results. [Combining Child Initialization Results](https://foldkit.dev/core/update#combining-independent-results) explains the local folds, and [Initializing Children with OutMessages](https://foldkit.dev/core/update#initializing-children-with-outmessages) shows `resolveOutMessage`.
 
 ## Know What Linting Can Catch
 

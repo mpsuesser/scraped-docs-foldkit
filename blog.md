@@ -2,13 +2,21 @@
 url: https://foldkit.dev/blog
 title: "Blog"
 description: "Announcements, musings, and technical deep dives."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Blog
 
 Announcements, musings, and technical deep dives.
+
+[Foldkit 0.162.0 and 0.163.0](https://foldkit.dev/blog/foldkit-0-163-0)
+
+September 19, 2026 · Devin Jameson
+
+Swipe-to-dismiss on Toast, clearer names for Model updates and key bindings, explicit canonical URLs, and SSR builds that no longer publish an unrendered HTML template.
+
+[Read more →](https://foldkit.dev/blog/foldkit-0-163-0)
 
 [Foldkit 0.160.0 and 0.161.0](https://foldkit.dev/blog/foldkit-0-161-0)
 

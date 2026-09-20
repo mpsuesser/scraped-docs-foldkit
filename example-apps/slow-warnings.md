@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/slow-warnings
 title: "Slow Warnings"
 description: "Trigger slow update, view, patch, and Subscription dependency warnings at their default thresholds, then inspect them in a visible log."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -27,7 +27,7 @@ import { Array, Match, Number, Option, Schema, Stream, pipe } from 'effect'
 import { Runtime, Subscription, type Update } from 'foldkit'
 import { type Document, type Html, HtmlBuilder, createLazy } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 const UPDATE_WORK_MS = 10
 const VIEW_WORK_MS = 24
@@ -185,30 +185,30 @@ export const update = (model: Model, message: Message) =>
       burnCpu(UPDATE_WORK_MS)
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           activeWorkload: () => 'Update',
         }),
       }
     },
     ClickedRunViewWork: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         activeWorkload: () => 'View',
       }),
     }),
     ClickedRunPatchWork: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         activeWorkload: () => 'Patch',
         patchRows: () => PATCH_ROW_COUNT,
         patchRun: Number.increment,
       }),
     }),
     ClickedRunSubscriptionDependenciesWork: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         activeWorkload: () => 'SubscriptionDependencies',
       }),
     }),
     ClickedClearWarnings: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         activeWorkload: () => 'Idle',
         warnings: () => [],
       }),
@@ -220,7 +220,7 @@ export const update = (model: Model, message: Message) =>
       }
 
       return {
-        model: evo(model, {
+        model: modifyFields(model, {
           activeWorkload: () => 'Idle',
           nextWarningId: Number.increment,
           warnings: prependWarning(warning),
@@ -248,7 +248,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
     Subscription.fromEventFilterMap({
       target: slowWarningTarget,
       type: SLOW_WARNING_EVENT,
-      toMessage: event =>
+      filterMapEvent: event =>
         pipe(
           event.detail,
           Schema.decodeUnknownOption(SlowWarningReport),

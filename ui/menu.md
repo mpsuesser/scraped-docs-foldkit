@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/menu
 title: "Menu"
 description: "An anchored action-menu Submodel with keyboard navigation, typeahead, dismissal, and optional modal behavior."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -32,7 +32,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Menu } from '@foldkit/ui'
 
@@ -85,7 +85,7 @@ const foldMenuOutMessage = Menu.OutMessage.match<
 const foldMenu = Update.foldChild({
   update: ActionMenu.update,
   read: (model: Model) => Option.some(model.menu),
-  write: (model, nextMenu) => evo(model, { menu: () => nextMenu }),
+  write: (model, nextMenu) => modifyFields(model, { menu: () => nextMenu }),
   toParentMessage: message => Message.GotMenuMessage({ message }),
   foldOutMessage: foldMenuOutMessage,
 })

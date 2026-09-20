@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/counters
 title: "Counters"
 description: "Add and remove independent Counter Submodels in a dynamic list. Each row is embedded through h.submodel and routed through a wrapper Message."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -25,7 +25,7 @@ import { Array, Option, Schema, pipe } from 'effect'
 import { Runtime, Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Button } from '@foldkit/ui'
 
@@ -69,9 +69,11 @@ const foldCounter = (id: string) =>
         Option.map(row => row.counter),
       ),
     write: (model, nextCounter) =>
-      evo(model, {
+      modifyFields(model, {
         rows: Array.map(row =>
-          row.id === id ? evo(row, { counter: () => nextCounter }) : row,
+          row.id === id
+            ? modifyFields(row, { counter: () => nextCounter })
+            : row,
         ),
       }),
     toParentMessage: message => Message.GotCounterMessage({ id, message }),
@@ -80,7 +82,7 @@ const foldCounter = (id: string) =>
 export const update = (model: Model, message: Message) =>
   Message.match<Update.Return<Model, Message>>(message, {
     ClickedAddRow: () => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         rows: Array.append({
           id: `counter-${model.nextRowId}`,
           counter: Counter.init,
@@ -89,7 +91,7 @@ export const update = (model: Model, message: Message) =>
       }),
     }),
     ClickedRemoveRow: ({ id }) => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         rows: Array.filter(row => row.id !== id),
       }),
     }),

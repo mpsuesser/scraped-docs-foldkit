@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/foldkit-vs-react-side-by-side
 title: "Foldkit vs React: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and React. Covers state management, side effects, testing, performance, and architectural tradeoffs."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -313,7 +313,7 @@ export const update = (model: Model, message: Message) =>
       Match.value(model.tool).pipe(
         withUpdateReturn,
         Match.when('Brush', () => ({
-          model: evo(model, {
+          model: modifyFields(model, {
             grid: () => applyBrush(model, x, y),
             undoStack: () => pushHistory(model.undoStack, model.grid),
             redoStack: () => [],
@@ -321,7 +321,7 @@ export const update = (model: Model, message: Message) =>
           }),
         })),
         Match.when('Fill', () => {
-          const nextModel = evo(model, {
+          const nextModel = modifyFields(model, {
             grid: () => applyFill(model, x, y),
             undoStack: () => pushHistory(model.undoStack, model.grid),
             redoStack: () => [],
@@ -334,7 +334,7 @@ export const update = (model: Model, message: Message) =>
       Array.match(model.undoStack, {
         onEmpty: () => ({ model }),
         onNonEmpty: nonEmptyUndoStack => {
-          const nextModel = evo(model, {
+          const nextModel = modifyFields(model, {
             grid: () => Array.lastNonEmpty(nonEmptyUndoStack),
             undoStack: () => Array.initNonEmpty(nonEmptyUndoStack),
             redoStack: Array.append(model.grid),
@@ -346,7 +346,7 @@ export const update = (model: Model, message: Message) =>
   })
 ```
 
-`Message.match` requires a handler for every Message variant. `evo` preserves references for unchanged fields, which supports view memoization. A handler such as `ClickedUndo` returns the next Model and a `SaveCanvas` Command together.
+`Message.match` requires a handler for every Message variant. `modifyFields` preserves references for unchanged fields, which supports view memoization. A handler such as `ClickedUndo` returns the next Model and a `SaveCanvas` Command together.
 
 What update answers
 
@@ -701,7 +701,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
     Subscription.fromEventFilterMapPreventDefault({
       target: document,
       type: 'keydown',
-      toMessage: toUndoRedoMessage,
+      filterMapEvent: toUndoRedoMessage,
     }),
   ),
 
@@ -709,7 +709,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
     Subscription.fromEventFilterMap({
       target: document,
       type: 'keydown',
-      toMessage: toToolMessage,
+      filterMapEvent: toToolMessage,
     }),
   ),
 
@@ -824,7 +824,7 @@ const lazyRow = createKeyedLazy()
 
 // Each args array is compared element-by-element against the previous render.
 // If every arg is reference-equal, the view function isn't called at all.
-// evo() preserves references for unchanged Model fields, so the check just
+// modifyFields() preserves references for unchanged Model fields, so the check just
 // works, and the builder is the same object every render, so passing it
 // through the args never invalidates the cache.
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
@@ -870,7 +870,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
 }
 ```
 
-`createLazy` and `createKeyedLazy` compare arguments element by element. `evo` preserves references for unchanged Model fields, so panels whose inputs remain referentially equal can reuse their previous virtual DOM.
+`createLazy` and `createKeyedLazy` compare arguments element by element. `modifyFields` preserves references for unchanged Model fields, so panels whose inputs remain referentially equal can reuse their previous virtual DOM.
 
 ### React memoization (closures at the boundary)
 

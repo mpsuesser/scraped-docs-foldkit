@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/machine
 title: "Machine"
 description: "Model multi-state workflows as typed transition tables with guards, shared Edges, update integration, structural analysis, and pure tests."
-access_date: 2026-09-05T19:30:16.678Z
-current_date: 2026-09-05T19:30:16.678Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 Experimental
@@ -28,7 +28,7 @@ import { Machine } from 'foldkit/experimental'
 import { otherwise, to, when } from 'foldkit/experimental/machine'
 import { defineMessageUnion } from 'foldkit/message'
 import { defineTaggedUnion } from 'foldkit/schema'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 // MODEL
 
@@ -70,7 +70,7 @@ export const checkoutMachine = Machine.define({
     Cart: {
       on: {
         SelectedEdition: to('Cart', ({ state, message }) => ({
-          model: evo(state, {
+          model: modifyFields(state, {
             isShippingRequired: () => message.isShippingRequired,
           }),
         })),
@@ -227,7 +227,7 @@ The Machine state lives in a field of the application Model. `Machine.fold` read
 import { Match, Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import { Machine } from 'foldkit/experimental'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { CheckoutState, Message, checkoutMachine } from './machineDefinition'
 
@@ -245,14 +245,15 @@ export const initialModel = Model.make({
 export const foldCheckout = Machine.fold({
   machine: checkoutMachine,
   read: (model: Model) => Option.some(model.checkout),
-  write: (model, nextCheckout) => evo(model, { checkout: () => nextCheckout }),
+  write: (model, nextCheckout) =>
+    modifyFields(model, { checkout: () => nextCheckout }),
 })
 
 export const update = (model: Model, message: Message) =>
   Match.value(message).pipe(
     Match.withReturnType<Update.Return<Model, Message>>(),
     Match.tag('ToggledHelp', ({ isOpen }) => ({
-      model: evo(model, { isHelpOpen: () => isOpen }),
+      model: modifyFields(model, { isHelpOpen: () => isOpen }),
     })),
     Match.tag(
       'SelectedEdition',

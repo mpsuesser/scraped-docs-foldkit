@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/ssg
 title: "Static Site Generation"
 description: "A build script renders every route to static HTML through a server entry, and the client hydrates the served markup in place. The same init, view, and Model produce the build output and the running application."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -30,7 +30,7 @@ import { Command, Runtime, type Update } from 'foldkit'
 import { type Document, type Html, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { UrlRequest, load, pushUrl } from 'foldkit/navigation'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 import { Url, toString as urlToString } from 'foldkit/url'
 
 import { AppRoute, aboutRouter, homeRouter, urlToAppRoute } from './route'
@@ -84,7 +84,7 @@ type UpdateReturn = Update.Return<Model, Message>
 export const update = (model: Model, message: Message) =>
   Message.match<UpdateReturn>(message, {
     ClickedIncrement: () => ({
-      model: evo(model, { count: count => count + 1 }),
+      model: modifyFields(model, { count: count => count + 1 }),
     }),
     ClickedLink: ({ request }) =>
       UrlRequest.match<UpdateReturn>(request, {
@@ -98,7 +98,7 @@ export const update = (model: Model, message: Message) =>
         }),
       }),
     ChangedUrl: ({ url }) => ({
-      model: evo(model, { route: () => urlToAppRoute(url) }),
+      model: modifyFields(model, { route: () => urlToAppRoute(url) }),
     }),
     CompletedNavigateInternal: () => ({ model }),
     CompletedLoadExternal: () => ({ model }),

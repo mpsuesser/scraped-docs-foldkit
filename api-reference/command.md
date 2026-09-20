@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/command
 title: "Command"
 description: "API documentation for the Command module."
-access_date: 2026-09-18T18:12:22.916Z
-current_date: 2026-09-18T18:12:22.916Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Command
@@ -14,7 +14,7 @@ current_date: 2026-09-18T18:12:22.916Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/command/index.ts#L220)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/command/index.ts#L220)
 
 ## Types
 
@@ -22,7 +22,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/command/index.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/command/index.ts#L12)
 
 ```
 /**
@@ -50,7 +50,7 @@ type Command = [T] extends [Schema.Top]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/command/index.ts#L76)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/command/index.ts#L76)
 
 ```
 /** A Command definition created with `Command.define`. Union over the no-args and with-args shapes; consumers that only need name/identity can accept this. */
@@ -61,7 +61,7 @@ type CommandDefinition = CommandDefinitionNoArgs<Name, Effect.Effect<ResultMessa
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/command/index.ts#L92)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/command/index.ts#L92)
 
 ```
 /**
@@ -87,7 +87,7 @@ type InterruptOption = true | Readonly<{
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/command/index.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/command/index.ts#L51)
 
 ```
 /** A Command definition for a Command with no declared args. Call as `Definition()` to produce a Command instance. */
@@ -101,7 +101,7 @@ interface CommandDefinitionNoArgs {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/command/index.ts#L61)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/command/index.ts#L61)
 
 ```
 /** A Command definition for a Command with declared args. Call as `Definition(args)` to produce a Command instance. */
@@ -117,7 +117,7 @@ interface CommandDefinitionWithArgs {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/command/brand.ts#L3)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/command/brand.ts#L3)
 
 ```
 /** Type-level brand for CommandDefinition values. */
@@ -128,7 +128,7 @@ const CommandDefinitionTypeId: unique symbol
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/command/index.ts#L402)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/command/index.ts#L402)
 
 ```
 /**
@@ -151,7 +151,7 @@ const mapEffect: (f: (effect: Effect<A, E1, R1>) => Effect<NoInfer<A>, E2, R2>) 
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/command/index.ts#L447)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/command/index.ts#L447)
 
 ```
 /**
@@ -184,7 +184,7 @@ const mapMessage: (command: Command<FromMessage, E, R>, f: (message: FromMessage
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/command/index.ts#L512)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/command/index.ts#L512)
 
 ```
 /**

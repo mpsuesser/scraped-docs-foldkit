@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/tabs
 title: "Tabs"
 description: "A selection Submodel for tab panels, with roving tabindex, horizontal and vertical orientation, and automatic or manual activation."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -36,7 +36,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Tabs } from '@foldkit/ui'
 
@@ -95,7 +95,7 @@ const foldTabsOutMessage = Tabs.OutMessage.match<
   // selection, or trigger a panel content fetch.
   Selected:
     ({ value }) =>
-    model => ({ model: evo(model, { activeFramework: () => value }) }),
+    model => ({ model: modifyFields(model, { activeFramework: () => value }) }),
 })
 
 // Update.foldChild wires the child into the parent: it runs
@@ -105,7 +105,7 @@ const foldTabsOutMessage = Tabs.OutMessage.match<
 const foldTabs = Update.foldChild({
   update: FrameworkTabs.update,
   read: (model: Model) => Option.some(model.tabs),
-  write: (model, nextTabs) => evo(model, { tabs: () => nextTabs }),
+  write: (model, nextTabs) => modifyFields(model, { tabs: () => nextTabs }),
   toParentMessage: message => Message.GotTabsMessage({ message }),
   foldOutMessage: foldTabsOutMessage,
 })

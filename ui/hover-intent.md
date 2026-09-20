@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/hover-intent
 title: "Hover Intent"
 description: "Behavior-only Submodel for delayed hover and focus reveal across a trigger and panel."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -26,7 +26,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { HoverIntent } from '@foldkit/ui'
 
@@ -62,7 +62,7 @@ const foldHoverIntent = Update.foldChild({
   update: HoverIntent.update,
   read: model => Option.some(model.hoverIntent),
   write: (model, nextHoverIntent) =>
-    evo(model, { hoverIntent: () => nextHoverIntent }),
+    modifyFields(model, { hoverIntent: () => nextHoverIntent }),
   toParentMessage: message => Message.GotHoverIntentMessage({ message }),
   foldOutMessage: foldHoverIntentOutMessage,
 })
@@ -127,7 +127,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { HoverIntent } from '@foldkit/ui'
 
@@ -161,7 +161,7 @@ const readHoverMenu = (model: Model) => Option.some(model.hoverMenu)
 const writeHoverMenu = (
   model: Model,
   nextHoverMenu: HoverIntent.Model,
-): Model => evo(model, { hoverMenu: () => nextHoverMenu })
+): Model => modifyFields(model, { hoverMenu: () => nextHoverMenu })
 const toGotHoverMenuMessage = (message: HoverIntent.Message): Message =>
   Message.GotHoverMenuMessage({ message })
 

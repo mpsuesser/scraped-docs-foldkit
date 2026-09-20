@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/listbox
 title: "Listbox"
 description: "A selection Submodel with single-select and multi-select modes, keyboard navigation, typeahead, and anchored positioning."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 ## Overview
@@ -34,7 +34,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Listbox } from '@foldkit/ui'
 
@@ -79,7 +79,9 @@ const foldListboxOutMessage = Listbox.OutMessage.match<
 >({
   Selected:
     ({ value }) =>
-    model => ({ model: evo(model, { maybePlan: () => Option.some(value) }) }),
+    model => ({
+      model: modifyFields(model, { maybePlan: () => Option.some(value) }),
+    }),
 })
 
 // Update.foldChild wires the child into the parent: it delegates keyboard
@@ -89,7 +91,8 @@ const foldListboxOutMessage = Listbox.OutMessage.match<
 const foldListbox = Update.foldChild({
   update: PlanListbox.update,
   read: (model: Model) => Option.some(model.listbox),
-  write: (model, nextListbox) => evo(model, { listbox: () => nextListbox }),
+  write: (model, nextListbox) =>
+    modifyFields(model, { listbox: () => nextListbox }),
   toParentMessage: message => Message.GotListboxMessage({ message }),
   foldOutMessage: foldListboxOutMessage,
 })
@@ -156,7 +159,7 @@ import { Array, Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Listbox } from '@foldkit/ui'
 
@@ -205,7 +208,7 @@ const foldListboxMultiOutMessage = Listbox.OutMessage.match<
   Selected:
     ({ value }) =>
     model => ({
-      model: evo(model, {
+      model: modifyFields(model, {
         selectedPeople: selectedPeople =>
           Array.contains(selectedPeople, value)
             ? Array.filter(selectedPeople, person => person !== value)
@@ -222,7 +225,7 @@ const foldListboxMulti = Update.foldChild({
   update: PeopleListbox.update,
   read: (model: Model) => Option.some(model.listboxMulti),
   write: (model, nextListboxMulti) =>
-    evo(model, { listboxMulti: () => nextListboxMulti }),
+    modifyFields(model, { listboxMulti: () => nextListboxMulti }),
   toParentMessage: message => Message.GotListboxMultiMessage({ message }),
   foldOutMessage: foldListboxMultiOutMessage,
 })
@@ -286,7 +289,7 @@ import { Option, Schema } from 'effect'
 import { Update } from 'foldkit'
 import { type HtmlBuilder, childAttributes } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 
 import { Listbox } from '@foldkit/ui'
 
@@ -335,7 +338,7 @@ const foldListboxOutMessage = Listbox.OutMessage.match<
   Selected:
     ({ value }) =>
     model => ({
-      model: evo(model, { maybeCharacter: () => Option.some(value) }),
+      model: modifyFields(model, { maybeCharacter: () => Option.some(value) }),
     }),
 })
 
@@ -346,7 +349,8 @@ const foldListboxOutMessage = Listbox.OutMessage.match<
 const foldListbox = Update.foldChild({
   update: CharacterListbox.update,
   read: (model: Model) => Option.some(model.listbox),
-  write: (model, nextListbox) => evo(model, { listbox: () => nextListbox }),
+  write: (model, nextListbox) =>
+    modifyFields(model, { listbox: () => nextListbox }),
   toParentMessage: message => Message.GotListboxMessage({ message }),
   foldOutMessage: foldListboxOutMessage,
 })

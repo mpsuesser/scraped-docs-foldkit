@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/html
 title: "Html"
 description: "API documentation for the Html module."
-access_date: 2026-09-18T18:12:22.916Z
-current_date: 2026-09-18T18:12:22.916Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 # Html
@@ -14,7 +14,7 @@ current_date: 2026-09-18T18:12:22.916Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/childAttribute.ts#L70)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/childAttribute.ts#L70)
 
 ```
 /**
@@ -59,7 +59,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/lazy.ts#L164)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/lazy.ts#L164)
 
 ```
 /**
@@ -94,7 +94,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/lazy.ts#L126)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/lazy.ts#L126)
 
 ```
 /**
@@ -126,7 +126,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/index.ts#L570)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/index.ts#L578)
 
 ```
 /**
@@ -772,7 +772,7 @@ type Attribute = Data.TaggedEnum<{
     message: Message
   }
   OnPointerDown: {
-    f: (pointerType: string, button: number, screenX: number, screenY: number, timeStamp: number, clientX: number, clientY: number) => Option.Option<Message>
+    f: (pointerType: string, button: number, screenX: number, screenY: number, timeStamp: number, clientX: number, clientY: number, pointerId: number, target: EventTarget | null) => Option.Option<Message>
   }
   OnPointerLeave: {
     f: (pointerType: string) => Option.Option<Message>
@@ -1100,7 +1100,7 @@ type Attribute = Data.TaggedEnum<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/childAttribute.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/childAttribute.ts#L35)
 
 ```
 /**
@@ -1137,29 +1137,37 @@ type ChildAttribute = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/index.ts#L276)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/index.ts#L284)
 
 ```
 /**
- * A view's complete output for the runtime: title, body, and optional document
- *  metadata. The runtime applies `title` to `document.title`, syncs `lang` and
- *  `dir` to the `<html>` element, syncs `canonical` to `<link rel="canonical">`
- *  (creating it if absent), syncs `ogUrl` to `<meta property="og:url">`
- *  (creating it if absent), and patches `body` into the application container.
+ * The complete output of a page-owning view. The runtime patches `body` into
+ *  the application container, writes `title` to `document.title`, and manages
+ *  the optional document metadata.
  * 
- *  When `canonical` is omitted, it defaults to the current URL (origin +
- *  pathname + search). When `ogUrl` is omitted, it falls back to `canonical`.
+ *  Supplied `lang` and `dir` values are written to the `<html>` element. An
+ *  omitted value leaves the current attribute unchanged, including a value
+ *  from the served HTML or an earlier render. Drive both fields from the Model
+ *  when the application can switch languages at runtime.
  * 
- *  `lang` and `dir` have no default. When either is omitted the runtime does not
- *  touch that attribute, leaving whatever value it currently holds, so a view
- *  that never sets it leaves the served HTML in place. Drive them from the Model
- *  when the app switches language at runtime. The served HTML still decides what
- *  a crawler sees on first paint, because the runtime can only sync after the
- *  first render.
+ *  `canonical` has no address-bar default. Derive it from the typed route in
+ *  the Model, where the application can decide which route and query values
+ *  identify the page. If the view never supplies it, the runtime leaves a
+ *  served `<link rel="canonical">` unchanged or keeps the document without one.
  * 
- *  This is the return type of a `makeApplication` view, which owns the document. An
- *  app embedded at a node should use `makeElement` instead, whose view returns
- *  `Html` and never touches the `<head>` or the `<html>` element.
+ *  Before the client first writes `canonical` or `ogUrl`, it records the value
+ *  already present on the corresponding element. A later omission restores
+ *  that value, or removes the element if the runtime created it. During
+ *  hydration, the recorded value may be metadata rendered for the initial
+ *  route. `ogUrl` can be supplied independently; when omitted alongside an
+ *  explicit `canonical`, it uses that canonical.
+ * 
+ *  Server rendering returns only the canonical supplied by the view. It
+ *  returns `ogUrl` when supplied or falls back to an explicit canonical.
+ * 
+ *  This is the return type of a `makeApplication` view. An application embedded
+ *  at a node should use `makeElement`; its view returns `Html` and never changes
+ *  the `<head>` or `<html>` element.
  */
 type Document = Readonly<{
   body: Html
@@ -1175,12 +1183,12 @@ type Document = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/index.ts#L204)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/index.ts#L204)
 
 ```
 /**
  * A virtual DOM element. Constructed synchronously by the element factories
- *  returned from html. The runtime patches a `VNode` (or `null` to
+ *  on HtmlBuilder. The runtime patches a `VNode` (or `null` to
  *  render nothing) into the application container.
  */
 type Html = VNode | null
@@ -1190,7 +1198,7 @@ type Html = VNode | null
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/index.ts#L5516)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/index.ts#L5537)
 
 ```
 /**
@@ -1231,7 +1239,7 @@ type HtmlBuilder = MessageUniverse<Message> & HtmlElements<Message> & HtmlAttrib
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/index.ts#L151)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/index.ts#L151)
 
 ```
 /** Modifier key state extracted from a `KeyboardEvent`. */
@@ -1247,7 +1255,7 @@ type KeyboardModifiers = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/index.ts#L286)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/index.ts#L294)
 
 ```
 /** Union of all valid HTML, SVG, and MathML tag names. */
@@ -1258,7 +1266,7 @@ type TagName = "a" | "abbr" | "address" | "area" | "article" | "aside" | "audio"
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/index.ts#L3248)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/index.ts#L3260)
 
 ```
 /**
@@ -1277,7 +1285,7 @@ type TextareaAttribute = Exclude<Attribute<Message>, Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/index.ts#L224)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/index.ts#L224)
 
 ```
 /**
@@ -1296,7 +1304,7 @@ const ClickOptions: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/index.ts#L209)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/index.ts#L209)
 
 ```
 /**
@@ -1310,7 +1318,7 @@ const DefaultAction: Literals<readonly ["Allow", "Prevent"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/index.ts#L216)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/index.ts#L216)
 
 ```
 /**
@@ -1324,7 +1332,7 @@ const EventPropagation: Literals<readonly ["Bubble", "Stop"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/index.ts#L236)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/index.ts#L236)
 
 ```
 /**
@@ -1338,7 +1346,7 @@ const TextDirection: Literals<readonly ["Ltr", "Rtl", "Auto"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a5413bbc0fc8f6578285632d7bbd7847efcf1a09/packages/foldkit/src/html/index.ts#L5593)
+[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/html/index.ts#L5614)
 
 ```
 /**

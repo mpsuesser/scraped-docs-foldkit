@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/ui-showcase
 title: "UI Showcase"
 description: "An interactive showcase of every Foldkit UI component, with styled routed demos and their parent and Submodel wiring."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-09-20T01:01:06.971Z
+current_date: 2026-09-20T01:01:06.971Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -38,7 +38,7 @@ import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { UrlRequest, load, pushUrl } from 'foldkit/navigation'
 import { defineRouteUnion, literal } from 'foldkit/route'
-import { evo } from 'foldkit/struct'
+import { modifyFields } from 'foldkit/struct'
 import { Url, toString as urlToString } from 'foldkit/url'
 
 import { Dialog, Nav } from '@foldkit/ui'
@@ -236,21 +236,24 @@ const toUiMessage = (message: UiMessage): Message =>
 const foldUi = Update.foldChild({
   update: uiUpdate,
   read: (model: Model) => Option.some(model.uiModel),
-  write: (model, nextUiModel) => evo(model, { uiModel: () => nextUiModel }),
+  write: (model, nextUiModel) =>
+    modifyFields(model, { uiModel: () => nextUiModel }),
   toParentMessage: toUiMessage,
 })
 
 const foldUiOpenMobileMenu = Update.foldChildStep({
   update: openMobileMenu,
   read: (model: Model) => Option.some(model.uiModel),
-  write: (model, nextUiModel) => evo(model, { uiModel: () => nextUiModel }),
+  write: (model, nextUiModel) =>
+    modifyFields(model, { uiModel: () => nextUiModel }),
   toParentMessage: toUiMessage,
 })
 
 const foldUiCloseMobileMenu = Update.foldChildStep({
   update: closeMobileMenu,
   read: (model: Model) => Option.some(model.uiModel),
-  write: (model, nextUiModel) => evo(model, { uiModel: () => nextUiModel }),
+  write: (model, nextUiModel) =>
+    modifyFields(model, { uiModel: () => nextUiModel }),
   toParentMessage: toUiMessage,
 })
 
@@ -276,7 +279,7 @@ export const update = (model: Model, message: Message) =>
     ChangedUrl: ({ url }) =>
       Update.combine(model, [
         stepModel => ({
-          model: evo(stepModel, { route: () => urlToAppRoute(url) }),
+          model: modifyFields(stepModel, { route: () => urlToAppRoute(url) }),
         }),
         foldUiCloseMobileMenu,
       ]),
