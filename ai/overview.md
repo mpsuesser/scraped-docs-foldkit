@@ -1,10 +1,12 @@
 ---
 url: https://foldkit.dev/ai/overview
-title: "AI overview"
-description: "How Foldkit's explicit architecture supports coding agents, and the resources available to them."
-access_date: 2026-09-20T12:59:25.710Z
-current_date: 2026-09-20T12:59:25.710Z
+title: "AI"
+description: "How Foldkit’s explicit architecture gives coding agents stable boundaries, plus the source, skills, and DevTools MCP references available to them."
+access_date: 2026-09-20T13:08:39.176Z
+current_date: 2026-09-20T13:08:39.176Z
 ---
+
+# AI
 
 ## Architecture and Source Context
 
