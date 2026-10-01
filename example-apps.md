@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps
 title: "Examples"
 description: "Browse working Foldkit applications that cover state, forms, routing, caching, authentication, server rendering, UI components, third-party integrations, and more."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-10-01T22:03:15.204Z
+current_date: 2026-10-01T22:03:15.204Z
 ---
 
 # Examples
@@ -148,7 +148,7 @@ A blog whose prose lives in Markdown files. The @foldkit/markdown Vite plugin co
 
 [LiveStore](https://foldkit.dev/example-apps/livestore)
 
-A LiveStore-backed task list persisted in OPFS that stays reactive across browser tabs. Commands commit events, materializers project them into SQLite, and one Subscription feeds the live query into the Foldkit Model.
+This example is paused while we update and verify LiveStore compatibility with Effect 4 stable.
 
 [Typing Terminal](https://foldkit.dev/example-apps/typing-terminal)
 

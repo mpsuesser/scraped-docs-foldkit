@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/weather
 title: "Weather"
 description: "Look up weather by ZIP code. Demonstrates HTTP requests and loading states."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T22:03:15.204Z
+current_date: 2026-10-01T22:03:15.204Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -22,7 +22,7 @@ HTTP
 
 ```
 import { Array, Effect, Match, Option, Schema, String } from 'effect'
-import { HttpClient, HttpClientRequest } from 'effect/unstable/http'
+import { HttpClient, HttpClientRequest } from 'effect/http'
 import { AsyncData, Command, Http, Runtime, type Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'

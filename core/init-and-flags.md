@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/init-and-flags
 title: "Init & Flags"
 description: "Construct the first Model and startup Commands. Routing supplies the current URL, while Schema-validated Flags support fresh client boots and hydration."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-10-01T22:03:15.204Z
+current_date: 2026-10-01T22:03:15.204Z
 ---
 
 ## The First Model
@@ -43,7 +43,7 @@ Define the boundary with a Flags Schema. For a fresh client boot, also define an
 
 ```
 import { Effect, Option, Schema } from 'effect'
-import { KeyValueStore } from 'effect/unstable/persistence'
+import { KeyValueStore } from 'effect/persistence'
 
 import { BrowserKeyValueStore } from '@effect/platform-browser'
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/todo
 title: "Todo"
 description: "A todo list persisted in localStorage. Add, complete, and delete tasks."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T22:03:15.204Z
+current_date: 2026-10-01T22:03:15.204Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -32,7 +32,7 @@ import {
   Schema,
   String,
 } from 'effect'
-import { KeyValueStore } from 'effect/unstable/persistence'
+import { KeyValueStore } from 'effect/persistence'
 import { Command, Runtime, type Update } from 'foldkit'
 import { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'

@@ -2,15 +2,15 @@
 url: https://foldkit.dev/react/foldkit-vs-react-effect-atom
 title: "Foldkit vs React + Effect Atom"
 description: "Two Effect-native architectures: Effect Atom distributes state across reactive cells inside React, while Foldkit builds the application around one Model and update function."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T22:03:15.204Z
+current_date: 2026-10-01T22:03:15.204Z
 ---
 
 # Foldkit vs React + Effect Atom
 
 ## Overview
 
-This page is for people who have already chosen Effect. In Effect 4, [Effect Atom](https://github.com/Effect-TS/effect/tree/main/packages/atom) provides reactive state primitives through `effect/unstable/reactivity`, with view bindings such as `@effect/atom-react`, `@effect/atom-solid`, and `@effect/atom-vue`. The host framework still owns rendering and components.
+This page is for people who have already chosen Effect. In Effect 4, [Effect Atom](https://github.com/Effect-TS/effect/tree/main/packages/atom) provides reactive state primitives through `effect/reactivity`, with view bindings such as `@effect/atom-react`, `@effect/atom-solid`, and `@effect/atom-vue`. The host framework still owns rendering and components.
 
 Foldkit owns the application runtime and view layer. It renders through a virtual DOM built on [Snabbdom](https://github.com/snabbdom/snabbdom), and it includes routing, UI components, DevTools, and Story and Scene testing. Its architecture has one Model, a Message union, and an update function. Side effects return to the runtime as Commands and other lifecycle primitives.
 
@@ -43,7 +43,7 @@ The state models become concrete when a user adds or edits a todo.
 A React component obtains a setter with `useAtomSet`. The setter can receive an updater closure:
 
 ```
-import { Atom } from 'effect/unstable/reactivity'
+import { Atom } from 'effect/reactivity'
 
 import { useAtomSet, useAtomValue } from '@effect/atom-react'
 
@@ -137,7 +137,7 @@ Both provide a value type for in-progress Effect results, but the value lives in
 
 ```
 import { Cause, Effect } from 'effect'
-import { AsyncResult, Atom } from 'effect/unstable/reactivity'
+import { AsyncResult, Atom } from 'effect/reactivity'
 
 import { useAtomValue } from '@effect/atom-react'
 
@@ -245,7 +245,7 @@ Both can express side effects as Effect values. They differ in how an effect is 
 
 ```
 import { Effect } from 'effect'
-import { Atom } from 'effect/unstable/reactivity'
+import { Atom } from 'effect/reactivity'
 
 import { useAtomMount, useAtomSet } from '@effect/atom-react'
 

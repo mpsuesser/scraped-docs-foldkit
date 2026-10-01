@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-toast
 title: "Ui/Toast"
 description: "API documentation for the Ui/Toast module."
-access_date: 2026-10-01T16:40:20.163Z
-current_date: 2026-10-01T16:40:20.163Z
+access_date: 2026-10-01T22:03:15.204Z
+current_date: 2026-10-01T22:03:15.204Z
 ---
 
 # Ui/Toast
@@ -14,13 +14,13 @@ current_date: 2026-10-01T16:40:20.163Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/index.ts#L155)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/index.ts#L155)
 
 ### swipeOffset
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/update.ts#L92)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/update.ts#L92)
 
 ```
 /**
@@ -51,7 +51,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/index.ts#L118)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/index.ts#L118)
 
 ```
 /**
@@ -67,7 +67,7 @@ type EntryHandlers = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/schema.ts#L209)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/schema.ts#L209)
 
 ```
 /**
@@ -87,7 +87,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/update.ts#L49)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/update.ts#L49)
 
 ```
 /**
@@ -107,7 +107,7 @@ type ShowInput = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/schema.ts#L200)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/schema.ts#L200)
 
 ```
 /**
@@ -128,7 +128,7 @@ type SwipeToDismissConfig = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/schema.ts#L69)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/schema.ts#L69)
 
 ```
 /** Default direction in which a pointer can dismiss a Toast. */
@@ -139,7 +139,7 @@ const DEFAULT_SWIPE_DIRECTION: SwipeDirection
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/schema.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/schema.ts#L66)
 
 ```
 /** Default distance in pixels a pointer must travel to dismiss a Toast. */
@@ -150,7 +150,7 @@ const DEFAULT_SWIPE_THRESHOLD: 40
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/schema.ts#L116)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/schema.ts#L116)
 
 ```
 /** Payload-independent Message variants shared by every bound Toast module. */
@@ -210,7 +210,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/schema.ts#L20)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/schema.ts#L20)
 
 ```
 /** Where the toast viewport is anchored on the screen and how entries stack. */
@@ -221,7 +221,7 @@ const Position: Literals<readonly ["TopLeft", "TopCenter", "TopRight", "BottomLe
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/schema.ts#L73)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/schema.ts#L73)
 
 ```
 /**
@@ -235,7 +235,7 @@ const SWIPE_SETTLE_DURATION: Duration
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/schema.ts#L33)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/schema.ts#L33)
 
 ```
 /** Direction in which a pointer can drag an entry to dismiss it. */
@@ -246,7 +246,7 @@ const SwipeDirection: Literals<readonly ["Left", "Right"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/schema.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/schema.ts#L48)
 
 ```
 /**
@@ -279,7 +279,7 @@ const SwipeState: TaggedUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/schema.ts#L14)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/schema.ts#L14)
 
 ```
 /**
@@ -296,7 +296,7 @@ const Variant: Literals<readonly ["Info", "Success", "Warning", "Error"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/update.ts#L58)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/update.ts#L58)
 
 ```
 /**
@@ -318,7 +318,7 @@ const WaitBeforeDismissal: CommandDefinitionWithArgs<"WaitBeforeDismissal", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/db756db9f08c3af54e788b9abb4b6cdcedeba940/packages/ui/src/toast/update.ts#L76)
+[source](https://github.com/foldkit/foldkit/blob/0b2a4fd04171afa8c8911d22aa9bec2f22faae52/packages/ui/src/toast/update.ts#L76)
 
 ```
 /**

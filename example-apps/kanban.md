@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/kanban
 title: "Kanban"
 description: "A drag-and-drop kanban board with cross-column reordering, keyboard navigation, fractional indexing, and screen reader announcements."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-10-01T22:03:15.204Z
+current_date: 2026-10-01T22:03:15.204Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -28,7 +28,7 @@ Storage
 
 ```
 import { Effect, Option, Schema } from 'effect'
-import { KeyValueStore } from 'effect/unstable/persistence'
+import { KeyValueStore } from 'effect/persistence'
 import { Runtime } from 'foldkit'
 
 import { BrowserKeyValueStore } from '@effect/platform-browser'

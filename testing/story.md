@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/story
 title: "Story"
 description: "Drive update with Messages, inspect the Model and Commands, and supply Command results without executing their Effects."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-10-01T22:03:15.204Z
+current_date: 2026-10-01T22:03:15.204Z
 ---
 
 # Story
@@ -241,7 +241,7 @@ To test that a Command’s Effect works correctly (for example, that an HTTP req
 
 ```
 import { Effect, Layer, Match, String } from 'effect'
-import { HttpClient, HttpClientResponse } from 'effect/unstable/http'
+import { HttpClient, HttpClientResponse } from 'effect/http'
 import { expect, test } from 'vitest'
 
 test('fetchWeather returns SucceededFetchWeather on success', async () => {

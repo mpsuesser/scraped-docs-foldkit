@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/resources
 title: "Resources"
 description: "Provide app-lifetime Effect services to Commands, Subscriptions, Mounts, and Flags, or provide a service directly when sharing is unnecessary."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-10-01T22:03:15.204Z
+current_date: 2026-10-01T22:03:15.204Z
 ---
 
 # Resources
@@ -95,7 +95,7 @@ Common cases follow directly from that distinction:
 
 ```
 import { Effect, Schema } from 'effect'
-import { HttpClient } from 'effect/unstable/http'
+import { HttpClient } from 'effect/http'
 import { Command, Http } from 'foldkit'
 
 const FetchWeather = Command.define('FetchWeather', {

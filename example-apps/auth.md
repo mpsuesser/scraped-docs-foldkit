@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/auth
 title: "Auth"
 description: "An authentication flow with Submodels, OutMessage, protected routes, and session management."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-10-01T22:03:15.204Z
+current_date: 2026-10-01T22:03:15.204Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -28,7 +28,7 @@ OutMessage
 
 ```
 import { Effect, Match, Option, Schema } from 'effect'
-import { KeyValueStore } from 'effect/unstable/persistence'
+import { KeyValueStore } from 'effect/persistence'
 import { Runtime, type Update } from 'foldkit'
 import { Url } from 'foldkit/url'
 
