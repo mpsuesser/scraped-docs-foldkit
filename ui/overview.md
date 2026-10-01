@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/overview
 title: "Foldkit UI"
 description: "Choose between stateful Submodels and stateless render helpers in Foldkit’s headless UI package. Covers accessibility, styling, installation, and the component catalog."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 # Foldkit UI
@@ -85,6 +85,34 @@ On/off toggle with accessible labeling, keyboard support, and optional form inte
 Submodel
 
 Numeric range input with pointer drag, keyboard step / page / home / end navigation, and ARIA slider semantics.
+
+[Meter](https://foldkit.dev/ui/meter)
+
+Helper
+
+Scalar value in a known range with
+
+`role="meter"`
+
+, clamped
+
+`aria-valuenow`
+
+, and threshold data attributes.
+
+[Progress](https://foldkit.dev/ui/progress)
+
+Helper
+
+Task progress with
+
+`role="progressbar"`
+
+, determinate and indeterminate states, and
+
+`data-state`
+
+styling hooks.
 
 [Select](https://foldkit.dev/ui/select)
 

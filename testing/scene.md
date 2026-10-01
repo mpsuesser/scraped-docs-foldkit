@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/scene
 title: "Scene"
 description: "Drive the rendered VNode tree with accessible locators, dispatch interactions, resolve lifecycle results, and assert on the resulting HTML."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 # Scene
@@ -36,6 +36,8 @@ import {
 role('button', { name: 'Submit' })
 label('Email')
 text('Welcome back')
+text('Welcome', { exact: false })
+text(/^save \d+ items$/i)
 placeholder('Search...')
 altText('Company logo')
 title('Close dialog')
@@ -68,9 +70,13 @@ Inputs by their placeholder attribute.
 
 `placeholder('Search...')`
 
-`text(text)`
+`text(target, options?)`
 
-Elements by visible text content.
+Elements whose rendered text matches a string or
+
+`RegExp`
+
+.
 
 `text('Welcome back')`
 
@@ -104,6 +110,16 @@ Elements by CSS selector. Use when no accessible query fits.
 
 `selector('.chart-legend')`
 
+### Text locators
+
+`text` accepts a string or `RegExp`. By default, a string matches either the element's full text or one of its direct text nodes. Pass `{ exact: false }` to find the string anywhere in the element's full text.
+
+A `RegExp` always tests the element's full text, including text from nested elements. The `exact` option has no effect on a `RegExp`. Scene does not trim or normalize the text, and text from hidden descendants still counts.
+
+Scene starts every regular expression match at index zero and leaves the expression's `lastIndex` unchanged. Global and sticky expressions therefore produce the same results every time a query runs.
+
+When an ancestor and one of its descendants both match, `text` returns the descendant. `all.text` returns both in traversal order. Neither query returns text VNodes.
+
 ### The role Locator
 
 `role` is the usual starting point. Its optional second argument narrows the match by accessible name or ARIA state.
@@ -126,6 +142,7 @@ role('heading', { level: 2 })
 // Narrow by ARIA state
 role('checkbox', { checked: true })
 role('button', { pressed: true, disabled: false })
+role('link', { current: 'page' })
 ```
 
 Option
@@ -176,6 +193,39 @@ aria-expanded
 
 aria-disabled or the disabled attribute
 
+`current`
+
+`boolean | 'page' | 'step' | 'location' | 'date' | 'time'`
+
+aria-current.
+
+`true`
+
+matches
+
+`"true"`
+
+only,
+
+`false`
+
+matches a missing attribute or
+
+`"false"`
+
+, and a token matches itself.
+
+### Selector locators
+
+`selector`, `all.selector`, and the selector strings accepted by interactions and assertions query the rendered view rather than a browser DOM. They support this CSS subset:
+
+- A tag name, `#id`, or `.class` matches an element with that tag, id, or class. Tag names are case-sensitive.
+- `[attr]`, `[attr="value"]`, and `[attr^="prefix"]` match attributes. Values may use double or single quotes and may contain whitespace.
+- `:not(...)` excludes elements matching one compound selector, such as `path[d]:not([d=""])`. Its argument cannot contain a descendant combinator or a selector list. `:not()` can be nested or repeated.
+- Whitespace between compound selectors matches descendants, as in `header a`.
+
+Anything else, such as `>`, `,`, or `:first-child`, throws an error that lists this syntax.
+
 ### Scoping
 
 `within(parent, child)` scopes a single locator to a parent element. `inside(parent, ...steps)` scopes a whole block of steps. Every assertion or interaction inside the block resolves within the parent’s subtree. Use `within` for one-off scoped queries; use `inside` when several steps share the same scope. Nested `inside` calls compose.
@@ -206,6 +256,7 @@ import { all, filter, first, last, nth, role } from 'foldkit/scene'
 // Multi-match locators return every match.
 all.role('row')
 all.text('Delete')
+all.text(/^Delete \d+ items$/)
 all.label('Email')
 
 // Pick one element from the set.

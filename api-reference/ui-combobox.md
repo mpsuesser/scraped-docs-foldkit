@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-combobox
 title: "Ui/Combobox"
 description: "API documentation for the Ui/Combobox module."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 # Ui/Combobox
@@ -14,7 +14,7 @@ current_date: 2026-09-20T01:01:06.971Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/single.ts#L144)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/single.ts#L144)
 
 ```
 /**
@@ -32,7 +32,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/single.ts#L33)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/single.ts#L33)
 
 ```
 /** Creates an initial single-select combobox model from a config. Defaults to closed with no active item and an empty input. */
@@ -59,7 +59,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L195)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L191)
 
 ```
 /**
@@ -78,7 +78,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L31)
 
 ```
 /** Schema for the activation trigger: whether the user interacted via mouse or keyboard. */
@@ -89,7 +89,7 @@ type ActivationTrigger = Literals<readonly ["Pointer", "Keyboard"]>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L782)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L780)
 
 ```
 /**
@@ -152,7 +152,7 @@ type BaseViewInputsCommon = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/single.ts#L126)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/single.ts#L126)
 
 ```
 /**
@@ -175,7 +175,7 @@ type Bundle = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L768)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L766)
 
 ```
 /** Configuration for a group heading rendered above a group of items. */
@@ -189,7 +189,7 @@ type GroupHeading = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/single.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/single.ts#L30)
 
 ```
 /** Configuration for creating a single-select combobox model with `init`. `isAnimated` enables CSS transition coordination (default `false`). `isModal` locks page scroll and inerts other elements when open (default `false`). */
@@ -200,7 +200,7 @@ type InitConfig = BaseInitConfig
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L762)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L760)
 
 ```
 /** Configuration for an individual combobox item's appearance. */
@@ -214,7 +214,7 @@ type ItemConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L175)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L171)
 
 ```
 /**
@@ -230,7 +230,7 @@ type OutMessage = Selected<Value> | ClearedSelection
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L167)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L163)
 
 ```
 type Selected = Readonly<{
@@ -243,7 +243,7 @@ type Selected = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/single.ts#L104)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/single.ts#L104)
 
 ```
 /** Per-render view inputs passed to the view via `h.submodel`'s `viewInputs` field. */
@@ -258,17 +258,17 @@ type ViewInputs = BaseViewInputsCommon<Item> & Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L656)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L654)
 
 ```
 /**
  * The anchor-positioning Mount this Combobox renders on its items panel.
  *  The panel is always anchored to the input wrapper via Floating UI and
- *  portaled to the document body (opt out of portaling with
- *  `anchor.portal: false`), so it escapes ancestor stacking contexts and
- *  overflow clipping. The Mount also installs the `pointerdown`-cancelling
- *  capture listener that prevents input blur on item presses. Exposed so
- *  Scene tests can call
+ *  portaled to the document body, or into the enclosing `<dialog>` when
+ *  there is one (opt out of portaling with `anchor.portal: false`), so it
+ *  escapes ancestor stacking contexts and overflow clipping. The Mount also
+ *  installs the `pointerdown`-cancelling capture listener that prevents
+ *  input blur on item presses. Exposed so Scene tests can call
  *  `Scene.Mount.resolve(AnchorCombobox, CompletedAnchorCombobox())`.
  */
 const AnchorCombobox: MountDefinitionWithArgs<"AnchorCombobox", {
@@ -298,7 +298,7 @@ const AnchorCombobox: MountDefinitionWithArgs<"AnchorCombobox", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L691)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L689)
 
 ```
 /**
@@ -316,7 +316,7 @@ const AttachComboboxPreventBlur: MountDefinitionNoArgs<"AttachComboboxPreventBlu
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L720)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L718)
 
 ```
 /**
@@ -333,7 +333,7 @@ const AttachComboboxSelectOnFocus: MountDefinitionNoArgs<"AttachComboboxSelectOn
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L283)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L279)
 
 ```
 /** Programmatically clicks the active combobox item's DOM element. */
@@ -349,11 +349,12 @@ const ClickItem: CommandDefinitionWithArgs<"ClickItem", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L293)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L289)
 
 ```
 /** Detects whether the combobox input wrapper moved or the leave animation ended. Whichever comes first; both outcomes signal the Animation submodel that leave is complete. */
 const DetectMovementOrAnimationEnd: CommandDefinitionWithArgs<"DetectMovementOrAnimationEnd", {
+  generation: Number
   id: String
 }, Effect<{
   _tag: "GotAnimationMessage"
@@ -363,8 +364,10 @@ const DetectMovementOrAnimationEnd: CommandDefinitionWithArgs<"DetectMovementOrA
     _tag: "Hid"
   } | {
     _tag: "CompletedWaitForPaint"
+    generation: number
   } | {
     _tag: "EndedAnimation"
+    generation: number
   }
 }, never, never>>
 ```
@@ -373,7 +376,7 @@ const DetectMovementOrAnimationEnd: CommandDefinitionWithArgs<"DetectMovementOrA
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L263)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L259)
 
 ```
 /** Moves focus to the combobox input after selection or close. */
@@ -388,7 +391,7 @@ const FocusInput: CommandDefinitionWithArgs<"FocusInput", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L245)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L241)
 
 ```
 /** Marks all elements outside the combobox as inert for modal behavior. */
@@ -403,7 +406,7 @@ const InertOthers: CommandDefinitionWithArgs<"InertOthers", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L235)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L231)
 
 ```
 /** Prevents page scrolling while the combobox popup is open in modal mode. */
@@ -416,7 +419,7 @@ const LockScroll: CommandDefinitionNoArgs<"LockScroll", Effect<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L91)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L87)
 
 ```
 /** Union of all messages the combobox component can produce. */
@@ -450,8 +453,12 @@ const Message: MessageUnion<{
   DeactivatedItem: {}
   GotAnimationMessage: {
     message: MessageUnion<{
-      CompletedWaitForPaint: {}
-      EndedAnimation: {}
+      CompletedWaitForPaint: {
+        generation: Number
+      }
+      EndedAnimation: {
+        generation: Number
+      }
       Hid: {}
       Showed: {}
     }>
@@ -488,7 +495,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/single.ts#L21)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/single.ts#L21)
 
 ```
 /** Schema for the single-select combobox's private interaction state (open/closed status, active item, activation trigger, typed input value). The selection is owned by the parent and passed in via `ViewInputs.maybeSelectedValue`. */
@@ -497,6 +504,7 @@ const Model: Struct<{
   animation: Struct<{
     id: String
     isShowing: Boolean
+    transitionGeneration: Number
     transitionState: Literals<readonly ["Idle", "EnterStart", "EnterAnimating", "LeaveStart", "LeaveAnimating"]>
   }>
   id: String
@@ -519,7 +527,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L175)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L171)
 
 ```
 /** Union of out-messages the combobox component can produce. The parent folds `Selected` into the selection it owns and clears that selection on `ClearedSelection`. */
@@ -535,7 +543,7 @@ const OutMessage: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L747)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L745)
 
 ```
 /**
@@ -552,7 +560,7 @@ const PortalComboboxBackdrop: MountDefinitionNoArgs<"PortalComboboxBackdrop", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L256)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L252)
 
 ```
 /** Removes the inert attribute from elements outside the combobox. */
@@ -567,7 +575,7 @@ const RestoreInert: CommandDefinitionWithArgs<"RestoreInert", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L273)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L269)
 
 ```
 /** Scrolls the active combobox item into view after keyboard navigation. */
@@ -583,7 +591,7 @@ const ScrollIntoView: CommandDefinitionWithArgs<"ScrollIntoView", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/combobox/shared.ts#L240)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/combobox/shared.ts#L236)
 
 ```
 /** Re-enables page scrolling after the combobox popup closes. */

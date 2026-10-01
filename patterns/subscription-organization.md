@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/subscription-organization
 title: "Subscription Organization"
 description: "Organize Subscription records by ownership and lift child Subscriptions through nested Model and Message types."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 # Subscription Organization
@@ -212,10 +212,11 @@ const localSubscriptions = Subscription.make<Model, Message>()(entry => ({
       }),
       dependenciesToStream: ({ isSystemPreference }) =>
         Stream.when(
-          Stream.fromEventListener<MediaQueryListEvent>(
-            window.matchMedia('(prefers-color-scheme: dark)'),
-            'change',
-          ).pipe(Stream.map(ChangedSystemTheme)),
+          Subscription.fromMediaQuery({
+            query: '(prefers-color-scheme: dark)',
+            mapMatches: isDark =>
+              ChangedSystemTheme({ theme: isDark ? 'Dark' : 'Light' }),
+          }),
           Effect.sync(() => isSystemPreference),
         ),
     },

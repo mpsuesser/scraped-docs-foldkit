@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/subscriptions
 title: "Subscriptions"
 description: "Run ongoing Streams whose lifetime follows Model-derived dependencies. Covers restart behavior, timers, browser events, live dependency reads, and Submodel lifting."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 ## Ongoing Work with a Model-Driven Lifetime
@@ -177,7 +177,7 @@ Use `Stream.tick` for discrete wall-clock steps that should occur every N millis
 
 ## DOM Events
 
-`Subscription.fromEvent` handles DOM events that are not tied to one element in the rendered tree, such as window shortcuts, media-query changes, or document visibility. It registers the listener when the Stream scope opens and removes it when the scope closes.
+`Subscription.fromEvent` handles DOM events that are not tied to one element in the rendered tree, such as window shortcuts or document visibility. It adds the listener when the Stream starts and removes it when the Stream stops. For a media query, use `Subscription.fromMediaQuery` from the [Media Queries](#media-queries) section. That helper also emits the query's current value.
 
 The helper returns a Stream, not a complete entry. Its `mapEvent` callback can produce any output type, including a raw event; `Subscription.make<Model, Message>()` checks that the final Stream supplied to an entry emits the application's Message type. Wrap it in `Stream.when` inside an entry to gate it on the Model, or pass it to `Subscription.persistent` for a listener that lives with the whole Subscriptions record.
 
@@ -238,6 +238,46 @@ When only some events should produce a value, use `Subscription.fromEventFilterM
 When a handled event should also cancel its default action, use `Subscription.fromEventFilterMapPreventDefault`. Its `filterMapEvent` returns `Option.some(value)` to handle the event or `Option.none()` to leave its default behavior intact. The helper evaluates the mapper, calls `preventDefault()`, and queues the value before the native listener returns. Both filtered helpers infer their Stream output from `filterMapEvent`; `Subscription.make` checks the final Message type. The cancelling helper registers the listener with `passive: false` by default and does not accept `passive: true`, which would make cancellation ineffective.
 
 For a listener attached to one rendered element, use [Mount](https://foldkit.dev/core/mount) instead.
+
+## Media Queries
+
+`Subscription.fromMediaQuery` creates a Stream from a CSS media query. When the Stream starts, it emits the query's current `matches` value through `mapMatches`. It emits again whenever the value changes. Handle those values as Messages in update to store the result in the Model. Most apps therefore do not need a separate `window.matchMedia` read at boot. An app that must use the value before its Subscriptions start, such as one that applies a theme before hydration, should still read it at boot.
+
+Reading the current value also prevents stale state when a gated entry restarts. Suppose a color-scheme Subscription runs only while the theme preference is `System`. The user selects `Dark`, changes the operating system to a light theme, and then selects `System` again. A new `change` listener waits for the next change, so the Model still records a dark system theme. `fromMediaQuery` reads the current light value as soon as the Stream restarts.
+
+```
+import { Schema } from 'effect'
+import { Subscription } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+
+// MESSAGE
+
+const Message = defineMessageUnion({
+  ChangedReducedMotion: { isReducedMotion: Schema.Boolean },
+})
+type Message = typeof Message.Type
+
+// MODEL
+
+const Model = Schema.Struct({
+  isReducedMotion: Schema.Boolean,
+})
+type Model = typeof Model.Type
+
+// SUBSCRIPTION
+
+const subscriptions = Subscription.make<Model, Message>()(_entry => ({
+  reducedMotion: Subscription.persistent(
+    Subscription.fromMediaQuery({
+      query: '(prefers-reduced-motion: reduce)',
+      mapMatches: isMatching =>
+        Message.ChangedReducedMotion({ isReducedMotion: isMatching }),
+    }),
+  ),
+}))
+```
+
+The helper returns a Stream. Pass it to `Subscription.persistent` for a query the app always follows. To follow the query only in a particular Model state, use it with `Stream.when` inside an entry. Creating the Stream does not access `window`; `window.matchMedia` is called only when the Stream starts. The same helper works for `prefers-reduced-motion`, `prefers-color-scheme`, and viewport breakpoints such as `(max-width: 1023px)`.
 
 ## Key Bindings
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/tooltip
 title: "Tooltip"
 description: "Non-interactive floating label that appears on hover or focus and hides on leave, blur, or Escape."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 ## Overview
@@ -171,7 +171,7 @@ Configuration object passed to `Tooltip.view()`.
 | --- | --- | --- | --- |
 | `model` | `Tooltip.Model` | — | The tooltip state from your parent Model. |
 | `toParentMessage` | `(childMessage: Tooltip.Message) => ParentMessage` | — | Wraps Tooltip Messages in your parent Message type for Submodel delegation. |
-| `anchor` | `AnchorConfig` | — | Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. Required. Portaled to the document body by default; pass portal: false to keep the panel inside its wrapper. |
+| `anchor` | `AnchorConfig` | — | Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. Required. Portaled to the document body, or into an enclosing dialog, by default; pass portal: false to keep the panel inside its wrapper. |
 | `toView` | `(render: RenderInfo) => Html` | — | Callback that receives the `trigger` and `panel` attribute bundles plus a derived `isVisible` flag, and returns the composed layout. |
 | `isDisabled` | `boolean` | `false` | Disables the trigger. Hover, focus, and keyboard events are ignored and the tooltip will not open. |
 | `ariaLabel` | `string` | — | Accessible name for the trigger button. Use for an icon-only trigger with no visible label. Applied as aria-label, and takes precedence over ariaLabelledBy. |

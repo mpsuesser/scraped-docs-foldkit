@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/message
 title: "Message"
 description: "API documentation for the Message module."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 # Message
@@ -14,7 +14,7 @@ current_date: 2026-09-20T01:01:06.971Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/schema/index.ts#L514)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/schema/index.ts#L534)
 
 ```
 /**
@@ -48,12 +48,14 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/schema/index.ts#L411)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/schema/index.ts#L431)
 
 ```
 /**
  * The Schema returned by `defineMessageUnion`. Each variant is a callable
- * property on the union, and `match` handles the union exhaustively. Pass a
+ * property on the union, and `match` handles the union exhaustively. With no
+ * output type argument, `match` returns the union of the handler results. Pass
+ * an output type argument when every handler must return that type. Pass a
  * structurally refined union as `match`'s optional second type argument to
  * preserve narrower payload fields in each handler.
  */

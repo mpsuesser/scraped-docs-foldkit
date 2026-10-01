@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-toast-test
 title: "Ui/Toast/test"
 description: "API documentation for the Ui/Toast/test module."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 # Ui/Toast/test
@@ -14,7 +14,7 @@ current_date: 2026-09-20T01:01:06.971Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/toast/test.ts#L49)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/toast/test.ts#L57)
 
 ```
 /**
@@ -35,6 +35,12 @@ function
  *  - exit animation: `WaitForPaint` then `CompletedWaitForPaint`
  *  - exit settle: `WaitForAnimationSettled` then `EndedAnimation`
  * 
+ *  The enter steps match animation transition generation `1`, which the
+ *  entry's `Showed` starts, and the exit steps match generation `2`, which its
+ *  `Hid` starts. Each step matches only its own generation, so the helper also
+ *  an entry whose enter the test has already resolved. These versions are
+ *  separate from the auto-dismiss timer `version`.
+ * 
  *  Each step resolves with the child's raw result Message. `resolveAll` replays
  *  the matched Command's own recorded wrapping, so a parent that embeds the
  *  toast Submodel drains the same way without restating its `Got*` lift.
@@ -48,7 +54,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/toast/test.ts#L11)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/toast/test.ts#L11)
 
 ```
 /**

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/popover
 title: "Popover"
 description: "An anchored floating panel for arbitrary content, with dismissal, focus return, portaling, and optional modal behavior."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 ## Overview
@@ -541,7 +541,7 @@ Configuration object passed to `Popover.view()`.
 | --- | --- | --- | --- |
 | `model` | `Popover.Model` | — | The popover state from your parent Model. |
 | `toParentMessage` | `(childMessage: Popover.Message) => ParentMessage` | — | Wraps Popover Messages in your parent Message type for Submodel delegation. |
-| `anchor` | `AnchorConfig` | — | Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. Required. Portaled to the document body by default; pass portal: false to keep the panel inside its wrapper. |
+| `anchor` | `AnchorConfig` | — | Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. Required. Portaled to the document body, or into an enclosing dialog, by default; pass portal: false to keep the panel inside its wrapper. |
 | `toView` | `(render: RenderInfo) => Html` | — | Callback that receives the button, panel, backdrop, and arrow attribute bundles plus a derived `isVisible` flag, and returns the composed layout. |
 | `isDisabled` | `boolean` | `false` | Disables the trigger button. |
 | `focusSelector` | `string` | — | CSS selector for the element to focus after the panel is positioned. Defaults to the panel itself. |
@@ -557,7 +557,7 @@ Payload delivered to the `toView` callback each render.
 | --- | --- | --- | --- |
 | `button` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the trigger button. Includes the button id, `aria-expanded`, `aria-controls`, and pointer/keyboard handlers. |
 | `panel` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the floating panel. Includes the anchor Mount that positions the panel via Floating UI, ARIA linkage to the button, and panel keydown/blur handlers. |
-| `backdrop` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the modal backdrop element. Includes the portal Mount that moves the backdrop to `document.body`. The backdrop's click handler dispatches `RequestedClose`. |
+| `backdrop` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the modal backdrop element. Includes the portal Mount that moves the backdrop to `document.body`. Inside a dialog, it moves the backdrop to directly before the element it is rendered in, so render it inside the positioned wrapper that holds the button. The backdrop's click handler dispatches `RequestedClose`. |
 | `arrow` | `ReadonlyArray<ChildAttribute>` | — | Spread onto your arrow element inside the panel. Carries the id the anchor Mount resolves and `aria-hidden`. Nothing renders until you add the element and the CSS above. |
 | `isVisible` | `boolean` | — | Derived from `isOpen` and the Animation `transitionState`. Render the panel and backdrop only while this is true. |
 

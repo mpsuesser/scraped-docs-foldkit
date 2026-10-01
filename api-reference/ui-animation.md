@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-animation
 title: "Ui/Animation"
 description: "API documentation for the Ui/Animation module."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 # Ui/Animation
@@ -14,10 +14,14 @@ current_date: 2026-09-20T01:01:06.971Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/update.ts#L138)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/update.ts#L172)
 
 ```
-/** Creates the standard leave-phase command that waits for CSS animations on the element to settle. Use this when handling the `StartedLeaveAnimating` OutMessage for components that don't need custom leave behavior. */
+/**
+ * Creates the standard leave Command for the Model's current transition. Use
+ *  this when handling `StartedLeaveAnimating` unless the component needs its
+ *  own settlement strategy.
+ */
 (model: Animation.Model): Command.Command<Message>
 ```
 
@@ -25,7 +29,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/update.ts#L125)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/update.ts#L157)
 
 ```
 /** Programmatically starts the leave lifecycle. */
@@ -36,7 +40,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/schema.ts#L58)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/schema.ts#L61)
 
 ```
 /** Creates an initial animation model from a config. Defaults to hidden. */
@@ -47,7 +51,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/update.ts#L121)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/update.ts#L153)
 
 ```
 /** Programmatically starts the enter lifecycle. */
@@ -58,7 +62,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/update.ts#L129)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/update.ts#L161)
 
 ```
 /** Toggles the animation between its shown and hidden states. */
@@ -69,14 +73,15 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/update.ts#L46)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/update.ts#L53)
 
 ```
 /**
  * Processes an Animation Message and returns the next Model, optional
  *  Commands, and an optional OutMessage. `Showed` and `Hid` start a transition
  *  but cannot finish one, so direct calls with either Message return a plain
- *  update result.
+ *  update result. Results from an earlier transition generation leave the Model
+ *  unchanged.
  */
 (
   model: Animation.Model,
@@ -95,8 +100,10 @@ function
     _tag: "Hid"
   } | {
     _tag: "CompletedWaitForPaint"
+    generation: number
   } | {
     _tag: "EndedAnimation"
+    generation: number
   }
 ): UpdateReturn
 ```
@@ -107,7 +114,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/schema.ts#L52)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/schema.ts#L55)
 
 ```
 /** Configuration for creating an animation model with `init`. */
@@ -121,7 +128,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/index.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/index.ts#L32)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -140,13 +147,17 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/schema.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/schema.ts#L32)
 
 ```
 /** Union of all messages the animation component can produce. */
 const Message: MessageUnion<{
-  CompletedWaitForPaint: {}
-  EndedAnimation: {}
+  CompletedWaitForPaint: {
+    generation: Number
+  }
+  EndedAnimation: {
+    generation: Number
+  }
   Hid: {}
   Showed: {}
 }>
@@ -156,13 +167,17 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/schema.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/schema.ts#L20)
 
 ```
-/** Schema for the animation component's state, tracking its unique ID, visibility intent, and lifecycle phase. */
+/**
+ * Schema for Animation state, including the transition generation used to reject
+ *  stale Command results.
+ */
 const Model: Struct<{
   id: String
   isShowing: Boolean
+  transitionGeneration: Number
   transitionState: Literals<readonly ["Idle", "EnterStart", "EnterAnimating", "LeaveStart", "LeaveAnimating"]>
 }>
 ```
@@ -171,11 +186,14 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/schema.ts#L43)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/schema.ts#L46)
 
 ```
+/** Union of the facts Animation reports to its parent. */
 const OutMessage: MessageUnion<{
-  StartedLeaveAnimating: {}
+  StartedLeaveAnimating: {
+    generation: Number
+  }
   TransitionedOut: {}
 }>
 ```
@@ -184,7 +202,7 @@ const OutMessage: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/schema.ts#L7)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/schema.ts#L7)
 
 ```
 /** Schema for the animation lifecycle state, tracking enter/leave phases. */
@@ -195,14 +213,19 @@ const TransitionState: Literals<readonly ["Idle", "EnterStart", "EnterAnimating"
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/update.ts#L30)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/update.ts#L36)
 
 ```
-/** Waits for all CSS animations on the element to settle. Covers both CSS transitions and CSS keyframe animations. */
+/**
+ * Waits for all CSS transitions and keyframe animations on the element to
+ *  settle, then reports the transition generation that scheduled the wait.
+ */
 const WaitForAnimationSettled: CommandDefinitionWithArgs<"WaitForAnimationSettled", {
+  generation: Number
   id: String
 }, Effect<{
   _tag: "EndedAnimation"
+  generation: number
 }, never, never>>
 ```
 
@@ -210,12 +233,18 @@ const WaitForAnimationSettled: CommandDefinitionWithArgs<"WaitForAnimationSettle
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/update.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/update.ts#L26)
 
 ```
-/** Waits for paint via double-rAF before the enter/leave lifecycle advances. */
-const WaitForPaint: CommandDefinitionNoArgs<"WaitForPaint", Effect<{
+/**
+ * Waits for paint via double-rAF, then reports the transition generation that
+ *  scheduled the wait.
+ */
+const WaitForPaint: CommandDefinitionWithArgs<"WaitForPaint", {
+  generation: Number
+}, Effect<{
   _tag: "CompletedWaitForPaint"
+  generation: number
 }, never, never>>
 ```
 
@@ -223,7 +252,7 @@ const WaitForPaint: CommandDefinitionNoArgs<"WaitForPaint", Effect<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/animation/index.ts#L52)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/animation/index.ts#L52)
 
 ```
 /**
@@ -242,8 +271,10 @@ const view: SubmodelView<Animation.Model, {
   _tag: "Hid"
 } | {
   _tag: "CompletedWaitForPaint"
+  generation: number
 } | {
   _tag: "EndedAnimation"
+  generation: number
 }, Readonly<{
   animateSize: boolean
   attributes: readonly Array<Readonly<{
@@ -259,6 +290,6 @@ const view: SubmodelView<Animation.Model, {
   }>>
   className: string
   content: Html
-  element: "symbol" | "object" | "portal" | "div" | "a" | "abbr" | "address" | "area" | "article" | "aside" | "audio" | "b" | "base" | "bdi" | "bdo" | "blockquote" | "body" | "br" | "button" | "canvas" | "caption" | "cite" | "code" | "col" | "colgroup" | "data" | "datalist" | "dd" | "del" | "details" | "dfn" | "dialog" | "dl" | "dt" | "em" | "embed" | "fieldset" | "figcaption" | "figure" | "footer" | "form" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "head" | "header" | "hgroup" | "hr" | "html" | "i" | "iframe" | "img" | "input" | "ins" | "kbd" | "label" | "legend" | "li" | "link" | "main" | "map" | "mark" | "menu" | "meta" | "meter" | "nav" | "noscript" | "ol" | "optgroup" | "option" | "output" | "p" | "picture" | "pre" | "progress" | "q" | "rp" | "rt" | "ruby" | "s" | "samp" | "script" | "search" | "section" | "select" | "slot" | "small" | "source" | "span" | "strong" | "style" | "sub" | "summary" | "sup" | "table" | "tbody" | "td" | "template" | "tfoot" | "th" | "thead" | "time" | "title" | "tr" | "track" | "u" | "ul" | "var" | "video" | "wbr" | "filter" | "animate" | "animateMotion" | "animateTransform" | "circle" | "clipPath" | "defs" | "desc" | "ellipse" | "feBlend" | "feColorMatrix" | "feComponentTransfer" | "feComposite" | "feConvolveMatrix" | "feDiffuseLighting" | "feDisplacementMap" | "feDistantLight" | "feDropShadow" | "feFlood" | "feFuncA" | "feFuncB" | "feFuncG" | "feFuncR" | "feGaussianBlur" | "feImage" | "feMerge" | "feMergeNode" | "feMorphology" | "feOffset" | "fePointLight" | "feSpecularLighting" | "feSpotLight" | "feTile" | "feTurbulence" | "foreignObject" | "g" | "image" | "line" | "linearGradient" | "marker" | "mask" | "metadata" | "mpath" | "path" | "pattern" | "polygon" | "polyline" | "radialGradient" | "rect" | "set" | "stop" | "svg" | "switch" | "text" | "textPath" | "tspan" | "use" | "view" | "annotation" | "annotation-xml" | "maction" | "math" | "merror" | "mfrac" | "mi" | "mmultiscripts" | "mn" | "mo" | "mover" | "mpadded" | "mphantom" | "mprescripts" | "mroot" | "mrow" | "ms" | "mspace" | "msqrt" | "mstyle" | "msub" | "msubsup" | "msup" | "mtable" | "mtd" | "mtext" | "mtr" | "munder" | "munderover" | "semantics" | "menclose" | "mfenced" | "mglyph" | "mlabeledtr" | "mlongdiv" | "mscarries" | "mscarry" | "msgroup" | "msline" | "msrow" | "mstack"
+  element: "symbol" | "object" | "portal" | "div" | "a" | "abbr" | "address" | "area" | "article" | "aside" | "audio" | "b" | "base" | "bdi" | "bdo" | "blockquote" | "body" | "br" | "button" | "canvas" | "caption" | "cite" | "code" | "col" | "colgroup" | "data" | "datalist" | "dd" | "del" | "details" | "dfn" | "dialog" | "dl" | "dt" | "em" | "embed" | "fieldset" | "figcaption" | "figure" | "footer" | "form" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "head" | "header" | "hgroup" | "hr" | "html" | "i" | "iframe" | "img" | "input" | "ins" | "kbd" | "label" | "legend" | "li" | "link" | "main" | "map" | "mark" | "menu" | "meta" | "meter" | "nav" | "noscript" | "ol" | "optgroup" | "option" | "output" | "p" | "picture" | "pre" | "progress" | "q" | "rp" | "rt" | "ruby" | "s" | "samp" | "script" | "search" | "section" | "select" | "slot" | "small" | "source" | "span" | "strong" | "style" | "sub" | "summary" | "sup" | "table" | "tbody" | "td" | "template" | "tfoot" | "th" | "thead" | "time" | "title" | "tr" | "track" | "u" | "ul" | "var" | "video" | "wbr" | "animate" | "animateMotion" | "animateTransform" | "circle" | "clipPath" | "defs" | "desc" | "ellipse" | "feBlend" | "feColorMatrix" | "feComponentTransfer" | "feComposite" | "feConvolveMatrix" | "feDiffuseLighting" | "feDisplacementMap" | "feDistantLight" | "feDropShadow" | "feFlood" | "feFuncA" | "feFuncB" | "feFuncG" | "feFuncR" | "feGaussianBlur" | "feImage" | "feMerge" | "feMergeNode" | "feMorphology" | "feOffset" | "fePointLight" | "feSpecularLighting" | "feSpotLight" | "feTile" | "feTurbulence" | "filter" | "foreignObject" | "g" | "image" | "line" | "linearGradient" | "marker" | "mask" | "metadata" | "mpath" | "path" | "pattern" | "polygon" | "polyline" | "radialGradient" | "rect" | "set" | "stop" | "svg" | "switch" | "text" | "textPath" | "tspan" | "use" | "view" | "annotation" | "annotation-xml" | "maction" | "math" | "merror" | "mfrac" | "mi" | "mmultiscripts" | "mn" | "mo" | "mover" | "mpadded" | "mphantom" | "mprescripts" | "mroot" | "mrow" | "ms" | "mspace" | "msqrt" | "mstyle" | "msub" | "msubsup" | "msup" | "mtable" | "mtd" | "mtext" | "mtr" | "munder" | "munderover" | "semantics" | "menclose" | "mfenced" | "mglyph" | "mlabeledtr" | "mlongdiv" | "mscarries" | "mscarry" | "msgroup" | "msline" | "msrow" | "mstack"
 }>>
 ```

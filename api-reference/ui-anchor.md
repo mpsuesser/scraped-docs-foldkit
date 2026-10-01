@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-anchor
 title: "Ui/Anchor"
 description: "API documentation for the Ui/Anchor module."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 # Ui/Anchor
@@ -14,7 +14,7 @@ current_date: 2026-09-20T01:01:06.971Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/anchor/anchor.ts#L195)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/anchor/anchor.ts#L294)
 
 ```
 /**
@@ -49,21 +49,58 @@ function
 ): () => void
 ```
 
+### portalBackdrop
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/anchor/anchor.ts#L194)
+
+```
+/**
+ * Relocates a click-outside backdrop and returns a cleanup function that
+ *  removes it again. Outside a `<dialog>`, it does what
+ *  `portalToContainingRoot` does. Inside a `<dialog>`, the backdrop moves to
+ *  directly before the element it was rendered in, which is the component
+ *  wrapper that holds the trigger. The backdrop then covers the dialog's
+ *  content, and the wrapper stays above it, so a click on a Combobox input
+ *  reaches the input while a click anywhere else in the dialog reaches the
+ *  backdrop. The wrapper must be positioned, for example `position:
+ *  relative`, which is also what keeps it above a backdrop in the containing
+ *  root. While the backdrop is there, it is a sibling of the wrapper, so
+ *  sibling-based selectors such as `:first-child` or Tailwind's `divide-y`
+ *  count it. Some CSS on an ancestor between the wrapper and the dialog
+ *  confines the backdrop to that ancestor: anything that makes the ancestor
+ *  the containing block for fixed-position elements, for example
+ *  `transform`, `scale`, `filter`, `backdrop-filter`, or `container-type`.
+ *  A click outside that ancestor then leaves the overlay open, and if it
+ *  also lands outside the dialog panel, it closes the whole dialog. A
+ *  backdrop rendered directly in the dialog goes into the dialog's portal
+ *  root instead. Designed to be called from inside an `OnMount` action,
+ *  like `portalToContainingRoot`.
+ */
+(element: Element): () => void
+```
+
 ### portalToContainingRoot
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/anchor/anchor.ts#L98)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/anchor/anchor.ts#L141)
 
 ```
 /**
- * Relocates an element into the shared `foldkit-portal-root` div within its
- *  containing root: the shadow root when mounted inside one, otherwise
- *  `document.body`. Escapes any ancestor stacking context while keeping the
- *  element under that root's scoped styles. Returns a cleanup function that
- *  removes the element from the portal root. Designed to be called from inside
- *  an `OnMount` action: the consumer wraps the call in `Effect.sync` and
- *  stashes the returned cleanup in the `Mount` result.
+ * Relocates an element into a portal root and returns a cleanup function
+ *  that removes it again. Inside a `<dialog>`, the portal root is a div
+ *  appended to that dialog, so the element stays above the dialog's content
+ *  and interactive while a modal dialog makes everything outside it inert.
+ *  The cleanup removes that div once it is empty. Otherwise the portal root
+ *  is the shared `foldkit-portal-root` div within the element's containing
+ *  root: the shadow root when mounted inside one, otherwise `document.body`.
+ *  Either way the element escapes the clipping and stacking contexts of the
+ *  ancestors it leaves, and keeps its root's scoped styles. Use
+ *  `portalBackdrop` for a click-outside backdrop. Designed to be called from
+ *  inside an `OnMount` action: the consumer wraps the call in `Effect.sync`
+ *  and stashes the returned cleanup in the `Mount` result.
  */
 (element: Element): () => void
 ```
@@ -74,7 +111,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/anchor/anchor.ts#L141)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/anchor/anchor.ts#L240)
 
 ```
 /**
@@ -118,7 +155,7 @@ type SetupConfig = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/anchor/anchor.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/anchor/anchor.ts#L48)
 
 ```
 /** Static configuration for anchor-based positioning of a floating element relative to a button. */
@@ -144,7 +181,7 @@ const AnchorConfig: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/anchor/anchor.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/anchor/anchor.ts#L35)
 
 ```
 /**
@@ -166,7 +203,7 @@ const Padding: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/anchor/anchor.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/anchor/anchor.ts#L16)
 
 ```
 /**

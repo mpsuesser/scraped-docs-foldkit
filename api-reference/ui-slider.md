@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-slider
 title: "Ui/Slider"
 description: "API documentation for the Ui/Slider module."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 # Ui/Slider
@@ -14,12 +14,12 @@ current_date: 2026-09-20T01:01:06.971Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L144)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/internal/range.ts#L9)
 
 ```
 /**
- * Computes the fraction (0–1) of a value between min and max. Returns 0 when
- *  the range has zero width.
+ * Computes the fraction (0–1) of a value between min and max. Returns 0
+ *  when the range has zero or negative width.
  */
 (
   value: number,
@@ -32,11 +32,11 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L99)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L107)
 
 ```
 /**
- * Creates an initial slider model from a config. The value lives in the
+ * Creates an initial Slider Model from a config. The value lives in the
  *  parent Model; initialize it there and snap it with snapAndClamp.
  */
 (config: InitConfig): Slider.Model
@@ -46,12 +46,12 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L132)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L137)
 
 ```
 /**
  * Snaps a value to the nearest step and clamps it into `[min, max]`. Exported
- *  so a parent can conform the value it owns to the slider's range, for example
+ *  so a parent can conform the value it owns to the Slider's range, for example
  *  when seeding the initial value or reacting to an external update.
  */
 (
@@ -66,13 +66,34 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L346)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L417)
 
 ### update
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L210)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L200)
+
+### valueFromPointer
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L379)
+
+```
+/**
+ * Maps a pointer position to a Slider value. Vertical tracks place `min` at
+ *  the bottom and `max` at the top. Edge-aligned tracks measure the rendered
+ *  thumb and map the pointer across the same inset range it travels through.
+ */
+(
+  clientX: number,
+  clientY: number,
+  track: Element,
+  min: number,
+  max: number
+): number
+```
 
 ## Types
 
@@ -80,10 +101,10 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L90)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L98)
 
 ```
-/** Configuration for creating a slider model with `init`. */
+/** Configuration for creating a Slider Model with `init`. */
 type InitConfig = Readonly<{
   id: string
   max: number
@@ -96,12 +117,12 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L476)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L550)
 
 ```
 /**
- * Attribute groups the slider component provides to the consumer's `toView`
- *  callback. Each bundle carries the boundary's captured dispatch, so the
+ * Attribute groups the Slider provides to the consumer's `toView`
+ *  callback. Each group carries the boundary's captured dispatch, so the
  *  consumer can spread it directly into element attributes without manual
  *  Message wrapping.
  */
@@ -119,7 +140,7 @@ type SliderAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L486)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L649)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -131,6 +152,9 @@ type ViewInputs = Readonly<{
   isDisabled: boolean
   isReadOnly: boolean
   name: string
+  orientation: Orientation
+  thumbAlignment: ThumbAlignment
+  thumbSize: string
   toView: (attributes: SliderAttributes) => Html
   value: number
 }>
@@ -142,10 +166,10 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L47)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L55)
 
 ```
-/** Union of all messages the slider component can produce. */
+/** Union of all Messages the Slider can produce. */
 const Message: MessageUnion<{
   CancelledDrag: {}
   MovedDragPointer: {
@@ -170,15 +194,15 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L34)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L42)
 
 ```
 /**
- * Schema for the slider component's private interaction state. The current
+ * Schema for the Slider's private interaction state. The current
  *  value is owned by the parent and passed in via `ViewInputs.value`, so it is
- *  not stored here. `min`/`max`/`step` are configuration the drag subscription
- *  reads to map pointer positions into values. `dragState` tracks the active
- *  drag phase and captures the pre-drag value so Escape can restore it.
+ *  not stored here. `min`, `max`, and `step` configure how the drag Subscription
+ *  maps pointer positions into values. `dragState` tracks the active drag phase
+ *  and captures the pre-drag value so Escape can restore it.
  */
 const Model: Struct<{
   dragState: TaggedUnion<{
@@ -194,14 +218,25 @@ const Model: Struct<{
 }>
 ```
 
+### Orientation
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L560)
+
+```
+/** Direction in which the Slider lays out its track and maps pointer input. */
+const Orientation: Literals<readonly ["Horizontal", "Vertical"]>
+```
+
 ### OutMessage
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L82)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L90)
 
 ```
-/** Union of all out-messages the slider component can emit to its parent. */
+/** Union of all OutMessages the Slider can emit to its parent. */
 const OutMessage: MessageUnion<{
   ChangedValue: {
     value: Number
@@ -209,11 +244,22 @@ const OutMessage: MessageUnion<{
 }>
 ```
 
+### ThumbAlignment
+
+const
+
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L564)
+
+```
+/** Whether the thumb's center or outer edge aligns with the track endpoints. */
+const ThumbAlignment: Literals<readonly ["Center", "Edge"]>
+```
+
 ### reflectRange
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L294)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L284)
 
 ```
 /**
@@ -232,10 +278,10 @@ const reflectRange: Reflect<Model, Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L443)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L520)
 
 ```
-/** Default drag subscriptions, with the track looked up via `document`. */
+/** Default drag Subscriptions, with the track looked up via `document`. */
 const subscriptions: {
   dragEscape: EntryWithoutKeepAlive<Slider.Model, {
     _tag: "CancelledDrag"
@@ -289,7 +335,7 @@ const subscriptions: {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/slider/index.ts#L522)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/slider/index.ts#L698)
 
 ```
 /**
@@ -297,7 +343,7 @@ const
  *  delegating layout to the consumer's `toView` callback. Follows the
  *  WAI-ARIA slider pattern: role="slider" on the thumb, aria-valuemin /
  *  aria-valuemax / aria-valuenow, keyboard navigation by step / page / home /
- *  end. Pointer drag is handled by the component's drag subscriptions.
+ *  end. Pointer drag is handled by the Slider's drag Subscriptions.
  */
 const view: SubmodelView<Slider.Model, {
   _tag: "CancelledDrag"
@@ -325,6 +371,9 @@ const view: SubmodelView<Slider.Model, {
   isDisabled: boolean
   isReadOnly: boolean
   name: string
+  orientation: "Horizontal" | "Vertical"
+  thumbAlignment: "Center" | "Edge"
+  thumbSize: string
   toView: (attributes: SliderAttributes) => Html
   value: number
 }>>

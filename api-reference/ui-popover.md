@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-popover
 title: "Ui/Popover"
 description: "API documentation for the Ui/Popover module."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 # Ui/Popover
@@ -14,7 +14,7 @@ current_date: 2026-09-20T01:01:06.971Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L143)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L139)
 
 ```
 /**
@@ -30,7 +30,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L137)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L133)
 
 ```
 /**
@@ -46,7 +46,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L458)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L456)
 
 ```
 /**
@@ -61,7 +61,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L112)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L108)
 
 ```
 /** Creates an initial popover model from a config. Defaults to closed. */
@@ -72,7 +72,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L452)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L450)
 
 ```
 /**
@@ -86,7 +86,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L256)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L254)
 
 ## Types
 
@@ -94,7 +94,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L104)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L100)
 
 ```
 /** Configuration for creating a popover model with `init`. `isAnimated` enables animation coordination (default `false`). `isModal` locks page scroll and inerts other elements when open (default `false`). `contentFocus` hands focus ownership to the consumer. The panel is not focusable and does not close on blur, so the consumer must focus a descendant on open and close the popover on its own blur rules (default `false`). */
@@ -110,7 +110,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L480)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L480)
 
 ```
 /**
@@ -121,8 +121,10 @@ type
  *    anchor Mount that positions the panel via Floating UI, ARIA
  *    linkage to the button, and panel keydown/blur handlers.
  *  - `backdrop`: attribute bundle for the modal backdrop. Includes the
- *    portal Mount that moves the backdrop to document.body. The
- *    backdrop's OnClick closes the popover.
+ *    portal Mount that moves the backdrop to document.body. Inside a
+ *    `<dialog>`, it moves the backdrop to directly before the element it
+ *    is rendered in, so render it inside the positioned wrapper that holds
+ *    the button. The backdrop's OnClick closes the popover.
  *  - `arrow`: attribute bundle for an arrow element inside the panel.
  *    Carries the id the anchor Mount resolves and hides the element from
  *    assistive technology. Spread it onto your own element and place it
@@ -145,7 +147,7 @@ type RenderInfo = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L489)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L489)
 
 ```
 /** Per-render view inputs passed to `view` via `h.submodel`'s `viewInputs` field. */
@@ -166,7 +168,7 @@ type ViewInputs = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L399)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L397)
 
 ```
 /**
@@ -204,11 +206,12 @@ const AnchorPopover: MountDefinitionWithArgs<"AnchorPopover", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L194)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L190)
 
 ```
 /** Detects whether the popover button moved or the leave animation ended. Whichever comes first; both outcomes signal the Animation submodel that leave is complete. */
 const DetectMovementOrAnimationEnd: CommandDefinitionWithArgs<"DetectMovementOrAnimationEnd", {
+  generation: Number
   id: String
 }, Effect<{
   _tag: "GotAnimationMessage"
@@ -218,8 +221,10 @@ const DetectMovementOrAnimationEnd: CommandDefinitionWithArgs<"DetectMovementOrA
     _tag: "Hid"
   } | {
     _tag: "CompletedWaitForPaint"
+    generation: number
   } | {
     _tag: "EndedAnimation"
+    generation: number
   }
 }, never, never>>
 ```
@@ -228,7 +233,7 @@ const DetectMovementOrAnimationEnd: CommandDefinitionWithArgs<"DetectMovementOrA
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L184)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L180)
 
 ```
 /** Moves focus back to the popover button after closing. */
@@ -243,7 +248,7 @@ const FocusButton: CommandDefinitionWithArgs<"FocusButton", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L174)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L170)
 
 ```
 /** Moves focus to the popover panel after opening. */
@@ -258,7 +263,7 @@ const FocusPanel: CommandDefinitionWithArgs<"FocusPanel", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L158)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L154)
 
 ```
 /** Marks all elements outside the popover as inert for modal behavior. */
@@ -273,7 +278,7 @@ const InertOthers: CommandDefinitionWithArgs<"InertOthers", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L148)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L144)
 
 ```
 /** Prevents page scrolling while the popover is open in modal mode. */
@@ -286,7 +291,7 @@ const LockScroll: CommandDefinitionNoArgs<"LockScroll", Effect<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L55)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L51)
 
 ```
 /** Union of all messages the popover component can produce. */
@@ -302,8 +307,12 @@ const Message: MessageUnion<{
   CompletedUnlockScroll: {}
   GotAnimationMessage: {
     message: MessageUnion<{
-      CompletedWaitForPaint: {}
-      EndedAnimation: {}
+      CompletedWaitForPaint: {
+        generation: Number
+      }
+      EndedAnimation: {
+        generation: Number
+      }
       Hid: {}
       Showed: {}
     }>
@@ -323,7 +332,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L40)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L36)
 
 ```
 /** Schema for the popover component's state, tracking open/closed status and animation lifecycle. */
@@ -331,6 +340,7 @@ const Model: Struct<{
   animation: Struct<{
     id: String
     isShowing: Boolean
+    transitionGeneration: Number
     transitionState: Literals<readonly ["Idle", "EnterStart", "EnterAnimating", "LeaveStart", "LeaveAnimating"]>
   }>
   contentFocus: Boolean
@@ -346,7 +356,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L90)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L86)
 
 ```
 /**
@@ -364,7 +374,7 @@ const OutMessage: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L438)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L436)
 
 ```
 /**
@@ -381,7 +391,7 @@ const PortalPopoverBackdrop: MountDefinitionNoArgs<"PortalPopoverBackdrop", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L167)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L163)
 
 ```
 /** Removes the inert attribute from elements outside the popover. */
@@ -396,7 +406,7 @@ const RestoreInert: CommandDefinitionWithArgs<"RestoreInert", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L153)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L149)
 
 ```
 /** Re-enables page scrolling after the popover closes. */
@@ -409,7 +419,7 @@ const UnlockScroll: CommandDefinitionNoArgs<"UnlockScroll", Effect<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/ui/src/popover/index.ts#L500)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/popover/index.ts#L500)
 
 ```
 /** Renders a headless popover with a trigger button and a floating panel. */
@@ -451,8 +461,10 @@ const view: SubmodelView<Popover.Model, {
     _tag: "Hid"
   } | {
     _tag: "CompletedWaitForPaint"
+    generation: number
   } | {
     _tag: "EndedAnimation"
+    generation: number
   }
 }, Readonly<{
   anchor: Anchor.AnchorConfig

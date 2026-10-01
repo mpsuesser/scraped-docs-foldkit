@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/menu
 title: "Menu"
 description: "An anchored action-menu Submodel with keyboard navigation, typeahead, dismissal, and optional modal behavior."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 ## Overview
@@ -181,7 +181,7 @@ const view = (h: HtmlBuilder<Message>) =>
 
 Menu is headless. The `itemToConfig` callback controls all item markup. Group items with `itemGroupKey` and `groupToHeading`.
 
-The items panel is portaled to the document body and positioned relative to the trigger button with Floating UI. Ancestor stacking contexts and overflow clipping no longer apply, so a clipped container or a sibling overlay wrapper cannot hide an open menu. The panel still stacks at the document level: give it a z-index above elevated content like sticky headers or toasts, as the demos on this page do with `z-10`. Pass `anchor: { portal: false }` to keep the panel inside the wrapper instead.
+The items panel is portaled to the document body and positioned relative to the trigger button with Floating UI. Ancestor stacking contexts and overflow clipping no longer apply, so a clipped container or a sibling overlay wrapper cannot hide an open menu. The panel still stacks at the document level: give it a z-index above elevated content like sticky headers or toasts, as the demos on this page do with `z-10`. Inside a `<dialog>`, the panel is portaled into that dialog, so it renders above the dialog's content and stays interactive. Pass `anchor: { portal: false }` to keep the panel inside the wrapper.
 
 When `isAnimated` is true, enter/leave animations flow through the [Animation](https://foldkit.dev/ui/animation) module. Style with CSS transitions or CSS keyframe animations. Animation advances once every animation on the element has settled.
 
@@ -242,7 +242,7 @@ Configuration object passed to `Menu.view()`.
 | `isButtonDisabled` | `boolean \| undefined` | — | Disables the trigger button entirely. The menu cannot be opened while true. |
 | `itemGroupKey` | `((item, index) => string) \| undefined` | — | Groups contiguous items by key. |
 | `groupToHeading` | `((groupKey) => GroupHeading \| undefined) \| undefined` | — | Renders a heading for each group. |
-| `anchor` | `AnchorConfig \| undefined` | — | Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. The items panel is always anchored to the button; when omitted, the panel uses bottom-start placement. Portaled to the document body by default; pass portal: false to keep the panel inside the wrapper. |
+| `anchor` | `AnchorConfig \| undefined` | — | Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. The items panel is always anchored to the button; when omitted, the panel uses bottom-start placement. Portaled to the document body, or into an enclosing dialog, by default; pass portal: false to keep the panel inside the wrapper. |
 | `buttonClassName` | `string \| undefined` | — | CSS class for the trigger button. |
 | `buttonAttributes` | `ReadonlyArray<ChildAttribute> \| undefined` | — | Extra attributes spread onto the trigger button alongside its built-in click/keyboard handlers and aria-\* attributes. |
 | `itemsClassName` | `string \| undefined` | — | CSS class for the items container (the panel root). |

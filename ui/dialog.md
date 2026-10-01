@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/dialog
 title: "Dialog"
 description: "A modal dialog backed by the native dialog element with focus trapping and scroll locking."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 ## Overview
@@ -281,7 +281,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
 
 ### Field
 
-A field inside a dialog can open its own overlay, like a Combobox or DatePicker. By default that overlay portals its panel to the document body, where the dialog renders on top of it. Pass `anchor: { portal: false }` so the panel stays inside the dialog and remains visible.
+A field inside a dialog can open its own overlay, like a Combobox or DatePicker. The overlay portals its panel into the dialog, not to the document body. The panel renders above the dialog's content, a scrolling dialog panel does not clip it, and it stays interactive while the Dialog makes the rest of the page inert. The overlay needs no anchor configuration. Its wrapper needs `position: relative`, as it does outside a dialog. The overlay's click-outside backdrop goes directly before that wrapper, and a positioned wrapper keeps the trigger or input above the backdrop.
 
 ```
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
@@ -319,10 +319,11 @@ const Message = defineMessageUnion({
   GotComboboxMessage: { message: Combobox.Message },
 })
 
-// Render the overlay inside the dialog panel. The key is \`portal: false\` on
-// the overlay's anchor. By default the panel portals to the document body,
-// where the dialog's high stacking order hides it. With portal: false the
-// panel stays inside the dialog and renders above the panel content.
+// Render the overlay inside the dialog panel. Its panel portals into the
+// dialog, so it renders above the dialog content with no extra anchor config.
+// Give the panel \`relative\` so it paints above the Dialog backdrop, and the
+// Combobox wrapper \`relative\` so the input stays above the Combobox backdrop,
+// which goes directly before that wrapper.
 const view = (model: Model, h: HtmlBuilder<Message>) =>
   h.submodel({
     slotId: model.dialog.id,
@@ -338,7 +339,9 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
                 h.div(
                   [
                     ...panel,
-                    h.Class('rounded-lg p-6 max-w-md mx-auto shadow-xl'),
+                    h.Class(
+                      'relative rounded-lg p-6 max-w-md mx-auto shadow-xl',
+                    ),
                   ],
                   [
                     h.h2([...title], ['Edit filters']),
@@ -348,12 +351,13 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
                       view: CityCombobox.view,
                       viewInputs: {
                         // ...items, itemToConfig, itemToValue, etc.
+                        className: 'relative w-full',
                         maybeSelectedValue: model.maybeCity,
                         restingInputValue: Option.getOrElse(
                           model.maybeCity,
                           () => '',
                         ),
-                        anchor: { placement: 'bottom-start', portal: false },
+                        anchor: { placement: 'bottom-start' },
                       },
                       toParentMessage: message =>
                         Message.GotComboboxMessage({ message }),

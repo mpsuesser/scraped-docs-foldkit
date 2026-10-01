@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-has-server-rendering
 title: "Foldkit Has Server Rendering"
 description: "Your Foldkit application can now render to HTML at build time or per request, then hydrate on the client."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
@@ -50,7 +50,6 @@ export const renderPage = (request: Request): Promise<Server.EntryResult> =>
         { Flags, init, view },
         {
           flags: flagsForRequest(request),
-          buildId: import.meta.env.FOLDKIT_BUILD_ID,
         },
       )
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps/ui-showcase
 title: "UI Showcase"
 description: "An interactive showcase of every Foldkit UI component, with styled routed demos and their parent and Submodel wiring."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 [All Examples](https://foldkit.dev/example-apps)
@@ -69,7 +69,9 @@ export const AppRoute = defineRouteUnion({
   Input: {},
   Listbox: {},
   Menu: {},
+  Meter: {},
   Popover: {},
+  Progress: {},
   RadioGroup: {},
   Select: {},
   Slider: {},
@@ -115,7 +117,9 @@ const hoverIntentRouter = pipe(
 const inputRouter = pipe(literal('input'), Route.mapTo(AppRoute.Input))
 const listboxRouter = pipe(literal('listbox'), Route.mapTo(AppRoute.Listbox))
 const menuRouter = pipe(literal('menu'), Route.mapTo(AppRoute.Menu))
+const meterRouter = pipe(literal('meter'), Route.mapTo(AppRoute.Meter))
 const popoverRouter = pipe(literal('popover'), Route.mapTo(AppRoute.Popover))
+const progressRouter = pipe(literal('progress'), Route.mapTo(AppRoute.Progress))
 const radioGroupRouter = pipe(
   literal('radio-group'),
   Route.mapTo(AppRoute.RadioGroup),
@@ -151,7 +155,9 @@ const routeParser = Route.oneOf(
   inputRouter,
   listboxRouter,
   menuRouter,
+  meterRouter,
   popoverRouter,
+  progressRouter,
   radioGroupRouter,
   selectRouter,
   sliderRouter,
@@ -321,7 +327,9 @@ const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { label: 'Input', routeTag: 'Input', href: inputRouter() },
   { label: 'Listbox', routeTag: 'Listbox', href: listboxRouter() },
   { label: 'Menu', routeTag: 'Menu', href: menuRouter() },
+  { label: 'Meter', routeTag: 'Meter', href: meterRouter() },
   { label: 'Popover', routeTag: 'Popover', href: popoverRouter() },
+  { label: 'Progress', routeTag: 'Progress', href: progressRouter() },
   { label: 'Radio Group', routeTag: 'RadioGroup', href: radioGroupRouter() },
   { label: 'Select', routeTag: 'Select', href: selectRouter() },
   { label: 'Slider', routeTag: 'Slider', href: sliderRouter() },
@@ -643,7 +651,9 @@ const contentView = (model: Model, h: HtmlBuilder<Message>): Html => {
     Input: () => embedUi('ui-input', View.input),
     Listbox: () => embedUi('ui-listbox', View.listbox),
     Menu: () => embedUi('ui-menu', View.menu),
+    Meter: () => embedUi('ui-meter', View.meter),
     Popover: () => embedUi('ui-popover', View.popover),
+    Progress: () => embedUi('ui-progress', View.progress),
     RadioGroup: () => embedUi('ui-radio-group', View.radioGroup),
     Select: () => embedUi('ui-select', View.select),
     Slider: () => embedUi('ui-slider', View.slider),

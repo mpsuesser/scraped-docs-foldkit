@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/subscription
 title: "Subscription"
 description: "API documentation for the Subscription module."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 # Subscription
@@ -14,7 +14,7 @@ current_date: 2026-09-20T01:01:06.971Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/animationFrame.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/animationFrame.ts#L66)
 
 ```
 /**
@@ -38,7 +38,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L394)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/fromEvent.ts#L394)
 
 ```
 /**
@@ -78,7 +78,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L335)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/fromEvent.ts#L335)
 
 ```
 /**
@@ -128,7 +128,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L465)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/fromEvent.ts#L465)
 
 ```
 /**
@@ -172,11 +172,42 @@ function
 <Target extends EventTarget, Type extends string, Output>(config: FromEventFilterMapPreventDefaultConfig<Target, Type, Output>): Stream<Output>
 ```
 
+### fromMediaQuery
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/fromMediaQuery.ts#L58)
+
+```
+/**
+ * Creates a Stream from a CSS media query. When the Stream starts, it emits the
+ * current `matches` value through `mapMatches`. It emits again whenever that
+ * value changes. Stopping the Stream removes the listener.
+ * 
+ * The Stream reads the current value again each time it restarts. Suppose a
+ * color-scheme Subscription runs only while the theme preference is `System`.
+ * The user selects `Dark`, changes the operating system to a light theme, and
+ * then selects `System` again. A new `change` listener waits for the next
+ * change, so the Model still records a dark system theme. This helper emits the
+ * current light value as soon as the Stream restarts.
+ * 
+ * Creating the Stream does not access `window`; `window.matchMedia` is called
+ * only when the Stream starts. The Stream can therefore be created during
+ * server rendering as long as it runs only in the browser.
+ * 
+ * This helper returns a Stream, not a Subscription entry. Pass it to
+ * `Subscription.persistent` for a query the application always follows. To
+ * follow the query only in a particular Model state, use it with `Stream.when`
+ * inside a `Subscription.make` entry.
+ */
+<Output>(config: FromMediaQueryConfig<Output>): Stream<Output>
+```
+
 ### keyBindings
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/keyBindings.ts#L846)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/keyBindings.ts#L846)
 
 ```
 /**
@@ -227,7 +258,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L682)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/subscription.ts#L682)
 
 ```
 /**
@@ -269,7 +300,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L174)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/subscription.ts#L174)
 
 ```
 /**
@@ -290,7 +321,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L365)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/subscription.ts#L365)
 
 ```
 /**
@@ -312,7 +343,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/animationFrame.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/animationFrame.ts#L12)
 
 ```
 /**
@@ -334,7 +365,7 @@ type AnimationFrameConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L419)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/subscription.ts#L419)
 
 ```
 /**
@@ -349,7 +380,7 @@ type EntryGates = Readonly<Partial<Record<keyof Subscriptions, WhenPredicate<Par
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L24)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/subscription.ts#L24)
 
 ```
 /**
@@ -369,7 +400,7 @@ type EntryWithoutKeepAlive = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L149)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/fromEvent.ts#L149)
 
 ```
 /**
@@ -409,7 +440,7 @@ type FromEventConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L185)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/fromEvent.ts#L185)
 
 ```
 /**
@@ -449,7 +480,7 @@ type FromEventFilterMapConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L260)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/fromEvent.ts#L260)
 
 ```
 /**
@@ -487,11 +518,40 @@ type FromEventFilterMapPreventDefaultConfig = Readonly<{
 }>
 ```
 
+### FromMediaQueryConfig
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/fromMediaQuery.ts#L19)
+
+```
+/**
+ * Options for `fromMediaQuery`.
+ * 
+ * `query` accepts any media query string supported by `window.matchMedia`,
+ * such as `'(prefers-reduced-motion: reduce)'`,
+ * `'(prefers-color-scheme: dark)'`, or a viewport breakpoint like
+ * `'(max-width: 1023px)'`. `window.matchMedia` is called when the Stream
+ * starts, not when the Stream is created.
+ * 
+ * `mapMatches` converts the Boolean `matches` result into each value the Stream
+ * emits.
+ * 
+ * The return type of `mapMatches` determines the Stream's output type.
+ * `Subscription.make` checks that output against the application's Message
+ * type.
+ */
+type FromMediaQueryConfig = Readonly<{
+  mapMatches: (isMatching: boolean) => Output
+  query: string
+}>
+```
+
 ### GatedDependencies
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L408)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/subscription.ts#L408)
 
 ```
 /**
@@ -513,7 +573,7 @@ type GatedDependencies = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/keyBindings.ts#L36)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/keyBindings.ts#L36)
 
 ```
 /**
@@ -536,7 +596,7 @@ type KeyBinding = BindingBase<Output> & Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/keyBindings.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/keyBindings.ts#L51)
 
 ```
 /** Configuration for the keyBindings Stream helper. */
@@ -552,7 +612,7 @@ type KeyBindingsConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/keyBindings.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/keyBindings.ts#L19)
 
 ```
 /** A single key press or a sequence of two or more key presses. */
@@ -563,7 +623,7 @@ type KeySequence = string | Readonly<[string, string, ...Array<string>]>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/subscription.ts#L72)
 
 ```
 /**
@@ -598,7 +658,7 @@ type Subscription = Entry<Model, Message, Dependencies, Services> & Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L80)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/subscription.ts#L80)
 
 ```
 /** A record of named Subscriptions keyed by dependency field name. */
@@ -609,7 +669,7 @@ type Subscriptions = Readonly<Record<string, Subscription<Model, Message, any, S
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/keyBindings.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/keyBindings.ts#L16)
 
 ```
 /** Whether a key binding may fire when its event comes from an editable element. */
@@ -622,7 +682,7 @@ type WhileTyping = "Suppress" | "Allow"
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/fromEvent.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/fromEvent.ts#L25)
 
 ```
 /**
@@ -652,7 +712,7 @@ interface TypedEventTarget {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/b415a3e22be572abb1785010e23bd3e57f2e24f2/packages/foldkit/src/subscription/subscription.ts#L336)
+[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/subscription/subscription.ts#L336)
 
 ```
 /**

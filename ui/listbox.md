@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/listbox
 title: "Listbox"
 description: "A selection Submodel with single-select and multi-select modes, keyboard navigation, typeahead, and anchored positioning."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 ## Overview
@@ -426,7 +426,7 @@ Use `isReadOnly` when the selection is still information the user needs, such as
 
 Listbox is headless. The `itemToConfig` callback controls all item markup. Use `data-active` for the keyboard/pointer highlight and `data-selected` for the persistent selection indicator.
 
-The items panel is portaled to the document body and positioned relative to the trigger button with Floating UI. Ancestor stacking contexts and overflow clipping no longer apply, so a clipped container or a sibling listbox wrapper cannot hide an open dropdown. The panel still stacks at the document level: give it a z-index above elevated content like sticky headers or toasts, as the demos on this page do with `z-10`. Pass `anchor: { portal: false }` to keep the panel inside the wrapper instead.
+The items panel is portaled to the document body and positioned relative to the trigger button with Floating UI. Ancestor stacking contexts and overflow clipping no longer apply, so a clipped container or a sibling listbox wrapper cannot hide an open dropdown. The panel still stacks at the document level: give it a z-index above elevated content like sticky headers or toasts, as the demos on this page do with `z-10`. Inside a `<dialog>`, the panel is portaled into that dialog, so it renders above the dialog's content and stays interactive. Pass `anchor: { portal: false }` to keep the panel inside the wrapper.
 
 To make the items panel match the trigger button width, set `width: var(--button-width)` (or Tailwind `w-(--button-width)`) on the items class. The anchor system writes the trigger button’s measured width to this CSS variable on the items element every time it positions the panel, so the panel always matches the button even as content or viewport sizes change. Without it, the items panel sizes to its content.
 
@@ -494,7 +494,7 @@ Configuration object passed to the view returned by `Listbox.create()`. The same
 | `isItemDisabled` | `(item, index) => boolean` | — | Disables individual items. |
 | `itemGroupKey` | `(item, index) => string` | — | Groups contiguous items by key. Use with groupToHeading to render section headers. |
 | `groupToHeading` | `(groupKey) => GroupHeading \| undefined` | — | Renders a heading for each group. |
-| `anchor` | `AnchorConfig` | — | Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. The items panel is always anchored to the button; when omitted, the panel uses bottom-start placement. Portaled to the document body by default; pass portal: false to keep the panel inside the wrapper. |
+| `anchor` | `AnchorConfig` | — | Floating positioning config: placement, gap, offset, padding, isPlacementLocked, and portal. The items panel is always anchored to the button; when omitted, the panel uses bottom-start placement. Portaled to the document body, or into an enclosing dialog, by default; pass portal: false to keep the panel inside the wrapper. |
 | `name` | `string` | — | Form field name. Creates hidden input(s) with the selected value(s). |
 | `isDisabled` | `boolean` | `false` | Disables the entire listbox. |
 | `isReadOnly` | `boolean` | `false` | Keeps the Listbox openable, navigable, and searchable while making item clicks and the Enter and Space commit inert. Carries `aria-readonly` on the items panel. Independent of `isDisabled`. See [Read-Only](#read-only). |

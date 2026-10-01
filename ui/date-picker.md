@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/date-picker
 title: "Date Picker"
 description: "An accessible Date Picker that wraps Calendar in a Popover, with focus management, click-outside dismissal, and a hidden input for native form submission."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-01T05:11:45.759Z
+current_date: 2026-10-01T05:11:45.759Z
 ---
 
 ## Overview
@@ -425,7 +425,7 @@ Pass these fields under `viewInputs` when `h.submodel` renders `DatePicker.view`
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `maybeSelectedDate` | `Option<CalendarDate>` | — | The parent-owned selected date. Passed through to the calendar (selected-day marker), the trigger content, and the hidden form input. The picker does not store the selection itself; fold the SelectedDate and ClearedDate OutMessages into this field and pass it back on every render. |
-| `anchor` | `AnchorConfig` | — | Popover positioning config (placement, gap, offset, padding, isPlacementLocked, and portal). Controls where the calendar panel floats relative to the trigger. Portaled to the document body by default; pass portal: false to keep the panel inside its wrapper. |
+| `anchor` | `AnchorConfig` | — | Popover positioning config (placement, gap, offset, padding, isPlacementLocked, and portal). Controls where the calendar panel floats relative to the trigger. Portaled to the document body, or into an enclosing dialog, by default; pass portal: false to keep the panel inside its wrapper. |
 | `triggerContent` | `(maybeDate: Option<CalendarDate>) => Html` | — | Renders the trigger button face. Receives the current selection so you can show the formatted date or a placeholder. |
 | `toCalendarView` | `(attributes: CalendarAttributes) => Html` | — | Renders the calendar grid layout inside the popover panel. Same callback shape as Calendar.view toView. Lay out the attribute groups (for example grid, header, weeks, or cells) however you like. |
 | `isDisabled` | `boolean` | `false` | Disables the trigger button, preventing the popover from opening. |
