@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/mount
 title: "Mount"
 description: "API documentation for the Mount module."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-01T05:29:00.002Z
+current_date: 2026-10-01T05:29:00.002Z
 ---
 
 # Mount
@@ -14,13 +14,13 @@ current_date: 2026-10-01T05:11:45.759Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/mount/index.ts#L328)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/foldkit/src/mount/index.ts#L328)
 
 ### defineStream
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/mount/index.ts#L502)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/foldkit/src/mount/index.ts#L502)
 
 ## Types
 
@@ -28,7 +28,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/mount/index.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/foldkit/src/mount/index.ts#L66)
 
 ```
 /**
@@ -58,7 +58,7 @@ type MountAction = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/mount/index.ts#L109)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/foldkit/src/mount/index.ts#L109)
 
 ```
 /**
@@ -75,7 +75,7 @@ type MountDefinition = MountDefinitionNoArgs<Name, ResultMessage> | MountDefinit
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/mount/index.ts#L76)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/foldkit/src/mount/index.ts#L76)
 
 ```
 /** A Mount definition for a Mount with no declared args. Call as `Definition()` to produce a MountAction. */
@@ -89,7 +89,7 @@ interface MountDefinitionNoArgs {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/mount/index.ts#L89)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/foldkit/src/mount/index.ts#L89)
 
 ```
 /** A Mount definition for a Mount with declared args. Call as `Definition(args)` to produce a MountAction. */
@@ -105,7 +105,7 @@ interface MountDefinitionWithArgs {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/mount/index.ts#L45)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/foldkit/src/mount/index.ts#L45)
 
 ```
 /** Type-level brand for MountDefinition values. */
@@ -116,7 +116,7 @@ const MountDefinitionTypeId: unique symbol
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/mount/index.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/foldkit/src/mount/index.ts#L29)
 
 ```
 /**
@@ -131,7 +131,7 @@ const ViewState: Literals<readonly ["Live", "Paused"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/mount/index.ts#L165)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/foldkit/src/mount/index.ts#L165)
 
 ```
 /**
@@ -147,7 +147,7 @@ const liveViewStateChanges: Stream.Stream<ViewState>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/foldkit/src/mount/index.ts#L565)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/foldkit/src/mount/index.ts#L565)
 
 ```
 /**

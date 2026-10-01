@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-progress
 title: "Ui/Progress"
 description: "API documentation for the Ui/Progress module."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-01T05:29:00.002Z
+current_date: 2026-10-01T05:29:00.002Z
 ---
 
 # Ui/Progress
@@ -14,7 +14,7 @@ current_date: 2026-10-01T05:11:45.759Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/progress/index.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/ui/src/progress/index.ts#L35)
 
 ```
 /** Returns the label element id, derived from the progress base id. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/progress/index.ts#L38)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/ui/src/progress/index.ts#L38)
 
 ```
 /** Renders an accessible progress indicator as a stateless controlled view. */
@@ -41,7 +41,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/progress/index.ts#L15)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/ui/src/progress/index.ts#L15)
 
 ```
 /** Attribute groups provided to a Progress view. */
@@ -57,7 +57,7 @@ type ProgressAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/progress/index.ts#L23)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/ui/src/progress/index.ts#L23)
 
 ```
 /** Configuration for rendering Progress with view. */

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-checkbox
 title: "Ui/Checkbox"
 description: "API documentation for the Ui/Checkbox module."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-01T05:29:00.002Z
+current_date: 2026-10-01T05:29:00.002Z
 ---
 
 # Ui/Checkbox
@@ -14,7 +14,7 @@ current_date: 2026-10-01T05:11:45.759Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/checkbox/index.ts#L68)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/ui/src/checkbox/index.ts#L68)
 
 ```
 /** Returns the description element id, derived from the checkbox's base id. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/checkbox/index.ts#L65)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/ui/src/checkbox/index.ts#L65)
 
 ```
 /** Returns the label element id, derived from the checkbox's base id. */
@@ -36,7 +36,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/checkbox/index.ts#L91)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/ui/src/checkbox/index.ts#L91)
 
 ```
 /**
@@ -74,7 +74,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/checkbox/index.ts#L26)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/ui/src/checkbox/index.ts#L26)
 
 ```
 /**
@@ -111,7 +111,7 @@ type CheckboxAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/c9c641bf81797e88b2b20f2758b05455a0c5ab6b/packages/ui/src/checkbox/index.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/24f1c43eaaf74a83b6e338d72ba98422b7ac8ec4/packages/ui/src/checkbox/index.ts#L51)
 
 ```
 /**
