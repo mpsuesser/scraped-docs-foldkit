@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view
 title: "View"
 description: "Return a Document or Html value as a pure function of the Model. Covers document metadata, element builders, events, and view decomposition."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Model In, HTML Out
@@ -14,51 +14,7 @@ Event attributes complete the loop. They produce Messages for the runtime to dis
 
 In the [restaurant analogy](https://foldkit.dev/core/architecture#the-restaurant-analogy), view is the meal on the table. The Model records the current facts; view presents them.
 
-```
-import type { Document, HtmlBuilder } from 'foldkit/html'
-
-// VIEW
-
-const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
-  title: \`Counter: ${model.count}\`,
-  body: h.div(
-    [h.Class(containerStyle)],
-    [
-      h.div(
-        [h.Class('text-6xl font-bold text-gray-800')],
-        [model.count.toString()],
-      ),
-      h.div(
-        [h.Class('flex flex-wrap justify-center gap-4')],
-        [
-          // OnClick takes a Message, not a callback. The Message doesn't
-          // execute anything. It just declares what should happen on click.
-          // Foldkit dispatches it to your update function.
-          h.button(
-            [h.OnClick(ClickedDecrement()), h.Class(buttonStyle)],
-            ['-'],
-          ),
-          h.button(
-            [h.OnClick(ClickedReset()), h.Class(buttonStyle)],
-            ['Reset'],
-          ),
-          h.button(
-            [h.OnClick(ClickedIncrement()), h.Class(buttonStyle)],
-            ['+'],
-          ),
-        ],
-      ),
-    ],
-  ),
-})
-
-// STYLE
-
-const containerStyle =
-  'min-h-screen bg-cream flex flex-col items-center justify-center gap-6 p-6'
-
-const buttonStyle = 'bg-black text-white hover:bg-gray-700 px-4 py-2 transition'
-```
+Using view
 
 No hook rules
 
@@ -85,43 +41,7 @@ A `makeElement` view returns `Html` directly. An embedded app does not own the p
 
 `lang` and `dir` sync to the `<html>` element. Drive them from the Model when the application can switch languages at runtime, just as `title` tracks the current page.
 
-```
-import type { Document, HtmlBuilder, TextDirection } from 'foldkit/html'
-
-// TRANSLATION
-
-const translate = (locale: Locale, key: string): string => {
-  // Your catalog lookup. Foldkit does not ship translation.
-  return catalog[locale][key]
-}
-
-// VIEW
-
-const languageTag: Readonly<Record<Locale, string>> = {
-  English: 'en',
-  Arabic: 'ar',
-  Japanese: 'ja',
-}
-
-const textDirection: Readonly<Record<Locale, TextDirection>> = {
-  English: 'Ltr',
-  Arabic: 'Rtl',
-  Japanese: 'Ltr',
-}
-
-const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
-  title: translate(model.locale, 'PageTitle'),
-  lang: languageTag[model.locale],
-  dir: textDirection[model.locale],
-  body: h.div(
-    [h.Class('mx-auto max-w-prose p-6')],
-    [
-      h.h1([], [translate(model.locale, 'PageTitle')]),
-      localePicker(model.locale, h),
-    ],
-  ),
-})
-```
+Localized document
 
 `dir` accepts `'Ltr'`, `'Rtl'`, or `'Auto'`. The runtime writes the corresponding lowercase attribute value. `Auto` delegates to the browser's first-strong-character heuristic. If the Model stores direction rather than deriving it, use the `TextDirection` Schema exported by `foldkit/html`.
 
@@ -131,48 +51,7 @@ The runtime can only synchronize these fields after the first render. Served HTM
 
 The application must decide its canonical URL. Foldkit does not derive `canonical` from the address bar on the client or from `Request.url` during server rendering. Only the application knows which values identify a page. For example: `?page=2` may identify a separate page, while `?utm_source=newsletter` usually does not. Derive the canonical from the typed route in the Model, just as the view derives `title` from the Model.
 
-```
-import { Schema, String, pipe } from 'effect'
-import { Route } from 'foldkit'
-import type { Document, HtmlBuilder } from 'foldkit/html'
-import { defineRouteUnion, int, literal, slash } from 'foldkit/route'
-
-// ROUTE
-
-const AppRoute = defineRouteUnion({
-  Home: {},
-  Person: { personId: Schema.Number },
-})
-type AppRoute = typeof AppRoute.Type
-
-const homeRouter = pipe(Route.root, Route.mapTo(AppRoute.Home))
-const personRouter = pipe(
-  literal('people'),
-  slash(int('personId')),
-  Route.mapTo(AppRoute.Person),
-)
-
-// CANONICAL
-
-const SITE_URL = 'https://app.example'
-
-const routeToCanonicalUrl = (route: AppRoute): string =>
-  String.concat(
-    SITE_URL,
-    AppRoute.match(route, {
-      Home: () => homeRouter(),
-      Person: ({ personId }) => personRouter({ personId }),
-    }),
-  )
-
-// VIEW
-
-const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
-  title: pageTitle(model.route),
-  canonical: routeToCanonicalUrl(model.route),
-  body: h.div([h.Class('mx-auto max-w-prose p-6')], [pageContent(model, h)]),
-})
-```
+Derive a canonical URL from an AppRoute
 
 An application that never supplies `canonical` leaves the served `<link rel="canonical">` unchanged, or keeps the document without one. When the client first writes a canonical, the runtime records the existing `href`. If a later render omits `canonical`, the runtime restores that recorded value. It removes the element instead when it created the element for the application.
 
@@ -188,22 +67,7 @@ A route may intentionally name another page as canonical. For example: later pag
 
 Every view receives `h`, an `HtmlBuilder` typed to the application's Message union. Elements, attributes, and handlers all come from this builder:
 
-```
-import type { HtmlBuilder } from 'foldkit/html'
-
-// Every view receives \`h\`, the typed Html builder, as its last argument.
-// Reach for \`h.\` to access elements, attributes, and event handlers.
-// Every callback is typed against your Message union, so \`h.OnClick(...)\`
-// only accepts your variants.
-const greeting = (name: string, h: HtmlBuilder<Message>) =>
-  h.div(
-    [h.Class('flex flex-col gap-2')],
-    [
-      h.h1([h.Class('text-2xl font-bold')], [\`Hello, ${name}\`]),
-      h.button([h.OnClick(ClickedRefresh())], ['Refresh']),
-    ],
-  )
-```
+HTML helpers
 
 The Message type follows the builder. If `h.OnClick` receives a Message outside the application union, TypeScript rejects it. The root runtime supplies its builder, and `Submodel.defineView` supplies one for each child view.
 
@@ -234,25 +98,7 @@ Only ever pass content you control to these. A value built from user input, a UR
 
 Event attributes return Messages instead of mutating state. Pass a Message directly for a simple event, or use a function that translates event data into a Message:
 
-```
-// Event handlers take Messages, not callbacks.
-// When the button is clicked, Foldkit dispatches the Message
-// to your update function.
-const buttonExample = (h: HtmlBuilder<Message>) =>
-  h.button(
-    [h.OnClick(ClickedIncrement()), h.Class('button-primary')],
-    ['Click me'],
-  )
-
-// For input events, Foldkit extracts the value and passes it
-// to your function:
-const inputExample = (model: Model, h: HtmlBuilder<Message>) =>
-  h.input([
-    h.OnInput(value => ChangedSearch({ text: value })),
-    h.Value(model.searchText),
-    h.Class('input'),
-  ])
-```
+Event handling
 
 `h.OnClick` takes a Message. `h.OnInput` takes a function because the input value becomes part of the Message. Both remain declarative: view reports what happened, and update decides what follows.
 
@@ -262,37 +108,7 @@ Clicks allow the browser default and bubble to ancestors unless you say otherwis
 
 A handler can do more than return a one-line Message. The constraint is purity, not size. It may branch on event data, read Model-derived state from view scope, and return `Option<Message>` when only some events should dispatch:
 
-```
-import { Match, Option } from 'effect'
-import type { HtmlBuilder } from 'foldkit/html'
-
-// A handler is a pure translator from event data to a Message.
-// It can branch as much as it needs to, with Model-derived state
-// in scope.
-const searchResultsView = (model: Model, h: HtmlBuilder<Message>) => {
-  const handleResultsKeyDown = (key: string): Option.Option<Message> =>
-    Match.value(key).pipe(
-      Match.when('Escape', () => Option.some(DismissedResults())),
-      Match.when('Enter', () =>
-        Option.map(model.maybeActiveIndex, index => SelectedResult({ index })),
-      ),
-      Match.when('ArrowDown', () => Option.some(ActivatedNextResult())),
-      Match.when('ArrowUp', () => Option.some(ActivatedPreviousResult())),
-      // Every other key stays with the browser: no Message,
-      // no preventDefault.
-      Match.orElse(() => Option.none()),
-    )
-
-  return h.ul(
-    [
-      h.Role('listbox'),
-      h.Tabindex(0),
-      h.OnKeyDownPreventDefault(handleResultsKeyDown),
-    ],
-    model.results.map(result => resultView(result, h)),
-  )
-}
-```
+Complex handler
 
 For `OnKeyDownPreventDefault`, returning `Some` claims the key. Foldkit suppresses the browser's default action and dispatches the Message. Returning `None` leaves the key to the browser.
 
@@ -306,21 +122,7 @@ Use `OnFocusEnter` and `OnFocusLeave` when several elements share one focus stat
 
 Imagine a text editor and its formatting toolbar. Focusing the editor dispatches `EnteredEditorRegion`. Moving from the editor into a toolbar button dispatches nothing, so the toolbar stays visible. Moving from either one to an element outside the region dispatches `LeftEditorRegion`.
 
-```
-import type { HtmlBuilder } from 'foldkit/html'
-
-const editorView = (model: Model, h: HtmlBuilder<Message>) =>
-  h.div(
-    [
-      h.OnFocusEnter(Message.EnteredEditorRegion()),
-      h.OnFocusLeave(Message.LeftEditorRegion()),
-    ],
-    [
-      tiptapEditorView(model.editor, h),
-      model.focusState === 'Within' ? formattingToolbarView(h) : h.empty,
-    ],
-  )
-```
+Focus region
 
 The attributes use the bubbling `focusin` and `focusout` events, so the common ancestor does not need a `tabindex`. Foldkit reads the related target and performs the containment check inside its own event handler. View code receives no DOM event or element.
 
@@ -338,70 +140,7 @@ Two constraints account for most uses. `event.preventDefault()` must run before 
 
 `OnCancelPreventDefault` always suppresses a cancel event's default action. A native cancel event dispatches no Message. A `CustomEvent` dispatches the optional Message, so an application-owned cancel signal can use the same event name without treating native cancellation as a state change. Dialog uses this distinction to ignore the native cancel event observed when a file picker closes and map `Dom.showDialog` 's signal for an unhandled Escape to `RequestedClose`.
 
-```
-// Inside a view, with its builder \`h\` in scope.
-
-// OnKeyDownPreventDefault: calls event.preventDefault()
-// inline and dispatches the Message when the function
-// returns Some.
-h.input([
-  h.Value(model.draft),
-  h.OnKeyDownPreventDefault(key =>
-    key === 'Enter' && model.draft !== ''
-      ? Option.some(Message.SubmittedDraft())
-      : Option.none(),
-  ),
-])
-
-// OnPastePreventDefault: reads the clipboard's text/plain
-// payload synchronously inside the paste event. Some
-// suppresses the browser's default insertion and dispatches
-// the Message; None lets the browser paste normally.
-//
-// OnCopyText and OnCutText write Model-derived text to the
-// clipboard inside the gesture and suppress the default
-// payload. The cut variant also dispatches a Message so
-// update can delete the selection.
-h.div([
-  h.Contenteditable('true'),
-  h.OnPastePreventDefault(text => Option.some(Message.PastedText({ text }))),
-  h.OnCopyText(serializeSelectionToMarkdown(model)),
-  h.OnCutText(serializeSelectionToMarkdown(model), Message.CutSelection()),
-])
-
-// OnClick controls can be combined. This nested expand button prevents
-// its browser default and stops the row's OnClick from also
-// selecting the row.
-h.div(
-  [h.Role('treeitem'), h.OnClick(Message.ClickedSelectRow())],
-  [
-    h.button(
-      [
-        h.OnClick(Message.ClickedExpandRow(), {
-          defaultAction: 'Prevent',
-          propagation: 'Stop',
-        }),
-      ],
-      ['Expand'],
-    ),
-  ],
-)
-
-// focusSelector synchronously focuses the matching element,
-// then dispatches the Message. The focus runs inside the click
-// event, so iOS Safari opens the on-screen keyboard. The target
-// here is an always-present warmup input; a Dom.focus Command
-// hands focus to the real search input once the dialog mounts.
-h.button(
-  [
-    h.AriaLabel('Search documentation'),
-    h.OnClick(Message.ClickedSearch(), {
-      focusSelector: '#search-keyboard-warmup',
-    }),
-  ],
-  [Icon.magnifyingGlass()],
-)
-```
+Event handler side effects
 
 The iOS keyboard case has one extra constraint: the target must already exist when the user taps. An input inside a closed dialog does not. Keep an always-present, visually hidden text input as a keyboard warmup and pass its selector as `focusSelector` to `OnClick`. The same attribute dispatches the Message that opens the dialog. Update can then return a `Dom.focus` Command to move focus to the real input after it mounts, while iOS keeps the keyboard open.
 

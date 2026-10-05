@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/foldkit-vs-react-effect-atom
 title: "Foldkit vs React + Effect Atom"
 description: "Two Effect-native architectures: Effect Atom distributes state across reactive cells inside React, while Foldkit builds the application around one Model and update function."
-access_date: 2026-10-01T22:03:15.204Z
-current_date: 2026-10-01T22:03:15.204Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Foldkit vs React + Effect Atom
@@ -42,42 +42,7 @@ The state models become concrete when a user adds or edits a todo.
 
 A React component obtains a setter with `useAtomSet`. The setter can receive an updater closure:
 
-```
-import { Atom } from 'effect/reactivity'
-
-import { useAtomSet, useAtomValue } from '@effect/atom-react'
-
-type Filter = 'All' | 'Active' | 'Done'
-
-// State is a set of independent reactive cells.
-const filterAtom = Atom.make<Filter>('All').pipe(Atom.keepAlive)
-const todosAtom = Atom.make<ReadonlyArray<Todo>>([]).pipe(Atom.keepAlive)
-
-// Any component can write any atom, with an inline updater closure.
-const AddTodoButton = () => {
-  const setTodos = useAtomSet(todosAtom)
-  return (
-    <button onClick={() => setTodos(todos => [...todos, emptyTodo()])}>
-      Add
-    </button>
-  )
-}
-
-const ClearDoneButton = () => {
-  const setTodos = useAtomSet(todosAtom)
-  return (
-    <button onClick={() => setTodos(todos => todos.filter(todo => !todo.done))}>
-      Clear done
-    </button>
-  )
-}
-
-const FilterTabs = () => {
-  const filter = useAtomValue(filterAtom)
-  const setFilter = useAtomSet(filterAtom)
-  // ... each transition is an anonymous closure, scattered across components
-}
-```
+Effect Atom state
 
 In this example, the ways `todosAtom` changes live at its setter call sites. An atom application can instead expose named write functions or writable derived atoms. That centralization is an application convention. Foldkit requires every Model transition to pass through update.
 
@@ -85,45 +50,7 @@ In this example, the ways `todosAtom` changes live at its setter call sites. An 
 
 The Foldkit version represents the same actions as Messages:
 
-```
-import { Array, Schema } from 'effect'
-import { type Update } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-
-// MODEL
-
-const Filter = Schema.Literals(['All', 'Active', 'Done'])
-
-export const Model = Schema.Struct({
-  todos: Schema.Array(Todo),
-  filter: Filter,
-})
-type Model = typeof Model.Type
-
-// MESSAGE
-
-const Message = defineMessageUnion({
-  AddedTodo: {},
-  ClearedDoneTodos: {},
-  SelectedFilter: { filter: Filter },
-})
-type Message = typeof Message.Type
-
-// UPDATE
-
-export const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    AddedTodo: () => ({
-      model: modifyFields(model, { todos: Array.append(emptyTodo()) }),
-    }),
-    ClearedDoneTodos: () => ({
-      model: modifyFields(model, { todos: Array.filter(todo => !todo.done) }),
-    }),
-    SelectedFilter: ({ filter }) => ({
-      model: modifyFields(model, { filter: () => filter }),
-    }),
-  })
-```
+Foldkit state
 
 `AddedTodo`, `ClearedDoneTodos`, and `SelectedFilter` appear in DevTools and in Story or Scene tests. “How can the todo list change?” is answered by one Message union and one update function. `Message.match` reports every place that must handle a newly added Message variant.
 
@@ -135,32 +62,7 @@ Both provide a value type for in-progress Effect results, but the value lives in
 
 `Atom.make` accepts an Effect directly. When the Effect needs Layer-provided services, `Atom.runtime` creates an atom runtime and `runtime.atom` runs the Effect with that context. The resulting atom contains an `AsyncResult`: `Initial`, `Success`, or `Failure`, with a `waiting` flag for refreshes. `AsyncResult.builder` renders those cases.
 
-```
-import { Cause, Effect } from 'effect'
-import { AsyncResult, Atom } from 'effect/reactivity'
-
-import { useAtomValue } from '@effect/atom-react'
-
-const runtime = Atom.runtime(Api.Default)
-
-// An async atom evaluates an Effect and exposes an AsyncResult.
-const userAtom = runtime.atom(
-  Effect.gen(function* () {
-    const api = yield* Api
-    return yield* api.getUser()
-  }),
-)
-
-const UserCard = () => {
-  const user = useAtomValue(userAtom)
-
-  return AsyncResult.builder(user)
-    .onInitial(() => <Spinner />)
-    .onFailure(cause => <ErrorBanner message={Cause.pretty(cause)} />)
-    .onSuccess(user => <Profile user={user} />)
-    .render()
-}
-```
+Effect Atom async
 
 The Effect runs when the registry first evaluates the atom, and the registry stores the result and tracks dependencies. `Atom.family` creates keyed atoms. `Atom.swr` adds stale-time and revalidation behavior, while `AtomHttpApi` and `AtomRpc` integrate Effect clients. React bindings also provide Suspense hooks.
 
@@ -168,68 +70,7 @@ The Effect runs when the registry first evaluates the atom, and the registry sto
 
 Foldkit stores remote state in the Model. [AsyncData](https://foldkit.dev/core/async-data) represents six states: `Idle`, `Loading`, `Refreshing`, `Failure`, `Stale`, and `Success`. A Command performs the request, and its result returns through update as a Message.
 
-```
-import { Effect, Schema } from 'effect'
-import { AsyncData, Command, type Update } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-
-import { Api } from './api'
-
-// MODEL
-
-// Remote state is a value in the Model. AsyncData is the shipped six-state
-// union, so there is no hand-rolled loading/failure/stale union to maintain.
-const UserAsyncData = AsyncData.Schema(User, ApiError)
-
-export const Model = Schema.Struct({
-  user: UserAsyncData.schema,
-})
-type Model = typeof Model.Type
-
-// MESSAGE
-
-const Message = defineMessageUnion({
-  ClickedLoadUser: {},
-  SucceededLoadUser: { user: User },
-  FailedLoadUser: { error: ApiError },
-})
-type Message = typeof Message.Type
-
-// COMMAND
-
-// Api is an Effect service; Api.Default is its layer.
-const FetchUser = Command.define('FetchUser', {
-  messages: [Message.SucceededLoadUser, Message.FailedLoadUser],
-  execute: Effect.gen(function* () {
-    const api = yield* Api
-    const user = yield* api.getUser()
-    return Message.SucceededLoadUser({ user })
-  }).pipe(
-    Effect.catch(error => Effect.succeed(Message.FailedLoadUser({ error }))),
-    Effect.provide(Api.Default),
-  ),
-})
-
-// UPDATE
-
-export const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    ClickedLoadUser: () => ({
-      model: modifyFields(model, { user: () => UserAsyncData.Loading() }),
-      commands: [FetchUser()],
-    }),
-    SucceededLoadUser: ({ user }) => ({
-      model: modifyFields(model, {
-        user: () => UserAsyncData.Success({ data: user }),
-      }),
-    }),
-    FailedLoadUser: ({ error }) => ({
-      model: modifyFields(model, {
-        user: () => UserAsyncData.Failure({ error }),
-      }),
-    }),
-  })
-```
+Foldkit async
 
 `AsyncData` includes stale-while-revalidate and keep-stale-on-failure states. It does not provide a fetching registry or choose refresh policy. The application models a cache in the Model and decides when to run each Command. Remote data then shares the same Message timeline and tests as the rest of the Model.
 
@@ -243,36 +84,7 @@ Both can express side effects as Effect values. They differ in how an effect is 
 
 `runtime.fn` creates a callable atom for a mutation. Its `reactivityKeys` can refresh atoms that subscribe to matching keys. An atom can also acquire a listener and register its cleanup with `addFinalizer`; `useAtomMount` keeps that atom mounted for the component’s lifetime.
 
-```
-import { Effect } from 'effect'
-import { Atom } from 'effect/reactivity'
-
-import { useAtomMount, useAtomSet } from '@effect/atom-react'
-
-// A mutation is a function atom. Reactivity keys invalidate dependents.
-const createTodoAtom = runtime.fn(
-  Effect.fnUntraced(function* (text: string) {
-    const api = yield* Api
-    yield* api.createTodo(text)
-  }),
-  { reactivityKeys: ['todos'] },
-)
-
-// A global listener is an atom that wires addEventListener in its body,
-// then tears it down with a finalizer.
-const mouseUpAtom = Atom.make(get => {
-  const onUp = () => get.setSelf(false)
-  window.addEventListener('mouseup', onUp)
-  get.addFinalizer(() => window.removeEventListener('mouseup', onUp))
-  return false
-})
-
-const Canvas = () => {
-  useAtomMount(mouseUpAtom) // keep the listener alive while this component is mounted
-  const createTodo = useAtomSet(createTodoAtom)
-  // ...
-}
-```
+Effect Atom effects
 
 Effects remain colocated with the atoms that perform them. Dependencies between a mutation and refreshed atoms can be declared through reactivity keys, which are runtime values rather than a TypeScript union checked for exhaustiveness.
 
@@ -280,50 +92,7 @@ Effects remain colocated with the atoms that perform them. Dependencies between 
 
 Foldkit selects a lifecycle primitive based on what causes the work. A [Command](https://foldkit.dev/core/commands) runs after a Message. A [Subscription](https://foldkit.dev/core/subscriptions) runs while a Model condition holds. A [Mount](https://foldkit.dev/core/mount) follows an element’s lifetime, and a [ManagedResource](https://foldkit.dev/core/managed-resources) follows Model state while exposing a stateful handle to Commands.
 
-```
-import { Effect, Schema, Stream } from 'effect'
-import { Command, Subscription } from 'foldkit'
-
-import { Api } from './api'
-
-// A side effect is a Command returned from update. It has a name, shows up
-// in DevTools next to the Message that produced it, and is assertable in
-// tests. Api is an Effect service; Api.Default is its layer.
-const CreateTodo = Command.define('CreateTodo', {
-  args: { text: Schema.String },
-  messages: [SucceededCreateTodo, FailedCreateTodo],
-  execute: ({ text }) =>
-    Effect.gen(function* () {
-      const api = yield* Api
-      yield* api.createTodo(text)
-      return SucceededCreateTodo()
-    }).pipe(
-      Effect.provide(Api.Default),
-      Effect.catch(() => Effect.succeed(FailedCreateTodo())),
-    ),
-})
-
-// Here the global listener becomes a Subscription: an external event source
-// bound to a slice of the Model. The runtime subscribes and unsubscribes as
-// model.isDrawing changes. No addEventListener, no cleanup, no stale closure.
-export const subscriptions = Subscription.make<Model, Message>()(entry => ({
-  mouseRelease: entry(
-    { isDrawing: Schema.Boolean },
-    {
-      modelToDependencies: model => ({ isDrawing: model.isDrawing }),
-      dependenciesToStream: ({ isDrawing }) =>
-        Stream.when(
-          Subscription.fromEvent({
-            target: document,
-            type: 'mouseup',
-            mapEvent: () => ReleasedMouse(),
-          }),
-          Effect.sync(() => isDrawing),
-        ),
-    },
-  ),
-}))
-```
+Foldkit effects
 
 The difference is locational. Effect Atom colocates effects with atoms, and any atom may run one. Foldkit assigns effects to a small set of lifecycle primitives based on what causes them. The `mouseRelease` Subscription starts and stops from Model state, then emits Messages so the resulting change still passes through update.
 
@@ -335,36 +104,7 @@ Effect Atom changes the state layer, not React’s rendering rules. Components s
 
 This version stores the todos in one array atom. It uses `memo` and `useCallback` to avoid rendering an unchanged row when the array changes:
 
-```
-import { memo, useCallback } from 'react'
-
-import { useAtomSet } from '@effect/atom-react'
-
-// The view layer is still React: memo to skip re-renders, useCallback to keep
-// the handler reference stable, a dependency array you have to get right.
-const TodoItem = memo(({ todo }: { todo: Todo }) => {
-  const setTodos = useAtomSet(todosAtom)
-
-  const toggle = useCallback(
-    () =>
-      setTodos(todos =>
-        todos.map(candidate =>
-          candidate.id === todo.id
-            ? { ...candidate, done: !candidate.done }
-            : candidate,
-        ),
-      ),
-    [setTodos, todo.id],
-  )
-
-  return (
-    <li>
-      <input type="checkbox" checked={todo.done} onChange={toggle} />
-      {todo.text}
-    </li>
-  )
-})
-```
+Effect Atom view
 
 Those optimizations are not required for correctness. A per-item atom could also give each row a narrower subscription. Either design still follows React’s hook and closure rules, and React Compiler can automate some memoization when the component satisfies its constraints.
 
@@ -372,25 +112,7 @@ Those optimizations are not required for correctness. A per-item atom could also
 
 The Foldkit item is a function that returns virtual DOM data. Its event handler dispatches a Message value:
 
-```
-import type { Html, HtmlBuilder } from 'foldkit/html'
-
-// The view is a plain function returning data. No memo, no useCallback, no
-// dependency array. The event is a Message value, not a closure, so there is
-// nothing to stabilize at the boundary.
-const todoItem = (todo: Todo, h: HtmlBuilder<Message>): Html =>
-  h.li(
-    [],
-    [
-      h.input([
-        h.Type('checkbox'),
-        h.Checked(todo.done),
-        h.OnClick(ClickedTodo({ id: todo.id })),
-      ]),
-      todo.text,
-    ],
-  )
-```
+Foldkit view
 
 There is no component Hook state, dependency array, or callback identity to stabilize. When a view subtree is expensive, [view memoization](https://foldkit.dev/core/view-memoization) skips it based on Model-derived inputs.
 
@@ -406,78 +128,15 @@ Foldkit’s update function is pure: given a Model and a Message, it returns the
 
 [Story](https://foldkit.dev/testing/story) sends Messages through update, inspects the Model, and resolves Commands by supplying their result Messages. The test can assert that a Command was returned without executing its Effect.
 
-```
-import { AsyncData } from 'foldkit'
-import { Command, given, message, model, story } from 'foldkit/story'
-import { expect, test } from 'vitest'
-
-test('loading a user: the Command fires, resolves, the Model lands on Success', () => {
-  story(
-    update,
-    given({ user: AsyncData.Idle() }),
-    message(ClickedLoadUser()),
-    Command.expectExact(FetchUser),
-    Command.resolve(FetchUser, SucceededLoadUser({ user: ada })),
-    model(model => {
-      expect(model.user).toStrictEqual(AsyncData.Success({ data: ada }))
-    }),
-  )
-})
-```
+Foldkit Story test
 
 [Scene](https://foldkit.dev/testing/scene) renders the view, finds elements by accessible role or text, dispatches events through update, and resolves Commands inline.
 
-```
-import {
-  Command,
-  click,
-  expect,
-  given,
-  inside,
-  role,
-  scene,
-  text,
-} from 'foldkit/scene'
-import { test } from 'vitest'
-
-test('click load, resolve the fetch, see the profile', () => {
-  scene(
-    { update, view },
-    given(model),
-    click(role('button', { name: 'Load user' })),
-    expect(text('Loading…')).toExist(),
-    Command.expectExact(FetchUser),
-    Command.resolve(FetchUser, SucceededLoadUser({ user: ada })),
-    inside(role('article'), expect(text('Ada Lovelace')).toExist()),
-  )
-})
-```
+Foldkit Scene test
 
 An Effect Atom application uses the testing tools of its host framework. In React, a user-facing test commonly renders a component with React Testing Library and jsdom, then waits for the atom’s Effect and React render to finish:
 
-```
-import { expect, test, vi } from 'vitest'
-
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-
-test('loading a user renders the profile', async () => {
-  // userAtom runs an Effect that fetches the user, so the test stubs the
-  // network boundary and renders the component tree in jsdom.
-  vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-    Response.json({ name: 'Ada Lovelace' }),
-  )
-
-  render(<UserCard />)
-
-  await userEvent.click(screen.getByRole('button', { name: /load user/i }))
-  expect(screen.getByText('Loading…')).toBeInTheDocument()
-
-  // The atom resolves asynchronously, so findByText has to poll until the
-  // AsyncResult transitions to Success and React re-renders.
-  expect(await screen.findByText('Ada Lovelace')).toBeInTheDocument()
-})
-```
+React Testing Library test
 
 Atom Effects can also be tested below the component boundary. The architectural difference is that Foldkit exposes Commands as returned values. The Story can name the requested effect without running it, while the React component test observes the Effect through the atom and rendered interface.
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/popover
 title: "Popover"
 description: "An anchored floating panel for arbitrary content, with dismissal, focus return, portaling, and optional modal behavior."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -22,219 +22,13 @@ Check out how Popover is wired up in a [real Foldkit app](https://github.com/fol
 
 Pass `anchor` to position the panel relative to the button. The panel can hold any content: links, forms, or informational text.
 
-```
-// Pseudocode walkthrough of the Foldkit integration points. Each labeled
-// block below is an excerpt. Fit them into your own Model, init, Message,
-// update, and view definitions.
-import { Option, Schema } from 'effect'
-import { Update } from 'foldkit'
-import type { HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
-import { modifyFields } from 'foldkit/struct'
-
-import { Popover } from '@foldkit/ui'
-
-// Add a field to your Model for the Popover Submodel:
-const Model = Schema.Struct({
-  popover: Popover.Model,
-  // ...your other fields
-})
-
-// In your init function, initialize the Popover Submodel with a unique id:
-const init = () => ({
-  model: {
-    popover: Popover.init({ id: 'info' }),
-    // ...your other fields
-  },
-})
-
-// Embed the Popover Message in your parent Message:
-const Message = defineMessageUnion({
-  GotPopoverMessage: { message: Popover.Message },
-})
-
-// At module scope, fold the OutMessage into your own Model. \`Opened\` and
-// \`Closed\` mark the visibility transitions. Fire analytics, coordinate with
-// other UI, or clear ephemeral state on close. Each arm returns an
-// Update.Step over the parent Model, which already has the next Popover Model
-// written back:
-const foldPopoverOutMessage = Popover.OutMessage.match<
-  Update.Step<Model, Message>
->({
-  // The child has emitted \`Opened\`. In this arm the parent can update its
-  // own state or dispatch its own Commands, for example lazy-load panel
-  // content, log analytics, or trigger a downstream Command.
-  Opened: () => model => ({ model }),
-  // The child has emitted \`Closed\`. In this arm the parent can update its
-  // own state or dispatch its own Commands, for example persist a draft,
-  // clear ephemeral state, or trigger a downstream Command.
-  Closed: () => model => ({ model }),
-})
-
-// Update.foldChild wires the child into the parent: it runs Popover.update,
-// writes the next Popover Model back, maps the Submodel's Commands into your
-// Message type, and hands any OutMessage to foldOutMessage.
-const foldPopover = Update.foldChild({
-  update: Popover.update,
-  read: (model: Model) => Option.some(model.popover),
-  write: (model, nextPopover) =>
-    modifyFields(model, { popover: () => nextPopover }),
-  toParentMessage: message => Message.GotPopoverMessage({ message }),
-  foldOutMessage: foldPopoverOutMessage,
-})
-
-// In the corresponding Message.match handler, call the fold:
-GotPopoverMessage: ({ message }) => foldPopover(model, message)
-
-// Inside your view function, embed the popover via h.submodel. Give the
-// trigger an accessible name: target the trigger id with
-// \`Popover.buttonId('info')\` from a native \`<label for>\`, and pass
-// \`ariaLabelledBy\` so the trigger is named by the label. The attribute is
-// only emitted when provided, so the trigger never carries a dangling
-// \`aria-labelledby\`.
-const view = (h: HtmlBuilder<Message>) => {
-  const labelId = 'info-label'
-
-  return h.submodel({
-    slotId: 'info',
-    model: model.popover,
-    view: Popover.view,
-    viewInputs: {
-      ariaLabelledBy: labelId,
-      anchor: { placement: 'bottom-start', gap: 4, padding: 8 },
-      toView: ({ button, panel, backdrop, isVisible }) =>
-        h.div(
-          [h.Class('relative inline-block')],
-          [
-            h.label(
-              [h.Id(labelId), h.For(Popover.buttonId('info'))],
-              ['Solutions'],
-            ),
-            h.button(
-              [
-                ...button,
-                h.Class('rounded-lg border px-3 py-2 cursor-pointer'),
-              ],
-              [h.span([], ['Solutions'])],
-            ),
-            ...(isVisible
-              ? [
-                  h.div([...backdrop, h.Class('fixed inset-0')]),
-                  h.div(
-                    [...panel, h.Class('rounded-lg border shadow-lg p-4 w-80')],
-                    [
-                      h.h3([h.Class('font-medium')], ['Analytics']),
-                      h.p(
-                        [h.Class('text-sm text-gray-500')],
-                        [
-                          'Get a better understanding of where your traffic is coming from.',
-                        ],
-                      ),
-                    ],
-                  ),
-                ]
-              : []),
-          ],
-        ),
-    },
-    toParentMessage: message => Message.GotPopoverMessage({ message }),
-  })
-}
-```
+Popover
 
 ### Arrow
 
 Popover does not draw an arrow. It positions one. Spread the `arrow` bundle onto your own element inside the panel and write the CSS in [Drawing an Arrow](#drawing-an-arrow) below.
 
-```
-// Pseudocode walkthrough of what an arrow adds to a Popover you already have.
-// Popover positions the arrow. The CSS below the demo draws it.
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Popover } from '@foldkit/ui'
-
-const view = (h: HtmlBuilder<Message>) =>
-  h.submodel({
-    slotId: 'info',
-    model: model.popover,
-    view: Popover.view,
-    viewInputs: {
-      // Leave room for the arrow tip, which reaches 8px past the panel:
-      anchor: { placement: 'bottom-start', gap: 10, padding: 8 },
-      // Keep the arrow clear of the panel's rounded corners:
-      arrowPadding: 12,
-      // Take the arrow bundle from the render payload:
-      toView: ({ button, panel, backdrop, arrow, isVisible }) =>
-        h.div(
-          [h.Class('relative inline-block')],
-          [
-            h.button(
-              [
-                ...button,
-                h.Class('rounded-lg border px-3 py-2 cursor-pointer'),
-              ],
-              [h.span([], ['Solutions'])],
-            ),
-            ...(isVisible
-              ? [
-                  h.div([...backdrop, h.Class('fixed inset-0')]),
-                  h.div(
-                    [
-                      ...panel,
-                      // The placement rules target the arrow through the
-                      // panel, so the panel needs a class they can name:
-                      h.Class(
-                        'popover-panel rounded-lg border shadow-lg p-4 w-80',
-                      ),
-                    ],
-                    [
-                      // Spread the bundle onto your own element, inside the
-                      // panel. The fill masks the panel border, while the
-                      // nested SVG clips the outline at the panel edge:
-                      h.svg(
-                        [
-                          ...arrow,
-                          h.Class('popover-arrow'),
-                          h.ViewBox('0 0 16 16'),
-                        ],
-                        [
-                          h.path([
-                            h.Class('popover-arrow-fill'),
-                            h.D('M 0.5 8 L 8 0.5 L 15.5 8 V 10 H 0.5 Z'),
-                          ]),
-                          h.svg(
-                            [
-                              h.Class('popover-arrow-outline-clip'),
-                              h.Width('16'),
-                              h.Height('8'),
-                              h.ViewBox('0 0 16 8'),
-                            ],
-                            [
-                              h.path([
-                                h.Class('popover-arrow-outline'),
-                                h.D('M 0.5 8 L 8 0.5 L 15.5 8'),
-                              ]),
-                            ],
-                          ),
-                        ],
-                      ),
-                      h.h3([h.Class('font-medium')], ['Analytics']),
-                      h.p(
-                        [h.Class('text-sm text-gray-500')],
-                        [
-                          'Get a better understanding of where your traffic is coming from.',
-                        ],
-                      ),
-                    ],
-                  ),
-                ]
-              : []),
-          ],
-        ),
-    },
-    toParentMessage: message => Message.GotPopoverMessage({ message }),
-  })
-```
+Popover arrow
 
 ### Animated
 
@@ -244,163 +38,7 @@ Pass `isAnimated: true` at init for animation coordination.
 
 Use a separate Popover Model for each level. For a parent panel that opens onto another Popover trigger, pass `contentFocus: true` at init and `focusSelector` in the view so focus lands on the nested trigger.
 
-```
-// Pseudocode walkthrough of the Foldkit integration points. Each labeled
-// block below is an excerpt. Fit them into your own Model, init, Message,
-// update, and view definitions.
-import { Option, Schema } from 'effect'
-import { Update } from 'foldkit'
-import type { HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
-import { modifyFields } from 'foldkit/struct'
-
-import { Popover } from '@foldkit/ui'
-
-// Add one Popover Submodel field for each level:
-const Model = Schema.Struct({
-  accountPopover: Popover.Model,
-  accountDetailsPopover: Popover.Model,
-  // ...your other fields
-})
-type Model = typeof Model.Type
-
-// The parent uses contentFocus so focus can move into its nested trigger
-// instead of staying on the panel:
-const init = () => ({
-  model: {
-    accountPopover: Popover.init({
-      id: 'account-popover',
-      contentFocus: true,
-    }),
-    accountDetailsPopover: Popover.init({ id: 'account-details-popover' }),
-    // ...your other fields
-  },
-})
-
-// Embed each Popover Message in your parent Message:
-const Message = defineMessageUnion({
-  GotAccountPopoverMessage: { message: Popover.Message },
-  GotAccountDetailsPopoverMessage: { message: Popover.Message },
-})
-type Message = typeof Message.Type
-
-const foldPopoverOutMessage = Popover.OutMessage.match<
-  Update.Step<Model, Message>
->({
-  Opened: () => model => ({ model }),
-  Closed: () => model => ({ model }),
-})
-
-const foldAccountPopover = Update.foldChild({
-  update: Popover.update,
-  read: (model: Model) => Option.some(model.accountPopover),
-  write: (model, nextAccountPopover) =>
-    modifyFields(model, { accountPopover: () => nextAccountPopover }),
-  toParentMessage: message => Message.GotAccountPopoverMessage({ message }),
-  foldOutMessage: foldPopoverOutMessage,
-})
-
-const foldAccountDetailsPopover = Update.foldChild({
-  update: Popover.update,
-  read: (model: Model) => Option.some(model.accountDetailsPopover),
-  write: (model, nextAccountDetailsPopover) =>
-    modifyFields(model, {
-      accountDetailsPopover: () => nextAccountDetailsPopover,
-    }),
-  toParentMessage: message =>
-    Message.GotAccountDetailsPopoverMessage({ message }),
-  foldOutMessage: foldPopoverOutMessage,
-})
-
-// In the corresponding Message.match handlers, delegate each
-// Popover to its own Model field:
-GotAccountPopoverMessage: ({ message }) => foldAccountPopover(model, message)
-
-GotAccountDetailsPopoverMessage: ({ message }) =>
-  foldAccountDetailsPopover(model, message)
-
-// Inside your view function, render the child Popover inside the parent
-// panel. \`focusSelector\` points at the child trigger, which Popover derives
-// from the child id as \`${id}-button\`.
-const view = (h: HtmlBuilder<Message>) => {
-  const detailsPopover = h.submodel({
-    slotId: 'account-details-popover',
-    model: model.accountDetailsPopover,
-    view: Popover.view,
-    viewInputs: {
-      anchor: { placement: 'right-start', gap: 8, padding: 8 },
-      toView: ({ button, panel, backdrop, isVisible }) =>
-        h.div(
-          [h.Class('relative inline-block')],
-          [
-            h.button(
-              [
-                ...button,
-                h.Class('rounded-lg border px-3 py-2 cursor-pointer'),
-              ],
-              [h.span([], ['Advanced settings'])],
-            ),
-            ...(isVisible
-              ? [
-                  h.div([...backdrop, h.Class('fixed inset-0')]),
-                  h.div(
-                    [...panel, h.Class('rounded-lg border shadow-lg p-4 w-64')],
-                    [
-                      h.p([h.Class('font-medium')], ['Permissions']),
-                      h.p(
-                        [h.Class('text-sm text-gray-500')],
-                        [
-                          'Review who can change billing, members, and integrations.',
-                        ],
-                      ),
-                    ],
-                  ),
-                ]
-              : []),
-          ],
-        ),
-    },
-    toParentMessage: message =>
-      Message.GotAccountDetailsPopoverMessage({ message }),
-  })
-
-  return h.submodel({
-    slotId: 'account-popover',
-    model: model.accountPopover,
-    view: Popover.view,
-    viewInputs: {
-      anchor: { placement: 'bottom-start', gap: 4, padding: 8 },
-      focusSelector: '#account-details-popover-button',
-      toView: ({ button, panel, backdrop, isVisible }) =>
-        h.div(
-          [h.Class('relative inline-block')],
-          [
-            h.button(
-              [
-                ...button,
-                h.Class('rounded-lg border px-3 py-2 cursor-pointer'),
-              ],
-              [h.span([], ['Account'])],
-            ),
-            ...(isVisible
-              ? [
-                  h.div([...backdrop, h.Class('fixed inset-0')]),
-                  h.div(
-                    [...panel, h.Class('rounded-lg border shadow-lg p-4 w-72')],
-                    [
-                      h.p([], ['Manage account settings from this panel.']),
-                      detailsPopover,
-                    ],
-                  ),
-                ]
-              : []),
-          ],
-        ),
-    },
-    toParentMessage: message => Message.GotAccountPopoverMessage({ message }),
-  })
-}
-```
+Nested popovers
 
 ## Styling
 
@@ -419,57 +57,7 @@ When `isAnimated` is true, enter/leave animations flow through the [Animation](h
 
 `toView` receives an `arrow` bundle carrying the element's id. Popover does not draw the arrow. Spread the bundle onto your own element, a direct child of the panel, and place it with the custom properties Anchor publishes:
 
-```
-.popover-panel {
-  --popover-background: white;
-  --popover-border: #e5e7eb;
-  background: var(--popover-background);
-  border-color: var(--popover-border);
-}
-
-.popover-arrow {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  left: var(--arrow-x);
-  top: var(--arrow-y);
-}
-
-.popover-arrow-fill {
-  fill: var(--popover-background);
-  stroke: none;
-}
-
-.popover-arrow-outline-clip {
-  overflow: hidden;
-}
-
-.popover-arrow-outline {
-  fill: none;
-  stroke: var(--popover-border);
-  stroke-linejoin: round;
-  stroke-width: 1px;
-}
-
-.popover-panel[data-placement='top'] > .popover-arrow {
-  bottom: -8px;
-  transform: rotate(180deg);
-}
-
-.popover-panel[data-placement='bottom'] > .popover-arrow {
-  top: -8px;
-}
-
-.popover-panel[data-placement='left'] > .popover-arrow {
-  right: -8px;
-  transform: rotate(90deg);
-}
-
-.popover-panel[data-placement='right'] > .popover-arrow {
-  left: -8px;
-  transform: rotate(-90deg);
-}
-```
+Popover arrow styles
 
 `--arrow-x` and `--arrow-y` position the arrow along the panel edge. Anchor sets one of them for each placement, while the matching `data-placement` rule pins the arrow to the correct side.
 
@@ -480,6 +68,8 @@ The square SVG keeps its measurements stable when the placement flips. Its fill 
 ### Scrollable Panels with an Arrow
 
 An arrow sits outside the panel, so scrolling the panel itself would clip it. Anchor leaves the panel unclipped when an arrow resolves and still writes its `max-height`. If the content can outgrow that height, make the panel a flex column and scroll an inner container:
+
+Scrollable popover panel styles
 
 ```
 .popover-panel {

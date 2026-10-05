@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/foldkit-vs-react-side-by-side
 title: "Foldkit vs React: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and React. Covers state management, side effects, testing, performance, and architectural tradeoffs."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -28,36 +28,7 @@ Start with the input domain for application state. Both versions define a discri
 
 The Foldkit application currently has 25 parent Messages:
 
-```
-const Message = defineMessageUnion({
-  PressedCell: { x: Schema.Number, y: Schema.Number },
-  EnteredCell: { x: Schema.Number, y: Schema.Number },
-  LeftCanvas: {},
-  ReleasedMouse: {},
-  SelectedColor: { colorIndex: PaletteIndex },
-  SelectedTool: { tool: Tool },
-  SelectedGridSize: { size: Schema.Number },
-  ToggledMirrorHorizontal: {},
-  ToggledMirrorVertical: {},
-  ClickedUndo: {},
-  ClickedRedo: {},
-  ClickedHistoryStep: { stepIndex: Schema.Number },
-  ClickedRedoStep: { stepIndex: Schema.Number },
-  ClickedClear: {},
-  ClickedExport: {},
-  SucceededExportPng: {},
-  FailedExportPng: { error: Schema.String },
-  GotErrorDialogMessage: { message: Dialog.Message },
-  GotThemeListboxMessage: { message: Listbox.Message },
-  GotToolRadioGroupMessage: { message: RadioGroup.Message },
-  GotGridSizeRadioGroupMessage: { message: RadioGroup.Message },
-  GotPaletteRadioGroupMessage: { message: RadioGroup.Message },
-  ConfirmedGridSizeChange: {},
-  GotGridSizeConfirmDialogMessage: { message: Dialog.Message },
-  CompletedSaveCanvas: {},
-})
-type Message = typeof Message.Type
-```
+Foldkit Messages
 
 This union is the complete input type for the parent update function. User events, Command results, and child Submodel Messages all enter through it. A `Got*Message` variant marks a child boundary; the child’s own Message union provides the detailed input domain one level down.
 
@@ -71,28 +42,7 @@ After initialization, the application Model changes only when update handles a M
 
 The React reducer has 19 Actions:
 
-```
-type Action =
-  | Readonly<{ type: 'PressedCell'; x: number; y: number }>
-  | Readonly<{ type: 'EnteredCell'; x: number; y: number }>
-  | Readonly<{ type: 'LeftCanvas' }>
-  | Readonly<{ type: 'ReleasedMouse' }>
-  | Readonly<{ type: 'SelectedColor'; colorIndex: PaletteIndex }>
-  | Readonly<{ type: 'SelectedTool'; tool: Tool }>
-  | Readonly<{ type: 'SelectedGridSize'; size: number }>
-  | Readonly<{ type: 'ToggledMirrorHorizontal' }>
-  | Readonly<{ type: 'ToggledMirrorVertical' }>
-  | Readonly<{ type: 'ClickedUndo' }>
-  | Readonly<{ type: 'ClickedRedo' }>
-  | Readonly<{ type: 'ClickedHistoryStep'; stepIndex: number }>
-  | Readonly<{ type: 'ClickedRedoStep'; stepIndex: number }>
-  | Readonly<{ type: 'ClickedClear' }>
-  | Readonly<{ type: 'SelectedPaletteTheme'; themeIndex: number }>
-  | Readonly<{ type: 'ExportFailed'; error: string }>
-  | Readonly<{ type: 'DismissedErrorDialog' }>
-  | Readonly<{ type: 'ConfirmedGridSizeChange' }>
-  | Readonly<{ type: 'DismissedGridSizeDialog' }>
-```
+React actions
 
 The Action union is the complete input type for this reducer. It is not the input domain for the whole component tree. PNG export begins in an event handler, localStorage persistence runs in an Effect, and Headless UI owns transient interaction state inside its components.
 
@@ -108,81 +58,7 @@ The two entry points assemble the same application in different ways.
 
 The React `App` component initializes the reducer, derives values, runs three custom Hooks, and passes state into child components:
 
-```
-export const App = () => {
-  const [state, dispatch] = useReducer(reducer, undefined, createInitialState)
-
-  const theme = useMemo(
-    () => currentPaletteTheme(state.paletteThemeIndex),
-    [state.paletteThemeIndex],
-  )
-
-  useKeyboardShortcuts(dispatch)
-  useMouseRelease(state.isDrawing, dispatch)
-  useLocalStorage(
-    state.grid,
-    state.gridSize,
-    state.paletteThemeIndex,
-    state.selectedColorIndex,
-    state.isDrawing,
-  )
-
-  const handleExport = () => exportPng(state, dispatch)
-
-  const currentGrid = useMemo(
-    () =>
-      state.isDrawing
-        ? (state.undoStack[state.undoStack.length - 1] ?? state.grid)
-        : state.grid,
-    [state.isDrawing, state.undoStack, state.grid],
-  )
-
-  return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
-      <Header onExport={handleExport} />
-      <Toolbar
-        tool={state.tool}
-        mirrorMode={state.mirrorMode}
-        selectedColorIndex={state.selectedColorIndex}
-        gridSize={state.gridSize}
-        grid={state.grid}
-        paletteThemeIndex={state.paletteThemeIndex}
-        theme={theme}
-        dispatch={dispatch}
-      />
-      <Canvas
-        grid={state.grid}
-        gridSize={state.gridSize}
-        tool={state.tool}
-        mirrorMode={state.mirrorMode}
-        hoveredCell={state.hoveredCell}
-        isDrawing={state.isDrawing}
-        selectedColorIndex={state.selectedColorIndex}
-        paletteColors={theme.colors}
-        dispatch={dispatch}
-      />
-      <HistoryPanel
-        undoStack={state.undoStack}
-        redoStack={state.redoStack}
-        currentGrid={currentGrid}
-        gridSize={state.gridSize}
-        theme={theme}
-        dispatch={dispatch}
-      />
-      <ErrorDialog
-        isOpen={state.isErrorDialogOpen}
-        exportError={state.exportError}
-        dispatch={dispatch}
-      />
-      <ConfirmDialog
-        isOpen={state.isGridSizeDialogOpen}
-        pendingGridSize={state.pendingGridSize}
-        dispatch={dispatch}
-      />
-    </div>
-  )
-}
-```
+React App
 
 The six Hooks have distinct jobs: one reducer, two memoized derived values, keyboard shortcuts, mouse release, and persistence. `Toolbar`, `Canvas`, and `HistoryPanel` receive the state slices they render plus `dispatch`. The Dialogs receive their controlled open state and dispatch.
 
@@ -192,41 +68,7 @@ This is ordinary explicit React composition. The component tree is also where st
 
 The Foldkit entry point supplies the Runtime with the application definitions:
 
-```
-// src/main.ts
-
-export const init: Runtime.ApplicationInit<Model, Message, Flags> = flags => ({
-  model: {
-    grid: Option.match(flags.maybeSavedCanvas, {
-      onNone: () => createEmptyGrid(DEFAULT_GRID_SIZE),
-      onSome: ({ grid }) => grid,
-    }),
-    undoStack: [],
-    redoStack: [],
-    tool: 'Brush',
-    mirrorMode: 'None',
-    isDrawing: false,
-    maybeHoveredCell: Option.none(),
-    errorDialog: Dialog.init({ id: 'export-error-dialog' }),
-    themeListbox: Listbox.init({ id: 'theme-picker' }),
-    // remaining fields elided for brevity
-  },
-})
-
-// src/entry.ts (imports Model, Flags, flags, init, update, view, subscriptions from ./main)
-
-const application = Runtime.makeApplication({
-  Model,
-  Flags,
-  init,
-  update,
-  view,
-  subscriptions,
-  container: document.getElementById('root'),
-})
-
-Runtime.run(application, { flags })
-```
+Foldkit program
 
 `init` constructs the first Model and startup Commands. `Runtime.makeApplication` receives the Model and Flags Schemas, init, update, view, Subscriptions, and container. The Runtime dispatches Messages and executes lifecycle primitives.
 
@@ -240,32 +82,7 @@ The two versions draw their application-state boundary differently.
 
 The Foldkit Model describes application state with Effect Schema and uses `Option` for absent values. It also contains the Models for two Dialogs, one Listbox, and three RadioGroups:
 
-```
-import { Schema } from 'effect'
-
-import { Dialog, Listbox, RadioGroup } from '@foldkit/ui'
-
-export const Model = Schema.Struct({
-  grid: Grid,
-  undoStack: Schema.Array(Grid),
-  redoStack: Schema.Array(Grid),
-  selectedColorIndex: PaletteIndex,
-  gridSize: Schema.Number,
-  tool: Tool,
-  mirrorMode: MirrorMode,
-  isDrawing: Schema.Boolean,
-  maybeHoveredCell: Schema.Option(Position),
-  errorDialog: Dialog.Model,
-  maybeExportError: Schema.Option(Schema.String),
-  paletteThemeIndex: Schema.Number,
-  gridSizeConfirmDialog: Dialog.Model,
-  maybePendingGridSize: Schema.Option(Schema.Number),
-  themeListbox: Listbox.Model,
-  toolRadioGroup: RadioGroup.Model,
-  gridSizeRadioGroup: RadioGroup.Model,
-  paletteRadioGroup: RadioGroup.Model,
-})
-```
+Foldkit Model
 
 Those child Models expose transient interaction state such as whether a Listbox is open, its highlighted item, and its transition phase. The parent still owns selected values such as `paletteThemeIndex`; it passes the selected value into the child view and folds the child’s `Selected` OutMessage into parent state.
 
@@ -273,24 +90,7 @@ Those child Models expose transient interaction state such as whether a Listbox 
 
 This React implementation uses plain TypeScript types and `null` for absence:
 
-```
-type State = Readonly<{
-  grid: Grid
-  undoStack: ReadonlyArray<Grid>
-  redoStack: ReadonlyArray<Grid>
-  selectedColorIndex: PaletteIndex
-  gridSize: number
-  tool: Tool
-  mirrorMode: MirrorMode
-  isDrawing: boolean
-  hoveredCell: Position | null
-  paletteThemeIndex: number
-  exportError: string | null
-  isErrorDialogOpen: boolean
-  pendingGridSize: number | null
-  isGridSizeDialogOpen: boolean
-}>
-```
+React state
 
 The reducer owns grid state, selected values, export errors, and the controlled open state for both Dialogs. Headless UI owns its transient focus, keyboard, and transition state. That state exists at runtime but is intentionally encapsulated behind the component API.
 
@@ -304,47 +104,7 @@ For a given Message, Foldkit update returns both the next Model and the Commands
 
 The return type is `Update.Return<Model, Message>`:
 
-```
-import { type Update } from 'foldkit'
-
-export const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    PressedCell: ({ x, y }) =>
-      Match.value(model.tool).pipe(
-        withUpdateReturn,
-        Match.when('Brush', () => ({
-          model: modifyFields(model, {
-            grid: () => applyBrush(model, x, y),
-            undoStack: () => pushHistory(model.undoStack, model.grid),
-            redoStack: () => [],
-            isDrawing: () => true,
-          }),
-        })),
-        Match.when('Fill', () => {
-          const nextModel = modifyFields(model, {
-            grid: () => applyFill(model, x, y),
-            undoStack: () => pushHistory(model.undoStack, model.grid),
-            redoStack: () => [],
-          })
-          return { model: nextModel, commands: [saveCanvas(nextModel)] }
-        }),
-        // ...
-      ),
-    ClickedUndo: () =>
-      Array.match(model.undoStack, {
-        onEmpty: () => ({ model }),
-        onNonEmpty: nonEmptyUndoStack => {
-          const nextModel = modifyFields(model, {
-            grid: () => Array.lastNonEmpty(nonEmptyUndoStack),
-            undoStack: () => Array.initNonEmpty(nonEmptyUndoStack),
-            redoStack: Array.append(model.grid),
-          })
-          return { model: nextModel, commands: [saveCanvas(nextModel)] }
-        },
-      }),
-    // ... 23 more handlers
-  })
-```
+Foldkit update
 
 `Message.match` requires a handler for every Message variant. `modifyFields` preserves references for unchanged fields, which supports view memoization. A handler such as `ClickedUndo` returns the next Model and a `SaveCanvas` Command together.
 
@@ -356,46 +116,7 @@ For any parent Message, update shows the next parent Model and the Commands caus
 
 The reducer returns `State`:
 
-```
-export const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case 'PressedCell': {
-      const { x, y } = action
-      switch (state.tool) {
-        case 'Brush':
-          return {
-            ...state,
-            grid: applyBrush(state, x, y),
-            undoStack: pushHistory(state.undoStack, state.grid),
-            redoStack: [],
-            isDrawing: true,
-          }
-        case 'Fill':
-          return {
-            ...state,
-            grid: applyFill(state, x, y),
-            undoStack: pushHistory(state.undoStack, state.grid),
-            redoStack: [],
-          }
-        // ...
-      }
-    }
-    case 'ClickedUndo': {
-      if (state.undoStack.length === 0) {
-        return state
-      }
-      const previousGrid = state.undoStack[state.undoStack.length - 1]!
-      return {
-        ...state,
-        grid: previousGrid,
-        undoStack: state.undoStack.slice(0, -1),
-        redoStack: [...state.redoStack, state.grid],
-      }
-    }
-    // ... 17 more cases
-  }
-}
-```
+React reducer
 
 The reducer exhaustively describes its state transitions. Persistence is not part of that return value, so `ClickedUndo` cannot show that localStorage will also be updated. That connection appears in the dependency list of `useLocalStorage`. Export takes another route through an event handler.
 
@@ -409,65 +130,7 @@ Commands make event-driven side effects inspectable before they run. The pixel e
 
 Both Commands are named definitions with Schema-checked arguments and declared result Messages:
 
-```
-const SaveCanvas = Command.define('SaveCanvas', {
-  args: {
-    grid: Grid,
-    gridSize: Schema.Number,
-    paletteThemeIndex: Schema.Number,
-    selectedColorIndex: PaletteIndex,
-  },
-  messages: [CompletedSaveCanvas],
-  execute: ({ grid, gridSize, paletteThemeIndex, selectedColorIndex }) =>
-    Effect.gen(function* () {
-      const store = yield* KeyValueStore.KeyValueStore
-      const data: SavedCanvas = {
-        grid,
-        gridSize,
-        paletteThemeIndex,
-        selectedColorIndex,
-      }
-      yield* store.set(
-        STORAGE_KEY,
-        Schema.encodeSync(SavedCanvasJsonString)(data),
-      )
-      return CompletedSaveCanvas()
-    }).pipe(
-      Effect.catch(() => Effect.succeed(CompletedSaveCanvas())),
-      Effect.provide(BrowserKeyValueStore.layerLocalStorage),
-    ),
-})
-
-const ExportPng = Command.define('ExportPng', {
-  args: {
-    grid: Grid,
-    gridSize: Schema.Number,
-    paletteThemeIndex: Schema.Number,
-  },
-  messages: [SucceededExportPng, FailedExportPng],
-  execute: ({ grid, gridSize, paletteThemeIndex }) =>
-    Effect.gen(function* () {
-      const theme = PALETTE_THEMES[paletteThemeIndex] ?? PALETTE_THEMES[0]
-      const canvas = document.createElement('canvas')
-      const context = canvas.getContext('2d')
-
-      if (Predicate.isNull(context)) {
-        return yield* Effect.fail(
-          FailedExportPng({ error: 'Canvas 2D context not available' }),
-        )
-      }
-
-      // ... paint each cell, then click a generated download link
-
-      return SucceededExportPng()
-    }).pipe(
-      Effect.catchTag('FailedExportPng', error => Effect.succeed(error)),
-      Effect.catch(() =>
-        Effect.succeed(FailedExportPng({ error: 'Failed to export image' })),
-      ),
-    ),
-})
-```
+Foldkit Commands
 
 Update returns a Command value. The Runtime executes its Effect and dispatches the resulting Message. Foldkit DevTools can associate the Command with the Message and Model transition that produced it, and Story or Scene tests can inspect or resolve the same value.
 
@@ -479,33 +142,7 @@ Event-driven work is in `command.ts`. Keyboard and mouse-release event sources a
 
 The persistence Hook reacts to the state values in its dependency array:
 
-```
-const useLocalStorage = (
-  grid: Grid,
-  gridSize: number,
-  paletteThemeIndex: number,
-  selectedColorIndex: PaletteIndex,
-  isDrawing: boolean,
-): void => {
-  useEffect(() => {
-    if (isDrawing) {
-      return
-    }
-
-    try {
-      const saved: SavedCanvas = {
-        grid,
-        gridSize,
-        paletteThemeIndex,
-        selectedColorIndex,
-      }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved))
-    } catch {
-      // Handle storage errors
-    }
-  }, [grid, gridSize, paletteThemeIndex, selectedColorIndex, isDrawing])
-}
-```
+React useEffect
 
 The React implementation has several effect locations. PNG export runs from `handleExport` in `App.tsx`. Persistence runs in `useLocalStorage`. Keyboard and mouse listeners run in two other custom Hooks. Headless UI manages the effects required by its components.
 
@@ -521,28 +158,7 @@ Foldkit Story tests call update and receive both the Model and Commands. The Rea
 
 `story` dispatches Messages and resolves the Commands returned by update:
 
-```
-test('undo restores the previous grid state', () => {
-  story(
-    update,
-    given(emptyModel),
-    message(PressedCell({ x: 0, y: 0 })),
-    message(ReleasedMouse()),
-    Command.resolve(SaveCanvas, CompletedSaveCanvas()),
-    model(model => {
-      expect(model.grid[0]?.[0]).toEqual(Option.some(0))
-      expect(model.undoStack).toHaveLength(1)
-    }),
-    message(ClickedUndo()),
-    Command.resolve(SaveCanvas, CompletedSaveCanvas()),
-    model(model => {
-      expect(model.grid[0]?.[0]).toEqual(Option.none())
-      expect(model.undoStack).toHaveLength(0)
-      expect(model.redoStack).toHaveLength(1)
-    }),
-  )
-})
-```
+Foldkit test
 
 `Command.resolve(SaveCanvas, CompletedSaveCanvas())` verifies that a matching Command is pending, supplies its result Message, and continues the state-machine test. Removing that Command from `ReleasedMouse` makes this Story fail at the resolution step.
 
@@ -550,22 +166,7 @@ test('undo restores the previous grid state', () => {
 
 The reducer test covers the same paint and undo transitions:
 
-```
-test('undo restores the previous grid state', () => {
-  const afterPaint = dispatch(
-    emptyModel,
-    { type: 'PressedCell', x: 0, y: 0 },
-    { type: 'ReleasedMouse' },
-  )
-  expect(afterPaint.grid[0]?.[0]).toBe(0)
-  expect(afterPaint.undoStack).toHaveLength(1)
-
-  const afterUndo = dispatch(afterPaint, { type: 'ClickedUndo' })
-  expect(afterUndo.grid[0]?.[0]).toBeNull()
-  expect(afterUndo.undoStack).toHaveLength(0)
-  expect(afterUndo.redoStack).toHaveLength(1)
-})
-```
+React test
 
 It does not assert on persistence because persistence is outside the reducer. This is an appropriate unit boundary for the reducer.
 
@@ -573,29 +174,7 @@ It does not assert on persistence because persistence is outside the reducer. Th
 
 The persistence test crosses the component boundary:
 
-```
-test('painting persists canvas to localStorage', async () => {
-  const setItemSpy = vi.spyOn(Storage.prototype, 'setItem')
-
-  render(<App />)
-
-  const cells = findCanvasCells()
-  const firstCell = cells[0]
-
-  // Simulate a paint stroke: mousedown on cell, then mouseup on document
-  fireEvent.mouseDown(firstCell)
-  fireEvent.mouseUp(document)
-
-  // localStorage.setItem is called inside a useEffect, which runs
-  // asynchronously after React finishes rendering. We have to poll for it.
-  await vi.waitFor(() => {
-    expect(setItemSpy).toHaveBeenCalledWith(
-      'pixel-art-react-canvas',
-      expect.any(String),
-    )
-  })
-})
-```
+React side-effect test
 
 It renders `App` in jsdom, simulates a stroke, spies on localStorage, and waits for the Effect. That test exercises the connection between the reducer state and `useLocalStorage`, which the reducer test cannot see.
 
@@ -615,37 +194,7 @@ It renders `App` in jsdom, simulates a stroke, spies on localStorage, and waits 
 
 The Scene test clicks Export, resolves the resulting Commands, and dismisses the Dialog:
 
-```
-import { Dialog } from '@foldkit/ui'
-
-test('failed export shows error dialog that can be dismissed', () => {
-  scene(
-    { update, view },
-    given(createTestModel()),
-    // Click Export PNG. The update function returns an ExportPng Command.
-    click(role('button', { name: 'Export PNG' })),
-    // Resolve the Command with a failure. The update function opens
-    // the error dialog in response.
-    Command.resolve(
-      ExportPng,
-      FailedExportPng({ error: 'Canvas 2D context not available' }),
-    ),
-    Command.resolve(Dialog.ShowDialog, Dialog.Message.SucceededShowDialog()),
-    // The error dialog is open. Find elements by role and text content:
-    // no CSS selectors, no test IDs, no DOM.
-    expect(text('Export Failed')).toExist(),
-    expect(text('Canvas 2D context not available')).toExist(),
-    // Click the Dismiss button. Scene finds the handler on the virtual
-    // DOM node, dispatches the Message, and feeds it through update.
-    click(role('button', { name: 'Dismiss' })),
-    // The update function returned a CloseDialog Command. Resolve it
-    // the same way a story test does: synchronously, inline.
-    Command.resolve(Dialog.CloseDialog, Dialog.Message.CompletedCloseDialog()),
-    // After the Command resolves, the dialog is gone.
-    expect(text('Export Failed')).toBeAbsent(),
-  )
-})
-```
+Foldkit scene test
 
 This test separates intent from outcome. It verifies that the click produces `ExportPng`, then chooses a `FailedExportPng` result and verifies the resulting UI. It does not execute the PNG Effect or prove that a real canvas failure becomes that Message. A separate Command test can cover that boundary when needed.
 
@@ -653,27 +202,7 @@ This test separates intent from outcome. It verifies that the click produces `Ex
 
 The React test drives the component and stubs the canvas boundary:
 
-```
-test('failed export shows error dialog that can be dismissed', async () => {
-  // Mock the canvas API so getContext returns null, simulating an
-  // environment where export would fail
-  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null)
-
-  // Render the full component tree in jsdom
-  render(<App />)
-
-  // Click export — the side effect fires imperatively inside the component
-  await userEvent.click(screen.getByRole('button', { name: /export png/i }))
-
-  // findByText waits for the async state update
-  expect(await screen.findByText('Export Failed')).toBeInTheDocument()
-  expect(screen.getByText('Could not get canvas context')).toBeInTheDocument()
-
-  // Click dismiss and assert the dialog is gone
-  await userEvent.click(screen.getByRole('button', { name: /dismiss/i }))
-  expect(screen.queryByText('Export Failed')).not.toBeInTheDocument()
-})
-```
+React interaction test
 
 This is a broader integration test. It reaches `handleExport` and the export implementation, where the mocked `getContext` failure dispatches `ExportFailed`. It then observes the Dialog through the rendered interface.
 
@@ -695,87 +224,13 @@ Both applications listen for keyboard shortcuts and mouse release. The mouse-rel
 
 The Subscription declares that lifetime from Model dependencies:
 
-```
-export const subscriptions = Subscription.make<Model, Message>()(entry => ({
-  undoRedoKeys: Subscription.persistent(
-    Subscription.fromEventFilterMapPreventDefault({
-      target: document,
-      type: 'keydown',
-      filterMapEvent: toUndoRedoMessage,
-    }),
-  ),
-
-  toolKeys: Subscription.persistent(
-    Subscription.fromEventFilterMap({
-      target: document,
-      type: 'keydown',
-      filterMapEvent: toToolMessage,
-    }),
-  ),
-
-  mouseRelease: entry(
-    { isDrawing: Schema.Boolean },
-    {
-      modelToDependencies: model => ({ isDrawing: model.isDrawing }),
-      dependenciesToStream: ({ isDrawing }) =>
-        Stream.when(
-          Stream.fromEventListener(document, 'mouseup').pipe(
-            Stream.map(() => ReleasedMouse()),
-          ),
-          Effect.sync(() => isDrawing),
-        ),
-    },
-  ),
-}))
-```
-
 The keyboard stream is persistent. The mouse-release stream is active only when `isDrawing` is true. The Runtime compares Subscription dependencies after each update and scopes each Stream accordingly.
 
 ### React hooks
 
 The React custom Hooks express the same lifetime with Effects:
 
-```
-const useKeyboardShortcuts = (dispatch: React.Dispatch<Action>): void => {
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const isModifier = event.metaKey || event.ctrlKey
-      const key = event.key.toLowerCase()
-      if (isModifier && event.shiftKey && key === 'z') {
-        event.preventDefault()
-        dispatch({ type: 'ClickedRedo' })
-        return
-      }
-      if (isModifier && key === 'z') {
-        event.preventDefault()
-        dispatch({ type: 'ClickedUndo' })
-        return
-      }
-      // ...
-    }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [dispatch])
-}
-
-const useMouseRelease = (
-  isDrawing: boolean,
-  dispatch: React.Dispatch<Action>,
-): void => {
-  useEffect(() => {
-    if (!isDrawing) {
-      return
-    }
-
-    const handleMouseUp = () => {
-      dispatch({ type: 'ReleasedMouse' })
-    }
-
-    document.addEventListener('mouseup', handleMouseUp)
-    return () => document.removeEventListener('mouseup', handleMouseUp)
-  }, [isDrawing, dispatch])
-}
-```
+React hooks
 
 `useMouseRelease` returns without installing a listener when drawing is inactive. When active, it installs the listener and returns its cleanup. The dependency array tells React when to repeat that synchronization. The Hooks linter checks referenced dependencies; the setup function remains responsible for returning the matching cleanup.
 
@@ -801,74 +256,7 @@ Both implementations limit work around a performance-sensitive grid. Actual fram
 
 Foldkit memoizes view functions from arrays of Model-derived arguments:
 
-```
-import { Array, Option, pipe } from 'effect'
-import {
-  type Document,
-  type HtmlBuilder,
-  createKeyedLazy,
-  createLazy,
-} from 'foldkit/html'
-
-import { isGridEmpty } from './grid'
-import type { Message } from './message'
-import type { Model } from './model'
-import { currentPaletteTheme } from './palette'
-import { canvasView } from './view/canvas'
-import { historyPanelView } from './view/history'
-import { toolPanelView } from './view/toolbar'
-
-const lazyToolPanel = createLazy()
-const lazyHistoryPanel = createLazy()
-const lazyRow = createKeyedLazy()
-
-// Each args array is compared element-by-element against the previous render.
-// If every arg is reference-equal, the view function isn't called at all.
-// modifyFields() preserves references for unchanged Model fields, so the check just
-// works, and the builder is the same object every render, so passing it
-// through the args never invalidates the cache.
-export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
-  const theme = currentPaletteTheme(model)
-  const currentGrid = model.isDrawing
-    ? pipe(
-        Array.last(model.undoStack),
-        Option.getOrElse(() => model.grid),
-      )
-    : model.grid
-
-  return {
-    title: 'Pixel Art',
-    body: h.div(
-      [],
-      [
-        lazyToolPanel(toolPanelView, [
-          model.mirrorMode,
-          model.tool,
-          model.gridSize,
-          model.selectedColorIndex,
-          isGridEmpty(model.grid),
-          theme,
-          model.paletteThemeIndex,
-          model.themeListbox,
-          model.toolRadioGroup,
-          model.gridSizeRadioGroup,
-          model.paletteRadioGroup,
-          h,
-        ]),
-        canvasView(model, theme, h),
-        lazyHistoryPanel(historyPanelView, [
-          model.undoStack,
-          model.redoStack,
-          currentGrid,
-          model.gridSize,
-          theme,
-          h,
-        ]),
-      ],
-    ),
-  }
-}
-```
+Foldkit memoization
 
 `createLazy` and `createKeyedLazy` compare arguments element by element. `modifyFields` preserves references for unchanged Model fields, so panels whose inputs remain referentially equal can reuse their previous virtual DOM.
 
@@ -876,58 +264,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
 
 The checked-in React version uses `memo`, `useMemo`, and `useCallback`:
 
-```
-export const App = () => {
-  const [state, dispatch] = useReducer(reducer, undefined, createInitialState)
-
-  const theme = useMemo(
-    () => currentPaletteTheme(state.paletteThemeIndex),
-    [state.paletteThemeIndex],
-  )
-
-  const handleExport = () => exportPng(state, dispatch)
-
-  const currentGrid = useMemo(
-    () =>
-      state.isDrawing
-        ? (state.undoStack[state.undoStack.length - 1] ?? state.grid)
-        : state.grid,
-    [state.isDrawing, state.undoStack, state.grid],
-  )
-
-  return (
-    <div>
-      <Header onExport={handleExport} />
-      {/* Each child is wrapped in memo() and receives dispatch + state slices */}
-      <Toolbar
-        tool={state.tool}
-        mirrorMode={state.mirrorMode}
-        dispatch={dispatch}
-      />
-      <Canvas grid={state.grid} gridSize={state.gridSize} dispatch={dispatch} />
-      <HistoryPanel undoStack={state.undoStack} dispatch={dispatch} />
-    </div>
-  )
-}
-
-// Every component receiving state slices is wrapped in memo()
-const Toolbar = memo(function Toolbar({
-  tool,
-  mirrorMode,
-  dispatch,
-}: ToolbarProps) {
-  // useCallback for every handler inside
-})
-const Canvas = memo(function Canvas({ grid, gridSize, dispatch }: CanvasProps) {
-  // useCallback for every handler inside
-})
-const HistoryPanel = memo(function HistoryPanel({
-  undoStack,
-  dispatch,
-}: HistoryProps) {
-  // useCallback for every handler inside
-})
-```
+React memoization
 
 `memo` compares props by reference. The application stabilizes derived values and handler props so memoized children can skip work. React Compiler 1.0 can generate much of this memoization for compatible components, and teams can adopt it incrementally. This comparison shows the source currently in the repository, which uses the manual forms.
 
@@ -937,71 +274,11 @@ The compiler affects render optimization. It does not move persistence into the 
 
 The 32×32 canvas contains 1,024 cells. Here is the event boundary for one cell in each implementation.
 
-```
-import { Array } from 'effect'
-import type { Html, HtmlBuilder } from 'foldkit/html'
-
-import { Message } from './message'
-import type { Cell, HexColor } from './model'
-import { type PaletteTheme, resolveColor } from './palette'
-
-const rowView = (
-  row: ReadonlyArray<Cell>,
-  y: number,
-  previewColor: HexColor,
-  previewPositions: ReadonlyArray<readonly [number, number]>,
-  theme: PaletteTheme,
-  h: HtmlBuilder<Message>,
-): Html =>
-  h.div(
-    [h.Style({ display: 'flex', flex: '1' })],
-    Array.map(row, (cell, x) => {
-      const isPreview = previewPositions.some(
-        ([previewX, previewY]) => previewX === x && previewY === y,
-      )
-      const displayColor = isPreview ? previewColor : resolveColor(cell, theme)
-
-      return h.div([
-        h.OnMouseDown(Message.PressedCell({ x, y })),
-        h.OnMouseEnter(Message.EnteredCell({ x, y })),
-        h.Style({ flex: '1', backgroundColor: displayColor }),
-      ])
-    }),
-  )
-```
+Foldkit cell view
 
 The Foldkit cell attaches `PressedCell({ x, y })` and `EnteredCell({ x, y })` Message values. The event attributes dispatch those values to update.
 
-```
-const CellView = memo(function CellView({
-  x,
-  y,
-  backgroundColor,
-  dispatch,
-}: Readonly<{
-  x: number
-  y: number
-  backgroundColor: string
-  dispatch: React.Dispatch<Action>
-}>) {
-  const handleMouseDown = useCallback(
-    () => dispatch({ type: 'PressedCell', x, y }),
-    [dispatch, x, y],
-  )
-  const handleMouseEnter = useCallback(
-    () => dispatch({ type: 'EnteredCell', x, y }),
-    [dispatch, x, y],
-  )
-
-  return (
-    <div
-      onMouseDown={handleMouseDown}
-      onMouseEnter={handleMouseEnter}
-      style={{ flex: 1, backgroundColor }}
-    />
-  )
-})
-```
+React cell view
 
 The React cell is a memoized component. Its callbacks close over `x`, `y`, and `dispatch`, and their dependency arrays keep those values current. React Compiler can produce equivalent memoization without the handwritten wrappers when enabled.
 

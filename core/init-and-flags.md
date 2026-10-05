@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/init-and-flags
 title: "Init & Flags"
 description: "Construct the first Model and startup Commands. Routing supplies the current URL, while Schema-validated Flags support fresh client boots and hydration."
-access_date: 2026-10-01T22:03:15.204Z
-current_date: 2026-10-01T22:03:15.204Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## The First Model
@@ -12,26 +12,7 @@ current_date: 2026-10-01T22:03:15.204Z
 
 The counter starts at zero and has no startup work:
 
-```
-import { Schema } from 'effect'
-import type { Runtime } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-
-const Model = Schema.Struct({
-  count: Schema.Number,
-})
-type Model = typeof Model.Type
-
-const Message = defineMessageUnion({
-  ClickedIncrement: {},
-  ClickedDecrement: {},
-})
-type Message = typeof Message.Type
-
-const init: Runtime.ApplicationInit<Model, Message> = () => ({
-  model: { count: 0 },
-})
-```
+Using init
 
 A non-routing application or element calls `init` with no arguments. A routing application passes the current URL, so its first Model can reflect the route. When the application declares Flags, they become the first argument in either form.
 
@@ -41,94 +22,17 @@ Flags carry data from outside the application into `init`. Typical sources inclu
 
 Define the boundary with a Flags Schema. For a fresh client boot, also define an Effect that obtains a value matching that Schema:
 
-```
-import { Effect, Option, Schema } from 'effect'
-import { KeyValueStore } from 'effect/persistence'
-
-import { BrowserKeyValueStore } from '@effect/platform-browser'
-
-const Todo = Schema.Struct({
-  id: Schema.String,
-  text: Schema.String,
-  completed: Schema.Boolean,
-})
-
-const Todos = Schema.Array(Todo)
-
-const TodosJsonString = Schema.fromJsonString(Schema.toCodecJson(Todos))
-
-const Flags = Schema.Struct({
-  todos: Schema.Option(Todos),
-})
-type Flags = typeof Flags.Type
-
-const flags: Effect.Effect<Flags> = Effect.gen(function* () {
-  const store = yield* KeyValueStore.KeyValueStore
-  const todosJson = yield* Effect.fromOption(
-    Option.fromNullishOr(yield* store.get('todos')),
-  )
-
-  const decodeTodos = Schema.decodeEffect(TodosJsonString)
-  const todos = yield* decodeTodos(todosJson)
-
-  return Flags.make({ todos: Option.some(todos) })
-}).pipe(
-  Effect.catch(() => Effect.succeed(Flags.make({ todos: Option.none() }))),
-  Effect.provide(BrowserKeyValueStore.layerLocalStorage),
-)
-```
+Flags definition
 
 `init` receives the decoded Flags value and folds it into the first Model:
 
-```
-import { Option, Schema } from 'effect'
-import type { Runtime } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-
-const Model = Schema.Struct({
-  count: Schema.Number,
-  startingCount: Schema.Option(Schema.Number),
-})
-type Model = typeof Model.Type
-
-const Flags = Schema.Struct({
-  savedCount: Schema.Option(Schema.Number),
-})
-type Flags = typeof Flags.Type
-
-const Message = defineMessageUnion({
-  ClickedIncrement: {},
-})
-type Message = typeof Message.Type
-
-const init: Runtime.ApplicationInit<Model, Message, Flags> = flags => ({
-  model: {
-    count: Option.getOrElse(flags.savedCount, () => 0),
-    startingCount: flags.savedCount,
-  },
-})
-```
+Using init with Flags
 
 ### Fresh Client Boot
 
 Pass the Schema to `Runtime.makeApplication` as `Flags`, then pass the Effect to `Runtime.run`. The runtime resolves the Effect before calling `init`. If the configuration omits the Schema, `init` takes no Flags argument and the compiler rejects mismatched wiring.
 
-```
-import { Runtime } from 'foldkit'
-
-import { Flags, Model, flags, init, update, view } from './main'
-
-const application = Runtime.makeApplication({
-  Model,
-  init,
-  update,
-  view,
-  Flags,
-  container: document.getElementById('root'),
-})
-
-Runtime.run(application, { flags })
-```
+Flags wiring
 
 The example provides `KeyValueStore` inside the Flags Effect because that service is used only during startup. If the same singleton is also needed by Commands or Subscriptions, leave the requirement in the Effect type and provide it through the application's `resources` Layer. The runtime builds that Layer once and shares it. See [Resources](https://foldkit.dev/core/resources) for the full setup.
 

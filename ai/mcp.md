@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ai/mcp
 title: "DevTools MCP"
 description: "Connect an agent to a running Foldkit application to inspect Models and Message history, compare states, replay the UI, and dispatch Schema-validated Messages."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # DevTools MCP Server
@@ -16,6 +16,18 @@ The server complements [Foldkit skills](https://foldkit.dev/ai/skills) and the v
 
 The same Runtime data also powers [DevTools](https://foldkit.dev/core/devtools). DevTools presents it in a panel for people, while the MCP server exposes it as tools for agents.
 
+## Sensitive Runtime Data
+
+Treat DevTools MCP as privileged access to the running application. A connected agent can read the current, initial, and retained historical Models; every retained Message payload; and the arguments passed to recorded Commands and Mounts. Anything returned by one of those tools enters the agent's context.
+
+Keep API keys, passwords, access and refresh tokens, authorization headers, session material, and private personal data out of those values. A credential used by browser code is already available to someone controlling that browser, so long-lived secrets belong behind a server boundary even when DevTools MCP is disabled. This includes local demos: use fake, scoped, or disposable credentials instead of a production secret.
+
+When the browser must temporarily carry a sensitive value, represent it with Effect's `Redacted` type. Use a `Schema.Redacted` field with `disallowJsonEncode: true`, construct its value with `Redacted.make`, and recover it only where the application must use it. `Redacted` prevents normal string, JSON, and inspection output from revealing the value. It does not encrypt the value or make a browser-side credential secret from the person running the browser.
+
+`excludeFromHistory` is not a redaction control. It removes the named Message from history, but the resulting Model remains available through current and historical Model inspection. Omitting `DevToolsConfig.Message` disables agent dispatch only; every inspection and replay tool remains available.
+
+To keep the in-browser DevTools while preventing MCP connections, set `devToolsMcpPort: false` in the Foldkit Vite plugin options. Set `devTools: false` in the application config to disable DevTools recording and its browser bridge too.
+
 ## Setup
 
 ### Projects Created with create-foldkit-app
@@ -26,6 +38,8 @@ New projects already include `@foldkit/devtools-mcp` and a `.mcp.json` entry nam
 
 Run the init command in the project root:
 
+Initialize the DevTools MCP server
+
 ```
 npx @foldkit/devtools-mcp init
 ```
@@ -34,6 +48,8 @@ The command creates `.mcp.json`, or updates only the `foldkit-devtools` entry wh
 
 Install the server as a development dependency when you want to avoid an `npx` lookup each time the agent starts:
 
+Install the DevTools MCP server
+
 ```
 npm install -D @foldkit/devtools-mcp
 ```
@@ -41,6 +57,8 @@ npm install -D @foldkit/devtools-mcp
 No Vite config change is needed. The Foldkit plugin serves the relay at `/__foldkit/devtools-mcp` on the dev server, and the MCP server finds it by project.
 
 If automatic discovery is unavailable, set a fixed `devToolsMcpPort` in `vite.config.ts` and give the MCP server the same value in `FOLDKIT_DEVTOOLS_MCP_PORT`. This is required on Windows:
+
+Vite configuration for a fixed port
 
 ```
 import { defineConfig } from 'vite'
@@ -53,6 +71,8 @@ export default defineConfig({
 ```
 
 To let an agent dispatch Messages, pass the application's `Message` Schema to `Runtime.makeApplication`:
+
+Application configuration
 
 ```
 Runtime.makeApplication({
@@ -195,7 +215,9 @@ The browser bridge runs alongside DevTools and subscribes to the DevTools store.
 
 The plugin publishes the relay's address to a registry private to your user. The address includes a random token that every client must present before inspecting a Model or dispatching a Message. The plugin refuses to publish into a directory owned by another user or readable by other users. The registry lives under `XDG_RUNTIME_DIR` when set, or under the operating system's temporary directory. `FOLDKIT_DEVTOOLS_RELAY_DIRECTORY` selects another directory.
 
-On Windows, the plugin cannot verify registry directory ownership, so it cannot publish an address. Set `devToolsMcpPort` in the Vite config and pass the same port in `FOLDKIT_DEVTOOLS_MCP_PORT`. This opens a separate socket without a token. `FOLDKIT_DEVTOOLS_MCP_PORT` also skips discovery on other platforms.
+The token keeps an unapproved relay client from connecting. It does not hide runtime data from the agent that was given the MCP server.
+
+On Windows, the plugin cannot verify registry directory ownership, so it cannot publish an address. Set `devToolsMcpPort` in the Vite config and pass the same port in `FOLDKIT_DEVTOOLS_MCP_PORT`. This opens a separate socket on every interface without a token. Do not use a fixed port on a shared or untrusted network. `FOLDKIT_DEVTOOLS_MCP_PORT` also skips discovery on other platforms.
 
 When several relays match the project, the MCP server chooses the most recently started one. If the dev server restarts, the MCP server looks it up again and reconnects with exponential backoff. The agent can also start before the dev server.
 

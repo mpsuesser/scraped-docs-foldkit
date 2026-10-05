@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/subscriptions
 title: "Subscriptions"
 description: "Run ongoing Streams whose lifetime follows Model-derived dependencies. Covers restart behavior, timers, browser events, live dependency reads, and Submodel lifting."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Ongoing Work with a Model-Driven Lifetime
@@ -63,46 +63,7 @@ When work must be synchronous with an event, it has to run inside the listener c
 
 Commands describe one-shot work that produces one result. Subscriptions describe ongoing work. In the counter, a Subscription emits `Ticked` once per second while `isAutoCounting` is `true` and stops when it becomes `false`.
 
-```
-import { Duration, Effect, Schema, Stream } from 'effect'
-import { Subscription } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-
-// MESSAGE
-
-const Message = defineMessageUnion({
-  ClickedIncrement: {},
-  ToggledAutoCounting: {},
-  Ticked: {},
-})
-type Message = typeof Message.Type
-
-// MODEL
-
-const Model = Schema.Struct({
-  count: Schema.Number,
-  isAutoCounting: Schema.Boolean,
-})
-type Model = typeof Model.Type
-
-// SUBSCRIPTION
-
-const subscriptions = Subscription.make<Model, Message>()(entry => ({
-  tick: entry(
-    { isAutoCounting: Schema.Boolean },
-    {
-      modelToDependencies: model => ({
-        isAutoCounting: model.isAutoCounting,
-      }),
-      dependenciesToStream: ({ isAutoCounting }) =>
-        Stream.when(
-          Stream.tick(Duration.seconds(1)).pipe(Stream.map(Message.Ticked)),
-          Effect.sync(() => isAutoCounting),
-        ),
-    },
-  ),
-}))
-```
+Auto-counting Subscription
 
 `Subscription.make<Model, Message>()` receives a function that builds a named record of entries. Each call to `entry` takes two arguments:
 
@@ -115,22 +76,7 @@ When `isAutoCounting` changes to `true`, the new Stream starts ticking. When it 
 
 Defining `subscriptions` is only half of the setup. Pass the record to `makeApplication` or no streams start. The field is optional, so omitting it still produces a valid application without Subscription behavior.
 
-```
-import { Runtime } from 'foldkit'
-
-import { Model, init, subscriptions, update, view } from './main'
-
-const application = Runtime.makeApplication({
-  Model,
-  init,
-  update,
-  view,
-  subscriptions,
-  container: document.getElementById('root'),
-})
-
-Runtime.run(application)
-```
+Subscription wiring
 
 The [websocket-chat example](https://foldkit.dev/example-apps/websocket-chat) shows a more involved event stream. [Typing Terminal](https://typingterminal.com/) and its [source](https://github.com/foldkit/foldkit/tree/main/packages/typing-game) show Subscriptions inside a complete application.
 
@@ -140,36 +86,7 @@ The [websocket-chat example](https://foldkit.dev/example-apps/websocket-chat) sh
 
 The helper returns a complete entry with `{ isActive: boolean }` dependencies. Its `toMessage` maps frame deltas to the entry's Message type; unlike the free-standing event Streams below, it is already an entry shape. Place it directly in the record passed to `Subscription.make`:
 
-```
-import { Schema } from 'effect'
-import { Subscription } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-
-// MESSAGE
-
-const Message = defineMessageUnion({
-  TickedFrame: { deltaTime: Schema.Number },
-  ClickedTogglePlay: {},
-})
-type Message = typeof Message.Type
-
-// MODEL
-
-const Model = Schema.Struct({
-  isPlaying: Schema.Boolean,
-  angle: Schema.Number,
-})
-type Model = typeof Model.Type
-
-// SUBSCRIPTION
-
-const subscriptions = Subscription.make<Model, Message>()(_entry => ({
-  frame: Subscription.animationFrame({
-    isActive: model => model.isPlaying,
-    toMessage: deltaTime => Message.TickedFrame({ deltaTime }),
-  }),
-}))
-```
+Animation frame
 
 Use the delta to make motion independent of refresh rate. Convert the milliseconds to seconds before multiplying a per-second velocity, so the simulation behaves consistently at 60Hz, 120Hz, and after a background tab regains focus.
 
@@ -181,51 +98,15 @@ Use `Stream.tick` for discrete wall-clock steps that should occur every N millis
 
 The helper returns a Stream, not a complete entry. Its `mapEvent` callback can produce any output type, including a raw event; `Subscription.make<Model, Message>()` checks that the final Stream supplied to an entry emits the application's Message type. Wrap it in `Stream.when` inside an entry to gate it on the Model, or pass it to `Subscription.persistent` for a listener that lives with the whole Subscriptions record.
 
-```
-import { Effect, Schema, Stream } from 'effect'
-import { Subscription } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-
-// MESSAGE
-
-const Message = defineMessageUnion({
-  PressedKey: { key: Schema.String },
-})
-type Message = typeof Message.Type
-
-// MODEL
-
-const Model = Schema.Struct({
-  isListening: Schema.Boolean,
-})
-type Model = typeof Model.Type
-
-// SUBSCRIPTION
-
-const subscriptions = Subscription.make<Model, Message>()(entry => ({
-  shortcut: entry(
-    { isListening: Schema.Boolean },
-    {
-      modelToDependencies: model => ({ isListening: model.isListening }),
-      dependenciesToStream: ({ isListening }) =>
-        Stream.when(
-          Subscription.fromEvent({
-            target: window,
-            type: 'keydown',
-            mapEvent: event => Message.PressedKey({ key: event.key }),
-          }),
-          Effect.sync(() => isListening),
-        ),
-    },
-  ),
-}))
-```
+DOM event Subscription
 
 The `mapEvent` mapper runs synchronously in the same call stack as the browser event, so it may call `event.preventDefault()` unless the listener is passive. Some browsers default wheel and touch listeners on global targets to passive, where cancellation is ignored. Pass `options: { passive: false }` when cancelling those events. Pass `target` as a thunk if it may not exist until the scope opens; pass always-present globals such as `window` and `document` directly.
 
 The target, the event name, and the event your mapper receives are one fact rather than three. `type` is constrained to the events the target declares, so a misspelled name is a compile error rather than a listener that never fires, and `event` follows from both: `window` plus `'keydown'` gives you a `KeyboardEvent` with no type argument to write. A target with no declared event map, such as a bare `EventTarget`, accepts any name and reports `Event`. Annotate one with `Subscription.TypedEventTarget` to have its own events resolved the same way, `CustomEvent` detail included:
 
-```ts
+Typed custom EventTarget
+
+```
 const slowWarningTarget: Subscription.TypedEventTarget<{
   'foldkit:slow-warning': CustomEvent<SlowWarningReport>
 }> = new EventTarget()
@@ -245,37 +126,7 @@ For a listener attached to one rendered element, use [Mount](https://foldkit.dev
 
 Reading the current value also prevents stale state when a gated entry restarts. Suppose a color-scheme Subscription runs only while the theme preference is `System`. The user selects `Dark`, changes the operating system to a light theme, and then selects `System` again. A new `change` listener waits for the next change, so the Model still records a dark system theme. `fromMediaQuery` reads the current light value as soon as the Stream restarts.
 
-```
-import { Schema } from 'effect'
-import { Subscription } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-
-// MESSAGE
-
-const Message = defineMessageUnion({
-  ChangedReducedMotion: { isReducedMotion: Schema.Boolean },
-})
-type Message = typeof Message.Type
-
-// MODEL
-
-const Model = Schema.Struct({
-  isReducedMotion: Schema.Boolean,
-})
-type Model = typeof Model.Type
-
-// SUBSCRIPTION
-
-const subscriptions = Subscription.make<Model, Message>()(_entry => ({
-  reducedMotion: Subscription.persistent(
-    Subscription.fromMediaQuery({
-      query: '(prefers-reduced-motion: reduce)',
-      mapMatches: isMatching =>
-        Message.ChangedReducedMotion({ isReducedMotion: isMatching }),
-    }),
-  ),
-}))
-```
+Reduced motion media query
 
 The helper returns a Stream. Pass it to `Subscription.persistent` for a query the app always follows. To follow the query only in a particular Model state, use it with `Stream.when` inside an entry. Creating the Stream does not access `window`; `window.matchMedia` is called only when the Stream starts. The same helper works for `prefers-reduced-motion`, `prefers-color-scheme`, and viewport breakpoints such as `(max-width: 1023px)`.
 
@@ -283,58 +134,7 @@ The helper returns a Stream. Pass it to `Subscription.persistent` for a query th
 
 `Subscription.keyBindings` builds a global `keydown` Stream from a declarative key-binding table. Use `keys` with a string for one press, such as `'Escape'` or `'Mod+K'`, and an array for an ordered sequence, such as `['G', 'H']`. Every step in a sequence uses the same grammar, including modifiers.
 
-```
-import { Schema } from 'effect'
-import { Subscription } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-import { defineTaggedUnion } from 'foldkit/schema'
-
-const SearchState = defineTaggedUnion({
-  Closed: {},
-  Open: {},
-})
-
-const Model = Schema.Struct({
-  searchState: SearchState,
-})
-type Model = typeof Model.Type
-
-const Message = defineMessageUnion({
-  PressedSearchShortcut: {},
-  PressedEscape: {},
-  PressedHomeShortcut: {},
-})
-type Message = typeof Message.Type
-
-const subscriptions = Subscription.make<Model, Message>()(entry => ({
-  keyBindings: entry(
-    { searchState: SearchState },
-    {
-      modelToDependencies: model => ({ searchState: model.searchState }),
-      dependenciesToStream: ({ searchState }) =>
-        Subscription.keyBindings<Message>({
-          bindings: [
-            {
-              keys: 'Mod+K',
-              whileTyping: 'Allow',
-              mapEvent: () => Message.PressedSearchShortcut(),
-            },
-            {
-              keys: 'Escape',
-              isEnabled: searchState._tag === 'Open',
-              whileTyping: 'Allow',
-              mapEvent: () => Message.PressedEscape(),
-            },
-            {
-              keys: ['G', 'H'],
-              mapEvent: () => Message.PressedHomeShortcut(),
-            },
-          ],
-        }),
-    },
-  ),
-}))
-```
+Key binding Subscription
 
 Modifier matching is exact: `'Mod+K'` does not also match Shift-Mod-K. `Mod` resolves to Meta on Apple platforms and Control elsewhere; `modKey` provides a deterministic override when needed. Matching uses the layout-aware `KeyboardEvent.key`, so include `Shift` and the resulting character for shifted punctuation. `Space` and `Plus` name keys that would otherwise be awkward in the `+` -separated syntax.
 
@@ -354,68 +154,7 @@ The default structural comparison restarts an entry whenever any dependency chan
 
 Auto-scroll during drag and drop is one example. `isDragging` should start and stop the animation loop. `clientY` changes with every pointer movement, but restarting the loop for every pixel would destroy and recreate it continuously.
 
-```
-import { Effect, Equivalence, Queue, Schema, Stream } from 'effect'
-import { Subscription } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-
-const Message = defineMessageUnion({
-  AdvancedAutoScrollFrame: {},
-})
-type Message = typeof Message.Type
-
-const Model = Schema.Struct({
-  isDragging: Schema.Boolean,
-  clientY: Schema.Number,
-})
-type Model = typeof Model.Type
-
-const subscriptions = Subscription.make<Model, Message>()(entry => ({
-  autoScroll: entry(
-    {
-      isDragging: Schema.Boolean,
-      clientY: Schema.Number,
-    },
-    {
-      modelToDependencies: model => ({
-        isDragging: model.isDragging,
-        clientY: model.clientY,
-      }),
-      // Only restart the stream when isDragging changes.
-      // Without this, every clientY change (every pixel) would tear down
-      // and recreate the requestAnimationFrame loop.
-      keepAliveEquivalence: Equivalence.Struct({
-        isDragging: Equivalence.Boolean,
-      }),
-      // readDependencies returns the latest dependencies without restarting the stream.
-      // The rAF loop calls readDependencies() each frame to get the current clientY.
-      dependenciesToStream: ({ isDragging }, readDependencies) =>
-        Stream.when(
-          Stream.callback<typeof Message.AdvancedAutoScrollFrame.Type>(queue =>
-            Effect.acquireRelease(
-              Effect.sync(() => {
-                const animationFrameIdRef = { current: 0 }
-                const step = () => {
-                  const { clientY } = readDependencies()
-                  window.scrollBy(0, clientY > window.innerHeight - 40 ? 5 : 0)
-                  Queue.offerUnsafe(queue, Message.AdvancedAutoScrollFrame())
-                  animationFrameIdRef.current = requestAnimationFrame(step)
-                }
-                animationFrameIdRef.current = requestAnimationFrame(step)
-                return animationFrameIdRef
-              }),
-              animationFrameIdRef =>
-                Effect.sync(() =>
-                  cancelAnimationFrame(animationFrameIdRef.current),
-                ),
-            ).pipe(Effect.flatMap(() => Effect.never)),
-          ),
-          Effect.sync(() => isDragging),
-        ),
-    },
-  ),
-}))
-```
+Auto-scroll with live dependencies
 
 ### Custom Equivalence
 
@@ -429,7 +168,7 @@ Most entries should use the first `dependencies` argument directly. Reach for `r
 
 ## Lifting Subscriptions
 
-When a parent embeds a Submodel with Subscriptions, the parent must lift the child's Messages into its own Message type. `Subscription.lift` composes the entire record in one call.
+When a parent embeds a Submodel with Subscriptions, the parent must lift the child's Messages into its own Message type. `Subscription.lift` composes the entire record in one call. Its `read` returns an `Option` of the child Model, matching `Update.foldChild` and `ManagedResource.lift`. Returning `None` stops every child Stream without reading child dependencies. Wrap an always-present child in `Option.some`.
 
 The optional `when` field lets the parent add a condition the child cannot see, such as whether the child's page is the active route. One predicate can gate the whole record, or a map can gate selected entries. The child continues to own its own dependencies. See [Subscription Organization](https://foldkit.dev/patterns/subscription-organization) for the complete composition pattern.
 

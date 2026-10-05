@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/subscription
 title: "Subscription"
 description: "API documentation for the Subscription module."
-access_date: 2026-10-03T07:07:57.114Z
-current_date: 2026-10-03T07:07:57.114Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Subscription
@@ -14,7 +14,7 @@ current_date: 2026-10-03T07:07:57.114Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/animationFrame.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/animationFrame.ts#L66)
 
 ```
 /**
@@ -38,7 +38,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/fromEvent.ts#L394)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/fromEvent.ts#L394)
 
 ```
 /**
@@ -78,7 +78,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/fromEvent.ts#L335)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/fromEvent.ts#L335)
 
 ```
 /**
@@ -128,7 +128,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/fromEvent.ts#L465)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/fromEvent.ts#L465)
 
 ```
 /**
@@ -176,7 +176,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/fromMediaQuery.ts#L58)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/fromMediaQuery.ts#L58)
 
 ```
 /**
@@ -207,7 +207,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/keyBindings.ts#L846)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/keyBindings.ts#L846)
 
 ```
 /**
@@ -258,49 +258,37 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/subscription.ts#L682)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/subscription.ts#L580)
 
 ```
 /**
- * Lifts a record of child Subscriptions into a parent's Model and Message
- * context, applying a Model accessor and a Message wrapper uniformly to
- * every entry. Per-entry dependency types, schemas, and `keepAliveEquivalence`
- * settings are preserved; each lifted entry's variant (with or without
- * `readDependencies`) matches its source entry's.
+ * Lifts child Subscriptions into a parent's Model and Message context.
+ * `read` returns `Some(childModel)` while the child exists and `None` while
+ * it is absent, matching `Update.foldChild` and `ManagedResource.lift`.
+ * An absent child tears down every entry's Stream without reading the
+ * child's dependencies. Use `Option.some` for a child that is always present.
  * 
- * The optional `when` is the parent's own gate. The parent writes it here on
- * its `lift` call and answers it from the parent Model, which is what makes
- * it useful: it carries the half of a condition the child cannot see, such as
- * the route a page Submodel sits behind. The child neither declares nor sees
- * the gate, and keeps holding its own half in `modelToDependencies`. A gated
- * entry runs only while its gate returns `true`, and a closed gate tears it
- * down.
+ * The optional `when` adds conditions from the parent Model. One predicate
+ * gates every entry; an EntryGates map adds a gate only to its named
+ * entries. An entry runs only while its gate is open and `read` returns
+ * `Some`. A closed gate skips `read` as well as the child's dependency
+ * projection. Entries omitted from a gate map still stop when the child
+ * is absent.
  * 
- * `when` takes either shape:
- * 
- * - One predicate gates every entry in the record, for the common case where
- *   the whole child answers to one parent condition.
- * - An EntryGates map gates entries by name, for a child whose
- *   Subscriptions answer to different parent conditions. Entries the map
- *   omits are lifted ungated. A child never has to organize its records
- *   around its parent's gating.
- * 
- * Gating rewrites a gated entry's dependencies to GatedDependencies,
- * so its `readDependencies` returns the last dependencies seen through an
- * open gate. Ungated entries keep the child's dependencies untouched. Passing
- * `ParentModel` and `ParentMessage` explicitly suppresses inference on the
- * gate map, which leaves each named entry's dependencies as either shape; let
- * both infer from an annotated `toChildModel` when you want the exact per
- * entry types.
+ * Every lifted entry wraps its dependencies in GatedDependencies.
+ * The child's dependency Schema, service requirements, and
+ * `keepAliveEquivalence` are preserved inside that wrapper. A running child
+ * Stream's `readDependencies` receives current child dependencies while
+ * active, with its starting dependencies as a fallback during teardown.
  */
-<Subscriptions extends Readonly<Record<string, Subscription<any, any, any, any>>>>(subscriptions: Subscriptions): (config: GatedLiftConfig<ParentModel, ParentMessage, Subscriptions>) => GatedLiftedSubscriptions<ParentModel, ParentMessage, Subscriptions>
+<Subscriptions extends Readonly<Record<string, Subscription<any, any, any, any>>>>(subscriptions: Subscriptions): (config: LiftConfig<ParentModel, ParentMessage, Subscriptions>) => LiftedSubscriptions<ParentModel, ParentMessage, Subscriptions>
 ```
 
 ### make
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/subscription.ts#L174)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/subscription.ts#L175)
 
 ```
 /**
@@ -321,7 +309,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/subscription.ts#L365)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/subscription.ts#L366)
 
 ```
 /**
@@ -343,7 +331,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/animationFrame.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/animationFrame.ts#L12)
 
 ```
 /**
@@ -365,13 +353,12 @@ type AnimationFrameConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/subscription.ts#L419)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/subscription.ts#L415)
 
 ```
 /**
- * The per-entry form of a lift's `when`: a partial map from entry name to
- * gate. Entries the map names are gated, and entries it omits are lifted
- * ungated.
+ * Additional parent conditions for named entries in a lift's `when` map.
+ * Entries omitted from the map run whenever `read` returns a child Model.
  */
 type EntryGates = Readonly<Partial<Record<keyof Subscriptions, WhenPredicate<ParentModel>>>>
 ```
@@ -380,7 +367,7 @@ type EntryGates = Readonly<Partial<Record<keyof Subscriptions, WhenPredicate<Par
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/subscription.ts#L24)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/subscription.ts#L25)
 
 ```
 /**
@@ -400,7 +387,7 @@ type EntryWithoutKeepAlive = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/fromEvent.ts#L149)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/fromEvent.ts#L149)
 
 ```
 /**
@@ -440,7 +427,7 @@ type FromEventConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/fromEvent.ts#L185)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/fromEvent.ts#L185)
 
 ```
 /**
@@ -480,7 +467,7 @@ type FromEventFilterMapConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/fromEvent.ts#L260)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/fromEvent.ts#L260)
 
 ```
 /**
@@ -522,7 +509,7 @@ type FromEventFilterMapPreventDefaultConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/fromMediaQuery.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/fromMediaQuery.ts#L19)
 
 ```
 /**
@@ -551,18 +538,14 @@ type FromMediaQueryConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/subscription.ts#L408)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/subscription.ts#L405)
 
 ```
 /**
- * The dependencies of a Subscription lifted through a parent's `when` gate:
- * the child entry's own dependencies under `maybeDependencies`, and `None`
- * for as long as the parent holds the gate closed.
- * 
- * A closed gate is a real teardown rather than a paused Stream. The entry's
- * Stream is torn down, and the child's `modelToDependencies` does not run
- * again until the parent reopens the gate, so child state that changes behind
- * a closed gate causes no restarts.
+ * The dependencies of a lifted Subscription. `maybeDependencies` holds the
+ * child's dependencies while `read` returns `Some` and its `when` gate is
+ * open. Otherwise it holds `None`, which tears down the entry's Stream and
+ * skips the child's `modelToDependencies`.
  */
 type GatedDependencies = Readonly<{
   maybeDependencies: Option.Option<Dependencies>
@@ -573,7 +556,7 @@ type GatedDependencies = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/keyBindings.ts#L36)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/keyBindings.ts#L36)
 
 ```
 /**
@@ -596,7 +579,7 @@ type KeyBinding = BindingBase<Output> & Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/keyBindings.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/keyBindings.ts#L51)
 
 ```
 /** Configuration for the keyBindings Stream helper. */
@@ -612,7 +595,7 @@ type KeyBindingsConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/keyBindings.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/keyBindings.ts#L19)
 
 ```
 /** A single key press or a sequence of two or more key presses. */
@@ -623,7 +606,7 @@ type KeySequence = string | Readonly<[string, string, ...Array<string>]>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/subscription.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/subscription.ts#L73)
 
 ```
 /**
@@ -658,7 +641,7 @@ type Subscription = Entry<Model, Message, Dependencies, Services> & Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/subscription.ts#L80)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/subscription.ts#L81)
 
 ```
 /** A record of named Subscriptions keyed by dependency field name. */
@@ -669,7 +652,7 @@ type Subscriptions = Readonly<Record<string, Subscription<Model, Message, any, S
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/keyBindings.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/keyBindings.ts#L16)
 
 ```
 /** Whether a key binding may fire when its event comes from an editable element. */
@@ -682,7 +665,7 @@ type WhileTyping = "Suppress" | "Allow"
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/fromEvent.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/fromEvent.ts#L25)
 
 ```
 /**
@@ -712,7 +695,7 @@ interface TypedEventTarget {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/subscription/subscription.ts#L336)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/subscription/subscription.ts#L337)
 
 ```
 /**

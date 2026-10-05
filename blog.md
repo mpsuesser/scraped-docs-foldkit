@@ -2,13 +2,21 @@
 url: https://foldkit.dev/blog
 title: "Blog"
 description: "Announcements, musings, and technical deep dives."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Blog
 
 Announcements, musings, and technical deep dives.
+
+[Foldkit 0.165.0 and 0.166.0](https://foldkit.dev/blog/foldkit-0-166-0)
+
+October 4, 2026 · Devin Jameson
+
+Effect 4 stable, an experimental Query module for remote data, and improvements to child lifecycles, DevTools, and Vite.
+
+[Read more →](https://foldkit.dev/blog/foldkit-0-166-0)
 
 [Foldkit 0.164.0](https://foldkit.dev/blog/foldkit-0-164-0)
 

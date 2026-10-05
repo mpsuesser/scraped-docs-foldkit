@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/meter
 title: "Meter"
 description: "A scalar value in a known range with meter semantics, clamped aria-valuenow, and threshold data attributes."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -22,41 +22,7 @@ Pass the current `value` and render the provided attribute groups. Spread `attri
 
 Health75 / 100
 
-```
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Meter } from '@foldkit/ui'
-
-const view = (h: HtmlBuilder<Message>) =>
-  Meter.view(
-    {
-      id: 'health',
-      value: 75,
-      max: 100,
-      valueText: '75 of 100 health',
-      toView: attributes =>
-        h.div(
-          [h.Class('flex flex-col gap-2')],
-          [
-            h.span([...attributes.label], ['Health']),
-            h.div(
-              [
-                ...attributes.meter,
-                h.Class('h-3 w-full rounded-full bg-gray-200'),
-              ],
-              [
-                h.div([
-                  ...attributes.fill,
-                  h.Class('h-full rounded-full bg-emerald-600'),
-                ]),
-              ],
-            ),
-          ],
-        ),
-    },
-    h,
-  )
-```
+Meter
 
 ### Thresholds
 

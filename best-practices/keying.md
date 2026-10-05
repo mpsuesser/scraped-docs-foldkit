@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/keying
 title: "Keying"
 description: "Use stable Model identifiers to preserve identity for mapped list items and entities rendered at one position."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Keying
@@ -19,6 +19,8 @@ Coming from React
 A Foldkit view function plays the role a component type plays during reconciliation. The same function patches; a different function replaces. Keys still identify list items and entities, but the build handles branch identity for every branching syntax.
 
 The syntax that selects a view function does not matter. `if`/`else`, ternaries, and Effect `Match` all use the identity of the function that produced the subtree:
+
+Branching views
 
 ```
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -38,33 +40,13 @@ const searchView = (model: Model, h: HtmlBuilder<Message>): Html =>
 
 Mapped rows all come from the same function, so view identity cannot distinguish them. Key each item's root by a stable Model identifier, never by its array position:
 
-```
-import type { Html, HtmlBuilder } from 'foldkit/html'
-
-const entryListView = (
-  entries: ReadonlyArray<Entry>,
-  h: HtmlBuilder<Message>,
-): Html =>
-  h.ul(
-    [],
-    entries.map(entry =>
-      h.keyed('li')(
-        entry.id,
-        [],
-        [
-          h.input([
-            h.Value(entry.text),
-            h.OnInput(text => EditedEntry({ id: entry.id, text })),
-          ]),
-        ],
-      ),
-    ),
-  )
-```
+List items keying
 
 ### One Position, Different Entities
 
 A detail page may render every article through `articlePageView`. The function identity stays the same when navigation selects another article, so key the root by the article id or slug:
+
+Detail page keying
 
 ```
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -83,21 +65,7 @@ The key makes the old article and the new article different entities. Local DOM 
 
 Key by what an entity is, never by what it currently shows. A key derived from displayed data changes whenever the content changes. Each edit then tears down the node and discards focus, text selection, and other element-owned state:
 
-```
-import type { Html, HtmlBuilder } from 'foldkit/html'
-
-// ❌ Displayed data is not identity
-const reviewPanelKeyedByData = (model: Model, h: HtmlBuilder<Message>): Html =>
-  h.keyed('div')(
-    `${model.isCardSelected}:${model.isTermsAccepted}`,
-    [],
-    [reviewContentView(model, h)],
-  )
-
-// ✅ The same panel remains the same entity
-const reviewPanel = (model: Model, h: HtmlBuilder<Message>): Html =>
-  h.div([], [reviewContentView(model, h)])
-```
+Identity keying
 
 Always build with the plugin
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/fieldset
 title: "Fieldset"
 description: "A stateless wrapper around the native fieldset with linked legend and description attributes."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -20,86 +20,13 @@ Check out how Fieldset is wired up in a [real Foldkit app](https://github.com/fo
 
 The `toView` callback receives three attribute groups: `fieldset` for the wrapper, `legend` for the group title, and `description` for help text. Nest other Foldkit UI components inside the fieldset body.
 
-```
-// Pseudocode — Fieldset is view-only. Nest other Foldkit UI components
-// inside the fieldset body in your own view function.
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Fieldset } from '@foldkit/ui'
-
-const view = (h: HtmlBuilder<Message>) =>
-  Fieldset.view(
-    {
-      id: 'personal-info',
-      hasDescription: true,
-      toView: attributes =>
-        h.fieldset(
-          [...attributes.fieldset, h.Class('rounded-lg border p-6')],
-          [
-            h.legend(
-              [...attributes.legend, h.Class('text-base font-semibold')],
-              ['Personal Information'],
-            ),
-            h.span(
-              [
-                ...attributes.description,
-                h.Class('text-sm text-gray-500 mt-1'),
-              ],
-              ['We just need a few details.'],
-            ),
-            h.div(
-              [h.Class('mt-4 flex flex-col gap-4')],
-              [
-                // Nest Input, Textarea, Checkbox, etc. here
-              ],
-            ),
-          ],
-        ),
-    },
-    h,
-  )
-```
+Basic fieldset
 
 ### Disabled
 
 Set `isDisabled: true` to disable the entire group. The native `<fieldset disabled>` attribute propagates to all child inputs, textareas, buttons, and selects. You don’t need to disable each control individually.
 
-```
-// Pseudocode — Fieldset is view-only. Setting isDisabled on the fieldset
-// propagates to all child form elements via the native <fieldset disabled>
-// attribute.
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Fieldset } from '@foldkit/ui'
-
-const view = (h: HtmlBuilder<Message>) =>
-  Fieldset.view(
-    {
-      id: 'personal-info-disabled',
-      isDisabled: true,
-      hasDescription: true,
-      toView: attributes =>
-        h.fieldset(
-          [...attributes.fieldset, h.Class('rounded-lg border p-6')],
-          [
-            h.legend(
-              [...attributes.legend, h.Class('text-base font-semibold')],
-              ['Personal Information'],
-            ),
-            h.span(
-              [
-                ...attributes.description,
-                h.Class('text-sm text-gray-500 mt-1'),
-              ],
-              ['This section is disabled.'],
-            ),
-            // All nested form controls inherit the disabled state
-          ],
-        ),
-    },
-    h,
-  )
-```
+Disabled fieldset
 
 ## Styling
 

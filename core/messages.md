@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/messages
 title: "Messages"
 description: "Define the facts update can handle as a Schema-backed Message union, with naming conventions for user actions, Command results, and Submodel wrappers."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Messages
@@ -16,21 +16,7 @@ A Message records something that happened in the application. It does not prescr
 
 The counter has three Messages:
 
-```
-import { Schema } from 'effect'
-import { defineMessageUnion } from 'foldkit/message'
-
-// MESSAGE
-
-// defineMessageUnion() declares the union and its callable constructors together
-
-const Message = defineMessageUnion({
-  ClickedDecrement: {},
-  ClickedIncrement: {},
-  ClickedReset: {},
-})
-type Message = typeof Message.Type
-```
+Message union
 
 Messages use verb-first, past-tense names such as `ClickedIncrement`, not `Increment` or `ADD_COUNT`. Prefixes make their causes easy to scan. `Clicked*` records clicks, and `Updated*` records input changes. Command results use `Succeeded*` or `Failed*` when the distinction matters, and `Completed*` otherwise. `Got*` is reserved for results lifted from a child [Submodel](https://foldkit.dev/core/submodel).
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view-memoization
 title: "View Memoization"
 description: "Skip stable view subtrees with createLazy and createKeyedLazy, choose cache keys by entity identity, and profile before adding memoization."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # View Memoization
@@ -23,58 +23,7 @@ Each helper caches the VNode returned by a view function. On a later live render
 
 `createLazy` creates one memoization slot. Declare it at module scope, then use it to wrap an expensive subtree rendered at one position.
 
-```
-import { type HtmlBuilder, createLazy } from 'foldkit/html'
-
-// Define the view function at module level for a stable reference.
-// If defined inside the view, a new function is created each render,
-// defeating the cache.
-const statsView = (
-  revenue: number,
-  orderCount: number,
-  topProducts: ReadonlyArray<string>,
-  h: HtmlBuilder<Message>,
-) =>
-  h.div(
-    [],
-    [
-      h.h2([], ['Dashboard']),
-      h.p([], [`Revenue: $${revenue}`]),
-      h.p([], [`Orders: ${orderCount}`]),
-      h.ul(
-        [],
-        topProducts.map(name => h.li([], [name])),
-      ),
-    ],
-  )
-
-// Create the lazy slot at module level. One slot per view.
-const lazyStats = createLazy()
-
-// In your view, wrap the call with the lazy slot.
-// If revenue, orderCount, and topProducts are the same references
-// as last render, the cached VNode is returned instantly.
-// both VNode construction and subtree diffing are skipped.
-// The builder travels through the args array like any other argument.
-// The runtime hands every render the same builder object, so it never
-// invalidates the cache.
-const view = (model: Model, h: HtmlBuilder<Message>) => ({
-  title: 'Dashboard',
-  body: h.div(
-    [],
-    [
-      headerView(model, h),
-      lazyStats(statsView, [
-        model.revenue,
-        model.orderCount,
-        model.topProducts,
-        h,
-      ]),
-      sidebarView(model, h),
-    ],
-  ),
-})
-```
+Using createLazy
 
 Both the view function and the lazy slot must stay at module scope. Defining either inside view creates a new reference on every render, so the cache always misses.
 
@@ -84,55 +33,7 @@ Arguments are compared by reference, not by value. This works with [modifyFields
 
 `createKeyedLazy` stores an independent memoization slot for every key. Use it when one view function renders several positions, such as rows in a list.
 
-```
-import { Array, Option } from 'effect'
-import { type HtmlBuilder, createKeyedLazy } from 'foldkit/html'
-
-// Define the per-item view at module level
-const contactView = (
-  name: string,
-  email: string,
-  isSelected: boolean,
-  h: HtmlBuilder<Message>,
-) =>
-  h.li(
-    [],
-    [
-      h.span([], [name]),
-      h.span([], [email]),
-      ...(isSelected ? [h.span([], ['✓'])] : []),
-    ],
-  )
-
-// Create the keyed lazy map at module level.
-// Each key gets its own independent cache slot.
-const lazyContact = createKeyedLazy()
-
-// When rendering a list, only items whose args changed are recomputed.
-// If you select a different contact, only the previously-selected
-// and newly-selected items re-render. All others return cached VNodes.
-const contactListView = (
-  contacts: ReadonlyArray<Contact>,
-  maybeSelectedId: Option.Option<string>,
-  h: HtmlBuilder<Message>,
-) =>
-  h.ul(
-    [],
-    Array.map(contacts, contact => {
-      const isSelected = Option.exists(
-        maybeSelectedId,
-        selectedId => selectedId === contact.id,
-      )
-
-      return lazyContact(contact.id, contactView, [
-        contact.name,
-        contact.email,
-        isSelected,
-        h,
-      ])
-    }),
-  )
-```
+Using createKeyedLazy
 
 When one item changes, its slot misses while unchanged items return their cached VNodes. The parent view still traverses the list, but it does not rebuild or diff each unchanged item subtree.
 
@@ -146,38 +47,7 @@ A keyed lazy also separates entities rendered at the same position. A blog page 
 
 Use the same stable Model identifier for memoization and [DOM identity](https://foldkit.dev/best-practices/keying#keys-and-view-identity). A post addressed by `post.slug` uses `post.slug`. A row keyed with `todo.id` uses `todo.id`. One identifier then names the entity in both systems.
 
-```
-import { type HtmlBuilder, createKeyedLazy } from 'foldkit/html'
-
-// One view function serves every post. Turning the compiled markdown into a
-// rendered page is the expensive part, so it belongs behind the memo.
-const postView = (
-  post: Post,
-  snippetCopy: SnippetCopy.Model,
-  h: HtmlBuilder<Message>,
-) =>
-  BlogPostPage.view(
-    post,
-    SnippetCopy.renderer(
-      snippetCopy,
-      message => Message.GotSnippetCopyMessage({ message }),
-      h,
-    ),
-    Prose.renderHeadingLink(hash => Message.ClickedCopyLink({ hash }), h),
-  )
-
-// One slot per post, keyed by the same slug the route already uses to give
-// the post its DOM identity.
-const lazyPostView = createKeyedLazy()
-
-// Navigating between posts moves between slots instead of overwriting one.
-// Coming back to a post you already read returns its cached VNode.
-const view = (
-  post: Post,
-  snippetCopy: SnippetCopy.Model,
-  h: HtmlBuilder<Message>,
-) => lazyPostView(post.slug, postView, [post, snippetCopy, h])
-```
+Memoizing an entity view by its identifier
 
 Keys can also identify fixed call sites. If one view function renders in two places, give those positions distinct keys instead of maintaining two `createLazy` slots.
 

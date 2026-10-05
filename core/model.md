@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/model
 title: "Model"
 description: "Define application state as one Schema-backed Model. Foldkit uses its runtime Schema to preserve state across hot updates and validate unknown data."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Model
@@ -15,6 +15,8 @@ The Model is the complete application state in one immutable data structure. Eve
 In the [restaurant analogy](https://foldkit.dev/core/architecture#the-restaurant-analogy), this is the waiter's notebook. The analogy is a memory aid; the literal contract is one state tree that every transition receives and returns.
 
 The counter defines its Model with [Effect Schema](https://effect.website/docs/schema/introduction/):
+
+Counter Model
 
 ```
 import { Schema } from 'effect'
@@ -35,33 +37,7 @@ That runtime value matters because TypeScript types disappear after compilation.
 
 Use `defineTaggedUnion` when a Model field can have several named shapes. Declare every variant together, then construct and match values through the union:
 
-```
-import { Schema } from 'effect'
-import { defineTaggedUnion } from 'foldkit/schema'
-
-const EditorMode = defineTaggedUnion({
-  Browsing: {},
-  Editing: { noteId: Schema.String },
-  Previewing: { noteId: Schema.String },
-})
-type EditorMode = typeof EditorMode.Type
-
-const Model = Schema.Struct({
-  editorMode: EditorMode,
-})
-type Model = typeof Model.Type
-
-const init = (): Model => ({
-  editorMode: EditorMode.Browsing(),
-})
-
-const modeLabel = (mode: EditorMode): string =>
-  EditorMode.match(mode, {
-    Browsing: () => 'Browsing notes',
-    Editing: ({ noteId }) => `Editing ${noteId}`,
-    Previewing: ({ noteId }) => `Previewing ${noteId}`,
-  })
-```
+Model state union
 
 `EditorMode` is the Schema stored in `Model` and the namespace used to construct values such as `EditorMode.Browsing()`. Its `match` method requires every variant to be handled. If you add another editor mode, TypeScript finds each match that needs a new branch.
 
@@ -74,6 +50,8 @@ When another Schema accepts only some editor modes, build it with `EditorMode.su
 Use `taggedStruct` only when the variants cannot be declared together. Recursive unions and standalone tagged structs are the common cases.
 
 The counter starts with one field. When automatic counting becomes part of the application state, the Model grows to record it:
+
+Expanded counter Model
 
 ```
 import { Schema } from 'effect'

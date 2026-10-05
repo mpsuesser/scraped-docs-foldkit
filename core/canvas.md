@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/canvas
 title: "Canvas"
 description: "Declarative 2D rendering with a Schema-defined Shape AST and pointer events translated to canvas-local coordinates."
-access_date: 2026-08-20T02:21:49.544Z
-current_date: 2026-08-20T02:21:49.544Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -26,46 +26,7 @@ For continuous animation, pair `Canvas.view` with [`Subscription.animationFrame`
 
 `Canvas.view` accepts `onPointerDown`, `onPointerMove`, and `onPointerUp` callbacks. Each receives a `Point` translated into the internal coordinate space set by `width` and `height`, regardless of the canvas's CSS size. Passing the current view builder as the second argument binds the callbacks to that view's Message type.
 
-```
-import { Canvas, Subscription } from 'foldkit'
-import type { Html, HtmlBuilder } from 'foldkit/html'
-
-const subscriptions = Subscription.make<Model, Message>()(_entry => ({
-  frame: Subscription.animationFrame({
-    isActive: model => model.isPlaying,
-    toMessage: deltaTime => TickedFrame({ deltaTime }),
-  }),
-}))
-
-const view = (model: Model, h: HtmlBuilder<Message>): Html =>
-  Canvas.view(
-    {
-      width: 600,
-      height: 400,
-      shapes: [
-        Canvas.Rect({ x: 0, y: 0, width: 600, height: 400, fill: '#0a0a0f' }),
-        Canvas.Group({
-          translate: { x: 300, y: 200 },
-          rotate: model.angle,
-          shapes: [
-            Canvas.Circle({ x: 0, y: 0, radius: 50, fill: '#ff2d55' }),
-            Canvas.Path({
-              instructions: [
-                Canvas.MoveTo({ x: -30, y: -30 }),
-                Canvas.LineTo({ x: 30, y: -30 }),
-                Canvas.LineTo({ x: 0, y: 30 }),
-                Canvas.Close(),
-              ],
-              fill: '#ffcc00',
-            }),
-          ],
-        }),
-      ],
-      onPointerDown: ({ x, y }) => ClickedCanvas({ x, y }),
-    },
-    h,
-  )
-```
+Canvas scene with animation and pointer input
 
 ## Full API Surface
 

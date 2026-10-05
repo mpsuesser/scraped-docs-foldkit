@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/checkbox
 title: "Checkbox"
 description: "Accessible checkbox with indeterminate state support."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -22,172 +22,13 @@ The checkbox element is typically a `<button>`. Spread `attributes.checkbox` ont
 
 You agree to our Terms of Service and Privacy Policy.
 
-```
-// Pseudocode walkthrough of the Foldkit integration points. Each labeled
-// block below is an excerpt. Fit them into your own Model, init, Message,
-// update, and view definitions.
-import { Schema } from 'effect'
-import type { HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
-import { modifyFields } from 'foldkit/struct'
-
-import { Checkbox } from '@foldkit/ui'
-
-// Store the checked state as a plain boolean field in your Model:
-const Model = Schema.Struct({
-  acceptedTerms: Schema.Boolean,
-  // ...your other fields
-})
-
-// In your init function, start it unchecked:
-const init = () => ({
-  model: {
-    acceptedTerms: false,
-    // ...your other fields
-  },
-})
-
-// A verb-first, past-tense Message carries the new checked state:
-
-const Message = defineMessageUnion({
-  ToggledTerms: { isChecked: Schema.Boolean },
-})
-
-// In the corresponding Message.match handler, store the value.
-// This is the moment to fire analytics, validate a form, or push the value
-// to a backend.
-ToggledTerms: ({ isChecked }) => ({
-  model: modifyFields(model, { acceptedTerms: () => isChecked }),
-})
-
-// Inside your view function, render the checkbox with Checkbox.view. It reads
-// the checked state from your Model and calls onToggle with the new state.
-const view = (model, h: HtmlBuilder<Message>) =>
-  Checkbox.view(
-    {
-      id: 'accept-terms',
-      isChecked: model.acceptedTerms,
-      hasDescription: true,
-      onToggle: isChecked => Message.ToggledTerms({ isChecked }),
-      toView: attributes =>
-        h.div(
-          [h.Class('flex flex-col gap-1')],
-          [
-            h.div(
-              [h.Class('flex items-center gap-2')],
-              [
-                h.button(
-                  [...attributes.checkbox, h.Class('h-5 w-5 rounded border')],
-                  model.acceptedTerms ? ['✓'] : [],
-                ),
-                h.label(
-                  [...attributes.label, h.Class('text-sm')],
-                  ['Accept terms and conditions'],
-                ),
-              ],
-            ),
-            h.p(
-              [...attributes.description, h.Class('text-sm text-gray-500')],
-              ['You agree to our Terms of Service.'],
-            ),
-          ],
-        ),
-    },
-    h,
-  )
-```
+Basic checkbox
 
 ### Indeterminate
 
 Pass `isIndeterminate: true` to show a mixed state. This is typically computed from child checkbox states: when some but not all children are checked, the parent shows the indeterminate mark. Toggling the parent sets all children to the same state.
 
-```
-// Pseudocode walkthrough of the Foldkit integration points. Each labeled
-// block below is an excerpt. Fit them into your own Model, init, Message,
-// update, and view definitions.
-import { Schema } from 'effect'
-import type { HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
-import { modifyFields } from 'foldkit/struct'
-
-import { Checkbox } from '@foldkit/ui'
-
-// Store each child's checked state as a plain boolean field in your Model:
-const Model = Schema.Struct({
-  optionA: Schema.Boolean,
-  optionB: Schema.Boolean,
-  // ...your other fields
-})
-
-// In your init function, start each unchecked:
-const init = () => ({
-  model: {
-    optionA: false,
-    optionB: false,
-    // ...your other fields
-  },
-})
-
-// One Message per child, plus one for the "Select All" parent. Each carries
-// the new checked state:
-
-const Message = defineMessageUnion({
-  ToggledSelectAll: { isChecked: Schema.Boolean },
-  ToggledOptionA: { isChecked: Schema.Boolean },
-  ToggledOptionB: { isChecked: Schema.Boolean },
-})
-
-// In the corresponding Message.match handler, toggling "Select All"
-// writes the same value to every child:
-ToggledSelectAll: ({ isChecked }) => ({
-  model: modifyFields(model, {
-    optionA: () => isChecked,
-    optionB: () => isChecked,
-  }),
-})
-
-// Inside your view function, compute the parent's checked and indeterminate
-// state from the children and pass isIndeterminate straight to Checkbox.view:
-const view = (model, h: HtmlBuilder<Message>) => {
-  const isAllChecked = model.optionA && model.optionB
-  const isNoneChecked = !model.optionA && !model.optionB
-  const isIndeterminate = !isAllChecked && !isNoneChecked
-
-  const resolveSelectAllMark = () => {
-    if (isIndeterminate) {
-      return ['—']
-    } else if (isAllChecked) {
-      return ['✓']
-    } else {
-      return []
-    }
-  }
-
-  return Checkbox.view(
-    {
-      id: 'select-all',
-      isChecked: isAllChecked,
-      isIndeterminate,
-      onToggle: isChecked => Message.ToggledSelectAll({ isChecked }),
-      toView: attributes =>
-        h.div(
-          [h.Class('flex items-center gap-2')],
-          [
-            h.button(
-              [...attributes.checkbox, h.Class('h-5 w-5 rounded border')],
-              resolveSelectAllMark(),
-            ),
-            h.label(
-              [...attributes.label, h.Class('text-sm')],
-              ['All notifications'],
-            ),
-          ],
-        ),
-    },
-    h,
-  )
-}
-```
+Indeterminate checkbox
 
 ## Styling
 

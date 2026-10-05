@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-0-159-0
 title: "Foldkit 0.159.0"
 description: "Foldkit's Vite plugin now builds a portable Web fetch handler for Node and Workers, with smaller updates to browser input, accessibility, and tooling."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
@@ -19,6 +19,8 @@ Foldkit 0.159.0 is out. The main change is a portable `fetch` handler for server
 In 0.155.0, Foldkit moved the browser build, server build, and prerendering into one `vite build`. But the server build still asked you to choose a host entry: a Node HTTP process or a custom Worker.
 
 `@foldkit/vite-plugin` 0.21.0 now builds a Web `fetch` handler. The same server module can run on Node or Workers:
+
+Server build configuration
 
 ```
 foldkit({

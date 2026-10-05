@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/input
 title: "Input"
 description: "A thin wrapper around the native input with ARIA linking and styling hooks."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -22,43 +22,7 @@ Pass an `id`, an `onInput` handler, and a `toView` callback. The callback receiv
 
 As it appears on your government-issued ID.
 
-```
-// Pseudocode — Input is view-only. The value lives in your own Model as a
-// string. Replace model.name and UpdatedName with your own field and Message.
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Input } from '@foldkit/ui'
-
-const view = (model: Model, h: HtmlBuilder<Message>) =>
-  Input.view(
-    {
-      id: 'full-name',
-      hasDescription: true,
-      value: model.name, // your Model field
-      onInput: value => UpdatedName({ value }), // your Message
-      placeholder: 'Enter your full name',
-      toView: attributes =>
-        h.div(
-          [h.Class('flex flex-col gap-1.5')],
-          [
-            h.label(
-              [...attributes.label, h.Class('text-sm font-medium')],
-              ['Name'],
-            ),
-            h.input([
-              ...attributes.input,
-              h.Class('w-full rounded-lg border border-gray-300 px-3 py-2'),
-            ]),
-            h.span(
-              [...attributes.description, h.Class('text-sm text-gray-500')],
-              ['As it appears on your government-issued ID.'],
-            ),
-          ],
-        ),
-    },
-    h,
-  )
-```
+Basic input
 
 ### Disabled
 
@@ -66,44 +30,7 @@ Set `isDisabled: true` to disable the input. Unlike Button, Input uses the nativ
 
 This input is disabled.
 
-```
-// Pseudocode — Input is view-only. Disabled inputs display a fixed value
-// and ignore onInput events.
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Input } from '@foldkit/ui'
-
-const view = (h: HtmlBuilder<Message>) =>
-  Input.view(
-    {
-      id: 'email-disabled',
-      isDisabled: true,
-      hasDescription: true,
-      value: 'ada@lovelace.dev',
-      toView: attributes =>
-        h.div(
-          [h.Class('flex flex-col gap-1.5')],
-          [
-            h.label(
-              [...attributes.label, h.Class('text-sm font-medium')],
-              ['Email'],
-            ),
-            h.input([
-              ...attributes.input,
-              h.Class(
-                'w-full rounded-lg border px-3 py-2 data-[disabled]:opacity-50',
-              ),
-            ]),
-            h.span(
-              [...attributes.description, h.Class('text-sm text-gray-500')],
-              ['Contact your admin to update.'],
-            ),
-          ],
-        ),
-    },
-    h,
-  )
-```
+Disabled input
 
 ## Styling
 

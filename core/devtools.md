@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/devtools
 title: "DevTools"
 description: "Inspect Message history, Model changes, Commands, and Mounts in the development overlay. Configure time travel, filtering, history limits, and AI dispatch."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # DevTools
@@ -27,28 +27,23 @@ AI agent integration
 
 Foldkit also exposes DevTools to AI agents over the Model Context Protocol. See the [DevTools MCP](https://foldkit.dev/ai/mcp) page for setup.
 
+DevTools records application data
+
+DevTools records Models, Message payloads, Command arguments, and Mount arguments. A configured [DevTools MCP](https://foldkit.dev/ai/mcp) server lets an agent read that data. Keep secrets out of browser state, use Effect `Redacted` for sensitive values the browser must temporarily hold, and disable the MCP relay or DevTools when the Runtime may contain data the agent should not receive.
+
+A browser may still need to hold a short-lived access token. Wrap it before it enters the Model, keep the `Redacted` value intact in any Message or Command arguments that carry it, and recover the raw value only where the Command constructs the authenticated request. The numbered comments trace the Model-to-request path through the example.
+
+Redacting a short-lived access token
+
+DevTools displays the value as `<redacted:access token>`. This prevents accidental inspection and serialization; it does not encrypt the token or hide it from someone who controls the browser.
+
 ## Development and Production
 
 DevTools are enabled by default in development. Recording and the MCP bridge live in the core runtime. The browser overlay ships separately in `@foldkit/devtools`. When that package is installed as a development dependency, `@foldkit/vite-plugin` mounts the overlay automatically during development. Production builds omit it without an application-level environment check.
 
 Add a `devTools` object to `makeApplication` only when you need to configure DevTools or allow MCP dispatch. To include the overlay in production, move `@foldkit/devtools` to regular `dependencies` and set `show: 'Always'`. You do not need to import the overlay.
 
-```
-import { Runtime } from 'foldkit'
-
-const application = Runtime.makeApplication({
-  Model,
-  init,
-  update,
-  view,
-  container: document.getElementById('root'),
-  devTools: {
-    position: 'BottomLeft',
-  },
-})
-
-Runtime.run(application)
-```
+Configuring DevTools
 
 ## Configuration
 
@@ -70,24 +65,7 @@ Controls where the badge and panel appear on screen. One of `'BottomRight'` (def
 
 Pass `{ development, production }` to choose a mode for each environment. When `show: 'Always'` keeps DevTools available in production, use `'TimeTravel'` for local debugging and `'Inspect'` in production. Selecting a row will not pause a visitor's app.
 
-```
-import { Runtime } from 'foldkit'
-
-const application = Runtime.makeApplication({
-  Model,
-  init,
-  update,
-  view,
-  container: document.getElementById('root'),
-  devTools: {
-    show: 'Always',
-    mode: { development: 'TimeTravel', production: 'Inspect' },
-    banner: 'Welcome to our app! Browse the state tree to see how it works.',
-  },
-})
-
-Runtime.run(application)
-```
+TimeTravel locally, Inspect in production
 
 ### banner
 
@@ -103,25 +81,11 @@ A list of Message `_tag` values that DevTools should not record. The Messages st
 
 Use this option when animation frames, pointer moves, scroll events, or another high-frequency source would flood the history.
 
+Do not use `excludeFromHistory` to hide sensitive data. The current Model and the Models at later recorded entries still include changes made by an excluded Message.
+
 When the list contains at least one tag, DevTools stores a full Model snapshot for every recorded entry. That preserves changes made by excluded Messages when you travel to a recorded state. Excluded Messages also update the `Live` Model view, but they do not append a history entry or compute a diff.
 
-```
-import { Runtime } from 'foldkit'
-
-const application = Runtime.makeApplication({
-  Model,
-  init,
-  update,
-  view,
-  subscriptions,
-  container: document.getElementById('root'),
-  devTools: {
-    excludeFromHistory: ['TickedFrame', 'MovedPointer'],
-  },
-})
-
-Runtime.run(application)
-```
+Excluding high-frequency Messages from history
 
 ### maxEntries
 
@@ -129,22 +93,7 @@ The maximum number of recorded Messages retained before DevTools evicts the olde
 
 Smaller values reduce work under high Message rates. Larger values provide more history. Memory use grows with `maxEntries` and Model size, especially when `excludeFromHistory` makes every recorded entry store a full Model snapshot.
 
-```
-import { Runtime } from 'foldkit'
-
-const application = Runtime.makeApplication({
-  Model,
-  init,
-  update,
-  view,
-  container: document.getElementById('root'),
-  devTools: {
-    maxEntries: 250,
-  },
-})
-
-Runtime.run(application)
-```
+Raising the DevTools history cap
 
 ### keyframeInterval
 
@@ -154,19 +103,4 @@ To reconstruct an entry, DevTools starts at the nearest earlier snapshot and rep
 
 DevTools automatically uses `1` when `excludeFromHistory` is active because excluded Messages are not available for replay.
 
-```
-import { Runtime } from 'foldkit'
-
-const application = Runtime.makeApplication({
-  Model,
-  init,
-  update,
-  view,
-  container: document.getElementById('root'),
-  devTools: {
-    keyframeInterval: 1,
-  },
-})
-
-Runtime.run(application)
-```
+Snapshotting every entry for constant-time jumps

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/dom
 title: "Dom"
 description: "Use Effects for common DOM work such as focus, dialog control, scrolling, scroll locks, and inert isolation."
-access_date: 2026-09-18T04:36:53.681Z
-current_date: 2026-09-18T04:36:53.681Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Dom
@@ -19,6 +19,8 @@ Each helper exposes its failure type in the Effect channel. `Dom.focus` returns 
 ## Using Dom
 
 Wrap the helper in a Command and map its success or failure into one of that Command's declared Messages.
+
+Focusing an input from a Command
 
 ```
 import { Effect } from 'effect'

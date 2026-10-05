@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/managed-resource
 title: "ManagedResource"
 description: "API documentation for the ManagedResource module."
-access_date: 2026-10-03T07:07:57.114Z
-current_date: 2026-10-03T07:07:57.114Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # ManagedResource
@@ -14,7 +14,7 @@ current_date: 2026-10-03T07:07:57.114Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/managedResource/managedResource.ts#L343)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/managedResource/managedResource.ts#L343)
 
 ```
 /**
@@ -22,15 +22,15 @@ function
  * context, applying a Model accessor and a Message wrapper uniformly to every
  * entry. Per-entry requirements schemas and resource services are preserved.
  * 
- * Unlike `Subscription.lift`, `toChildModel` returns an `Option`: a managed
- * resource already speaks in `Option` (`modelToMaybeRequirements` returns
- * `Option.none()` to release), and a child Submodel that owns a managed
- * resource is itself something that mounts and unmounts. A missing child is
- * just another `None` and flows through the same acquire/release channel, so
- * each lifted entry's requirements must be `Schema.Option`-wrapped.
+ * `read` returns `Some(childModel)` while the child exists and `None` while
+ * it is absent.
+ * An absent child releases its resources without reading their requirements.
+ * Use `Option.some` for a child that is always present. Each child's
+ * requirements must be `Schema.Option`-wrapped so child absence and the
+ * child's own release condition follow the same acquire/release lifecycle.
  */
 <Resources extends Record<string, Entry<any, any, Option<any>, any, any, (value: any) => any>>>(resources: Resources): (config: {
-  toChildModel: (parentModel: ParentModel) => Option<ChildModelOf<Resources>>
+  read: (parentModel: ParentModel) => Option<ChildModelOf<Resources>>
   toParentMessage: (message: ChildMessageOf<Resources>) => ParentMessage
 }) => {
   readonly [Key in string | number | symbol]: Resources[Key] extends Entry<any, any, Requirements, Value, Service, OnAcquired>
@@ -43,7 +43,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/managedResource/managedResource.ts#L295)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/managedResource/managedResource.ts#L295)
 
 ```
 /**
@@ -111,7 +111,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/managedResource/managedResource.ts#L49)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/managedResource/managedResource.ts#L49)
 
 ```
 /** Creates a managed resource identity with a `.get` accessor for use in commands. */
@@ -124,7 +124,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/managedResource/managedResource.ts#L134)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/managedResource/managedResource.ts#L134)
 
 ```
 /**
@@ -162,7 +162,7 @@ type Entry = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/managedResource/managedResource.ts#L84)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/managedResource/managedResource.ts#L84)
 
 ```
 /** Internal configuration for a single Managed Resource, used by the runtime. */
@@ -182,7 +182,7 @@ type ManagedResourceConfig = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/managedResource/managedResource.ts#L96)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/managedResource/managedResource.ts#L96)
 
 ```
 /** A record of named Managed Resource configurations, keyed by resource name. */
@@ -195,7 +195,7 @@ type ManagedResources = Record<string, ManagedResourceConfig<Model, Message>> & 
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/managedResource/managedResource.ts#L81)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/managedResource/managedResource.ts#L81)
 
 ```
 /** Type-level utility to extract the service identity type from a ManagedResource. */
@@ -208,7 +208,7 @@ type ServiceOf = T extends ManagedResource<any, infer S>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/managedResource/managedResource.ts#L155)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/managedResource/managedResource.ts#L155)
 
 ```
 /** Type-level utility to extract the service union from a Managed Resources record. */
@@ -225,7 +225,7 @@ type ServicesOf = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/managedResource/managedResource.ts#L78)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/managedResource/managedResource.ts#L78)
 
 ```
 /** Type-level utility to extract the value type from a ManagedResource. */
@@ -240,7 +240,7 @@ type Value = T extends ManagedResource<infer V, any>
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/managedResource/managedResource.ts#L40)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/managedResource/managedResource.ts#L40)
 
 ```
 /**
@@ -261,7 +261,7 @@ interface ManagedResource {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/managedResource/managedResource.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/managedResource/managedResource.ts#L29)
 
 ```
 /** Branded identity type for a managed resource, used in the Effect R channel. */
@@ -276,7 +276,7 @@ interface ManagedResourceService {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/178561842e7ceee9f1091c6fb1f527bfb68996f7/packages/foldkit/src/managedResource/managedResource.ts#L505)
+[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/managedResource/managedResource.ts#L505)
 
 ```
 /**

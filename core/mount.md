@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/mount
 title: "Mount"
 description: "Run DOM work while a specific rendered element exists. Mount supplies the live Element, emits declared result Messages, and keeps setup paired with cleanup."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -46,37 +46,7 @@ View-function identity and stable keys keep that lifecycle attached to the right
 
 Portal-to-body is a small example. When an overlay enters the DOM, its Mount moves the live element to `document.body` so it can escape clipping ancestors. When the element unmounts, the paired release removes it.
 
-```
-import { Effect } from 'effect'
-import { Mount } from 'foldkit'
-import type { Html, HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
-
-const Message = defineMessageUnion({
-  CompletedPortalToBody: {},
-})
-
-// Portal-to-body is a per-instance lifecycle effect that uses the element
-// directly. The Effect's acquireRelease moves the element to document.body
-// at mount and removes it on unmount. The work is pure DOM manipulation on
-// the element Mount provides, idempotent and safe to re-run during
-// DevTools time-travel.
-
-const PortalToBody = Mount.define('PortalToBody', {
-  messages: [Message.CompletedPortalToBody],
-  execute: ({ element }) =>
-    Effect.gen(function* () {
-      yield* Effect.acquireRelease(
-        Effect.sync(() => document.body.appendChild(element)),
-        () => Effect.sync(() => element.remove()),
-      )
-      return Message.CompletedPortalToBody()
-    }),
-})
-
-const overlayView = (h: HtmlBuilder<Message>): Html =>
-  h.div([h.Class('fixed inset-0 bg-black/50'), h.OnMount(PortalToBody())])
-```
+Portal-to-body
 
 Two rules for Mount work
 
@@ -93,6 +63,8 @@ DevTools re-renders historical Models. Elements inserted during replay run their
 ## Per-Instance Args
 
 A Mount often needs an input that differs by element instance, such as an initial scroll position, chart data, or a stable host id. Declare those under `args`, using the same Schema record shape a [Command](https://foldkit.dev/core/commands) takes. `args`, `messages`, and `execute` are all named fields on one config object. `execute` receives the runtime fields `element` and `viewStateChanges` alongside the declared args, so those names are reserved and rejected under `args`:
+
+Mount args definition
 
 ```
 Mount.define(name, {
@@ -130,37 +102,7 @@ Custom renderers without time travel can pass `Mount.liveViewStateChanges` as th
 
 Use the Stream to update state owned by the imperative integration itself. For example, a rich-text editor can call its read-only API while the historical view is installed, then restore editing when the live view returns:
 
-```
-import { Effect, Stream } from 'effect'
-import { Mount } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-
-import { Editor } from '@tiptap/core'
-
-const Message = defineMessageUnion({
-  CompletedMountEditor: {},
-})
-
-const MountEditor = Mount.define('MountEditor', {
-  messages: [Message.CompletedMountEditor],
-  execute: ({ element, viewStateChanges }) =>
-    Effect.gen(function* () {
-      const editor = yield* Effect.acquireRelease(
-        Effect.sync(() => new Editor({ element })),
-        mountedEditor => Effect.sync(() => mountedEditor.destroy()),
-      )
-
-      yield* viewStateChanges.pipe(
-        Stream.runForEach(viewState =>
-          Effect.sync(() => editor.setEditable(viewState === 'Live')),
-        ),
-        Effect.forkScoped,
-      )
-
-      return Message.CompletedMountEditor()
-    }),
-})
-```
+Making an editor read-only during time travel
 
 ### Live and Historical Mounts
 
@@ -174,52 +116,7 @@ Mount is especially useful when a library owns a rendered subtree. Charts, code 
 
 Construct the handle in an acquire Effect, return the Mount's result Message, and register teardown with `Effect.acquireRelease`. The Effect can finish after emitting its Message because Foldkit keeps its scope open until the element unmounts.
 
-```
-import { Effect, Schema } from 'effect'
-import { Mount } from 'foldkit'
-import type { Html, HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
-
-const Message = defineMessageUnion({
-  SucceededMountChart: {},
-  FailedMountChart: { reason: Schema.String },
-})
-
-// Mount.define gives the action a name and constrains what Messages it can
-// produce, plus an args record so the chart's per-instance data flows through
-// declared values rather than a closure. The runtime calls execute with the
-// live element on insert, runs the Effect to produce one Message, dispatches
-// it, and closes the scope on destroy (firing any acquireRelease finalizers).
-
-const ChartData = Schema.Array(Schema.Number)
-type ChartData = typeof ChartData.Type
-
-const MountChart = Mount.define('MountChart', {
-  args: { data: ChartData },
-  messages: [Message.SucceededMountChart, Message.FailedMountChart],
-  execute: ({ element, data }) =>
-    Effect.gen(function* () {
-      yield* Effect.acquireRelease(
-        Effect.tryPromise(() => import('some-chart-library')).pipe(
-          Effect.map(({ Chart }) => new Chart(element, { data })),
-        ),
-        chart => Effect.sync(() => chart.destroy()),
-      )
-      return Message.SucceededMountChart()
-    }).pipe(
-      Effect.catch(error =>
-        Effect.succeed(
-          Message.FailedMountChart({
-            reason: error instanceof Error ? error.message : String(error),
-          }),
-        ),
-      ),
-    ),
-})
-
-const chartView = (data: ChartData, h: HtmlBuilder<Message>): Html =>
-  h.div([h.Class('w-[480px] h-[320px]'), h.OnMount(MountChart({ data }))])
-```
+Chart Mount with cleanup
 
 Construct the handle inside the acquire body
 

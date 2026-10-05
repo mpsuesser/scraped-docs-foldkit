@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-0-155-0
 title: "Foldkit 0.154.0 and 0.155.0"
 description: "Foldkit 0.154.0 and 0.155.0 expand click and focus controls, unify Vite builds for server-rendered apps, introduce HoverIntent, and more."
-access_date: 2026-09-02T07:05:07.578Z
-current_date: 2026-09-02T07:05:07.578Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ![The version numbers 0.154.0 and 0.155.0 in large black type over layered translucent zeros on a lime-green background.](https://foldkit.dev/blog/foldkit-0-155-0/cover.webp)
@@ -29,6 +29,8 @@ Foldkit gained [server rendering](https://foldkit.dev/blog/foldkit-has-server-re
 That separation mattered as soon as another Vite plugin needed to participate in the build. A deployment adapter or host plugin could join the browser build and never see the server build that followed in a separate process. It could deploy half an application. The browser and server builds could also mint different build ids, producing HTML that hydration correctly refused.
 
 `@foldkit/vite-plugin` 0.20.0 now owns the whole build:
+
+Vite build configuration
 
 ```
 foldkit({
@@ -58,6 +60,8 @@ Mount definitions now use one config object with named `args`, `messages`, and `
 
 Before:
 
+Mount definition before 0.155.0
+
 ```
 const AnchorPopover = Mount.define(
   'AnchorPopover',
@@ -73,6 +77,8 @@ const AnchorPopover = Mount.define(
 ```
 
 After:
+
+Mount definition in 0.155.0
 
 ```
 const AnchorPopover = Mount.define('AnchorPopover', {

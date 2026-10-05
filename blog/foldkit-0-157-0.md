@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-0-157-0
 title: "Foldkit 0.156.0 and 0.157.0"
 description: "Two new recommended @foldkit/oxlint-plugin rules, less boilerplate when matching refined unions, plus updates to Story, Scene, Mount, @foldkit/ui, and Foldkit's Vite plugin."
-access_date: 2026-09-07T07:29:31.695Z
-current_date: 2026-09-07T07:29:31.695Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
@@ -27,6 +27,8 @@ The recommended `@foldkit/oxlint-plugin` preset gained two rules.
 
 `foldkit/no-impure-call-at-decision-time` reports time and randomness calls made while update is deciding which Commands to return, instead of when those Commands execute.
 
+Reading the clock while building a Command
+
 ```
 const Save = Command.define('Save', {
   args: { createdAt: Schema.Number },
@@ -43,6 +45,8 @@ const save = (model: Model): Update.Return<Model, Message> => ({
 ```
 
 Move the read into the Command's Effect and return the value in its result Message:
+
+Reading the clock when the Command executes
 
 ```
 const Save = Command.define('Save', {
@@ -67,6 +71,8 @@ Across the preset, rules now recognize aliases for Foldkit, `@foldkit/ui`, Effec
 
 The preset already reported parent code that constructs a child Message. In 0.157.0, the rule also catches that code when the child import is aliased. For example, a parent should not decide that opening a Dialog means dispatching its `RequestedOpen` Message:
 
+A parent constructing a Dialog Message
+
 ```
 const foldDialogOpen = Update.foldChildStep({
   // Wrong: the parent constructs one of Dialog's internal Messages.
@@ -80,6 +86,8 @@ const foldDialogOpen = Update.foldChildStep({
 ```
 
 Dialog exposes `open`, so the parent can fold that operation without reaching into the child's Messages. Parents should drive child behavior through update functions exposed by the child:
+
+Folding a child-owned update function
 
 ```
 const foldDialogOpen = Update.foldChildStep({
@@ -100,6 +108,8 @@ Foldkit union matchers now accept a structurally refined union as their optional
 
 Before:
 
+Refined OutMessage fold before 0.157.0
+
 ```
 // Before: preserving Plan requires a separate Effect Match pipeline.
 const foldListboxOutMessage = Match.type<Listbox.OutMessage<Plan>>().pipe(
@@ -113,6 +123,8 @@ const foldListboxOutMessage = Match.type<Listbox.OutMessage<Plan>>().pipe(
 ```
 
 After:
+
+Refined OutMessage fold in 0.157.0
 
 ```
 // After: Foldkit's matcher preserves Plan directly.

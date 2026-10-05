@@ -2,13 +2,13 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Split a large application into child state machines while preserving parent-to-child Message flow. Covers Update.foldChild, h.submodel, OutMessages, reflection, testing, and DevTools."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## When to Create a Submodel
 
-Use a Submodel when part of the application owns a state machine, not merely a section of markup. A Submodel has its own Model, Message, update, view, and Commands. Its parent stores the child Model, routes child Messages, and decides what to do with facts that cross the boundary.
+Use a Submodel when part of the application owns a state machine, not merely a section of markup. A Submodel has its own Model, Message union, and update function. It may also own Commands, Subscriptions, OutMessages, or a view. Its parent stores the child Model, routes child Messages, and decides what to do with facts that cross the boundary.
 
 Two needs commonly create that boundary:
 
@@ -19,7 +19,7 @@ Both use the same contract. Internal state stays behind the boundary, and values
 
 The word "boundary"
 
-Each `h.submodel` call creates a runtime boundary identified by `slotId`. When the child dispatches a Message, `toParentMessage` wraps it in the parent's Message type. Nested Submodels repeat that process at every level until the Message reaches the root update.
+Every Submodel has a state and update boundary: the parent stores its Model and folds its Messages without changing the child Model directly. When a Submodel owns a view, each `h.submodel` call also creates a runtime view boundary identified by `slotId`. [Query](https://foldkit.dev/core/query) is a viewless Submodel, so it has the state and update boundary without an `h.submodel` call or `slotId`.
 
 The restaurant analogy
 
@@ -33,52 +33,7 @@ If a section only renders parent state and owns no Messages or update logic, mak
 
 A child Submodel does not know which parent embeds it. This Settings Submodel owns its state and handles its Messages without importing the root Model or Message.
 
-```
-// page/settings.ts
-import { Schema } from 'effect'
-import { type Update } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-import { modifyFields } from 'foldkit/struct'
-
-// MODEL
-
-export const Theme = Schema.Literals(['Light', 'Dark', 'System'])
-export type Theme = typeof Theme.Type
-
-export const FontSize = Schema.Literals(['Small', 'Medium', 'Large'])
-export type FontSize = typeof FontSize.Type
-
-export const Model = Schema.Struct({
-  theme: Theme,
-  fontSize: FontSize,
-  notificationsEnabled: Schema.Boolean,
-})
-export type Model = typeof Model.Type
-
-// MESSAGE
-
-export const Message = defineMessageUnion({
-  ChangedTheme: { theme: Theme },
-  ChangedFontSize: { fontSize: FontSize },
-  ToggledNotifications: {},
-})
-export type Message = typeof Message.Type
-
-// UPDATE
-
-export const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    ChangedTheme: ({ theme }) => ({
-      model: modifyFields(model, { theme: () => theme }),
-    }),
-    ChangedFontSize: ({ fontSize }) => ({
-      model: modifyFields(model, { fontSize: () => fontSize }),
-    }),
-    ToggledNotifications: () => ({
-      model: modifyFields(model, { notificationsEnabled: enabled => !enabled }),
-    }),
-  })
-```
+Settings Submodel
 
 ## Embedding the Submodel
 
@@ -87,6 +42,8 @@ The parent has three jobs: embed the child’s Model, wrap its Messages, and del
 ### Embedding the Model
 
 The child’s Model becomes a field in the parent’s Model:
+
+Parent Model
 
 ```
 import { Schema } from 'effect'
@@ -104,6 +61,8 @@ export type Model = typeof Model.Type
 
 The parent stores the child Model, but the child still owns it. Do not use [modifyFields](https://foldkit.dev/best-practices/immutability#immutable-updates) to change fields inside that slice from the parent.
 
+❌ Resetting child state directly
+
 ```
 // ❌ Don't reach into the child's Model from the parent's update.
 // This bypasses Settings.update, so its invariants, Commands,
@@ -117,26 +76,7 @@ ClickedResetSettings: () => ({
 
 For a parent-initiated change, export a helper from the child and fold that helper with `Update.foldChild`. The parent can call `Settings.setTheme` without importing the internal `ChangedTheme` constructor.
 
-```
-// CHILD
-
-import { Message as ChildMessage } from './message'
-
-export const setTheme = (model: Model, theme: Theme) =>
-  update(model, ChildMessage.ChangedTheme({ theme }))
-
-// PARENT UPDATE
-
-const foldSettingsTheme = Update.foldChild({
-  update: Settings.setTheme,
-  read: (model: Model) => Option.some(model.settings),
-  write: (model, nextSettings) =>
-    modifyFields(model, { settings: () => nextSettings }),
-  toParentMessage: message => Message.GotSettingsMessage({ message }),
-})
-
-ClickedResetSettings: () => foldSettingsTheme(model, 'Light')
-```
+✅ Resetting child state through update
 
 Stateful Foldkit UI components expose the same kind of entry point. For example: `Popover.close` and a Listbox instance's `selectItem` helper run the component's update without exposing its internal Message constructors.
 
@@ -151,6 +91,8 @@ Bypassing update creates three problems:
 ### Wrapping Messages
 
 Every Message eventually reaches the root update. Each parent therefore declares a wrapper Message for the child Message type. Name it with the `Got*Message` convention, such as `GotSettingsMessage`.
+
+Wrapper Message
 
 ```
 import { Schema } from 'effect'
@@ -180,24 +122,7 @@ A wrapper carries routing information only. It holds the child `message` and, fo
 
 The resulting fold reads the child, runs its update, writes it back, and lifts its Commands through `toParentMessage`.
 
-```
-import { Option } from 'effect'
-import { Update } from 'foldkit'
-import { modifyFields } from 'foldkit/struct'
-
-const foldSettings = Update.foldChild({
-  update: Settings.update,
-  read: (model: Model) => Option.some(model.settings),
-  write: (model, nextSettings) =>
-    modifyFields(model, { settings: () => nextSettings }),
-  toParentMessage: message => GotSettingsMessage({ message }),
-})
-
-export const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    GotSettingsMessage: ({ message }) => foldSettings(model, message),
-  })
-```
+Using foldChild
 
 `read` returns an `Option` because a routed page or keyed child may no longer exist when its Message arrives. `None` makes the fold a no-op. An always-present child returns `Option.some(model.settings)`.
 
@@ -205,124 +130,21 @@ The fold is dual. `foldSettings(model, message)` runs it immediately. `foldSetti
 
 Use `Update.foldChildStep` for an entry point that takes only the child Model, such as `Dialog.close`. It accepts the same fields and returns an `Update.Step<ParentModel, ParentMessage>`. Add `toParentOutMessage` when at least one child OutMessage should continue to the current Submodel's parent. The fold then returns an `Update.StepWithOutMessage<ParentModel, ParentMessage, ParentOutMessage>`.
 
-```
-import { Option } from 'effect'
-import { Update } from 'foldkit'
-import { modifyFields } from 'foldkit/struct'
-
-const toParentDialogOutMessage = Dialog.OutMessage.match<
-  OutMessage | undefined
->({
-  Opened: () => undefined,
-  Closed: () => OutMessage.ClosedDialog(),
-})
-
-const foldDialogClose = Update.foldChildStep({
-  update: Dialog.close,
-  read: (model: Model) => Option.some(model.dialog),
-  write: (model, nextDialog) =>
-    modifyFields(model, { dialog: () => nextDialog }),
-  toParentMessage: message => Message.GotDialogMessage({ message }),
-  toParentOutMessage: toParentDialogOutMessage,
-})
-
-export const closeDialog = (model: Model) => foldDialogClose(model)
-```
+Using foldChildStep with OutMessage forwarding
 
 Use `Update.foldChildInit` when one child `init` or `boot` result needs to enter a parent Model. It is data-first because initialization has no reusable data-last Step. Provide `toParentModel` instead of `read` and `write`; Foldkit lifts child Commands and gives `foldOutMessage` the completed parent Model. Say `Settings.boot` receives a saved theme from flags and emits `RestoredTheme`. The parent returns a Command to apply that theme after constructing its Model.
 
-```
-const foldSettingsOutMessage = Settings.OutMessage.match<
-  Update.Step<Model, Message>
->({
-  RestoredTheme:
-    ({ theme }) =>
-    model => ({
-      model,
-      commands: [ApplyTheme({ theme })],
-    }),
-})
-
-const init = (username: string, savedTheme: Settings.Theme) =>
-  Update.foldChildInit(Settings.boot({ theme: savedTheme }), {
-    toParentModel: settings =>
-      Model.make({
-        username,
-        settings,
-      }),
-    toParentMessage: message => Message.GotSettingsMessage({ message }),
-    foldOutMessage: foldSettingsOutMessage,
-  })
-```
+Using foldChildInit
 
 Use `Update.foldChildInits` when several children initialize together. Its `toParentModel` receives every child Model before their OutMessage folds run. See [Initializing Children with OutMessages](https://foldkit.dev/core/update#initializing-children-with-outmessages) for an example that combines both children's restoration results into one parent OutMessage.
 
 ### Wiring the View with h.submodel
 
-Define the child view with `Submodel.defineView<Model, Message>`. It receives the child Model and a builder for child Messages.
+A viewless Submodel needs no runtime view wiring. Its parent can render values the child exposes through public accessors, such as Query's `read`. When a Submodel owns rendering, define its view with `Submodel.defineView<Model, Message>`. It receives the child Model and a builder for child Messages.
 
 `defineView` brands the function with its child Model and Message types. The parent can then embed it without repeating those types, and handlers inside the child accept only child Messages.
 
-```
-// page/settings.ts
-import { Submodel } from 'foldkit'
-
-import {
-  ChangedFontSize,
-  ChangedTheme,
-  type Message,
-  ToggledNotifications,
-} from './message'
-import type { Model } from './model'
-
-// The Submodel exports a view defined with Submodel.defineView<Model, Message>.
-// The view takes the child's Model and the child's typed builder \`h\`, which
-// the runtime supplies, and produces Html. The <Model, Message> type arguments
-// brand the view with its Message type so the parent can lift each emitted
-// Message into its wrapper Message when it embeds the Submodel, and they type
-// \`h\`: its handlers accept exactly the Messages this Submodel dispatches.
-export const view = Submodel.defineView<Model, Message>((model, h) =>
-  h.div(
-    [h.Class('flex flex-col gap-4')],
-    [
-      h.h2([h.Class('text-xl font-bold')], ['Settings']),
-      h.div(
-        [h.Class('flex gap-2')],
-        [
-          h.button([h.OnClick(ChangedTheme({ theme: 'Light' }))], ['Light']),
-          h.button([h.OnClick(ChangedTheme({ theme: 'Dark' }))], ['Dark']),
-          h.button([h.OnClick(ChangedTheme({ theme: 'System' }))], ['System']),
-        ],
-      ),
-      h.div(
-        [h.Class('flex gap-2')],
-        [
-          h.button(
-            [h.OnClick(ChangedFontSize({ fontSize: 'Small' }))],
-            ['Small'],
-          ),
-          h.button(
-            [h.OnClick(ChangedFontSize({ fontSize: 'Medium' }))],
-            ['Medium'],
-          ),
-          h.button(
-            [h.OnClick(ChangedFontSize({ fontSize: 'Large' }))],
-            ['Large'],
-          ),
-        ],
-      ),
-      h.button(
-        [h.OnClick(ToggledNotifications())],
-        [
-          model.notificationsEnabled
-            ? 'Disable notifications'
-            : 'Enable notifications',
-        ],
-      ),
-    ],
-  ),
-)
-```
+Child view
 
 The parent passes four required fields to `h.submodel`:
 
@@ -331,35 +153,7 @@ The parent passes four required fields to `h.submodel`:
 - `view` supplies the branded child view.
 - `toParentMessage` wraps a child Message for the parent.
 
-```
-// main.ts (parent)
-import type { Document, HtmlBuilder } from 'foldkit/html'
-
-import { GotSettingsMessage, type Message } from './message'
-import type { Model } from './model'
-import * as Settings from './page/settings'
-
-// The parent embeds the child via h.submodel. The slotId is unique within
-// the parent's view, view is the child's exported view function, model is the
-// embedded slice, and toParentMessage lifts every Message the child emits
-// into the parent's GotSettingsMessage envelope. The child stays decoupled
-// from this parent; the same Settings.view embeds under any parent that
-// supplies a compatible wrapping.
-export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
-  title: 'My App',
-  body: h.div(
-    [h.Class('min-h-screen bg-gray-50')],
-    [
-      h.submodel({
-        slotId: 'settings',
-        model: model.settings,
-        view: Settings.view,
-        toParentMessage: message => GotSettingsMessage({ message }),
-      }),
-    ],
-  ),
-})
-```
+Parent view
 
 Any parent with the required Model and wrapper can embed the same `Settings.view`.
 
@@ -369,91 +163,11 @@ Use `ViewInputs` for parent-owned data the child needs only while rendering. A L
 
 Pass `ViewInputs` as the third type parameter to `defineView`. The view then receives `(model, viewInputs, h)`.
 
-```
-// page/commandMenu.ts
-import { Array } from 'effect'
-import { Submodel } from 'foldkit'
-import type { Html } from 'foldkit/html'
-
-import { ClosedMenu, type Message, OpenedMenu, SelectedItem } from './message'
-import type { Model } from './model'
-
-// The third type parameter to defineView is \`ViewInputs\`: per-render
-// data the parent passes alongside the model. Here, the parent supplies
-// the trigger content and the items; the child supplies the open/closed
-// state and the selection behavior. With ViewInputs present, the builder
-// \`h\` moves to third position.
-export type ViewInputs = Readonly<{
-  buttonLabel: Html
-  items: ReadonlyArray<string>
-}>
-
-export const view = Submodel.defineView<Model, Message, ViewInputs>(
-  (model, viewInputs, h) => {
-    const toggleMessage = model.isOpen ? ClosedMenu() : OpenedMenu()
-
-    return h.div(
-      [],
-      [
-        h.button([h.OnClick(toggleMessage)], [viewInputs.buttonLabel]),
-        ...(model.isOpen
-          ? [
-              h.div(
-                [h.Role('menu')],
-                Array.map(viewInputs.items, (label, index) =>
-                  h.keyed('div')(
-                    label,
-                    [
-                      h.Role('menuitem'),
-                      h.OnClick(SelectedItem({ index, label })),
-                    ],
-                    [label],
-                  ),
-                ),
-              ),
-            ]
-          : []),
-      ],
-    )
-  },
-)
-```
+Child view with view inputs
 
 The parent supplies `viewInputs` at the embed site.
 
-```
-// main.ts (parent)
-import type { Document, HtmlBuilder } from 'foldkit/html'
-
-import { GotCommandMenuMessage, type Message } from './message'
-import type { Model } from './model'
-import * as CommandMenu from './page/commandMenu'
-
-const MENU_ITEMS: ReadonlyArray<string> = ['Open', 'Rename', 'Archive']
-
-// The parent passes \`viewInputs\` alongside model/view/toParentMessage.
-// \`buttonLabel\` and \`items\` are configuration the parent owns; the child
-// slots them into its open/closed widget. The child has no idea what the
-// items mean. Only that they exist.
-export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
-  title: 'My App',
-  body: h.div(
-    [],
-    [
-      h.submodel({
-        slotId: 'command-menu',
-        model: model.commandMenu,
-        view: CommandMenu.view,
-        viewInputs: {
-          buttonLabel: h.span([], ['Actions']),
-          items: MENU_ITEMS,
-        },
-        toParentMessage: message => GotCommandMenuMessage({ message }),
-      }),
-    ],
-  ),
-})
-```
+Parent view with view inputs
 
 Keep state in the child Model and per-render configuration in `viewInputs`. The child changes its Model through update. The parent rebuilds `viewInputs` on each render.
 
@@ -477,61 +191,7 @@ A parent can hold a fixed or dynamic number of child instances.
 
 For a fixed set, give each child its own Model field and `slotId`. For a dynamic set, store the children in an array. Use the same stable identifier for the row key, `slotId`, and wrapper Message.
 
-```
-import { Array, Option } from 'effect'
-import { Update } from 'foldkit'
-import type { Html, HtmlBuilder } from 'foldkit/html'
-import { modifyFields } from 'foldkit/struct'
-
-import { Applicant } from './applicant'
-import { GotApplicantMessage, type Message } from './message'
-import type { Model } from './model'
-
-export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
-  h.ul(
-    [h.Class('flex flex-col gap-4')],
-    Array.map(model.applicants, applicant =>
-      h.keyed('li')(
-        applicant.id,
-        [],
-        [
-          h.submodel({
-            slotId: applicant.id,
-            model: applicant.entry,
-            view: Applicant.view,
-            toParentMessage: message =>
-              GotApplicantMessage({ entryId: applicant.id, message }),
-          }),
-        ],
-      ),
-    ),
-  )
-
-const foldApplicant = (entryId: string) =>
-  Update.foldChild({
-    update: Applicant.update,
-    read: (model: Model) =>
-      Option.map(
-        Array.findFirst(
-          model.applicants,
-          applicant => applicant.id === entryId,
-        ),
-        applicant => applicant.entry,
-      ),
-    write: (model, nextEntry) =>
-      modifyFields(model, {
-        applicants: Array.map(applicant =>
-          applicant.id === entryId
-            ? modifyFields(applicant, { entry: () => nextEntry })
-            : applicant,
-        ),
-      }),
-    toParentMessage: message => GotApplicantMessage({ entryId, message }),
-  })
-
-GotApplicantMessage: ({ entryId, message }) =>
-  foldApplicant(entryId)(model, message)
-```
+Multiple instances
 
 `foldApplicant(entryId)` reads and writes only the matching child. When the child no longer exists, `read` returns `None` and a late Message becomes a no-op. The [job-application example](https://foldkit.dev/example-apps/job-application) uses this shape for repeated education and work-history entries.
 
@@ -558,95 +218,13 @@ The parent remains the single source of truth in both cases.
 
 Pass parent state through `viewInputs` when the child needs it for rendering. The parent supplies the current value on every render.
 
-```
-import { Submodel } from 'foldkit'
-
-import type { Message } from './message'
-import type { Model } from './model'
-import type { User } from './user'
-
-// The child declares the parent state it needs via the third type
-// parameter on \`Submodel.defineView\`. The view receives it as
-// \`viewInputs\` alongside \`model\`, before the builder \`h\`.
-type ViewInputs = Readonly<{
-  currentUser: User
-}>
-
-export const view = Submodel.defineView<Model, Message, ViewInputs>(
-  (model, { currentUser }, h) =>
-    h.div(
-      [],
-      [
-        h.h2([], [\`Settings for ${currentUser.name}\`]),
-        // ...rest of the Settings UI driven by \`model\`
-      ],
-    ),
-)
-
-// Inside the parent's view, slice currentUser out of the parent Model
-// and pass it through viewInputs. Rebuilt every render, so the child always
-// sees the current value:
-h.submodel({
-  slotId: 'settings',
-  model: model.settings,
-  view: Settings.view,
-  viewInputs: {
-    currentUser: model.currentUser,
-  },
-  toParentMessage: message => GotSettingsMessage({ message }),
-})
-```
+Parent state through viewInputs
 
 ### Providing Parent State to a Child Submodel’s update
 
 Add a third `context` argument when child update needs the current parent value while processing a Message. Close over that value when constructing the fold.
 
-```
-import { Option } from 'effect'
-import { Update } from 'foldkit'
-import { modifyFields } from 'foldkit/struct'
-
-import { Message } from '../../message'
-import type { Model as AppModel } from '../../model'
-import { PersistSettings, Message as SettingsMessage } from './message'
-import type { Model as SettingsModel } from './model'
-import type { User } from './user'
-
-type Context = Readonly<{
-  currentUser: User
-}>
-
-export const update = (
-  model: SettingsModel,
-  message: SettingsMessage,
-  context: Context,
-) =>
-  SettingsMessage.match<Update.Return<SettingsModel, SettingsMessage>>(
-    message,
-    {
-      ChangedTheme: ({ theme }) => ({
-        model: modifyFields(model, { theme: () => theme }),
-        commands: [PersistSettings({ userId: context.currentUser.id, theme })],
-      }),
-      // ...other arms
-    },
-  )
-
-// PARENT UPDATE
-
-const foldSettings = (currentUser: User) =>
-  Update.foldChild({
-    update: (settings: SettingsModel, message: SettingsMessage) =>
-      update(settings, message, { currentUser }),
-    read: (model: AppModel) => Option.some(model.settings),
-    write: (model, nextSettings) =>
-      modifyFields(model, { settings: () => nextSettings }),
-    toParentMessage: message => Message.GotSettingsMessage({ message }),
-  })
-
-GotSettingsMessage: ({ message }) =>
-  foldSettings(model.currentUser)(model, message)
-```
+Parent context in child update
 
 The update stays pure because the context is an explicit input. Constructing `foldSettings(model.currentUser)` for each dispatch gives the child the current user without storing a second copy.
 
@@ -662,48 +240,13 @@ The child update can include an OutMessage in its optional `outMessage` field. T
 
 Define OutMessages beside the child Message. Name them as past-tense facts: `SucceededLogin`, not `TransitionToLoggedIn`; `RequestedLogout`, not `DoLogout`.
 
-```
-import { Schema } from 'effect'
-import { defineMessageUnion } from 'foldkit/message'
-
-// MESSAGE
-
-export const Message = defineMessageUnion({
-  SubmittedLoginForm: {},
-  SucceededAuthenticate: { sessionId: Schema.String },
-})
-export type Message = typeof Message.Type
-
-// OUT MESSAGE
-
-export const OutMessage = defineMessageUnion({
-  SucceededLogin: { sessionId: Schema.String },
-})
-export type OutMessage = typeof OutMessage.Type
-```
+OutMessage definition
 
 ### Emitting from the Child
 
 The child update returns its Model, optional Commands, and an optional OutMessage. Most branches omit `outMessage`. A branch includes it only when it has a fact to surface.
 
-```
-import { type Update } from 'foldkit'
-
-export const update = (model: Model, message: Message) =>
-  Message.match<Update.ReturnWithOutMessage<Model, Message, OutMessage>>(
-    message,
-    {
-      SubmittedLoginForm: () => ({
-        model,
-        commands: [Authenticate(model.email, model.password)],
-      }),
-      SucceededAuthenticate: ({ sessionId }) => ({
-        model,
-        outMessage: OutMessage.SucceededLogin({ sessionId }),
-      }),
-    },
-  )
-```
+Child update
 
 `SubmittedLoginForm` starts authentication but has no result to report. `SucceededAuthenticate` emits `SucceededLogin({ sessionId })` after the Command completes.
 
@@ -713,35 +256,7 @@ Handle the OutMessage through `foldOutMessage` on [Update.foldChild](#fold-child
 
 Do not unpack a child update, helper, init, or boot result by hand. Destructuring `model` and `commands` can leave its `outMessage` behind without a type error. Dot access can still ignore an OutMessage, but an operation-named value keeps all three returned fields visible together. Use `Update.foldChild`, `Update.foldChildStep`, `Update.foldChildInit`, or `Update.foldChildInits` so the child Model, lifted Commands, and OutMessage remain part of one fold.
 
-```
-import { Option } from 'effect'
-import { Update } from 'foldkit'
-import { modifyFields } from 'foldkit/struct'
-
-const foldLoginOutMessage = Login.OutMessage.match<Update.Step<Model, Message>>(
-  {
-    SucceededLogin:
-      ({ sessionId }) =>
-      () => ({
-        model: LoggedIn({ sessionId }),
-        commands: [SaveSession(sessionId)],
-      }),
-  },
-)
-
-const foldLogin = Update.foldChild({
-  update: Login.update,
-  read: (model: Model) => Option.some(model.login),
-  write: (model, nextLogin) => modifyFields(model, { login: () => nextLogin }),
-  toParentMessage: message => GotLoginMessage({ message }),
-  foldOutMessage: foldLoginOutMessage,
-})
-
-export const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    GotLoginMessage: ({ message }) => foldLogin(model, message),
-  })
-```
+Using foldChild with foldOutMessage
 
 The fold appends the Step's Commands after the child's lifted Commands. If the Step returns a child Command, use `liftCommand` or `liftCommands` from `Update.FoldContext`. The lifter wraps the Command's result Message with the same `toParentMessage` used by the child fold.
 
@@ -749,26 +264,7 @@ When a `foldChildInits` entry needs that context, annotate both parameters, such
 
 In this example, only the parent knows the redirect Route for `Login.SendMagicLink`. The child emits `RequestedMagicLink`, and the parent fills in the Route while keeping the Command result inside the Login boundary.
 
-```
-import { Update } from 'foldkit'
-
-const foldLoginOutMessage = (
-  outMessage: Login.OutMessage,
-  { liftCommand }: Update.FoldContext<Login.Message, Message>,
-) =>
-  Login.OutMessage.match<Update.Step<Model, Message>>(outMessage, {
-    RequestedMagicLink:
-      ({ email }) =>
-      model => ({
-        model,
-        commands: [
-          liftCommand(
-            Login.SendMagicLink({ email, redirectRoute: model.route }),
-          ),
-        ],
-      }),
-  })
-```
+Using foldOutMessage with FoldContext
 
 [Update.foldChildStep](#fold-child) supplies the same fold context for no-argument child entry points. It also accepts `toParentOutMessage` when the current Submodel forwards a child OutMessage to its parent.
 
@@ -787,6 +283,8 @@ OutMessages move facts from child to parent. A `reflect*` helper handles the inb
 A `reflect*` helper returns the child Model directly. It does not return Commands or an OutMessage. The external value is already the source of truth, so emitting it back could create a write loop.
 
 Define reflect helpers with `Function.dual` so they work point-free in [modifyFields](https://foldkit.dev/best-practices/immutability#immutable-updates). Here the URL owns the price range, and the parent reflects that range onto a Slider.
+
+Reflecting URL price bounds into a Slider
 
 ```
 ChangedUrl: ({ route }) => ({
@@ -823,26 +321,7 @@ The child view normally builds child handlers. A slot callback normally builds p
 
 A shared helper may belong to a sibling Submodel or the parent itself. For example: documentation pages render a shared SnippetCopy Submodel and heading links owned by the application shell. Let the parent build those renderers and pass them through top-level `viewInputs` callbacks.
 
-```
-// view/docs.ts (inside the parent's view, with its builder \`h\` in scope)
-h.submodel({
-  slotId: 'coming-from-react',
-  model: model.comingFromReact,
-  view: ComingFromReact.view,
-  viewInputs: {
-    renderCopyButton: SnippetCopy.renderer(
-      model.snippetCopy,
-      message => Message.GotSnippetCopyMessage({ message }),
-      h,
-    ),
-    renderHeadingLink: Prose.renderHeadingLink(
-      hash => Message.ClickedCopyLink({ hash }),
-      h,
-    ),
-  },
-  toParentMessage: message => Message.GotComingFromReactMessage({ message }),
-})
-```
+Shared renderers
 
 The callbacks run in the parent's boundary. The heading link reaches the parent update directly, while each snippet button establishes its own child boundary and produces `GotSnippetCopyMessage` for the parent to fold.
 
@@ -866,129 +345,11 @@ Without the child dispatcher, the parent-built button would send raw `OpenedMenu
 
 The child publishes branded attribute groups with the state the slot needs.
 
-```
-// page/commandMenu.ts
-import { Array, Option } from 'effect'
-import { Submodel } from 'foldkit'
-import { type ChildAttribute, type Html, childAttributes } from 'foldkit/html'
-
-import {
-  ClosedMenu,
-  HoveredItem,
-  type Message,
-  OpenedMenu,
-  SelectedItem,
-} from './message'
-import { type Model, buttonId, itemId, menuId } from './model'
-
-type SlotItem = Readonly<{
-  id: string
-  label: string
-  isActive: boolean
-  attributes: ReadonlyArray<ChildAttribute>
-}>
-
-type Slot = Readonly<{
-  isOpen: boolean
-  buttonAttributes: ReadonlyArray<ChildAttribute>
-  menuAttributes: ReadonlyArray<ChildAttribute>
-  items: ReadonlyArray<SlotItem>
-}>
-
-type ViewInputs = Readonly<{
-  items: ReadonlyArray<string>
-  toView: (slot: Slot) => Html
-}>
-
-export const view = Submodel.defineView<Model, Message, ViewInputs>(
-  (model, viewInputs, h) => {
-    const toggleMessage = model.isOpen ? ClosedMenu() : OpenedMenu()
-
-    const toSlotItem = (label: string, index: number): SlotItem => {
-      const id = itemId(model.id, label)
-      const isActive = Option.contains(model.maybeActiveItemIndex, index)
-
-      return {
-        id,
-        label,
-        isActive,
-        attributes: childAttributes([
-          h.Id(id),
-          h.Role('menuitem'),
-          ...(isActive ? [h.DataAttribute('active', '')] : []),
-          h.OnMouseEnter(HoveredItem({ index })),
-          h.OnClick(SelectedItem({ index, label })),
-        ]),
-      }
-    }
-
-    return viewInputs.toView({
-      isOpen: model.isOpen,
-      buttonAttributes: childAttributes([
-        h.Id(buttonId(model.id)),
-        h.AriaHasPopup('menu'),
-        h.AriaExpanded(model.isOpen),
-        h.AriaControls(menuId(model.id)),
-        h.OnClick(toggleMessage),
-      ]),
-      menuAttributes: childAttributes([h.Id(menuId(model.id)), h.Role('menu')]),
-      items: Array.map(viewInputs.items, toSlotItem),
-    })
-  },
-)
-```
+Publishing child attributes
 
 The parent consumes that slot data without reading the child Model.
 
-```
-// main.ts (parent)
-import { Array } from 'effect'
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { GotCommandMenuMessage, type Message } from './message'
-import type { Model } from './model'
-import * as CommandMenu from './page/commandMenu'
-
-const MENU_ITEMS: ReadonlyArray<string> = ['Open', 'Rename', 'Archive']
-
-export const view = (model: Model, h: HtmlBuilder<Message>) =>
-  h.submodel({
-    slotId: 'command-menu',
-    model: model.commandMenu,
-    view: CommandMenu.view,
-    viewInputs: {
-      items: MENU_ITEMS,
-      toView: slot =>
-        h.div(
-          [],
-          [
-            h.button(
-              [...slot.buttonAttributes, h.Class('px-3 py-2 rounded')],
-              ['Actions'],
-            ),
-            ...(slot.isOpen
-              ? [
-                  h.div(
-                    [...slot.menuAttributes, h.Class('mt-2 p-1 bg-gray-50')],
-                    Array.map(slot.items, item =>
-                      h.keyed('div')(
-                        item.id,
-                        [
-                          ...item.attributes,
-                          ...(item.isActive ? [h.Class('bg-blue-50')] : []),
-                        ],
-                        [item.label],
-                      ),
-                    ),
-                  ),
-                ]
-              : []),
-          ],
-        ),
-    },
-    toParentMessage: message => GotCommandMenuMessage({ message }),
-  })
-```
+Rendering child attributes
 
 The child `OnClick` uses the carried dispatcher. Parent attributes such as `h.Class` behave normally.
 

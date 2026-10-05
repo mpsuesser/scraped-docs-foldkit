@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/side-effects-and-purity
 title: "Side Effects & Purity"
 description: "Keep update and view deterministic by confining outside work to Commands, Subscriptions, Mounts, ManagedResources, and other Runtime-managed boundaries."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Side Effects and Purity
@@ -48,89 +48,17 @@ For example:
 
 View reads the Model and any declared ViewInputs, then returns `Document` or `Html`. It does not fetch, schedule timers, subscribe, or read live DOM state. Event attributes construct Messages for the Runtime to dispatch.
 
-```
-import type { Document, HtmlBuilder } from 'foldkit/html'
+❌ Side effects inside view
 
-import type { Message } from './message'
-import type { Model } from './model'
-
-// ❌ Don't do this in view
-const view = (model: Model, h: HtmlBuilder<Message>): Document => {
-  fetch('/api/user').then(res => res.json())
-  setTimeout(() => console.log('tick'), 1000)
-  window.addEventListener('resize', () => {})
-
-  return { title: model.title, body: h.div([], [model.title]) }
-}
-```
-
-```
-import type { Document, HtmlBuilder } from 'foldkit/html'
-
-import { ClickedIncrement, type Message } from './message'
-import type { Model } from './model'
-
-// ✅ Keep view pure
-const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
-  title: model.title,
-  body: h.div(
-    [h.Class('container')],
-    [
-      h.h1([], [model.title]),
-      h.p([], [`Count: ${model.count}`]),
-      h.button([h.OnClick(ClickedIncrement())], ['+']),
-    ],
-  ),
-})
-```
+✅ Pure view
 
 ### Update is Pure
 
 Update reads the current Model and one Message. It returns a new Model plus descriptions of any work that should follow. It does not mutate the Model, touch the DOM, or execute a Command.
 
-```
-import { type Update } from 'foldkit'
-import { modifyFields } from 'foldkit/struct'
+❌ DOM effect inside update
 
-import { Message } from './message'
-import type { Model } from './model'
-
-// ❌ Don't do this in update
-const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    OpenedDialog: () => {
-      document.querySelector<HTMLInputElement>('#search-input')?.focus()
-      return { model: modifyFields(model, { dialogState: () => 'Open' }) }
-    },
-  })
-```
-
-```
-import { Effect } from 'effect'
-import { Command, Dom, type Update } from 'foldkit'
-import { modifyFields } from 'foldkit/struct'
-
-import { Message } from './message'
-import type { Model } from './model'
-
-const FocusSearchInput = Command.define('FocusSearchInput', {
-  messages: [Message.CompletedFocusSearchInput],
-  execute: Dom.focus('#search-input').pipe(
-    Effect.ignore,
-    Effect.as(Message.CompletedFocusSearchInput()),
-  ),
-})
-
-// ✅ Return the next Model and a Command
-const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    OpenedDialog: () => ({
-      model: modifyFields(model, { dialogState: () => 'Open' }),
-      commands: [FocusSearchInput()],
-    }),
-    CompletedFocusSearchInput: () => ({ model }),
-  })
-```
+✅ Command returned from update
 
 The [Testing](https://foldkit.dev/testing) guide shows how Story drives update and resolves Commands without a DOM, while Scene exercises the effect boundaries exposed by a rendered view.
 
@@ -140,54 +68,11 @@ Randomness, clocks, storage, and browser APIs produce values that are not alread
 
 This version generates a different position each time update receives the same inputs:
 
-```
-import { type Update } from 'foldkit'
-import { modifyFields } from 'foldkit/struct'
-
-import { GRID_SIZE } from './constants'
-import { Message } from './message'
-import type { Model } from './model'
-
-// ❌ Don't call random directly in update
-const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    RequestedApple: () => {
-      const x = Math.floor(Math.random() * GRID_SIZE)
-      const y = Math.floor(Math.random() * GRID_SIZE)
-      return { model: modifyFields(model, { apple: () => ({ x, y }) }) }
-    },
-  })
-```
+❌ Randomness inside update
 
 The pure version returns `GenerateApplePosition`. Its Effect generates the coordinates and sends them back in `CompletedGenerateApplePosition`:
 
-```
-import { Effect, Random } from 'effect'
-import { Command, type Update } from 'foldkit'
-import { modifyFields } from 'foldkit/struct'
-
-import { GRID_SIZE } from './constants'
-import { Message } from './message'
-import type { Model } from './model'
-
-// ✅ Run random work in a Command
-const GenerateApplePosition = Command.define('GenerateApplePosition', {
-  messages: [Message.CompletedGenerateApplePosition],
-  execute: Effect.gen(function* () {
-    const x = yield* Random.nextIntBetween(0, GRID_SIZE, { halfOpen: true })
-    const y = yield* Random.nextIntBetween(0, GRID_SIZE, { halfOpen: true })
-    return Message.CompletedGenerateApplePosition({ position: { x, y } })
-  }),
-})
-
-const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    RequestedApple: () => ({ model, commands: [GenerateApplePosition()] }),
-    CompletedGenerateApplePosition: ({ position }) => ({
-      model: modifyFields(model, { apple: () => position }),
-    }),
-  })
-```
+✅ Randomness inside a Command
 
 `RequestedApple` now returns the same Model and Command every time. Only the result handler writes the generated position into the Model.
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-0-161-0
 title: "Foldkit 0.160.0 and 0.161.0"
 description: "Accessibility fixes across Foldkit UI, declarative keyboard shortcuts, helpers for initializing Submodels, stronger lint checks, and improved type inference."
-access_date: 2026-09-18T18:12:22.916Z
-current_date: 2026-09-18T18:12:22.916Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ![Rows of 160 and 161 in cyan and yellow, joined by plus signs, with tilted coral and lime digits on a light gray background.](https://foldkit.dev/blog/foldkit-0-161-0/cover.webp)
@@ -49,21 +49,7 @@ Prior to this release, adding keyboard shortcuts to a Foldkit application was cu
 
 In 0.161.0, `Subscription.keyboardShortcuts` handles that work from a binding table:
 
-```
-const shortcuts = Subscription.keyboardShortcuts<Message>({
-  bindings: [
-    {
-      shortcut: 'Mod+K',
-      whileTyping: 'Allow',
-      toMessage: () => Message.PressedSearchShortcut(),
-    },
-    {
-      shortcut: ['G', 'H'],
-      toMessage: () => Message.PressedHomeShortcut(),
-    },
-  ],
-})
-```
+Search and home shortcuts
 
 `Mod` means Command on Apple platforms and Control elsewhere. An array describes an ordered sequence, so `['G', 'H']` means press G, then H. Incomplete sequences expire, and ambiguous bindings are rejected when the table is constructed.
 
@@ -87,6 +73,8 @@ Prior to this release, a parent's init function had to assemble child Submodels 
 
 Now, `Update.foldChildInit` keeps that work together. For example, a parent can initialize a Search Submodel and reuse the OutMessage fold it already calls from update:
 
+Folding a child boot result into its parent
+
 ```
 const init = () =>
   Update.foldChildInit(Search.boot(), {
@@ -100,25 +88,7 @@ const init = () =>
 
 For several sibling Submodels, `Update.foldChildInits` takes named results and their corresponding folds:
 
-```
-const init = () =>
-  Update.foldChildInits(
-    { search: Search.boot(), editor: Editor.boot() },
-    {
-      toParentModel: ({ search, editor }) => Model.make({ search, editor }),
-      folds: {
-        search: {
-          toParentMessage: message => Message.GotSearchMessage({ message }),
-          foldOutMessage: foldSearchOutMessage,
-        },
-        editor: {
-          toParentMessage: message => Message.GotEditorMessage({ message }),
-          foldOutMessage: foldEditorOutMessage,
-        },
-      },
-    },
-  )
-```
+Initializing Search and Editor Submodels together
 
 The parent Model is constructed once with both children. Each OutMessage handler receives the parent Model produced by the previous handler, so changes from Search's handler are still present when Editor's handler runs. Commands returned by the children and handlers still run independently.
 
@@ -152,6 +122,8 @@ DOM event helpers now infer that type from the target and event name.
 
 Before:
 
+Event types before 0.161.0
+
 ```
 const keydown = Subscription.fromEvent<KeyboardEvent, Message>({
   target: window,
@@ -161,6 +133,8 @@ const keydown = Subscription.fromEvent<KeyboardEvent, Message>({
 ```
 
 After:
+
+Inferred event types in 0.161.0
 
 ```
 const keydown = Subscription.fromEvent({

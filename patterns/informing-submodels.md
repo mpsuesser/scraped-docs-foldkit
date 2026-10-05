@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/informing-submodels
 title: "Informing Submodels"
 description: "Relay a change a Submodel does not own (a URL, a server push, an auth change) through a helper it exposes, so it can update its own state in response."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Informing Submodels
@@ -30,76 +30,7 @@ Update copies the route query into the input, records it in recent searches, and
 
 `informRouteChanged` is the public entry point. It calls `update(model, ChangedRoute({ route }))`, keeping the Message constructor private.
 
-```
-import { Option, Schema, String } from 'effect'
-import { type Update } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-import { modifyFields } from 'foldkit/struct'
-
-import { PeopleRoute } from './route'
-
-// MESSAGE
-
-const Person = Schema.Struct({
-  id: Schema.Number,
-  name: Schema.String,
-  role: Schema.String,
-})
-
-export const Message = defineMessageUnion({
-  ChangedSearchInput: { value: Schema.String },
-  SubmittedSearch: {},
-  ChangedRoute: { route: PeopleRoute },
-  SucceededFetchPeople: {
-    query: Schema.String,
-    people: Schema.Array(Person),
-  },
-})
-export type Message = typeof Message.Type
-
-// UPDATE
-
-export const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    ChangedSearchInput: ({ value }) => ({
-      model: modifyFields(model, { searchInput: () => value }),
-    }),
-
-    SubmittedSearch: () => ({
-      model,
-      commands: [
-        PushSearchUrl({
-          searchText: Option.liftPredicate(
-            model.searchInput,
-            String.isNonEmpty,
-          ),
-        }),
-      ],
-    }),
-
-    ChangedRoute: ({ route }) => {
-      const searchText = Option.getOrElse(route.searchText, () => '')
-      return {
-        model: modifyFields(model, {
-          searchInput: () => searchText,
-          searchHistory: searchHistory =>
-            addSearchToHistory(searchHistory, searchText),
-          results: () => SearchLoading(),
-        }),
-        commands: [FetchPeople({ searchText })],
-      }
-    },
-
-    SucceededFetchPeople: ({ query, people }) => ({
-      model: modifyFields(model, {
-        results: () => SearchLoaded({ query, people }),
-      }),
-    }),
-  })
-
-export const informRouteChanged = (model: Model, route: PeopleRoute) =>
-  update(model, Message.ChangedRoute({ route }))
-```
+Child informRouteChanged helper
 
 Not an OutMessage
 
@@ -109,52 +40,7 @@ Not an OutMessage
 
 The root defines one fold for regular People Messages and another for `informRouteChanged`. Both folds use the same `read`, `write`, and `toParentMessage` boundary. The `ChangedUrl` handler stores the next Route, then composes the relevant child step with `Update.combine`.
 
-```
-import { Match, Option } from 'effect'
-import { Update } from 'foldkit'
-import { modifyFields } from 'foldkit/struct'
-
-import { People } from './page'
-
-const foldPeople = Update.foldChild({
-  update: People.update,
-  read: (model: Model) => Option.some(model.peoplePage),
-  write: (model, nextPeoplePage) =>
-    modifyFields(model, { peoplePage: () => nextPeoplePage }),
-  toParentMessage: message => Message.GotPeopleMessage({ message }),
-})
-
-const foldPeopleRouteChanged = Update.foldChild({
-  update: People.informRouteChanged,
-  read: (model: Model) => Option.some(model.peoplePage),
-  write: (model, nextPeoplePage) =>
-    modifyFields(model, { peoplePage: () => nextPeoplePage }),
-  toParentMessage: message => Message.GotPeopleMessage({ message }),
-})
-
-const setRoute =
-  (nextRoute: AppRoute): Update.Step<Model, Message> =>
-  model => ({ model: modifyFields(model, { route: () => nextRoute }) })
-
-export const update = (model: Model, message: Message) =>
-  Message.match<UpdateReturn>(message, {
-    ChangedUrl: ({ url }) => {
-      const nextRoute = urlToAppRoute(url)
-
-      const routeSteps = Match.value(nextRoute).pipe(
-        Match.withReturnType<ReadonlyArray<Update.Step<Model, Message>>>(),
-        Match.tag('People', peopleRoute => [
-          foldPeopleRouteChanged(peopleRoute),
-        ]),
-        Match.orElse(() => []),
-      )
-
-      return Update.combine(model, [setRoute(nextRoute), ...routeSteps])
-    },
-
-    GotPeopleMessage: ({ message }) => foldPeople(model, message),
-  })
-```
+Parent route fold
 
 Multiple Submodels
 

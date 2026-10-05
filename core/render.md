@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/render
 title: "Render"
 description: "Synchronize Commands and Effects with the browser render cycle so DOM reads and CSS transitions land on the intended frame."
-access_date: 2026-08-20T21:25:20.391Z
-current_date: 2026-08-20T21:25:20.391Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Render
@@ -31,26 +31,7 @@ Prefer Dom helpers for common operations
 
 The [Dom helpers](https://foldkit.dev/core/dom) already wait for the commit or paint their operation requires. Use `Render` directly when implementing timing-sensitive DOM work that those helpers do not cover.
 
-```
-import { Effect } from 'effect'
-import { Command, Render } from 'foldkit'
-
-const MeasurePanel = Command.define('MeasurePanel', {
-  messages: [MeasuredPanel],
-  execute: Effect.gen(function* () {
-    yield* Render.afterCommit
-    const element = document.getElementById('panel')
-    const width =
-      element instanceof HTMLElement ? element.getBoundingClientRect().width : 0
-    return MeasuredPanel({ width })
-  }),
-})
-
-const StartTransition = Command.define('StartTransition', {
-  messages: [StartedTransition],
-  execute: Render.afterPaint.pipe(Effect.as(StartedTransition())),
-})
-```
+Waiting for DOM commit and paint
 
 ## Full API Surface
 

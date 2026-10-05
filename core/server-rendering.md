@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/server-rendering
 title: "Server Rendering"
 description: "Render the same application to HTML for request-time SSR or build-time SSG, then hydrate it in place through a validated build-id and Flags handoff."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -56,42 +56,21 @@ For SSG, the build script takes the host's place. It writes the response to a fi
 
 A server entry connects the application to its host. It exports a `renderPage` function that accepts a Web `Request` and returns a `Promise<EntryResult>`:
 
-```
-import { Effect } from 'effect'
-import { Server } from 'foldkit/experimental'
-
-import { readCountCookie } from './cookie'
-import { Flags, init, view } from './main'
-
-const flagsForRequest = (request: Request): Flags => ({
-  initialCount: readCountCookie(request.headers.get('cookie') ?? ''),
-})
-
-export const renderPage = (request: Request): Promise<Server.EntryResult> =>
-  Effect.runPromise(
-    Effect.gen(function* () {
-      const renderedApplication = yield* Server.renderToString(
-        { Flags, init, view },
-        {
-          flags: flagsForRequest(request),
-        },
-      )
-
-      return Server.Rendered(renderedApplication, {
-        headers: {
-          'cache-control': 'private, no-store',
-          vary: 'cookie',
-        },
-      })
-    }),
-  )
-```
+Server entry
 
 The outer `Promise` keeps `renderPage` callable from Vite, build scripts, serverless functions, and the emitted `fetch` handler. Those hosts do not need to provide the application's Effect requirements. The entry uses Effect internally; the host sees only the `Promise`.
 
 The entry is application code. Keep it in `src/` (`src/entry.server.ts` in the examples), not in the host's directory. It imports the application's `init`, `view`, and `Flags`, so the server build must compile it with those application imports.
 
 The client and server are separate module graphs. Within each graph, the view and the Foldkit runtime that calls it must resolve to one `foldkit` module instance. The HTML builder tracks a render in module-level state. If one render uses two Foldkit copies, the view writes to one copy while the runtime reads the other. The render fails instead of producing the wrong page. Duplicate monorepo installs and aliases that split one graph are common causes.
+
+In server builds and in the dev server's server render, `@foldkit/vite-plugin` bundles `foldkit`, `@foldkit/ui`, and `@foldkit/devtools`, plus every installed package whose `dependencies` or `peerDependencies` include `foldkit` or an `@foldkit/*` package, such as `@foldkit/markdown`. Those packages then run against the one Foldkit copy inside the server bundle. In the dev server, these `ssr.noExternal` packages run through Vite's module runner instead of Node's own import. The plugin finds them by crawling from the application's `package.json`. The crawl follows:
+
+- The application's `dependencies` and `devDependencies`.
+- The `dependencies` of each package it bundles.
+- The `devDependencies` of a bundled package that is a private workspace package.
+
+A package the crawl does not reach stays external. For example: a peer the application does not declare, or a package reached only through a package that does not depend on Foldkit. Such a package loads a second Foldkit copy from `node_modules` at runtime. Declare it in the application's `package.json`, or add it to `ssr.noExternal`.
 
 A delivery host runs the built `fetch` handler. It does not import the application and render it directly. One `vite build` emits `dist/server/fetch.js` whose default export is `{ fetch }`. The [SSR example](https://foldkit.dev/example-apps/ssr) starts that module with `node scripts/serve.ts`. A Worker can default-export the same module.
 
@@ -100,6 +79,8 @@ A delivery host runs the built `fetch` handler. It does not import the applicati
 The `container`, `update`, `subscriptions`, and `managedResources` fields do not participate in server rendering. The server runs the view once over the Model returned by `init`. There is no DOM to attach to and no Message to dispatch.
 
 For a routing application, pass the request URL so `init` receives the same value it receives from `window.location` in the browser:
+
+Using renderToString with a URL
 
 ```
 Server.renderToString(config, {
@@ -126,6 +107,8 @@ The render host serves pages, not a data API. Put JSON endpoints on a separate b
 ### Rendered application
 
 The rendered application contains the body markup and the Document's initial head state:
+
+RenderedApplication type
 
 ```
 type RenderedApplication = Readonly<{
@@ -184,6 +167,8 @@ A hydratable render carries these markers:
 
 Conceptually, the handoff appears next to the rendered root:
 
+Hydration handoff markup
+
 ```
 <main data-foldkit-app="app"><!-- rendered view --></main>
 <script type="application/json" data-foldkit-flags="app">
@@ -197,11 +182,15 @@ The script type makes the payload data rather than executable JavaScript. Foldki
 
 The client opts into the handoff in its entry (`src/entry.ts` in the examples):
 
+Hydrating the application
+
 ```
 Runtime.hydrate(application)
 ```
 
 `Runtime.run` always builds the DOM from scratch. An application with Flags supplies its client-only Flags Effect at that boundary:
+
+Runtime.run with flags
 
 ```
 Runtime.run(application, { flags })
@@ -245,6 +234,8 @@ Flags create the same risk. A payload belongs to the deployment that rendered it
 
 Set an explicit override only when the artifacts build in separate jobs, or when the id should name a deployment in another system. Use the plugin's `buildId` option or the `FOLDKIT_BUILD_ID` environment variable, and give every job the same value:
 
+Build id override
+
 ```
 // vite.config.ts: give separate build jobs the same deployment id.
 foldkit({ buildId: process.env.DEPLOYMENT_ID })
@@ -270,6 +261,8 @@ View identity also ships in the client bundle. Adding a source hash would expose
 
 In development, enable the Vite host in `vite.config.ts`:
 
+Vite SSR configuration
+
 ```
 foldkit({ ssr: { serverEntry: '/src/entry.server.ts' } })
 ```
@@ -279,6 +272,8 @@ Vite continues to serve the client entry, HMR, and assets. Requests that reach F
 A development reload does not exercise hydration. Foldkit restores the Model but rebuilds the DOM under the root. That DOM came from code that predates the edit. Refresh the page manually to test hydration itself. The stamped root remains required during a development reload; without it, startup fails as it would on a fresh load.
 
 In production, the host is built alongside the client. Set `ssr.build` in the plugin and `vite build` produces both. The server bundle is a Web `fetch` handler: Node and Workers both run it. Static files stay the platform's job. The [SSR example](https://github.com/foldkit/foldkit/tree/main/examples/ssr) starts that handler on Node:
+
+SSR build configuration
 
 ```
 foldkit({
@@ -298,6 +293,8 @@ When Flags depend on the request, such as a cookie, authorization header, or loc
 
 Generation is part of the build. `ssr.build.prerender` builds the browser bundle and the server entry, then calls `renderPage` once for every path the entry lists and writes each result as a file, all inside one `vite build`:
 
+SSG build configuration
+
 ```
 foldkit({
   buildId,
@@ -312,29 +309,13 @@ An `ssr.build` build keeps the HTML template in the `fetch` handler instead of p
 
 To generate more pages from an `ssr.build` output, call its `fetch` handler with a `Request` for each path. The handler fills the template before returning the response, so the loop never reads the template from disk. For example, this loop generates two routes whose server entry is known to return rendered HTML.
 
-```
-const entry = await import('./dist/server/fetch.js')
-const paths = ['/', '/about']
-
-for (const path of paths) {
-  const response = await entry.default.fetch(
-    new Request(\`https://example.com${path}\`),
-  )
-
-  if (
-    response.status !== 200 ||
-    !response.headers.get('content-type')?.startsWith('text/html')
-  ) {
-    throw new Error(\`Cannot write the response for ${path} as static HTML\`)
-  }
-
-  await writeRoute(path, await response.text())
-}
-```
+SSG render loop over the fetch handler
 
 The `fetch` response does not say whether the entry returned `Rendered` or a complete `Responded` response. A 200 `Responded` result could carry headers that the loop would lose when it writes only the body. Use this loop only for routes whose entry is known to return rendered HTML, and check that your static host can reproduce any response metadata you need. Foldkit's built-in `prerender` can reject a `Responded` result before writing a file.
 
 This website does not set `ssr.build`, so its generation loop has no built `fetch` handler. It calls `renderPage` and injects each result into the browser build's template.
+
+SSG render loop over a browser build
 
 ```
 for (const path of prerenderPaths) {
@@ -367,28 +348,3 @@ A deployed SSR application needs a host that serves the built client assets and 
 ### Reading completed build metadata
 
 A deployment integration that runs Vite in process can read the `foldkit:build` plugin's `api` after `await builder.buildApp()` succeeds. Its `getBuildMetadata()` method returns a frozen, serializable `FoldkitBuildMetadata` snapshot with absolute `root`, `clientDirectory`, `serverDirectory`, and emitted `serverEntry` paths, plus the same `manifest` data written to disk. These paths follow the resolved Vite environments, including host overrides.
-
-```
-import { createBuilder } from 'vite'
-
-import type { FoldkitBuildApi } from '@foldkit/vite-plugin'
-
-const builder = await createBuilder()
-await builder.buildApp()
-
-const plugin = builder.config.plugins.find(
-  plugin => plugin.name === 'foldkit:build',
-)
-
-if (plugin !== undefined) {
-  const api: FoldkitBuildApi | undefined = plugin.api
-
-  if (typeof api?.getBuildMetadata !== 'function') {
-    throw new Error('This Foldkit version does not expose build metadata')
-  }
-
-  const metadata = api.getBuildMetadata()
-  console.log(metadata.serverEntry)
-  console.log(metadata.manifest.prerendered)
-}
-```

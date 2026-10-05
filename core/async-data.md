@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/async-data
 title: "Async Data"
 description: "A six-state value type for asynchronously loaded data in the Model: Idle, Loading, Refreshing, Failure, Stale, and Success, with stale-while-revalidate and keep-stale-on-failure built in."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 `foldkit/asyncData` is a plain value type in the spirit of Effect’s `Option` and `Result`, built for data that arrives asynchronously. This page introduces the state model and the combinators you reach for most. The [API Reference](https://foldkit.dev/api-reference/async-data) has the exhaustive catalog.
@@ -12,7 +12,9 @@ current_date: 2026-09-20T01:01:06.971Z
 
 Server data in a Model is never just data or nothing. Between “we have it” and “we do not” sit “we asked and are waiting”, “the ask failed”, “we have last week’s copy and are refetching”, and “the refetch failed but we kept the copy”. A boolean `isLoading` next to a nullable `data` field cannot tell those apart, and every screen that renders the field ends up re-deriving the distinction from a tangle of flags.
 
-`AsyncData<A, E>` makes the distinction the type. The idea is the pattern Elm calls RemoteData, generalized. It is a first-class value like `Option` or `Result`: an ADT plus a namespace of free functions over it. You embed one Schema in your Model, and every read, transform, and transition goes through named combinators that already know the state machine. The module is the noun. It is not a data-fetching engine and not a cache. The keyed cache, the refresher, and route-driven loading stay application patterns.
+`AsyncData<A, E>` makes the distinction the type. The idea is the pattern Elm calls RemoteData, generalized. It is a first-class value like `Option` or `Result`: an ADT plus a namespace of free functions over it. You embed one Schema in your Model, and every read, transform, and transition goes through named combinators that already know the state machine. The module is the noun. It is not a data-fetching engine or cache.
+
+Use `AsyncData` directly when the request belongs to an application-specific transition and the application should own its Messages, Commands, and `AsyncData` Model field. The experimental [Query](https://foldkit.dev/core/query) Submodel packages the fetch Command, completion Message, stale-response protection, and retained `AsyncData` state when the result is one resource or a collection keyed by arguments.
 
 Throughout this page, the running example is a Notes app: a `Note` belongs to an optional `Notebook`, and the Model holds several `AsyncData` fields for the notebook list, the cross-notebook feed, and the per-entity caches.
 
@@ -30,6 +32,8 @@ The type has one axis for data presence and one for request status, and the six 
 | `Success` | `{ data }` | Request succeeded, data present. |
 
 The public type is value-first `AsyncData<A, E>`, matching `Result<A, E>` and `Exit<A, E>`.
+
+AsyncData type
 
 ```
 export type AsyncData<A, E> =
@@ -65,29 +69,7 @@ Because both are type-level states, “show stale data while revalidating” and
 
 `AsyncData.Schema(dataSchema, errorSchema)` returns the codec you embed in a Model, plus constructors constrained to those data and error types. The returned `.schema` is the six-state Union codec.
 
-```
-import { Schema } from 'effect'
-import { AsyncData } from 'foldkit'
-
-import { Note, NoteId, Notebook, NotebookId } from './domain'
-
-const NotebooksAsyncData = AsyncData.Schema(
-  Schema.Array(Notebook),
-  Schema.String,
-)
-const NotebookAsyncData = AsyncData.Schema(Notebook, Schema.String)
-const NotesAsyncData = AsyncData.Schema(Schema.Array(Note), Schema.String)
-const NoteAsyncData = AsyncData.Schema(Note, Schema.String)
-
-export const Model = Schema.Struct({
-  // ...
-  notebooks: NotebooksAsyncData.schema,
-  notebookById: Schema.HashMap(NotebookId, NotebookAsyncData.schema),
-  allNotes: NotesAsyncData.schema,
-  notesByNotebook: Schema.HashMap(NotebookId, NotesAsyncData.schema),
-  noteById: Schema.HashMap(NoteId, NoteAsyncData.schema),
-})
-```
+Schema builder
 
 Error types
 
@@ -96,6 +78,8 @@ The error Schema is simplified to `string` here; a real app usually gives each f
 A single field embeds `.schema` directly. A keyed cache embeds it as the value Schema of an `Schema.HashMap`, which is how `noteById` holds one independent `AsyncData` per `NoteId`. The Model type of a field is `typeof NotesAsyncData.schema.Type`, structurally equal to `AsyncData.AsyncData<ReadonlyArray<Note>, string>`.
 
 To construct a value, use the namespace constructors (generic in `A` / `E`) or the factory-returned ones (tightened to the Model’s `A` / `E`). They build identical runtime values.
+
+AsyncData constructors
 
 ```
 const idle = AsyncData.Idle() // { _tag: 'Idle' }
@@ -107,6 +91,8 @@ const success = NotesAsyncData.Success({ data: [] }) // { _tag: 'Success', data:
 The API is a namespace of free, curried-dual functions over `AsyncData<A, E>` values, like `Option`, `Result`, and `Exit`. Both `pipe(notes, AsyncData.map(f))` and `AsyncData.map(notes, f)` work.
 
 The fundamental way to read a value is `match`. It dispatches on the tag and passes the unwrapped payload to each of six required handlers. Handler keys are tag-named here because each handler covers exactly one tag. The one asymmetry is `onStale`, which receives the whole `{ error, data }` object, because only `Stale` carries two fields.
+
+Matching every state
 
 ```
 AsyncData.match(model.allNotes, {
@@ -121,6 +107,8 @@ AsyncData.match(model.allNotes, {
 
 Most views do not need six arms. `matchData` collapses the six states into the three channels a view usually renders: `onData` spans `Success`, `Refreshing`, and `Stale`; `onFailure` receives the `Failure` error; and `onEmpty` covers `Idle` and `Loading` together. Routing `Stale` through `onData` is the point of keeping its data. `matchDataSplitEmpty` is the same collapse with the two cold states split into `onIdle` and `onLoading`, for views that render them differently. Reach for `match` when the stale error or the `Refreshing` signal matters.
 
+Using matchData
+
 ```
 AsyncData.matchData(model.allNotes, {
   onEmpty: () => spinner(),
@@ -131,31 +119,11 @@ AsyncData.matchData(model.allNotes, {
 
 `AsyncData.map` transforms every data-bearing state and preserves its tag, so a pure transform does not erase the `Refreshing` or `Stale` signal. `Stale` maps only its `data` and keeps its `error`. This is how a mutation can edit cached data in place without erasing its request state.
 
-```
-import { Array, HashMap, Option } from 'effect'
-import { AsyncData } from 'foldkit'
-import { modifyFields } from 'foldkit/struct'
-
-export const prependNewNote =
-  (note: Note) =>
-  (model: Model): Model =>
-    Option.match(note.maybeNotebookId, {
-      onNone: () =>
-        modifyFields(model, {
-          allNotes: allNotes =>
-            AsyncData.map(allNotes, noteList => Array.prepend(noteList, note)),
-        }),
-      onSome: notebookId =>
-        modifyFields(model, {
-          notesByNotebook: notesByNotebook =>
-            HashMap.modify(notesByNotebook, notebookId, notes =>
-              AsyncData.map(notes, noteList => Array.prepend(noteList, note)),
-            ),
-        }),
-    })
-```
+Transforming successful data
 
 `getData` returns `Option<A>`, `Some` for the three data-bearing states (`Success`, `Refreshing`, `Stale`) and `None` otherwise. `hasData` is the boolean form, and `getError` / `hasError` are the error-channel twins, spanning `Failure` and `Stale`. Reaching through a cache entry to a field is the common shape.
+
+Using getData
 
 ```
 export const noteNotebookId = (
@@ -182,6 +150,8 @@ Two transitions drive route-entry loading, and both send `Success` and `Stale` f
 
 `AsyncData.revalidateOrLoad` is the route-entry decision. It returns `Option<AsyncData>`: cold no-data states (`Idle`, `Failure`) start `Loading`, already-pending states (`Loading`, `Refreshing`) yield `None` so the app does not restart an in-flight fetch, and both loaded states (`Success`, `Stale`) revalidate to `Refreshing`. `None` means “no transition needed”.
 
+Using revalidateOrLoad
+
 ```
 const enterNotebooksRoute = (model: Model): Update.Return<Model, Message> =>
   Option.match(AsyncData.revalidateOrLoad(model.notebooks), {
@@ -195,6 +165,8 @@ const enterNotebooksRoute = (model: Model): Update.Return<Model, Message> =>
 
 `AsyncData.revalidate` is the narrower transition for reloading what is already loaded, typically after a mutation. It revalidates `Success` and `Stale` to `Refreshing` and yields `None` for everything else, so it never cold-starts a `Loading`, and a cache that holds nothing is left alone.
 
+Using revalidate
+
 ```
 const revalidateAllNotes = (model: Model): Update.Return<Model, Message> =>
   Option.match(AsyncData.revalidate(model.allNotes), {
@@ -207,6 +179,8 @@ const revalidateAllNotes = (model: Model): Update.Return<Model, Message> =>
 ```
 
 `AsyncData.loadIfMissing` is the first-visit load: the cold no-data states (`Idle`, `Failure`) start `Loading`, and every other state yields `None`, so loaded data is kept without revalidation and a request in flight is not restarted. It is the load-only counterpart of `revalidateOrLoad`, the state-machine form of “fetch on first visit, keep the cache afterwards”.
+
+Using loadIfMissing
 
 ```
 const enterStatsRoute = (model: Model): Update.Return<Model, Message> =>
@@ -229,52 +203,11 @@ On success, it yields `Success`. On failure, it checks the previous state: if it
 
 There are two valid styles for bringing a fetch back into `update`, and neither is strictly better. The first names each outcome as its own Message, and the Command dispatches whichever happened:
 
-```
-const LoadAllNotes = Command.define('LoadAllNotes', {
-  messages: [SucceededLoadAllNotes, FailedLoadAllNotes],
-  execute: pipe(
-    fetchAllNotes,
-    Effect.match({
-      onSuccess: notes => SucceededLoadAllNotes({ notes }),
-      onFailure: error => FailedLoadAllNotes({ error }),
-    }),
-  ),
-})
-
-Match.tagsExhaustive({
-  SucceededLoadAllNotes: ({ notes }) => ({
-    model: modifyFields(model, {
-      allNotes: () => AsyncData.Success({ data: notes }),
-    }),
-  }),
-  FailedLoadAllNotes: ({ error }) => ({
-    model: modifyFields(model, {
-      allNotes: () => AsyncData.Failure({ error }),
-    }),
-  }),
-})
-```
+Separate success and failure handlers
 
 The second folds both outcomes through one Message. The Command wraps the fetch in `Effect.result`, so success and failure both arrive as a settled `Result`, and dispatches a single `Settled*` Message carrying it. In `update`, `settle` folds that `Result` into the previous state, and a failed refresh keeps the list instead of blanking it:
 
-```
-const LoadAllNotes = Command.define('LoadAllNotes', {
-  messages: [SettledLoadAllNotes],
-  execute: pipe(
-    fetchAllNotes,
-    Effect.result,
-    Effect.map(result => SettledLoadAllNotes({ result })),
-  ),
-})
-
-Match.tagsExhaustive({
-  SettledLoadAllNotes: ({ result }) => ({
-    model: modifyFields(model, {
-      allNotes: previous => AsyncData.settle(previous, result),
-    }),
-  }),
-})
-```
+Settling either outcome
 
 Pick by what the outcomes mean. When success and failure drive genuinely different flows (navigate on success, open a dialog on failure), the named pair keeps each flow in its own arm. When the fetch lands in a cache field, the settled style is one arm instead of two and keeps stale data on error for free.
 
@@ -285,6 +218,8 @@ If you deliberately want a failed refresh to drop the previous data, write that 
 ## Combining Several
 
 A screen that needs several resources at once combines them with one precedence rule using `zipWith` (two values plus a combining function) or `all` (an iterable or a record). The record form of `all` is the multi-resource screen: it combines a record of fields into one value whose data is a struct of every field’s data. The combined value is itself an `AsyncData`.
+
+Combining several values
 
 ```
 const screenData = AsyncData.all({
@@ -301,4 +236,4 @@ The combine is all-or-nothing on data. Because the combined value needs every in
 
 An `AsyncData` field lives in one place: the [Model](https://foldkit.dev/core/model), the single source of truth. Fetches are [Commands](https://foldkit.dev/core/commands): run the fetch through `Effect.result`, carry the `Result` in the Message, and fold it in with `settle`. [Field Validation](https://foldkit.dev/core/field-validation) is the sibling shipped module in the same tier, and the [API Reference](https://foldkit.dev/api-reference/async-data) has the generated, exhaustive catalog of every name and its per-state behavior.
 
-[Coming from TanStack Query](https://foldkit.dev/react/coming-from-tanstack-query) maps the six states onto query status and cached data, and the [api-cache example](https://foldkit.dev/example-apps/api-cache) is a full app wiring a keyed cache, a generic refresher, and route-driven loading together on this type.
+[Coming from TanStack Query](https://foldkit.dev/react/coming-from-tanstack-query) maps the six states onto query status and cached data. The [API Cache example](https://foldkit.dev/example-apps/api-cache) wires a keyed cache by hand; [API Cache Query](https://foldkit.dev/example-apps/api-cache-query) builds the corresponding application with Query.

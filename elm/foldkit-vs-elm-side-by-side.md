@@ -2,8 +2,8 @@
 url: https://foldkit.dev/elm/foldkit-vs-elm-side-by-side
 title: "Foldkit vs Elm: Side by Side"
 description: "A side-by-side comparison of the same pixel art editor built in both Foldkit and Elm. Same architecture, different host: ports vs Commands, decoders vs Schema, and what each side gives up."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -39,65 +39,13 @@ Most concepts translate directly:
 
 The Elm application has 21 `Msg` variants:
 
-```
-type Msg
-  = PressedCell Int Int
-  | EnteredCell Int Int
-  | LeftCanvas
-  | ReleasedMouse
-  | SelectedColor Int
-  | SelectedTool Tool
-  | SelectedGridSize Int
-  | ToggledMirrorHorizontal
-  | ToggledMirrorVertical
-  | ClickedUndo
-  | ClickedRedo
-  | ClickedHistoryStep Int
-  | ClickedRedoStep Int
-  | ClickedClear
-  | ClickedExport
-  | FailedExportPng String
-  | DismissedErrorDialog
-  | ConfirmedGridSizeChange
-  | DismissedGridSizeDialog
-  | SelectedPaletteTheme Int
-  | ToggledThemePicker
-```
+Elm Msg
 
 ### Foldkit Message union
 
 The current Foldkit application has 25 parent Messages:
 
-```
-const Message = defineMessageUnion({
-  PressedCell: { x: Schema.Number, y: Schema.Number },
-  EnteredCell: { x: Schema.Number, y: Schema.Number },
-  LeftCanvas: {},
-  ReleasedMouse: {},
-  SelectedColor: { colorIndex: PaletteIndex },
-  SelectedTool: { tool: Tool },
-  SelectedGridSize: { size: Schema.Number },
-  ToggledMirrorHorizontal: {},
-  ToggledMirrorVertical: {},
-  ClickedUndo: {},
-  ClickedRedo: {},
-  ClickedHistoryStep: { stepIndex: Schema.Number },
-  ClickedRedoStep: { stepIndex: Schema.Number },
-  ClickedClear: {},
-  ClickedExport: {},
-  SucceededExportPng: {},
-  FailedExportPng: { error: Schema.String },
-  GotErrorDialogMessage: { message: Dialog.Message },
-  GotThemeListboxMessage: { message: Listbox.Message },
-  GotToolRadioGroupMessage: { message: RadioGroup.Message },
-  GotGridSizeRadioGroupMessage: { message: RadioGroup.Message },
-  GotPaletteRadioGroupMessage: { message: RadioGroup.Message },
-  ConfirmedGridSizeChange: {},
-  GotGridSizeConfirmDialogMessage: { message: Dialog.Message },
-  CompletedSaveCanvas: {},
-})
-type Message = typeof Message.Type
-```
+Foldkit Messages
 
 The count differs because the component and effect boundaries differ. Foldkit has `SucceededExportPng` and `CompletedSaveCanvas` for Command completion, plus six `Got*Message` wrappers for two Dialogs, one Listbox, and three RadioGroups. The Elm version hand-rolls those controls and represents their application-facing events with four direct Msgs: `ToggledThemePicker`, `SelectedPaletteTheme`, `DismissedErrorDialog`, and `DismissedGridSizeDialog`.
 
@@ -111,95 +59,11 @@ The update functions have the same shape.
 
 ### Elm update
 
-```
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-  case msg of
-    PressedCell x y ->
-      case model.tool of
-        Brush ->
-          ( { model
-            | grid = applyBrush x y model
-            , undoStack = Grid.pushHistory model.grid model.undoStack
-            , redoStack = []
-            , isDrawing = True
-            }
-          , Cmd.none
-          )
-
-        Fill ->
-          withSave
-            { model
-              | grid = Grid.floodFill x y model.selectedColorIndex model.grid
-              , undoStack = Grid.pushHistory model.grid model.undoStack
-              , redoStack = []
-            }
-
-        Eraser ->
-          -- ...
-    ClickedUndo ->
-      case model.undoStack of
-        [] ->
-          ( model, Cmd.none )
-
-        previousGrid :: olderGrids ->
-          withSave
-            { model
-              | grid = previousGrid
-              , undoStack = olderGrids
-              , redoStack = model.grid :: model.redoStack
-            }
-
-    -- ... 19 more branches
-
-withSave : Model -> ( Model, Cmd Msg )
-withSave model =
-  ( model, saveCanvas (encodeSavedCanvas model) )
-```
+Elm update
 
 ### Foldkit update
 
-```
-import { type Update } from 'foldkit'
-
-export const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    PressedCell: ({ x, y }) =>
-      Match.value(model.tool).pipe(
-        withUpdateReturn,
-        Match.when('Brush', () => ({
-          model: modifyFields(model, {
-            grid: () => applyBrush(model, x, y),
-            undoStack: () => pushHistory(model.undoStack, model.grid),
-            redoStack: () => [],
-            isDrawing: () => true,
-          }),
-        })),
-        Match.when('Fill', () => {
-          const nextModel = modifyFields(model, {
-            grid: () => applyFill(model, x, y),
-            undoStack: () => pushHistory(model.undoStack, model.grid),
-            redoStack: () => [],
-          })
-          return { model: nextModel, commands: [saveCanvas(nextModel)] }
-        }),
-        // ...
-      ),
-    ClickedUndo: () =>
-      Array.match(model.undoStack, {
-        onEmpty: () => ({ model }),
-        onNonEmpty: nonEmptyUndoStack => {
-          const nextModel = modifyFields(model, {
-            grid: () => Array.lastNonEmpty(nonEmptyUndoStack),
-            undoStack: () => Array.initNonEmpty(nonEmptyUndoStack),
-            redoStack: Array.append(model.grid),
-          })
-          return { model: nextModel, commands: [saveCanvas(nextModel)] }
-        },
-      }),
-    // ... 23 more handlers
-  })
-```
+Foldkit update
 
 `case msg of` becomes `Message.match`. Elm record updates become `modifyFields` transformations. `( model, Cmd.none )` becomes `{ model }`.
 
@@ -213,34 +77,7 @@ Elm record updates and `modifyFields` both preserve references to unchanged nest
 
 The Elm Model uses custom types and `Maybe`:
 
-```
-type Tool
-  = Brush
-  | Fill
-  | Eraser
-
-type MirrorMode
-  = MirrorNone
-  | MirrorHorizontal
-  | MirrorVertical
-  | MirrorBoth
-
-type alias Model =
-  { grid : Grid
-  , undoStack : List Grid
-  , redoStack : List Grid
-  , selectedColorIndex : Int
-  , gridSize : Int
-  , tool : Tool
-  , mirrorMode : MirrorMode
-  , isDrawing : Bool
-  , hoveredCell : Maybe Position
-  , exportError : Maybe String
-  , paletteThemeIndex : Int
-  , pendingGridSize : Maybe Int
-  , isThemePickerOpen : Bool
-  }
-```
+Elm Model
 
 This hand-rolled UI stores Dialog visibility through the presence of `exportError` and `pendingGridSize`. The theme picker uses a separate `isThemePickerOpen` field.
 
@@ -248,32 +85,7 @@ This hand-rolled UI stores Dialog visibility through the presence of `exportErro
 
 The Foldkit Model uses Effect Schema, `Option`, and child Models for its stateful Foldkit UI controls:
 
-```
-import { Schema } from 'effect'
-
-import { Dialog, Listbox, RadioGroup } from '@foldkit/ui'
-
-export const Model = Schema.Struct({
-  grid: Grid,
-  undoStack: Schema.Array(Grid),
-  redoStack: Schema.Array(Grid),
-  selectedColorIndex: PaletteIndex,
-  gridSize: Schema.Number,
-  tool: Tool,
-  mirrorMode: MirrorMode,
-  isDrawing: Schema.Boolean,
-  maybeHoveredCell: Schema.Option(Position),
-  errorDialog: Dialog.Model,
-  maybeExportError: Schema.Option(Schema.String),
-  paletteThemeIndex: Schema.Number,
-  gridSizeConfirmDialog: Dialog.Model,
-  maybePendingGridSize: Schema.Option(Schema.Number),
-  themeListbox: Listbox.Model,
-  toolRadioGroup: RadioGroup.Model,
-  gridSizeRadioGroup: RadioGroup.Model,
-  paletteRadioGroup: RadioGroup.Model,
-})
-```
+Foldkit Model
 
 A Schema exists at runtime as well as in TypeScript. Foldkit can use it to validate flags and persisted values, encode selected data, and describe Models to framework tooling. The child component Models expose interaction state that the Elm application implements directly in its parent Model and views.
 
@@ -287,58 +99,11 @@ The pixel editor saves to localStorage and exports a PNG. The Elm implementation
 
 The Elm side declares outgoing and incoming ports:
 
-```
-port module Main exposing (Msg(..), defaultModel, main, update)
-
--- The Elm side: ports declare that JavaScript exists, nothing more.
-
-port saveCanvas : Encode.Value -> Cmd msg
-
-port requestExportPng : Encode.Value -> Cmd msg
-
-port exportPngFailed : (String -> msg) -> Sub msg
-
--- In update: send a request out, receive the failure (if any) back
--- as a Msg through the subscription.
-
-    ClickedExport ->
-      ( model, requestExportPng (encodeExportRequest model) )
-
-    FailedExportPng error ->
-      ( { model | exportError = Just error }, Cmd.none )
-```
+Elm ports
 
 The JavaScript side subscribes to them in `index.html`:
 
-```
-// The JavaScript side, in index.html. This code is invisible to the
-// Elm compiler. If it throws, drifts out of sync with the encoder, or
-// forgets to call send(), Elm cannot know.
-
-app.ports.saveCanvas.subscribe(function (data) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
-  } catch (error) {
-    // Silently fail on storage errors
-  }
-})
-
-app.ports.requestExportPng.subscribe(function (request) {
-  try {
-    var canvas = document.createElement('canvas')
-    var context = canvas.getContext('2d')
-    if (context === null) {
-      throw new Error('Canvas 2D context not available')
-    }
-    // ... paint request.pixels onto the canvas, then download ...
-    link.click()
-  } catch (error) {
-    app.ports.exportPngFailed.send(
-      error instanceof Error ? error.message : 'Failed to export image',
-    )
-  }
-})
-```
+Port JavaScript
 
 The port declaration gives Elm a typed interface. The JavaScript subscriber remains outside the Elm compiler, so a renamed payload field or a missing `send` call is not checked against the Elm source. A JavaScript exception can still affect the host page; the boundary protects Elm code from directly calling arbitrary JavaScript, not the entire page from JavaScript failures.
 
@@ -348,65 +113,7 @@ The export failure needs an incoming port so JavaScript can send `FailedExportPn
 
 Foldkit runs in the JavaScript ecosystem, so its Commands can use browser APIs and JavaScript libraries directly:
 
-```
-const SaveCanvas = Command.define('SaveCanvas', {
-  args: {
-    grid: Grid,
-    gridSize: Schema.Number,
-    paletteThemeIndex: Schema.Number,
-    selectedColorIndex: PaletteIndex,
-  },
-  messages: [CompletedSaveCanvas],
-  execute: ({ grid, gridSize, paletteThemeIndex, selectedColorIndex }) =>
-    Effect.gen(function* () {
-      const store = yield* KeyValueStore.KeyValueStore
-      const data: SavedCanvas = {
-        grid,
-        gridSize,
-        paletteThemeIndex,
-        selectedColorIndex,
-      }
-      yield* store.set(
-        STORAGE_KEY,
-        Schema.encodeSync(SavedCanvasJsonString)(data),
-      )
-      return CompletedSaveCanvas()
-    }).pipe(
-      Effect.catch(() => Effect.succeed(CompletedSaveCanvas())),
-      Effect.provide(BrowserKeyValueStore.layerLocalStorage),
-    ),
-})
-
-const ExportPng = Command.define('ExportPng', {
-  args: {
-    grid: Grid,
-    gridSize: Schema.Number,
-    paletteThemeIndex: Schema.Number,
-  },
-  messages: [SucceededExportPng, FailedExportPng],
-  execute: ({ grid, gridSize, paletteThemeIndex }) =>
-    Effect.gen(function* () {
-      const theme = PALETTE_THEMES[paletteThemeIndex] ?? PALETTE_THEMES[0]
-      const canvas = document.createElement('canvas')
-      const context = canvas.getContext('2d')
-
-      if (Predicate.isNull(context)) {
-        return yield* Effect.fail(
-          FailedExportPng({ error: 'Canvas 2D context not available' }),
-        )
-      }
-
-      // ... paint each cell, then click a generated download link
-
-      return SucceededExportPng()
-    }).pipe(
-      Effect.catchTag('FailedExportPng', error => Effect.succeed(error)),
-      Effect.catch(() =>
-        Effect.succeed(FailedExportPng({ error: 'Failed to export image' })),
-      ),
-    ),
-})
-```
+Foldkit Commands
 
 Each Command declares its arguments and result Messages. Its Effect can use typed failures and recovery operators before returning a Message to update. The application still needs to choose meaningful error behavior. Here `ExportPng` reports failure, while `SaveCanvas` intentionally converts storage failure into the same completion Message as success.
 
@@ -422,46 +129,7 @@ Both applications restore a saved canvas from boot flags and persist it as JSON.
 
 Elm defines the type, decoder, and encoder separately:
 
-```
-init : Decode.Value -> ( Model, Cmd Msg )
-init flags =
-  case Decode.decodeValue savedCanvasDecoder flags of
-    Ok saved ->
-      ( { defaultModel
-        | grid = saved.grid
-        , gridSize = saved.gridSize
-        , paletteThemeIndex = saved.paletteThemeIndex
-        , selectedColorIndex = saved.selectedColorIndex
-        }
-      , Cmd.none
-      )
-
-    Err _ ->
-      ( defaultModel, Cmd.none )
-
-savedCanvasDecoder : Decode.Decoder SavedCanvas
-savedCanvasDecoder =
-  Decode.map4 SavedCanvas
-    (Decode.field "grid" gridDecoder)
-    (Decode.field "gridSize" Decode.int)
-    (Decode.field "paletteThemeIndex" Decode.int)
-    (Decode.field "selectedColorIndex" Decode.int)
-
-gridDecoder : Decode.Decoder Grid
-gridDecoder =
-  Decode.array (Decode.array (Decode.nullable Decode.int))
-
--- And the encoder, written by hand in the other direction:
-
-encodeSavedCanvas : Model -> Encode.Value
-encodeSavedCanvas model =
-  Encode.object
-    [ ( "grid", encodeGrid model.grid )
-    , ( "gridSize", Encode.int model.gridSize )
-    , ( "paletteThemeIndex", Encode.int model.paletteThemeIndex )
-    , ( "selectedColorIndex", Encode.int model.selectedColorIndex )
-    ]
-```
+Elm flags
 
 The compiler checks the values each function produces, but the decoder and encoder use independent string field names. A mismatch between `"gridSize"` and `"gridsize"` can compile.
 
@@ -469,38 +137,7 @@ The compiler checks the values each function produces, but the decoder and encod
 
 Foldkit derives both directions from one `SavedCanvas` Schema:
 
-```
-// The Schema is the single source of truth. The decoder and the
-// encoder both fall out of it. They cannot drift apart.
-
-export const SavedCanvas = Schema.Struct({
-  grid: SavedGrid,
-  gridSize: Schema.Number,
-  paletteThemeIndex: Schema.Number,
-  selectedColorIndex: PaletteIndex,
-})
-
-export const SavedCanvasJsonString = Schema.fromJsonString(
-  Schema.toCodecJson(SavedCanvas),
-)
-
-export const flags: Effect.Effect<Flags> = Effect.gen(function* () {
-  const store = yield* KeyValueStore.KeyValueStore
-  const json = yield* Effect.fromOption(
-    Option.fromNullishOr(yield* store.get(STORAGE_KEY)),
-  )
-  const decoded = yield* Schema.decodeEffect(SavedCanvasJsonString)(json)
-  return Flags.make({ maybeSavedCanvas: Option.some(decoded) })
-}).pipe(
-  Effect.catch(() =>
-    Effect.succeed(Flags.make({ maybeSavedCanvas: Option.none() })),
-  ),
-  Effect.provide(BrowserKeyValueStore.layerLocalStorage),
-)
-
-// Saving goes through the same Schema:
-// Schema.encodeSync(SavedCanvasJsonString)(data)
-```
+Foldkit flags
 
 The Schema centralizes field names and value constraints. Encoding and decoding therefore evolve from the same definition. Version migrations and fallback behavior still belong to the application.
 
@@ -510,68 +147,9 @@ Both frameworks derive external event streams from Model state. The mouse-releas
 
 ### Elm subscriptions
 
-```
-subscriptions : Model -> Sub Msg
-subscriptions model =
-  Sub.batch
-    [ Browser.Events.onKeyDown (keyboardDecoder model)
-    , if model.isDrawing then
-      Browser.Events.onMouseUp (Decode.succeed ReleasedMouse)
-
-      else
-      Sub.none
-    , exportPngFailed FailedExportPng
-    ]
-
-keyboardDecoder : Model -> Decode.Decoder Msg
-keyboardDecoder model =
-  Decode.map5 KeyEvent
-    (Decode.field "key" Decode.string)
-    (Decode.field "ctrlKey" Decode.bool)
-    (Decode.field "metaKey" Decode.bool)
-    (Decode.field "shiftKey" Decode.bool)
-    (Decode.field "altKey" Decode.bool)
-    |> Decode.andThen (shortcutFor model)
-
--- shortcutFor maps the decoded event to a Msg, or fails the
--- decoder for keys the app does not care about.
-```
+Elm Subscriptions
 
 ### Foldkit Subscriptions
-
-```
-export const subscriptions = Subscription.make<Model, Message>()(entry => ({
-  undoRedoKeys: Subscription.persistent(
-    Subscription.fromEventFilterMapPreventDefault({
-      target: document,
-      type: 'keydown',
-      filterMapEvent: toUndoRedoMessage,
-    }),
-  ),
-
-  toolKeys: Subscription.persistent(
-    Subscription.fromEventFilterMap({
-      target: document,
-      type: 'keydown',
-      filterMapEvent: toToolMessage,
-    }),
-  ),
-
-  mouseRelease: entry(
-    { isDrawing: Schema.Boolean },
-    {
-      modelToDependencies: model => ({ isDrawing: model.isDrawing }),
-      dependenciesToStream: ({ isDrawing }) =>
-        Stream.when(
-          Stream.fromEventListener(document, 'mouseup').pipe(
-            Stream.map(() => ReleasedMouse()),
-          ),
-          Effect.sync(() => isDrawing),
-        ),
-    },
-  ),
-}))
-```
 
 Elm’s `Sub.batch` and Foldkit’s Subscription registry both describe the active set after each state transition. The runtime handles setup and teardown.
 
@@ -583,107 +161,11 @@ Both implementations use reference-based memoization around the grid. Actual fra
 
 ### Elm Html.Lazy and Html.Keyed
 
-```
-toolbarView : Model -> PaletteTheme -> Html Msg
-toolbarView model theme =
-  div [ class "w-full md:w-44 flex flex-col gap-5 flex-shrink-0" ]
-    [ lazy toolSection model.tool
-    , lazy mirrorSection model.mirrorMode
-    , lazy sizeSection model.gridSize
-    , paletteSection model theme
-    , lazy clearCanvasSection model.grid
-    ]
-
--- The canvas keys each row and wraps it in lazy5. A row only
--- re-renders when one of its five arguments changes by reference.
-
-      Html.Keyed.node "div"
-        [ class "cursor-crosshair select-none w-full aspect-square flex flex-col bg-white" ]
-        (Grid.toRows model.grid
-          |> List.map
-            (\( y, row ) ->
-              ( String.fromInt y
-              , lazy5 rowView
-                y
-                row
-                previewColor
-                (rowPreviewPositions y previewPositions)
-                theme.colors
-              )
-            )
-        )
-```
+Elm lazy views
 
 ### Foldkit createLazy and keyed
 
-```
-import { Array, Option, pipe } from 'effect'
-import {
-  type Document,
-  type HtmlBuilder,
-  createKeyedLazy,
-  createLazy,
-} from 'foldkit/html'
-
-import { isGridEmpty } from './grid'
-import type { Message } from './message'
-import type { Model } from './model'
-import { currentPaletteTheme } from './palette'
-import { canvasView } from './view/canvas'
-import { historyPanelView } from './view/history'
-import { toolPanelView } from './view/toolbar'
-
-const lazyToolPanel = createLazy()
-const lazyHistoryPanel = createLazy()
-const lazyRow = createKeyedLazy()
-
-// Each args array is compared element-by-element against the previous render.
-// If every arg is reference-equal, the view function isn't called at all.
-// modifyFields() preserves references for unchanged Model fields, so the check just
-// works, and the builder is the same object every render, so passing it
-// through the args never invalidates the cache.
-export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
-  const theme = currentPaletteTheme(model)
-  const currentGrid = model.isDrawing
-    ? pipe(
-        Array.last(model.undoStack),
-        Option.getOrElse(() => model.grid),
-      )
-    : model.grid
-
-  return {
-    title: 'Pixel Art',
-    body: h.div(
-      [],
-      [
-        lazyToolPanel(toolPanelView, [
-          model.mirrorMode,
-          model.tool,
-          model.gridSize,
-          model.selectedColorIndex,
-          isGridEmpty(model.grid),
-          theme,
-          model.paletteThemeIndex,
-          model.themeListbox,
-          model.toolRadioGroup,
-          model.gridSizeRadioGroup,
-          model.paletteRadioGroup,
-          h,
-        ]),
-        canvasView(model, theme, h),
-        lazyHistoryPanel(historyPanelView, [
-          model.undoStack,
-          model.redoStack,
-          currentGrid,
-          model.gridSize,
-          theme,
-          h,
-        ]),
-      ],
-    ),
-  }
-}
-```
+Foldkit memoization
 
 `Html.Lazy.lazy` and `createLazy` reuse a previous rendered value when their function inputs remain referentially equal. Elm provides arity-specific helpers such as `lazy` and `lazy5`. Foldkit creates a lazy wrapper at module scope and passes an argument array. `createKeyedLazy` retains a separate cache for each stable key.
 
@@ -691,68 +173,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
 
 Both cell views attach Message values to event attributes:
 
-```
-rowView : Int -> Array Cell -> String -> List Int -> List String -> Html Msg
-rowView y row previewColor previewColumns paletteColors =
-  div [ class "flex flex-1" ]
-    (Array.toIndexedList row
-      |> List.map
-        (\( x, cell ) ->
-          let
-            displayColor =
-              if List.member x previewColumns then
-                previewColor
+Elm cell view
 
-              else
-                cellColor paletteColors cell
-          in
-          cellView x y displayColor
-        )
-    )
-
-cellView : Int -> Int -> String -> Html Msg
-cellView x y backgroundColor =
-  div
-    [ onMouseDown (PressedCell x y)
-    , onMouseEnter (EnteredCell x y)
-    , style "flex" "1"
-    , style "background-color" backgroundColor
-    ]
-    []
-```
-
-```
-import { Array } from 'effect'
-import type { Html, HtmlBuilder } from 'foldkit/html'
-
-import { Message } from './message'
-import type { Cell, HexColor } from './model'
-import { type PaletteTheme, resolveColor } from './palette'
-
-const rowView = (
-  row: ReadonlyArray<Cell>,
-  y: number,
-  previewColor: HexColor,
-  previewPositions: ReadonlyArray<readonly [number, number]>,
-  theme: PaletteTheme,
-  h: HtmlBuilder<Message>,
-): Html =>
-  h.div(
-    [h.Style({ display: 'flex', flex: '1' })],
-    Array.map(row, (cell, x) => {
-      const isPreview = previewPositions.some(
-        ([previewX, previewY]) => previewX === x && previewY === y,
-      )
-      const displayColor = isPreview ? previewColor : resolveColor(cell, theme)
-
-      return h.div([
-        h.OnMouseDown(Message.PressedCell({ x, y })),
-        h.OnMouseEnter(Message.EnteredCell({ x, y })),
-        h.Style({ flex: '1', backgroundColor: displayColor }),
-      ])
-    }),
-  )
-```
+Foldkit cell view
 
 Neither view needs a component instance or a memoized event-handler closure for each cell. The coordinates are stored in the `Msg` or Message value dispatched by the event.
 
@@ -778,32 +201,7 @@ Both update functions are pure and easy to call directly. Their effect values di
 
 ### Elm update test (pure, but the Cmd is opaque)
 
-```
-suite : Test
-suite =
-  test "undo restores the previous grid state" <|
-    \() ->
-      let
-        -- The Cmd in each returned tuple is discarded with \`_\`.
-        -- A Cmd is opaque: there is no way to look inside one,
-        -- so there is no way to assert that ReleasedMouse
-        -- actually triggered a save.
-        ( afterPress, _ ) =
-          update (PressedCell 0 0) defaultModel
-
-        ( afterRelease, _ ) =
-          update ReleasedMouse afterPress
-
-        ( afterUndo, _ ) =
-          update ClickedUndo afterRelease
-      in
-      Expect.all
-        [ \model -> Expect.equal (Grid.cellAt 0 0 model.grid) Nothing
-        , \model -> Expect.equal model.undoStack []
-        , \model -> Expect.equal (List.length model.redoStack) 1
-        ]
-        afterUndo
-```
+Elm test
 
 `Cmd Msg` is opaque, so a direct `elm-test` unit test cannot compare or pattern-match the Command returned by update. The underscores discard it. Removing the save Command from `ReleasedMouse` would not fail this particular unit test.
 
@@ -811,28 +209,7 @@ Program-level tools such as [elm-program-test](https://package.elm-lang.org/pack
 
 ### Foldkit Story test (Commands are assertable values)
 
-```
-test('undo restores the previous grid state', () => {
-  story(
-    update,
-    given(emptyModel),
-    message(PressedCell({ x: 0, y: 0 })),
-    message(ReleasedMouse()),
-    Command.resolve(SaveCanvas, CompletedSaveCanvas()),
-    model(model => {
-      expect(model.grid[0]?.[0]).toEqual(Option.some(0))
-      expect(model.undoStack).toHaveLength(1)
-    }),
-    message(ClickedUndo()),
-    Command.resolve(SaveCanvas, CompletedSaveCanvas()),
-    model(model => {
-      expect(model.grid[0]?.[0]).toEqual(Option.none())
-      expect(model.undoStack).toHaveLength(0)
-      expect(model.redoStack).toHaveLength(1)
-    }),
-  )
-})
-```
+Foldkit test
 
 A [Story](https://foldkit.dev/testing/story) receives the named Commands returned by update. `Command.resolve` verifies that `SaveCanvas` is pending, supplies `CompletedSaveCanvas`, and dispatches that result Message. Removing the Command makes this Story fail at the resolution step.
 

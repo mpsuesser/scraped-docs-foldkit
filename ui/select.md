@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/select
 title: "Select"
 description: "A stateless wrapper around the native select with ARIA linking, change handling, and styling hooks."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -22,50 +22,7 @@ Pass an `onChange` handler that receives the selected option’s value as a stri
 
 Where you currently reside.
 
-```
-// Pseudocode — Select is view-only. The selected value lives in your own
-// Model as a string. Replace model.country and UpdatedCountry with your
-// own field and Message.
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Select } from '@foldkit/ui'
-
-const view = (h: HtmlBuilder<Message>) =>
-  Select.view(
-    {
-      id: 'country',
-      hasDescription: true,
-      value: model.country, // your Model field
-      onChange: value => UpdatedCountry({ value }), // your Message
-      toView: attributes =>
-        h.div(
-          [h.Class('flex flex-col gap-1.5')],
-          [
-            h.label(
-              [...attributes.label, h.Class('text-sm font-medium')],
-              ['Country'],
-            ),
-            h.select(
-              [
-                ...attributes.select,
-                h.Class('w-full rounded-lg border px-3 py-2'),
-              ],
-              [
-                h.option([h.Value('us')], ['United States']),
-                h.option([h.Value('ca')], ['Canada']),
-                h.option([h.Value('gb')], ['United Kingdom']),
-              ],
-            ),
-            h.span(
-              [...attributes.description, h.Class('text-sm text-gray-500')],
-              ['Where you currently reside.'],
-            ),
-          ],
-        ),
-    },
-    h,
-  )
-```
+Basic select
 
 ### Disabled
 
@@ -73,50 +30,7 @@ Set `isDisabled: true` to disable the select.
 
 This select is disabled.
 
-```
-// Pseudocode — Select is view-only. Disabled selects display a fixed value
-// and ignore onChange events.
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Select } from '@foldkit/ui'
-
-const view = (h: HtmlBuilder<Message>) =>
-  Select.view(
-    {
-      id: 'country-disabled',
-      isDisabled: true,
-      hasDescription: true,
-      value: 'us',
-      toView: attributes =>
-        h.div(
-          [h.Class('flex flex-col gap-1.5')],
-          [
-            h.label(
-              [...attributes.label, h.Class('text-sm font-medium')],
-              ['Country'],
-            ),
-            h.select(
-              [
-                ...attributes.select,
-                h.Class(
-                  'w-full rounded-lg border px-3 py-2 data-[disabled]:opacity-50',
-                ),
-              ],
-              [
-                h.option([h.Value('us')], ['United States']),
-                h.option([h.Value('ca')], ['Canada']),
-              ],
-            ),
-            h.span(
-              [...attributes.description, h.Class('text-sm text-gray-500')],
-              ['This select is disabled.'],
-            ),
-          ],
-        ),
-    },
-    h,
-  )
-```
+Disabled select
 
 ## Styling
 

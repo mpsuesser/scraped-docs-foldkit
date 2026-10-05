@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/button
 title: "Button"
 description: "A stateless wrapper around the native button with accessibility attributes, event wiring, and styling hooks."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -22,57 +22,13 @@ Pass an `onClick` Message and a `toView` callback that spreads the provided attr
 
 Clicked 0 times
 
-```
-// Pseudocode — Button is view-only. Replace ClickedSave() with your own
-// Message constructor.
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Button } from '@foldkit/ui'
-
-const view = (h: HtmlBuilder<Message>) =>
-  Button.view(
-    {
-      onClick: ClickedSave(), // your Message
-      toView: attributes =>
-        h.button(
-          [
-            ...attributes.button,
-            h.Class('px-4 py-2 rounded-lg bg-blue-600 text-white'),
-          ],
-          ['Save'],
-        ),
-    },
-    h,
-  )
-```
+Basic button
 
 ### Disabled
 
 Set `isDisabled: true` to disable the button. Foldkit uses `aria-disabled` instead of the native `disabled` attribute so the button remains focusable for screen readers.
 
-```
-// Pseudocode — Button is view-only. A disabled button still needs an
-// onClick Message for the view config; it just won't fire.
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Button } from '@foldkit/ui'
-
-const view = (h: HtmlBuilder<Message>) =>
-  Button.view(
-    {
-      isDisabled: true,
-      toView: attributes =>
-        h.button(
-          [
-            ...attributes.button,
-            h.Class('px-4 py-2 rounded-lg bg-gray-300 text-gray-500'),
-          ],
-          ['Disabled'],
-        ),
-    },
-    h,
-  )
-```
+Disabled button
 
 ## Styling
 
@@ -101,7 +57,9 @@ Button sets `aria-disabled="true"` when disabled instead of the native `disabled
 
 Add your own attributes after the `button` bundle. A later attribute wins, so `h.Type('submit')` after the bundle replaces the default. A button that changes its own text, such as one cycling through values on a tap, announces each change by carrying a live region: spread `h.AriaLive('polite')` and `h.AriaAtomic(true)` after the bundle. Button does not add `aria-live` or `aria-atomic` for you.
 
-```ts
+Button with a live region
+
+```
 h.button([...button, h.AriaLive('polite'), h.AriaAtomic(true)], [label])
 ```
 

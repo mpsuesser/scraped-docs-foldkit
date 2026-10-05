@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/menu
 title: "Menu"
 description: "An anchored action-menu Submodel with keyboard navigation, typeahead, dismissal, and optional modal behavior."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -24,158 +24,9 @@ Check out how Menu is wired up in a [real Foldkit app](https://github.com/foldki
 
 Pair `view` and `update` behind `Menu.create<Item>()` at module scope. The factory threads your item union through both, so `Selected({ value, index })` carries the picked value directly. Menu closes automatically after selection.
 
-```
-// Pseudocode walkthrough of the Foldkit integration points. Each labeled
-// block below is an excerpt. Fit them into your own Model, init, Message,
-// update, and view definitions.
-import { Option, Schema } from 'effect'
-import { Update } from 'foldkit'
-import type { HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
-import { modifyFields } from 'foldkit/struct'
-
-import { Menu } from '@foldkit/ui'
-
-// Add a field to your Model for the Menu Submodel:
-const Model = Schema.Struct({
-  menu: Menu.Model,
-  // ...your other fields
-})
-
-// In your init function, initialize the Menu Submodel with a unique id:
-const init = () => ({
-  model: {
-    menu: Menu.init({ id: 'actions' }),
-    // ...your other fields
-  },
-})
-
-// Embed the Menu Message in your parent Message:
-const Message = defineMessageUnion({
-  GotMenuMessage: { message: Menu.Message },
-})
-
-type Action = 'Edit' | 'Duplicate' | 'Archive' | 'Delete'
-const actions: ReadonlyArray<Action> = [
-  'Edit',
-  'Duplicate',
-  'Archive',
-  'Delete',
-]
-
-// Pair view and update behind a single Item-typed factory at module scope:
-const ActionMenu = Menu.create<Action>()
-
-// At module scope, fold the OutMessage into your own Model. \`Selected\` carries
-// the picked item directly (typed as \`Action\`). The arm returns an Update.Step
-// over the parent Model, which already has the next Menu Model written back:
-const foldMenuOutMessage = Menu.OutMessage.match<
-  Update.Step<Model, Message>,
-  Menu.OutMessage<Action>
->({
-  // The child has emitted \`Selected\`. In this arm the parent can update
-  // its own state or dispatch its own Commands, for example transition a
-  // page, mutate domain state, or trigger a downstream Command.
-  Selected: () => model => ({ model }),
-})
-
-// Update.foldChild wires the child into the parent: it runs ActionMenu.update,
-// writes the next Menu Model back, maps the Submodel's Commands into your
-// Message type, and hands any OutMessage to foldOutMessage.
-const foldMenu = Update.foldChild({
-  update: ActionMenu.update,
-  read: (model: Model) => Option.some(model.menu),
-  write: (model, nextMenu) => modifyFields(model, { menu: () => nextMenu }),
-  toParentMessage: message => Message.GotMenuMessage({ message }),
-  foldOutMessage: foldMenuOutMessage,
-})
-
-// In the corresponding Message.match handler, call the fold:
-GotMenuMessage: ({ message }) => foldMenu(model, message)
-
-// Inside your view function, render the menu via the factory's view. The
-// \`buttonContent\` below names the trigger. When the trigger is icon-only,
-// give it a name with \`ariaLabel\`, or point \`ariaLabelledBy\` at a visible
-// label element (target the trigger id with \`Menu.buttonId('actions')\` for a
-// native \`<label for>\`). Either attribute is only emitted when provided, so
-// the trigger never carries a dangling \`aria-labelledby\`.
-const view = (h: HtmlBuilder<Message>) =>
-  h.submodel({
-    slotId: 'menu',
-    model: model.menu,
-    view: ActionMenu.view,
-    viewInputs: {
-      // ariaLabel: 'Options',
-      items: actions,
-      buttonContent: h.span([], ['Options']),
-      buttonClassName: 'rounded-lg border px-3 py-2 cursor-pointer',
-      itemsClassName: 'rounded-lg border shadow-lg',
-      itemToConfig: (action, { isActive }) => ({
-        className: isActive ? 'bg-blue-100' : '',
-        content: h.div([h.Class('px-3 py-2')], [action]),
-      }),
-      isItemDisabled: action => action === 'Archive',
-      backdropClassName: 'fixed inset-0',
-      anchor: { placement: 'bottom-start', gap: 4, padding: 8 },
-    },
-    toParentMessage: message => Message.GotMenuMessage({ message }),
-  })
-```
-
 ### Animated
 
 Pass `isAnimated: true` at init for animation coordination.
-
-```
-// Pseudocode walkthrough using the same Model, Messages, and update as
-// the basic menu; only init and view change. Each labeled block below is
-// an excerpt.
-import type { HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
-
-import { Menu } from '@foldkit/ui'
-
-// Only init and view differ from the basic menu: init adds isAnimated, the
-// view uses data-[closed] selectors for enter/leave transitions.
-
-// In your init function, set isAnimated: true to coordinate CSS transitions:
-const init = () => ({
-  model: {
-    menu: Menu.init({ id: 'actions', isAnimated: true }),
-    // ...your other fields
-  },
-})
-
-// Embed the Menu Message in your parent Message:
-const Message = defineMessageUnion({
-  GotMenuMessage: { message: Menu.Message },
-})
-
-// Pair view and update behind a single Item-typed factory at module scope:
-const ActionMenu = Menu.create<Action>()
-
-// Inside your view function, use data-[closed] for enter/leave transitions:
-const view = (h: HtmlBuilder<Message>) =>
-  h.submodel({
-    slotId: 'menu',
-    model: model.menu,
-    view: ActionMenu.view,
-    viewInputs: {
-      items: actions,
-      buttonContent: h.span([], ['Options']),
-      buttonClassName: 'rounded-lg border px-3 py-2 cursor-pointer',
-      itemsClassName:
-        'rounded-lg border shadow-lg transition duration-150 ease-out data-[closed]:opacity-0 data-[closed]:scale-95',
-      itemToConfig: (action, { isActive }) => ({
-        className: isActive ? 'bg-blue-100' : '',
-        content: h.div([h.Class('px-3 py-2')], [action]),
-      }),
-      backdropClassName: 'fixed inset-0',
-      anchor: { placement: 'bottom-start', gap: 4, padding: 8 },
-    },
-    toParentMessage: message => Message.GotMenuMessage({ message }),
-  })
-```
 
 ## Styling
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/machine
 title: "Machine"
 description: "Model multi-state workflows as typed transition tables with guards, shared Edges, update integration, structural analysis, and pure tests."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 Experimental
@@ -22,123 +22,13 @@ A Machine is not necessary just because a Model field is a discriminated union. 
 
 A Machine starts with Schema-backed state and Message unions. The state union describes the possible phases. The Message union describes the facts that may move the flow between them.
 
-```
-import { Schema } from 'effect'
-import { Machine } from 'foldkit/experimental'
-import { otherwise, to, when } from 'foldkit/experimental/machine'
-import { defineMessageUnion } from 'foldkit/message'
-import { defineTaggedUnion } from 'foldkit/schema'
-import { modifyFields } from 'foldkit/struct'
-
-// MODEL
-
-export const CheckoutState = defineTaggedUnion({
-  Cart: { isShippingRequired: Schema.Boolean },
-  Shipping: {},
-  Payment: { isShippingRequired: Schema.Boolean },
-  Review: { isShippingRequired: Schema.Boolean },
-  Cancelled: {},
-})
-export type CheckoutState = typeof CheckoutState.Type
-
-// MESSAGE
-
-export const Message = defineMessageUnion({
-  SelectedEdition: { isShippingRequired: Schema.Boolean },
-  ClickedContinue: {},
-  ClickedBack: {},
-  ClickedCancel: {},
-  ToggledHelp: { isOpen: Schema.Boolean },
-})
-export type Message = typeof Message.Type
-
-// MACHINE
-
-export const checkoutMachine = Machine.define({
-  state: CheckoutState,
-  message: Message,
-})({
-  initial: CheckoutState.Cart({ isShippingRequired: true }),
-  shared: [
-    Machine.forStates(['Cart', 'Shipping', 'Payment', 'Review']).on({
-      ClickedCancel: to('Cancelled', () => ({
-        model: CheckoutState.Cancelled(),
-      })),
-    }),
-  ],
-  states: {
-    Cart: {
-      on: {
-        SelectedEdition: to('Cart', ({ state, message }) => ({
-          model: modifyFields(state, {
-            isShippingRequired: () => message.isShippingRequired,
-          }),
-        })),
-        ClickedContinue: [
-          when(
-            state => state.isShippingRequired,
-            'Shipping',
-            () => ({ model: CheckoutState.Shipping() }),
-          ),
-          otherwise(
-            to('Payment', ({ state }) => ({
-              model: CheckoutState.Payment({
-                isShippingRequired: state.isShippingRequired,
-              }),
-            })),
-          ),
-        ],
-      },
-    },
-    Shipping: {
-      on: {
-        ClickedContinue: to('Payment', () => ({
-          model: CheckoutState.Payment({ isShippingRequired: true }),
-        })),
-        ClickedBack: to('Cart', () => ({
-          model: CheckoutState.Cart({ isShippingRequired: true }),
-        })),
-      },
-    },
-    Payment: {
-      on: {
-        ClickedContinue: to('Review', ({ state }) => ({
-          model: CheckoutState.Review({
-            isShippingRequired: state.isShippingRequired,
-          }),
-        })),
-        ClickedBack: [
-          when(
-            state => state.isShippingRequired,
-            'Shipping',
-            () => ({ model: CheckoutState.Shipping() }),
-          ),
-          otherwise(
-            to('Cart', ({ state }) => ({
-              model: CheckoutState.Cart({
-                isShippingRequired: state.isShippingRequired,
-              }),
-            })),
-          ),
-        ],
-      },
-    },
-    Review: {
-      on: {
-        ClickedBack: to('Payment', ({ state }) => ({
-          model: CheckoutState.Payment({
-            isShippingRequired: state.isShippingRequired,
-          }),
-        })),
-      },
-    },
-  },
-})
-```
+Machine definition
 
 `Machine.define` has two calls on purpose. The first fixes the state and Message types. The second checks the initial state and transition table after those types are known. That ordering lets TypeScript narrow `state` and `message` from an Edge's position: inside `Cart.on.SelectedEdition`, they are the `Cart` and `SelectedEdition` variants rather than their full unions.
 
 Import the Machine namespace from `foldkit/experimental` and its Edge constructors from `foldkit/experimental/machine`:
+
+Machine imports
 
 ```
 import { Machine } from 'foldkit/experimental'
@@ -148,6 +38,8 @@ import { ignore, otherwise, to, when } from 'foldkit/experimental/machine'
 ### Edges and Commands
 
 `to(target, handler)` declares one Edge. Its handler returns the same shape as update: the target state in `model` and any transition-time Commands in `commands`. The target constructor must match the target tag.
+
+Edge with a Command
 
 ```
 ClickedPlaceOrder: to('Placing', ({ state }) => ({
@@ -172,6 +64,8 @@ The handler receives one record. Destructure only what the Edge needs:
 Use an array when one state and Message pair has more than one possible outcome. The Machine checks entries from top to bottom and stops at the first `when` that passes, `otherwise`, or `ignore`.
 
 A boolean guard answers only whether its Edge can fire. An `Option` guard can validate or look up a value once and pass that value to the handler:
+
+Option guard
 
 ```
 SubmittedPromoCode: [
@@ -204,6 +98,8 @@ Keep shared groups about behavior, not visual tidiness. If the handlers differ, 
 
 Add a context Schema when transition decisions need current parent-owned data that should not be copied into the Machine state.
 
+Machine context
+
 ```
 const checkoutMachine = Machine.define({
   state: CheckoutState,
@@ -223,48 +119,7 @@ Context is a read-only input to the current transition. State that the Machine o
 
 The Machine state lives in a field of the application Model. `Machine.fold` reads that field, runs the transition, writes the next state back, and preserves any Commands returned by the Edge.
 
-```
-import { Match, Option, Schema } from 'effect'
-import { Update } from 'foldkit'
-import { Machine } from 'foldkit/experimental'
-import { modifyFields } from 'foldkit/struct'
-
-import { CheckoutState, Message, checkoutMachine } from './machineDefinition'
-
-export const Model = Schema.Struct({
-  checkout: CheckoutState,
-  isHelpOpen: Schema.Boolean,
-})
-export type Model = typeof Model.Type
-
-export const initialModel = Model.make({
-  checkout: checkoutMachine.initial,
-  isHelpOpen: false,
-})
-
-export const foldCheckout = Machine.fold({
-  machine: checkoutMachine,
-  read: (model: Model) => Option.some(model.checkout),
-  write: (model, nextCheckout) =>
-    modifyFields(model, { checkout: () => nextCheckout }),
-})
-
-export const update = (model: Model, message: Message) =>
-  Match.value(message).pipe(
-    Match.withReturnType<Update.Return<Model, Message>>(),
-    Match.tag('ToggledHelp', ({ isOpen }) => ({
-      model: modifyFields(model, { isHelpOpen: () => isOpen }),
-    })),
-    Match.tag(
-      'SelectedEdition',
-      'ClickedContinue',
-      'ClickedBack',
-      'ClickedCancel',
-      () => foldCheckout(model, message),
-    ),
-    Match.exhaustive,
-  )
-```
+Machine fold
 
 Most update functions also handle Messages that do not belong to the transition table. Match those Messages normally and send only the Messages handled by the table through the fold. In this example, `ToggledHelp` updates another Model field while the checkout Messages go through `foldCheckout`.
 
@@ -308,27 +163,7 @@ The [Machine API reference](https://foldkit.dev/api-reference/experimental-machi
 
 `transition` and `step` are pure. Tests can send a real state and Message through the Machine, then inspect the next state, Commands, or ignored reason. Add `unreachableStates` and `deadTransitions` assertions to the same test file. Then a table change that makes a state or Edge impossible to reach fails a test.
 
-```
-import { expect, test } from 'vitest'
-
-import { CheckoutState, Message, checkoutMachine } from './machineDefinition'
-
-test('a digital order skips Shipping', () => {
-  const transition = checkoutMachine.transition(
-    CheckoutState.Cart({ isShippingRequired: false }),
-    Message.ClickedContinue(),
-  )
-
-  expect(transition.model).toEqual(
-    CheckoutState.Payment({ isShippingRequired: false }),
-  )
-})
-
-test('every declared state and Edge is reachable', () => {
-  expect(checkoutMachine.unreachableStates()).toEqual([])
-  expect(checkoutMachine.deadTransitions()).toEqual([])
-})
-```
+Machine tests
 
 Test the Machine rather than exporting guards or handlers solely to test them in isolation. A guard that passes by itself does not prove that it sits under the intended state and Message or leads to the intended target.
 
@@ -340,21 +175,7 @@ When an extracted Edge handler needs an explicit parameter type, use `Machine.Ed
 
 When one state entry is substantial enough to deserve its own binding, preserve its contextual types with `StateTransitions`:
 
-```
-const paymentTransitions: Machine.StateTransitions<
-  CheckoutState,
-  Message,
-  'Payment'
-> = {
-  on: {
-    ClickedBack: to('Cart', ({ state }) => ({
-      model: CheckoutState.Cart({
-        isShippingRequired: state.isShippingRequired,
-      }),
-    })),
-  },
-}
-```
+Extracted state transitions
 
 Avoid splitting every state into a separate module. That turns one readable graph back into control flow spread across files.
 
@@ -363,6 +184,8 @@ Avoid splitting every state into a separate module. That turns one readable grap
 Parallel state is ordinary Model composition: store two Machine states in two fields and fold each where its Messages belong.
 
 A nested Machine is ordinary state composition too. Say an order flow has Browsing, CheckingOut, and Complete states. The CheckingOut variant can carry the checkout Machine's state:
+
+Machine state nested in another state
 
 ```
 import { defineTaggedUnion } from 'foldkit/schema'

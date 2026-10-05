@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-0-158-0
 title: "Foldkit 0.158.0"
 description: "Machine gains shared transitions, read-only context, simpler update integration, and a guide to defining, testing, and analyzing your application's workflows."
-access_date: 2026-09-05T19:30:16.678Z
-current_date: 2026-09-05T19:30:16.678Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
@@ -26,6 +26,8 @@ Previously, `to` and `when` took a state builder and a separate Commands callbac
 
 Before:
 
+Machine Edge before 0.158.0
+
 ```
 to(
   'Placing',
@@ -35,6 +37,8 @@ to(
 ```
 
 After:
+
+Machine Edge in 0.158.0
 
 ```
 to('Placing', ({ state }) => {
@@ -59,6 +63,8 @@ A checkout may allow cancellation from Cart, Shipping, Payment, and Review. Repe
 
 `Machine.forStates(...).on(...)` now lets you declare the cancellation once in the Machine's `shared` array:
 
+Shared checkout cancellation
+
 ```
 shared: [
   Machine.forStates(['Cart', 'Shipping', 'Payment', 'Review']).on({
@@ -78,6 +84,8 @@ Shared transitions also appear in the Machine's graph analysis and Mermaid outpu
 ## Folding a Machine into update
 
 `Machine.fold` handles the work of reading a Machine state from the enclosing Model, running a transition, writing the next state back, and returning its Commands:
+
+Folding checkout into the application Model
 
 ```
 const foldCheckout = Machine.fold({

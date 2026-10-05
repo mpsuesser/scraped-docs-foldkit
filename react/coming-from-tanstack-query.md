@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/coming-from-tanstack-query
 title: "Coming from TanStack Query"
 description: "Foldkit has no useQuery. AsyncData models remote values, while caching, refetching, invalidation, deduplication, and request races remain visible application policy."
-access_date: 2026-10-01T22:03:15.204Z
-current_date: 2026-10-01T22:03:15.204Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 TanStack Query is excellent at what it does. It combines remote data, a keyed cache, and fetching policy behind hooks and a `QueryClient`. Foldkit has no `useQuery`, and it does not need one.
@@ -26,7 +26,7 @@ Here is how common TanStack Query concepts map onto Foldkit:
 | `staleTime: Infinity` | `AsyncData.loadIfMissing`, followed by explicit revalidation when the application requires it |
 | Request deduplication | `AsyncData.revalidateOrLoad` yields `None` while that field has a request in flight |
 | Out-of-order response handling | Request context in the result Message, checked against the current Model in `update` |
-| `invalidateQueries` | `AsyncData.revalidateOrLoad` plus the fetch Command, returned from `update` |
+| `invalidateQueries` | No stored invalidation flag; dispatch a Message that applies `revalidateOrLoad` and refetches |
 | `useMutation` | A Message and a Command, like any other effect |
 | Retries | Effect’s `retry` and `Schedule` |
 | TanStack Query Devtools | [Foldkit DevTools](https://foldkit.dev/core/devtools), which inspects the Model and Message timeline |
@@ -39,58 +39,11 @@ There is no separate query cache. The Model is the cache. A single resource live
 
 Here is the complete shape of a simple query. It uses one field, one Command, and two `update` arms:
 
-```
-// MODEL
-
-const Post = Schema.Struct({ id: Schema.String, title: Schema.String })
-
-const PostsData = AsyncData.Schema(Schema.Array(Post), Schema.String)
-
-const Model = Schema.Struct({
-  posts: PostsData.schema,
-})
-
-// MESSAGE
-
-const Message = defineMessageUnion({
-  EnteredPostsRoute: {},
-  SettledFetchPosts: {
-    result: Schema.Result(Schema.Array(Post), Schema.String),
-  },
-})
-
-// COMMAND
-
-const FetchPosts = Command.define('FetchPosts', {
-  messages: [Message.SettledFetchPosts],
-  execute: pipe(
-    fetchPosts,
-    Effect.result,
-    Effect.map(result => Message.SettledFetchPosts({ result })),
-  ),
-})
-
-// UPDATE
-
-Match.tagsExhaustive({
-  EnteredPostsRoute: () =>
-    Option.match(AsyncData.revalidateOrLoad(model.posts), {
-      onNone: () => ({ model }),
-      onSome: nextPosts => ({
-        model: modifyFields(model, { posts: () => nextPosts }),
-        commands: [FetchPosts()],
-      }),
-    }),
-
-  SettledFetchPosts: ({ result }) => ({
-    model: modifyFields(model, { posts: AsyncData.settle(result) }),
-  }),
-})
-```
+Translating useQuery
 
 Each behavior is visible in the transition that implements it. `revalidateOrLoad` returns `None` while the field is already `Loading` or `Refreshing`, so the same update path does not start another request. A successful value moves to `Refreshing` when revalidated, keeping the current list on screen. A cold field moves to `Loading`. When the Command finishes, `settle` folds its `Result` into the field and preserves previous data as `Stale` if a refresh fails.
 
-The [API Cache example](https://foldkit.dev/example-apps/api-cache) adds a keyed cache, instant cache hits, invalidation, and background polling using the same primitives. It is the complete answer to what replaces the machinery around `useQuery`.
+The [API Cache example](https://foldkit.dev/example-apps/api-cache) shows the same policy written by hand. [API Cache Query](https://foldkit.dev/example-apps/api-cache-query) uses the experimental [Query](https://foldkit.dev/core/query) module so fetching and retained entries live in the Submodel instead of the parent update.
 
 ## Mapping Query Status
 
@@ -121,85 +74,7 @@ Imagine a search starts a request for A, then starts a request for B before A re
 
 Foldkit does not automatically cancel or order independent Commands. Thread the query through the Command into its result Message, then compare it with the current Model before accepting the result:
 
-```
-import { Effect, Schema, pipe } from 'effect'
-import { HttpClient, HttpClientRequest } from 'effect/http'
-import { AsyncData, Command, Http, type Update } from 'foldkit'
-import { defineMessageUnion } from 'foldkit/message'
-import { modifyFields } from 'foldkit/struct'
-
-const SearchResult = Schema.Struct({ id: Schema.String, title: Schema.String })
-
-const SearchResultsData = AsyncData.Schema(
-  Schema.Array(SearchResult),
-  Schema.String,
-)
-
-// MODEL
-
-const Model = Schema.Struct({
-  queryInput: Schema.String,
-  searchResults: SearchResultsData.schema,
-})
-type Model = typeof Model.Type
-
-// MESSAGE
-
-const Message = defineMessageUnion({
-  UpdatedQuery: { query: Schema.String },
-  SettledSearch: {
-    query: Schema.String,
-    result: Schema.Result(Schema.Array(SearchResult), Schema.String),
-  },
-})
-type Message = typeof Message.Type
-
-// COMMAND
-
-const Search = Command.define('Search', {
-  args: { query: Schema.String },
-  messages: [Message.SettledSearch],
-  execute: ({ query }) =>
-    pipe(
-      Effect.gen(function* () {
-        const client = yield* HttpClient.HttpClient
-        const request = HttpClientRequest.get('/api/search').pipe(
-          HttpClientRequest.setUrlParams({ q: query }),
-        )
-        const response = yield* client.execute(request)
-        return yield* Schema.decodeUnknownEffect(Schema.Array(SearchResult))(
-          yield* response.json,
-        )
-      }),
-      Effect.mapError(error => String(error)),
-      Effect.result,
-      Effect.map(result => Message.SettledSearch({ query, result })),
-      Effect.provide(Http.layer),
-    ),
-})
-
-// UPDATE
-
-const update = (model: Model, message: Message) =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    UpdatedQuery: ({ query }) => ({
-      model: modifyFields(model, {
-        queryInput: () => query,
-        searchResults: () => SearchResultsData.Loading(),
-      }),
-      commands: [Search({ query })],
-    }),
-
-    SettledSearch: ({ query, result }) => {
-      if (query !== model.queryInput) {
-        return { model }
-      }
-      return {
-        model: modifyFields(model, { searchResults: AsyncData.settle(result) }),
-      }
-    },
-  })
-```
+Response race guard
 
 The late response for A sees that its `query` no longer matches `queryInput`, so `update` leaves the Model unchanged. The comparison uses the context the application already cares about. The same pattern works for a search request launched after every keystroke: accept the result only if it still belongs to the current query.
 
@@ -217,7 +92,9 @@ When a superseded request is expensive or the user can cancel it, define the Com
 
 There is no equivalent hook, and you do not assemble one. A query is an [AsyncData](https://foldkit.dev/core/async-data) field in the [Model](https://foldkit.dev/core/model) plus a [Command](https://foldkit.dev/core/commands) returned from `update`. The runtime executes the Command and dispatches its result Message. `update` then folds the result into the field.
 
-Keep them in the Model. Use one `AsyncData` field for one resource or an `Schema.HashMap` keyed by id for many resources. A cache hit is a field for which `AsyncData.hasData` is true. See the [API Cache example](https://foldkit.dev/example-apps/api-cache).
+When several resources share fetching and retained entries, [Query.define](https://foldkit.dev/core/query) is that Submodel. The parent still owns policy. The Query owns the `AsyncData` transitions.
+
+Keep them in the Model. Use one `AsyncData` field for one resource or a `Schema.HashMap` keyed by id for many resources. A cache hit is a field for which `AsyncData.hasData` is true. See the [API Cache example](https://foldkit.dev/example-apps/api-cache) for the hand-rolled machine, or [Query](https://foldkit.dev/core/query) when the Submodel should own fetching and retained entries.
 
 ### How do I deduplicate identical requests?
 
@@ -233,7 +110,9 @@ Use a [Subscription](https://foldkit.dev/core/subscriptions) gated on a Model co
 
 ### How do I invalidate and refetch?
 
-Apply `AsyncData.revalidateOrLoad` to the field and return the fetch Command when it yields a transition. Data-holding states move to `Refreshing`; a cold or failed field moves to `Loading`. The narrower `revalidate` skips fields that hold no data, which is useful when a mutation affects caches that may never have loaded.
+Foldkit does not mark an `AsyncData` value as invalidated. When the application knows data needs to be replaced, dispatch a Message, apply `AsyncData.revalidateOrLoad`, and return the fetch Command when it yields a transition. Data-holding states move to `Refreshing`; a cold or failed field moves to `Loading`. The narrower `revalidate` skips fields that hold no data, which is useful when a mutation affects caches that may never have loaded.
+
+`Stale` is not an invalidation flag. It means a refresh failed and the previous data remains available. If freshness must exist independently of fetching and failure, represent it as separate Model state.
 
 ### What about mutations?
 

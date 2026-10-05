@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ai/skills
 title: "Skills"
 description: "Install and use Foldkit’s repository skills for architecture guidance, program generation, and application audits."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Skills
@@ -20,11 +20,15 @@ Each skill is a directory with a `SKILL.md` file. The file tells an agent when t
 
 Add the Foldkit marketplace, then install the plugin:
 
-```text
+Add the Foldkit marketplace
+
+```
 /plugin marketplace add foldkit/foldkit
 ```
 
-```text
+Install the Foldkit skills plugin
+
+```
 /plugin install foldkit-skills@foldkit
 ```
 
@@ -50,7 +54,9 @@ OpenCode reads the `SKILL.md` frontmatter directly and ignores `agents/openai.ya
 
 ### foldkit
 
-```text
+Foldkit skill invocations
+
+```
 Claude Code: /foldkit-skills:foldkit
 Codex: $foldkit
 ```
@@ -61,7 +67,9 @@ Hosts that support implicit skill invocation can select it when the project or p
 
 ### generate-program
 
-```text
+Generate-program skill invocations
+
+```
 Claude Code: /foldkit-skills:generate-program
 Codex: $generate-program
 ```
@@ -70,7 +78,9 @@ Builds an idiomatic Foldkit application from a natural-language description. The
 
 ### audit-program
 
-```text
+Audit-program skill invocations
+
+```
 Claude Code: /foldkit-skills:audit-program
 Codex: $audit-program
 ```

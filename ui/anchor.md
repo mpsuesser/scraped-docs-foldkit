@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/anchor
 title: "Anchor"
 description: "Position and portal floating panels with the same Floating UI runtime used by Listbox, Combobox, Menu, Popover, Tooltip, and Date Picker."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Anchor
@@ -13,6 +13,8 @@ current_date: 2026-10-01T05:11:45.759Z
 Anchor is the positioning runtime the floating components are built on. [Listbox](https://foldkit.dev/ui/listbox), [Combobox](https://foldkit.dev/ui/combobox), [Menu](https://foldkit.dev/ui/menu), [Popover](https://foldkit.dev/ui/popover), and [Tooltip](https://foldkit.dev/ui/tooltip) hand their `anchor` prop straight to it, and [Date Picker](https://foldkit.dev/ui/date-picker) forwards its own through Popover. It wraps [Floating UI](https://floating-ui.com), adding the portaling, focus choreography, and styling hooks those components share.
 
 It is exported so you can build an anchored component Foldkit does not ship. If one of the six above fits, use it. Reach for this module when the panel you need differs structurally from all of them, for example a virtualized list with group headers, or a multi-select that stages changes against an open-time baseline and commits them with a Done action.
+
+Anchor imports
 
 ```
 import {
@@ -32,86 +34,7 @@ The module is also exported from the root barrel, as `import { Anchor } from '@f
 
 `anchorSetup` is a plain DOM function. It takes the element and a config, and returns a cleanup. An element exists in the rendered tree and `execute` uses that element to do DOM work, so [Mount](https://foldkit.dev/core/mount) is the primitive that owns it. `Mount.define` covers the one-shot acquire-with-cleanup shape.
 
-```
-// Pseudocode walkthrough of the Foldkit integration points. Each labeled
-// block below is an excerpt. Fit them into your own Model, Message, update,
-// and view definitions.
-import { Effect, Schema } from 'effect'
-import { Mount } from 'foldkit'
-import type { Html, HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
-
-import { AnchorConfig, anchorSetup } from '@foldkit/ui/anchor'
-
-// Every Mount Definition declares at least one result Message. Name it after
-// the Definition, the way a Command's result Message is named after the
-// Command:
-const Message = defineMessageUnion({
-  CompletedAnchorPanel: {},
-})
-
-// Mount.define takes the Definition name and a config: a Schema for the args
-// captured at mount, the result Messages, and execute. execute receives the
-// live element alongside those args. anchorSetup is a plain DOM function that
-// returns a cleanup, so it goes inside Effect.sync and the cleanup is
-// registered with Effect.acquireRelease. Construct the resource inside the
-// acquire body, never before it, or it leaks on interruption:
-const AnchorPanel = Mount.define('AnchorPanel', {
-  args: { buttonId: Schema.String, anchor: AnchorConfig },
-  messages: [Message.CompletedAnchorPanel],
-  execute: ({ element, buttonId, anchor }) =>
-    Effect.gen(function* () {
-      yield* Effect.acquireRelease(
-        Effect.sync(() => anchorSetup(element, { buttonId, anchor })),
-        cleanup => Effect.sync(cleanup),
-      )
-      return Message.CompletedAnchorPanel()
-    }),
-})
-
-// The trigger needs a stable id, because that is what anchorSetup resolves
-// the button by. Render the panel only while it is open, and spread the Mount
-// onto it. The panel starts at visibility: hidden so it cannot flash at the
-// top left corner before Floating UI resolves its first position; anchorSetup
-// clears that once the panel is placed:
-const view = (h: HtmlBuilder<Message>): Html =>
-  h.div(
-    [],
-    [
-      h.button(
-        [h.Id('search-select-button'), h.OnClick(ClickedTrigger())],
-        ['Open'],
-      ),
-      ...(model.isOpen
-        ? [
-            h.div(
-              [
-                h.Style({
-                  position: 'absolute',
-                  margin: '0',
-                  visibility: 'hidden',
-                }),
-                h.Class('z-10 rounded-lg border bg-white shadow-lg'),
-                h.OnMount(
-                  AnchorPanel({
-                    buttonId: 'search-select-button',
-                    anchor: { placement: 'bottom-start', gap: 4 },
-                  }),
-                ),
-              ],
-              [
-                // ...your own panel content
-              ],
-            ),
-          ]
-        : []),
-    ],
-  )
-
-// Mount args are captured at mount, not refreshed across renders. When the
-// config has to change, unmount and remount the panel rather than expecting
-// a new `anchor` value to reach the running Mount.
-```
+Anchored panel
 
 Two details decide whether the panel behaves:
 

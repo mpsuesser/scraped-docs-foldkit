@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/textarea
 title: "Textarea"
 description: "A thin wrapper around the native textarea with ARIA linking and styling hooks."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -22,44 +22,7 @@ The `toView` callback receives attribute groups for the label, description, and 
 
 A brief introduction about yourself.
 
-```
-// Pseudocode — Textarea is view-only. The value lives in your own Model as
-// a string. Replace model.bio and UpdatedBio with your own field and Message.
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Textarea } from '@foldkit/ui'
-
-const view = (model: Model, h: HtmlBuilder<Message>) =>
-  Textarea.view(
-    {
-      id: 'bio',
-      hasDescription: true,
-      value: model.bio, // your Model field
-      onInput: value => UpdatedBio({ value }), // your Message
-      placeholder: 'Tell us about yourself...',
-      rows: 4,
-      toView: attributes =>
-        h.div(
-          [h.Class('flex flex-col gap-1.5')],
-          [
-            h.label(
-              [...attributes.label, h.Class('text-sm font-medium')],
-              ['Bio'],
-            ),
-            h.textarea([
-              ...attributes.textarea,
-              h.Class('w-full rounded-lg border border-gray-300 px-3 py-2'),
-            ]),
-            h.span(
-              [...attributes.description, h.Class('text-sm text-gray-500')],
-              ['A brief introduction about yourself.'],
-            ),
-          ],
-        ),
-    },
-    h,
-  )
-```
+Basic textarea
 
 ### Disabled
 
@@ -67,45 +30,7 @@ Set `isDisabled: true` to disable the textarea. Like Input, this sets the native
 
 This textarea is disabled.
 
-```
-// Pseudocode — Textarea is view-only. Disabled textareas display a fixed
-// value and ignore onInput events.
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Textarea } from '@foldkit/ui'
-
-const view = (h: HtmlBuilder<Message>) =>
-  Textarea.view(
-    {
-      id: 'bio-disabled',
-      isDisabled: true,
-      hasDescription: true,
-      value: 'Known for work on the Analytical Engine.',
-      rows: 3,
-      toView: attributes =>
-        h.div(
-          [h.Class('flex flex-col gap-1.5')],
-          [
-            h.label(
-              [...attributes.label, h.Class('text-sm font-medium')],
-              ['Bio'],
-            ),
-            h.textarea([
-              ...attributes.textarea,
-              h.Class(
-                'w-full rounded-lg border px-3 py-2 data-[disabled]:opacity-50',
-              ),
-            ]),
-            h.span(
-              [...attributes.description, h.Class('text-sm text-gray-500')],
-              ['This textarea is disabled.'],
-            ),
-          ],
-        ),
-    },
-    h,
-  )
-```
+Disabled textarea
 
 ## Styling
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps
 title: "Examples"
 description: "Browse working Foldkit applications that cover state, forms, routing, caching, authentication, server rendering, UI components, third-party integrations, and more."
-access_date: 2026-10-01T22:03:15.204Z
-current_date: 2026-10-01T22:03:15.204Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Examples
@@ -49,6 +49,10 @@ Look up weather by ZIP code. Demonstrates HTTP requests and loading states.
 [API Cache](https://foldkit.dev/example-apps/api-cache)
 
 Query caching without a query client. Demonstrates stale-while-revalidate, request deduplication, invalidation, and interval refetching.
+
+[API Cache Query](https://foldkit.dev/example-apps/api-cache-query)
+
+The API Cache app rewritten with experimental Query.define. Fetching and retained entries live in Query Submodels. The parent folds Got* Messages.
 
 [Charting](https://foldkit.dev/example-apps/charting)
 

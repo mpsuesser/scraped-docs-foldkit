@@ -2,8 +2,8 @@
 url: https://foldkit.dev/introduction/roadmap
 title: "Roadmap"
 description: "Where Foldkit is today, how it got here, the work remaining before 1.0, and the architectural promises that will not change."
-access_date: 2026-09-07T07:29:31.695Z
-current_date: 2026-09-07T07:29:31.695Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Roadmap
@@ -32,7 +32,7 @@ When an application finds a missing primitive, an awkward API, or an unreasonabl
 
 ### Promoting Experimental Surfaces
 
-Server rendering and Machine are the two largest public surfaces still behind an experimental boundary. Server rendering needs more production use across different hosts. Machine needs to prove that it makes complicated state easier to understand. They will both graduate out of experimental before 1.0.
+Server rendering, Machine, and Query are the largest public surfaces still behind an experimental boundary. Server rendering needs more production use across different hosts. Machine needs to prove that it makes complicated state easier to understand. Query needs production use to settle its cache lifecycle and composition API. They will graduate out of experimental before 1.0.
 
 ### Foldkit UI
 

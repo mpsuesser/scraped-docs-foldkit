@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/subscription-organization
 title: "Subscription Organization"
 description: "Organize Subscription records by ownership and lift child Subscriptions through nested Model and Message types."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Subscription Organization
@@ -106,179 +106,39 @@ The next three snippets trace one record from a leaf, through a composing Submod
 
 A leaf declares its entries with `Subscription.make`.
 
-```
-// page/settings/themeMenu/subscription.ts
-import { Effect, Schema, Stream } from 'effect'
-import { Subscription } from 'foldkit'
-
-import { type Message, PressedEscape } from './message'
-import type { Model } from './model'
-
-export const subscriptions = Subscription.make<Model, Message>()(entry => ({
-  escapeKey: entry(
-    { isOpen: Schema.Boolean },
-    {
-      modelToDependencies: model => ({ isOpen: model.isOpen }),
-      dependenciesToStream: ({ isOpen }) =>
-        Stream.when(
-          Stream.fromEventListener<KeyboardEvent>(document, 'keydown').pipe(
-            Stream.filter(event => event.key === 'Escape'),
-            Stream.map(PressedEscape),
-          ),
-          Effect.sync(() => isOpen),
-        ),
-    },
-  ),
-}))
-```
+Leaf Submodel Subscription file
 
 ### The Composing Submodel
 
-A composing Submodel lifts child records, declares any local entries, and aggregates the results.
+A composing Submodel lifts child records, declares any local entries, and aggregates the results. Each lift supplies a `read` that returns an `Option` of the child Model. An always-present child is wrapped in `Option.some`.
 
-```
-// page/settings/subscription.ts
-import { Effect, Schema, Stream } from 'effect'
-import { Subscription } from 'foldkit'
-
-import {
-  GotThemeMenuMessage,
-  type Message,
-  StartedNavigationAway,
-} from './message'
-import type { Model } from './model'
-import * as ThemeMenu from './themeMenu'
-
-const themeMenuSubscriptions = Subscription.lift(ThemeMenu.subscriptions)<
-  Model,
-  Message
->({
-  toChildModel: model => model.themeMenu,
-  toParentMessage: message => GotThemeMenuMessage({ message }),
-})
-
-const localSubscriptions = Subscription.make<Model, Message>()(entry => ({
-  unsavedChangesWarning: entry(
-    { hasUnsavedChanges: Schema.Boolean },
-    {
-      modelToDependencies: model => ({
-        hasUnsavedChanges: model.hasUnsavedChanges,
-      }),
-      dependenciesToStream: ({ hasUnsavedChanges }) =>
-        Stream.when(
-          Stream.fromEventListener<BeforeUnloadEvent>(
-            window,
-            'beforeunload',
-          ).pipe(Stream.map(StartedNavigationAway)),
-          Effect.sync(() => hasUnsavedChanges),
-        ),
-    },
-  ),
-}))
-
-export const subscriptions = Subscription.aggregate(
-  themeMenuSubscriptions,
-  localSubscriptions,
-)
-```
+Composing Submodel Subscription file
 
 ### The Root
 
 The root uses the same shape. Its lifts target the root Model and Message.
 
-```
-// subscription.ts
-import { Effect, Schema, Stream } from 'effect'
-import { Subscription } from 'foldkit'
+Root Subscription file
 
-import { ChangedSystemTheme, GotSettingsMessage, type Message } from './message'
-import type { Model } from './model'
-import * as Settings from './settings'
+## Optional Children
 
-const settingsSubscriptions = Subscription.lift(Settings.subscriptions)<
-  Model,
-  Message
->({
-  toChildModel: model => model.settings,
-  toParentMessage: message => GotSettingsMessage({ message }),
-})
+Return `Some(child)` from `read` when the child is present, or `None` when it is absent. Foldkit stops the child's Subscriptions and skips its dependency functions while `read` returns `None`.
 
-const localSubscriptions = Subscription.make<Model, Message>()(entry => ({
-  systemTheme: entry(
-    { isSystemPreference: Schema.Boolean },
-    {
-      modelToDependencies: model => ({
-        isSystemPreference: model.themePreference === 'System',
-      }),
-      dependenciesToStream: ({ isSystemPreference }) =>
-        Stream.when(
-          Subscription.fromMediaQuery({
-            query: '(prefers-color-scheme: dark)',
-            mapMatches: isDark =>
-              ChangedSystemTheme({ theme: isDark ? 'Dark' : 'Light' }),
-          }),
-          Effect.sync(() => isSystemPreference),
-        ),
-    },
-  ),
-}))
-
-export const subscriptions = Subscription.aggregate(
-  settingsSubscriptions,
-  localSubscriptions,
-)
-```
+Reading an optional child Model
 
 ## Gating a Lifted Record
 
 A child can express conditions from its own Model in its dependencies and Stream construction. It cannot see parent-owned state such as the active Route.
 
-Put a parent-owned condition in `when` on the lift. The predicate receives the parent Model. The gated entries run only while it returns `true`.
+Put a parent-owned condition in `when` on the lift. The predicate receives the parent Model. The gated entries run only while it returns `true` and `read` returns a child. A closed gate skips `read` and the child’s dependency functions.
 
-```
-// subscription.ts
-import { Subscription } from 'foldkit'
-
-import { GotSettingsMessage, type Message } from './message'
-import type { Model } from './model'
-import * as Settings from './settings'
-
-const settingsSubscriptions = Subscription.lift(Settings.subscriptions)<
-  Model,
-  Message
->({
-  toChildModel: model => model.settings,
-  toParentMessage: message => GotSettingsMessage({ message }),
-  when: ({ route }) => route._tag === 'Settings',
-})
-
-export const subscriptions = Subscription.aggregate(settingsSubscriptions)
-```
+Route-gated lift
 
 Closing a gate tears down the Stream. Foldkit also stops calling the child's `modelToDependencies` until the gate reopens, so hidden child changes do not restart it.
 
-`when` accepts either one predicate for the whole record or a map of predicates by entry name. An omitted entry remains ungated. For example: a Room page can keep its WebSocket alive across navigation while gating its keyboard listener to the active Room Route.
+`when` accepts either one predicate for the whole record or a map of predicates by entry name. An omitted entry has no additional activity condition, but still stops when `read` returns `None`. For example: a Room page can keep its WebSocket alive across navigation while gating its keyboard listener to the active Room Route.
 
-```
-// subscription.ts
-import { Subscription } from 'foldkit'
-
-import { GotRoomMessage, type Message } from './message'
-import type { Model } from './model'
-import * as Room from './room'
-
-// The Room page holds two Subscriptions: a WebSocket stream that should
-// outlive navigation, and a keyboard listener that should not. Naming one
-// entry gates it and leaves the other alone.
-const roomSubscriptions = Subscription.lift(Room.subscriptions)({
-  toChildModel: (model: Model) => model.room,
-  toParentMessage: (message: Room.Message): Message =>
-    GotRoomMessage({ message }),
-  when: { roomKeyboard: ({ route }) => route._tag === 'Room' },
-})
-
-export const subscriptions = Subscription.aggregate(roomSubscriptions)
-```
+Per-entry gated lift
 
 The parent owns `when`. The child keeps its child-owned conditions in its own Subscription definition.
 

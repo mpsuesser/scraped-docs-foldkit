@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/toast
 title: "Toast"
 description: "Stack of transient notifications anchored to a corner of the viewport with per-entry enter/leave animations and auto-dismiss."
-access_date: 2026-09-20T01:01:06.971Z
-current_date: 2026-09-20T01:01:06.971Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -22,174 +22,7 @@ Click a variant to add a toast. Hover a non-sticky toast to pause its auto-dismi
 
 No toasts dismissed yet
 
-```
-// Pseudocode walkthrough of the Foldkit integration points. Each labeled
-// block below is an excerpt. Fit them into your own Model, init, Message,
-// update, and view definitions.
-import { Option, Schema } from 'effect'
-import { Subscription, Update } from 'foldkit'
-import type { HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
-import { modifyFields } from 'foldkit/struct'
-
-import { Toast as UiToast } from '@foldkit/ui'
-
-// Define the payload shape for your toast. Toast owns the entry lifecycle,
-// accessibility role, optional dismiss timer, hover state, and swipe state.
-// The payload is yours, whatever you can encode in a Schema:
-const ToastPayload = Schema.Struct({
-  bodyText: Schema.String,
-  maybeLink: Schema.Option(
-    Schema.Struct({ href: Schema.String, text: Schema.String }),
-  ),
-})
-
-// Bind a Toast module to your payload schema. The factory returns Model,
-// Message, OutMessage, update, view, show/dismiss/dismissAll, and the
-// DismissedToast OutMessage variant:
-export const Toast = UiToast.make(ToastPayload)
-
-// Add Toast.Model to your app Model. Track anything you want to lift from
-// a toast's lifecycle alongside it. Here, the last dismissed bodyText so
-// the UI can show "just dismissed: ..." after a toast goes away:
-const Model = Schema.Struct({
-  toast: Toast.Model,
-  maybeLastDismissedBody: Schema.Option(Schema.String),
-  // ...your other fields
-})
-type Model = typeof Model.Type
-
-// In your init function, initialize it. Swipe is opt-in: omit
-// swipeToDismiss to leave it disabled, or pass {} for the default rightward
-// 40px gesture. Set threshold to customize the dismissal distance:
-const init = () => ({
-  model: {
-    toast: Toast.init({
-      id: 'app-toast',
-      swipeToDismiss: {},
-    }),
-    maybeLastDismissedBody: Option.none(),
-    // ...your other fields
-  },
-})
-
-// Embed the Toast Message in your parent Message, plus any domain Messages
-// that should push a toast:
-const Message = defineMessageUnion({
-  GotToastMessage: { message: Toast.Message },
-  ClickedSave: {},
-})
-type Message = typeof Message.Type
-
-// At module scope, fold the OutMessage into your own Model, lifting the
-// DismissedToast event into domain state. The arm returns an Update.Step over
-// the parent Model, which already has the next Toast Model written back:
-const foldToastOutMessage = Toast.OutMessage.match<Update.Step<Model, Message>>(
-  {
-    DismissedToast:
-      ({ payload }) =>
-      model => ({
-        model: modifyFields(model, {
-          maybeLastDismissedBody: () => Option.some(payload.bodyText),
-        }),
-      }),
-  },
-)
-
-// Update.foldChild wires the child into the parent: it delegates Toast's own
-// Messages to Toast.update, writes the next Toast Model back, maps the
-// Submodel's Commands into your Message type, and hands any OutMessage to
-// foldOutMessage.
-const foldToast = Update.foldChild({
-  update: Toast.update,
-  read: (model: Model) => Option.some(model.toast),
-  write: (model, nextToast) => modifyFields(model, { toast: () => nextToast }),
-  toParentMessage: message => Message.GotToastMessage({ message }),
-  foldOutMessage: foldToastOutMessage,
-})
-
-const foldToastShow = Update.foldChild({
-  update: Toast.show,
-  read: (model: Model) => Option.some(model.toast),
-  write: (model, nextToast) => modifyFields(model, { toast: () => nextToast }),
-  toParentMessage: message => Message.GotToastMessage({ message }),
-  foldOutMessage: foldToastOutMessage,
-})
-
-// In the corresponding Message.match handler, call the fold:
-GotToastMessage: ({ message }) => foldToast(model, message)
-
-ClickedSave: () =>
-  foldToastShow(model, {
-    variant: 'Success',
-    payload: {
-      bodyText: 'Changes saved',
-      // Generate the href via your app's router (Foldkit's biparser-based
-      // routing builds URLs from typed values, e.g. \`changesRouter()\`),
-      // not a string literal, so renames flow through.
-      maybeLink: Option.some({ href: changesRouter(), text: 'View' }),
-    },
-  })
-
-// Wire pointer subscriptions once at the app root so swipe tracking
-// continues when the pointer leaves the entry. Without this lift the
-// view still sets data-swipe on pointerdown but never receives move/up.
-export const subscriptions = Subscription.lift(Toast.subscriptions)<
-  Model,
-  Message
->({
-  toChildModel: model => model.toast,
-  toParentMessage: message => Message.GotToastMessage({ message }),
-})
-
-// In your view, embed Toast via h.submodel once at the app root. The
-// entryToView callback lays out each entry from its payload. The
-// component handles the <div> wrapper, hover-to-pause, swipe-to-dismiss
-// (pointerdown + data-swipe="move"/"settling"/"end" +
-// translate/--toast-swipe-move-x), and enter/leave animations.
-const view = (h: HtmlBuilder<Message>) =>
-  h.submodel({
-    slotId: 'app-toast',
-    model: model.toast,
-    view: Toast.view,
-    viewInputs: {
-      position: 'BottomRight',
-      entryClassName: 'toast-entry w-80',
-      entryToView: (entry, handlers) =>
-        h.div(
-          [
-            h.Class(
-              'flex items-start gap-3 rounded-lg border bg-white p-3 shadow',
-            ),
-          ],
-          [
-            h.div(
-              [h.Class('flex-1')],
-              [
-                h.p(
-                  [h.Class('font-semibold text-sm')],
-                  [
-                    h.span(
-                      [h.DataAttribute('toast-swipe-ignore', '')],
-                      [entry.payload.bodyText],
-                    ),
-                  ],
-                ),
-                ...Option.match(entry.payload.maybeLink, {
-                  onNone: () => [],
-                  onSome: ({ href, text }) => [
-                    h.a([h.Class('text-sm underline'), h.Href(href)], [text]),
-                  ],
-                }),
-              ],
-            ),
-            h.button([...handlers.dismiss], ['Close']),
-          ],
-        ),
-    },
-    toParentMessage: message => Message.GotToastMessage({ message }),
-  })
-```
+Toast
 
 ## Styling
 
@@ -208,6 +41,8 @@ Presses on buttons, links, form controls, and editable elements do not start a s
 While dragging, the entry follows the pointer only in the configured direction; movement in the opposite direction is clamped to zero. `Toast.view` sets `data-swipe="move"` and the entry's inline `translate` offset. The `translate` property composes with any `transform` animation you apply. Dismissal depends on release distance, not velocity. Releasing more than the threshold sets `data-swipe="end"`, holds the release offset until leave animation starts, then targets `100vw` or `-100vw` to carry the entry off-screen before `DismissedToast` fires.
 
 Releasing at or below the threshold, or cancelling with Escape, returns the entry to zero offset and resumes auto-dismiss when applicable. Toast holds `data-swipe="settling"` for 150ms (`SWIPE_SETTLE_DURATION`) after either case. Add a `translate` transition for the snap-back and exit, as the demos do:
+
+Swipe transition styles
 
 ```
 .toast-entry[data-swipe='settling'] {

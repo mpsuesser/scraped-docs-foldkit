@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/progress
 title: "Progress"
 description: "Task progress with determinate and indeterminate states, progressbar semantics, and data-state styling hooks."
-access_date: 2026-10-01T05:11:45.759Z
-current_date: 2026-10-01T05:11:45.759Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 ## Overview
@@ -22,49 +22,7 @@ Pass `value` when the amount completed is known. Spread `attributes.label` onto 
 
 Upload42%
 
-```
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Progress } from '@foldkit/ui'
-
-const view = (h: HtmlBuilder<Message>) =>
-  Progress.view(
-    {
-      id: 'upload',
-      value: 42,
-      max: 100,
-      valueText: '42 percent',
-      toView: attributes =>
-        h.div(
-          [h.Class('flex flex-col gap-2')],
-          [
-            h.span([...attributes.label], ['Upload']),
-            h.div(
-              [
-                ...attributes.progress,
-                h.Class('h-3 w-full rounded-full bg-gray-200'),
-              ],
-              [
-                h.div(
-                  [
-                    ...attributes.track,
-                    h.Class('h-full w-full overflow-hidden'),
-                  ],
-                  [
-                    h.div([
-                      ...attributes.indicator,
-                      h.Class('h-full rounded-full bg-blue-600'),
-                    ]),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-    },
-    h,
-  )
-```
+Progress
 
 ### Indeterminate
 
@@ -72,41 +30,7 @@ Omit `value` when progress cannot yet be quantified. The progressbar then omits 
 
 Loading
 
-```
-import type { HtmlBuilder } from 'foldkit/html'
-
-import { Progress } from '@foldkit/ui'
-
-const view = (h: HtmlBuilder<Message>) =>
-  Progress.view(
-    {
-      id: 'loading',
-      valueText: 'Loading',
-      toView: attributes =>
-        h.div(
-          [h.Class('flex flex-col gap-2')],
-          [
-            h.span([...attributes.label], ['Loading']),
-            h.div(
-              [
-                ...attributes.progress,
-                h.Class('h-3 w-full rounded-full bg-gray-200 overflow-hidden'),
-              ],
-              [
-                h.div([
-                  ...attributes.indicator,
-                  h.Class(
-                    'h-full w-1/3 rounded-full bg-blue-600 animate-pulse',
-                  ),
-                ]),
-              ],
-            ),
-          ],
-        ),
-    },
-    h,
-  )
-```
+Indeterminate progress
 
 ## Styling
 

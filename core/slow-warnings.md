@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/slow-warnings
 title: "Slow Warnings"
 description: "Measure development-mode update, view, patch, and Subscription dependency phases, interpret warnings, and tune thresholds after profiling."
-access_date: 2026-09-12T18:49:33.387Z
-current_date: 2026-09-12T18:49:33.387Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Slow Warnings
@@ -56,52 +56,6 @@ Passing an object also measures every phase unless `measuredPhases` narrows the 
 
 `show` and `onSlow` apply to every measured phase. Passing `onSlow` replaces the default `console.warn`, so Foldkit will not also log phases that the callback ignores. The callback receives the full tagged `SlowContext` union even when `measuredPhases` selects a subset.
 
-```
-import { Match } from 'effect'
-import { Runtime } from 'foldkit'
-
-import * as Sentry from '@sentry/browser'
-
-const handleSlow = (context: Runtime.SlowContext<Model, Message>): void => {
-  const summary = Match.value(context).pipe(
-    Match.tagsExhaustive({
-      View: ({ durationMs, thresholdMs }) =>
-        `view ${durationMs.toFixed(1)}ms (budget ${thresholdMs}ms)`,
-      Update: ({ durationMs, thresholdMs, message }) =>
-        `update ${durationMs.toFixed(1)}ms (budget ${thresholdMs}ms) [${message._tag}]`,
-      Patch: ({ durationMs, thresholdMs }) =>
-        `patch ${durationMs.toFixed(1)}ms (budget ${thresholdMs}ms)`,
-      SubscriptionDependencies: ({
-        durationMs,
-        thresholdMs,
-        subscriptionKey,
-      }) =>
-        `subscription dependencies "${subscriptionKey}" ${durationMs.toFixed(1)}ms (budget ${thresholdMs}ms)`,
-    }),
-  )
-
-  Sentry.captureMessage(`[foldkit slow] ${summary}`)
-}
-
-const application = Runtime.makeApplication({
-  Model,
-  init,
-  update,
-  view,
-  container: document.getElementById('root'),
-  slow: {
-    show: 'Always',
-    onSlow: handleSlow,
-    thresholdOverrides: {
-      Update: 4,
-      View: 12,
-      Patch: 8,
-      SubscriptionDependencies: 1,
-    },
-  },
-})
-
-Runtime.run(application)
-```
+Configuring slow-phase warnings
 
 When profiling confirms repeated work in View or Patch, the [view memoization](https://foldkit.dev/core/view-memoization) page explains how `createLazy` and `createKeyedLazy` can skip stable subtrees.

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/resources
 title: "Resources"
 description: "Provide app-lifetime Effect services to Commands, Subscriptions, Mounts, and Flags, or provide a service directly when sharing is unnecessary."
-access_date: 2026-10-01T22:03:15.204Z
-current_date: 2026-10-01T22:03:15.204Z
+access_date: 2026-10-05T07:06:39.496Z
+current_date: 2026-10-05T07:06:39.496Z
 ---
 
 # Resources
@@ -18,36 +18,7 @@ Resources are the kitchen equipment that stays available all night. Every dish c
 
 Define a service with [Context.Service](https://effect.website/docs/requirements-management/services/), then pass its Layer through the runtime’s `resources` config. The runtime builds that Layer once, the first time it is needed: during startup when a fresh Flags Effect resolves or Subscriptions begin, otherwise when the first Command runs. It shares the built services for the runtime’s lifetime and releases them at teardown. Commands access a service by yielding its tag.
 
-```
-import { Context, Effect, Layer, Schema } from 'effect'
-import { Command, Runtime } from 'foldkit'
-
-class ApiClientService extends Context.Service<ApiClientService, ApiClient>()(
-  'ApiClientService',
-) {
-  static readonly Default = Layer.effect(this, makeApiClient)
-}
-
-const LoadUser = Command.define('LoadUser', {
-  args: { userId: Schema.String },
-  messages: [CompletedLoadUser],
-  execute: ({ userId }) =>
-    Effect.gen(function* () {
-      const apiClient = yield* ApiClientService
-      const user = yield* apiClient.getUser(userId)
-      return CompletedLoadUser({ user })
-    }),
-})
-
-const application = Runtime.makeApplication({
-  Model,
-  init,
-  update,
-  view,
-  container: document.getElementById('root'),
-  resources: ApiClientService.Default,
-})
-```
+Shared API client service
 
 Commands declare their resource requirements in the type signature via the third type parameter of `Command`. This makes dependencies explicit and type-checked. If a Command requires a service that isn’t provided via `resources`, you’ll get a compile error.
 
@@ -93,30 +64,7 @@ Common cases follow directly from that distinction:
 - **`KeyValueStore` stays per Command.** The backing store is often part of the operation: one Command may use localStorage while another uses sessionStorage. A runtime-wide Layer could bind only one implementation of the tag.
 - **An RPC client belongs in `resources`.** Construction does real work, every Command should reuse the same client, and broken configuration should produce one visible failure rather than isolated failures across every server operation.
 
-```
-import { Effect, Schema } from 'effect'
-import { HttpClient } from 'effect/http'
-import { Command, Http } from 'foldkit'
-
-const FetchWeather = Command.define('FetchWeather', {
-  args: { city: Schema.String },
-  messages: [SucceededFetchWeather, FailedFetchWeather],
-  execute: ({ city }) =>
-    Effect.gen(function* () {
-      const client = yield* HttpClient.HttpClient
-      const response = yield* client.get(`https://api.weather.com/${city}`)
-      const data = yield* Schema.decodeUnknownEffect(WeatherResponse)(
-        yield* response.json,
-      )
-      return SucceededFetchWeather({ weather: data })
-    }).pipe(
-      Effect.catch(() =>
-        Effect.succeed(FailedFetchWeather({ error: 'Request failed' })),
-      ),
-      Effect.provide(Http.layer),
-    ),
-})
-```
+Per-Command HTTP
 
 An HTTP client can still graduate. When an app grows many HTTP Commands, or shares a derived `HttpApiClient` across modules, provide `Http.layer` once via `resources` instead. The moment you find yourself writing a `withClient` helper to cut the repetition is the signal. Providing at the edge also helps tests: the Command’s Effect keeps `HttpClient` in its requirements, so an Effect-level test can provide a mock with `Layer.succeed(HttpClient.HttpClient, mockClient)` directly. A per-Command provide needs a separately exported raw Effect to test the same way.
 
@@ -124,45 +72,7 @@ An HTTP client can still graduate. When an app grows many HTTP Commands, or shar
 
 The Flags Effect can require services too. The runtime provides them from the same `resources` Layer used by Commands and Subscriptions, so a client needed during startup and later work is still constructed only once.
 
-```
-import { Context, Effect, Layer, Option, Schema } from 'effect'
-import { Runtime } from 'foldkit'
-
-class ApiClientService extends Context.Service<ApiClientService, ApiClient>()(
-  'ApiClientService',
-) {
-  static readonly Default = Layer.effect(this, makeApiClient)
-}
-
-const Flags = Schema.Struct({
-  maybeSession: Schema.Option(Session),
-})
-type Flags = typeof Flags.Type
-
-const flags: Effect.Effect<Flags, never, ApiClientService> = Effect.gen(
-  function* () {
-    const apiClient = yield* ApiClientService
-    const session = yield* apiClient.restoreSession
-    return Flags.make({ maybeSession: Option.some(session) })
-  },
-).pipe(
-  Effect.catch(() =>
-    Effect.succeed(Flags.make({ maybeSession: Option.none() })),
-  ),
-)
-
-const application = Runtime.makeApplication({
-  Model,
-  Flags,
-  init,
-  update,
-  view,
-  container: document.getElementById('root'),
-  resources: ApiClientService.Default,
-})
-
-Runtime.run(application, { flags })
-```
+Flags consuming a resource
 
 During a fresh boot, Flags resolve before init. An application with Flags therefore attempts to build its `resources` Layer during startup instead of waiting for the first Command.
 
@@ -178,22 +88,6 @@ Provide a service used only by Flags with `Effect.provide` inside the Flags Effe
 
 The `resources` field takes a single `Layer`, but Effect layers compose. Use `Layer.mergeAll` to combine multiple service layers into one.
 
-```
-import { Layer } from 'effect'
-import { Runtime } from 'foldkit'
-
-const application = Runtime.makeApplication({
-  Model,
-  init,
-  update,
-  view,
-  container: document.getElementById('root'),
-  resources: Layer.mergeAll(
-    ApiClientService.Default,
-    AnalyticsService.Default,
-    ComputeWorkerService.Default,
-  ),
-})
-```
+Multiple resources
 
 Resources live for the entire runtime. When a camera stream, `WebSocket`, or other handle should exist only while the Model is in a particular state, use [Managed Resources](https://foldkit.dev/core/managed-resources) instead.
