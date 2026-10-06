@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/experimental-query
 title: "Experimental/Query"
 description: "API documentation for the Experimental/Query module."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-06T02:21:45.877Z
+current_date: 2026-10-06T02:21:45.877Z
 ---
 
 # Experimental/Query
@@ -14,7 +14,7 @@ current_date: 2026-10-05T07:06:39.496Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/experimental/query/define.ts#L45)
+[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/experimental/query/define.ts#L45)
 
 ```
 /**
@@ -43,7 +43,7 @@ function
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/experimental/query/keyedQuery.ts#L166)
+[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/experimental/query/keyedQuery.ts#L166)
 
 ```
 /**
@@ -173,7 +173,7 @@ interface KeyedQuery {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/foldkit/src/experimental/query/query.ts#L72)
+[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/experimental/query/query.ts#L72)
 
 ```
 /**

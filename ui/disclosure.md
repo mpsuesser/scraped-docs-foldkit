@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/disclosure
 title: "Disclosure"
 description: "A stateless, controlled show-and-hide helper for inline content, with disclosure semantics and keyboard behavior."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-06T02:21:45.877Z
+current_date: 2026-10-06T02:21:45.877Z
 ---
 
 ```
@@ -53,32 +53,36 @@ ToggledFaq: ({ isOpen }) => ({
 // \`Disclosure.buttonId('faq-1')\` for a native \`<label for>\`). Either
 // attribute is only emitted when provided, so the toggle never carries a
 // dangling \`aria-labelledby\`.
-const view = (model, h: HtmlBuilder<Message>) =>
-  Disclosure.view(
+const view = (model, h: HtmlBuilder<Message>) => {
+  const disclosureView = ({
+    button,
+    panel,
+    animatePanel,
+  }: Disclosure.DisclosureAttributes<Message>) =>
+    h.div(
+      [h.Class('border rounded-lg overflow-hidden')],
+      [
+        h.button(
+          [...button, h.Class('flex items-center justify-between w-full p-4')],
+          [h.span([], ['What is Foldkit?'])],
+        ),
+        animatePanel(
+          h.div(
+            [...panel, h.Class('p-4 border-t')],
+            [h.p([], ['A functional UI framework built on Effect-TS.'])],
+          ),
+        ),
+      ],
+    )
+
+  return Disclosure.view(
     {
       id: 'faq-1',
       isOpen: model.isFaqOpen,
       onToggle: isOpen => Message.ToggledFaq({ isOpen }),
-      toView: ({ button, panel, animatePanel }) =>
-        h.div(
-          [h.Class('border rounded-lg overflow-hidden')],
-          [
-            h.button(
-              [
-                ...button,
-                h.Class('flex items-center justify-between w-full p-4'),
-              ],
-              [h.span([], ['What is Foldkit?'])],
-            ),
-            animatePanel(
-              h.div(
-                [...panel, h.Class('p-4 border-t')],
-                [h.p([], ['A functional UI framework built on Effect-TS.'])],
-              ),
-            ),
-          ],
-        ),
+      toView: disclosureView,
     },
     h,
   )
+}
 ```

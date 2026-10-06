@@ -1,9 +1,9 @@
 ---
 url: https://foldkit.dev/core/query
 title: "Query"
-description: "Define an experimental remote-data Submodel with Query.define. Query Models retain AsyncData values behind a read API, and query.lift folds their Messages and loading policies into a parent."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+description: "Fetch, cache, and refresh remote data with reusable Submodels and less boilerplate."
+access_date: 2026-10-06T02:21:45.877Z
+current_date: 2026-10-06T02:21:45.877Z
 ---
 
 # Query

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-meter
 title: "Ui/Meter"
 description: "API documentation for the Ui/Meter module."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-06T02:21:45.877Z
+current_date: 2026-10-06T02:21:45.877Z
 ---
 
 # Ui/Meter
@@ -14,7 +14,7 @@ current_date: 2026-10-05T07:06:39.496Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/ui/src/meter/index.ts#L37)
+[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/ui/src/meter/index.ts#L37)
 
 ```
 /** Returns the label element id, derived from the meter's base id. */
@@ -25,7 +25,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/ui/src/meter/index.ts#L40)
+[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/ui/src/meter/index.ts#L40)
 
 ```
 /** Renders an accessible meter as a stateless controlled view. */
@@ -41,7 +41,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/ui/src/meter/index.ts#L15)
+[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/ui/src/meter/index.ts#L15)
 
 ```
 /** Attribute groups provided to a Meter view. */
@@ -56,7 +56,7 @@ type MeterAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7590156835c822a0aa135a5fde14c8e2009c9124/packages/ui/src/meter/index.ts#L22)
+[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/ui/src/meter/index.ts#L22)
 
 ```
 /** Configuration for rendering a Meter with view. */
