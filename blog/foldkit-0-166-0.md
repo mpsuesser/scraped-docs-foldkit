@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-0-166-0
 title: "Foldkit 0.165.0 and 0.166.0"
 description: "Effect 4 stable, an experimental Query module for remote data, and improvements to child lifecycles, DevTools, and Vite."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
@@ -20,15 +20,85 @@ The experimental Query module lets you define a Submodel that manages remote dat
 
 With an existing `Post` Schema and `fetchPosts` Effect, include the Query's Model and Messages in the parent:
 
-Defining the posts Submodel
+**Defining the posts Submodel**
+
+```typescript
+import { Schema } from 'effect'
+import { Query } from 'foldkit/experimental'
+import { defineMessageUnion } from 'foldkit/message'
+
+const postsQuery = Query.define({
+  name: 'Posts',
+  data: Schema.Array(Post),
+  error: Schema.String,
+  execute: fetchPosts,
+})
+
+const Model = Schema.Struct({
+  posts: postsQuery.Model,
+})
+type Model = typeof Model.Type
+
+const Message = defineMessageUnion({
+  GotPostsMessage: { message: postsQuery.Message },
+  ClickedRefreshPosts: {},
+})
+type Message = typeof Message.Type
+```
 
 The parent starts the first load in init and requests a refresh when the button is clicked. Its `GotPostsMessage` branch passes each fetch result back to Query:
 
-Loading and refreshing posts
+**Loading and refreshing posts**
+
+```typescript
+import { Update } from 'foldkit'
+
+const posts = postsQuery.lift<Model, Message>({
+  parentField: 'posts',
+  toParentMessage: message => Message.GotPostsMessage({ message }),
+})
+
+const init = () => {
+  const model = Model.make({ posts: postsQuery.init() })
+
+  return posts.loadIfMissing(model)
+}
+
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    GotPostsMessage: ({ message }) => posts.fold(model, message),
+    ClickedRefreshPosts: () => posts.revalidateOrLoad(model),
+  })
+```
 
 The view reads an `AsyncData` value. `matchData` keeps rendering the posts while a refresh runs:
 
-Rendering posts during a refresh
+**Rendering posts during a refresh**
+
+```typescript
+import { Array } from 'effect'
+import { AsyncData } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+
+const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Posts',
+  body: h.div(
+    [],
+    [
+      h.button([h.OnClick(Message.ClickedRefreshPosts())], ['Refresh']),
+      AsyncData.matchData(postsQuery.read(model.posts), {
+        onEmpty: () => h.p([], ['Loading posts…']),
+        onFailure: error => h.p([], [error]),
+        onData: posts =>
+          h.ul(
+            [],
+            Array.map(posts, post => h.keyed('li')(post.id, [], [post.title])),
+          ),
+      }),
+    ],
+  ),
+})
+```
 
 Add request arguments to create a KeyedQuery, which keeps separate results for resources such as posts by ID. The new [API Cache Query example](https://foldkit.dev/example-apps/api-cache-query) shows a list of posts, details by post ID, and statistics refreshed by a Subscription.
 

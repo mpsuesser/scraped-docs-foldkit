@@ -2,8 +2,8 @@
 url: https://foldkit.dev/example-apps
 title: "Examples"
 description: "Browse working Foldkit applications that cover state, forms, routing, caching, authentication, server rendering, UI components, third-party integrations, and more."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # Examples
@@ -150,7 +150,7 @@ An interactive showcase of every Foldkit UI component, with styled routed demos 
 
 A blog whose prose lives in Markdown files. The @foldkit/markdown Vite plugin compiles each file into a typed document, per-node view overrides style the result, and directive islands place a live Counter Submodel and Note callout between paragraphs.
 
-[LiveStore](https://foldkit.dev/example-apps/livestore)
+[LiveStorePaused](https://foldkit.dev/example-apps/livestore)
 
 This example is paused while we update and verify LiveStore compatibility with Effect 4 stable.
 

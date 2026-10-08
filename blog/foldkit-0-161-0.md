@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-0-161-0
 title: "Foldkit 0.160.0 and 0.161.0"
 description: "Accessibility fixes across Foldkit UI, declarative keyboard shortcuts, helpers for initializing Submodels, stronger lint checks, and improved type inference."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 ![Rows of 160 and 161 in cyan and yellow, joined by plus signs, with tilted coral and lime digits on a light gray background.](https://foldkit.dev/blog/foldkit-0-161-0/cover.webp)
@@ -65,7 +65,7 @@ To reliably stop a key press from scrolling the page, cancel its default action 
 
 0.160.0 added `Subscription.fromEventFilterMapPreventDefault`. When its `toMessage` callback returns `Option.some(message)`, the helper cancels the browser's default action and queues the Message before the listener returns. The Stream processes the Message after the event listener returns. Returning `Option.none()` leaves the default action alone. DragAndDrop now uses this helper so Tab does not move focus and Space and arrow keys do not scroll the page during a keyboard drag.
 
-The [DOM events guide](https://foldkit.dev/core/subscriptions#dom-events) covers event filtering and default cancellation.
+The [DOM events guide](https://foldkit.dev/core/subscriptions#browser-event-streams) covers event filtering and default cancellation.
 
 ## Initializing Submodels
 
@@ -75,7 +75,7 @@ Now, `Update.foldChildInit` keeps that work together. For example, a parent can 
 
 Folding a child boot result into its parent
 
-```
+```typescript
 const init = () =>
   Update.foldChildInit(Search.boot(), {
     toParentModel: search => Model.make({ search }),
@@ -124,7 +124,7 @@ Before:
 
 Event types before 0.161.0
 
-```
+```typescript
 const keydown = Subscription.fromEvent<KeyboardEvent, Message>({
   target: window,
   type: 'keydown',
@@ -136,7 +136,7 @@ After:
 
 Inferred event types in 0.161.0
 
-```
+```typescript
 const keydown = Subscription.fromEvent({
   target: window,
   type: 'keydown',

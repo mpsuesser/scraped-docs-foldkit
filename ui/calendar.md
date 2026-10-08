@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/calendar
 title: "Calendar"
 description: "Accessible inline calendar grid with 2D keyboard navigation, locale-aware headers, and min/max/disabled-date constraints."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 ## An Inline Calendar You Render
@@ -101,7 +101,7 @@ The component's own chrome is the other half: the words the Calendar wraps aroun
 
 German Calendar labels
 
-```
+```typescript
 const viewInputs = {
   previousMonthLabel: 'Vorheriger Monat',
   toDaysGridLabel: monthYear => \`Kalender, ${monthYear}\`,

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/runtime
 title: "Runtime"
 description: "Configure a page-owning application with makeApplication, or mount a reusable widget with makeElement and embed."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # Runtime
@@ -25,13 +25,49 @@ The Runtime API makes two independent choices:
 
 Without a `routing` config, the program doesn't manage the URL bar.
 
-Using makeApplication without routing
+**Using makeApplication without routing**
+
+```typescript
+import { Runtime } from 'foldkit'
+
+import { Model, init, update, view } from './main'
+
+const application = Runtime.makeApplication({
+  Model,
+  init,
+  update,
+  view,
+  container: document.getElementById('root'),
+})
+
+Runtime.run(application)
+```
 
 ### With routing
 
 With a `routing` config, the program manages the URL bar. The init function receives the current URL and can use it to set the initial route.
 
-Using makeApplication with routing
+**Using makeApplication with routing**
+
+```typescript
+import { Runtime } from 'foldkit'
+
+import { ChangedUrl, ClickedLink, Model, init, update, view } from './main'
+
+const application = Runtime.makeApplication({
+  Model,
+  init,
+  update,
+  view,
+  container: document.getElementById('root'),
+  routing: {
+    onUrlRequest: request => ClickedLink({ request }),
+    onUrlChange: url => ChangedUrl({ url }),
+  },
+})
+
+Runtime.run(application)
+```
 
 The `routing` config has two handlers. `onUrlRequest` turns a clicked link into a Message, giving update the choice between internal and external navigation. `onUrlChange` turns the new URL into a Message so update can store the corresponding route in the Model. See [Routing & Navigation](https://foldkit.dev/core/routing-and-navigation) for the full walkthrough.
 
@@ -45,7 +81,23 @@ Use `makeElement` to scope a Foldkit app to its container. Its view returns `Htm
 
 Flags still resolve before init, but their wiring follows the ownership boundary. A page-owning application receives its Flags Effect when `Runtime.run` starts it. A self-contained element receives its Flags Effect in the `makeElement` config.
 
-Using makeElement
+**Using makeElement**
+
+```typescript
+import { Runtime } from 'foldkit'
+
+import { Model, init, update, view } from './main'
+
+const element = Runtime.makeElement({
+  Model,
+  init,
+  update,
+  view,
+  container: document.getElementById('widget'),
+})
+
+Runtime.run(element)
+```
 
 ## embed
 

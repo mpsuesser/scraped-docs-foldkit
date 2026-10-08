@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/devtools
 title: "DevTools"
 description: "Inspect Message history, Model changes, Commands, and Mounts in the development overlay. Configure time travel, filtering, history limits, and AI dispatch."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # DevTools
@@ -33,7 +33,65 @@ DevTools records Models, Message payloads, Command arguments, and Mount argument
 
 A browser may still need to hold a short-lived access token. Wrap it before it enters the Model, keep the `Redacted` value intact in any Message or Command arguments that carry it, and recover the raw value only where the Command constructs the authenticated request. The numbered comments trace the Model-to-request path through the example.
 
-Redacting a short-lived access token
+**Redacting a short-lived access token**
+
+```typescript
+import { Effect, Redacted, Schema } from 'effect'
+import { Command } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+
+const accessTokenLabel = 'access token'
+
+// 1. Prevent JSON encoding, and give the placeholder a useful label.
+const AccessToken = Schema.Redacted(Schema.String, {
+  label: accessTokenLabel,
+  disallowJsonEncode: true,
+})
+type AccessToken = typeof AccessToken.Type
+
+const makeAccessToken = (accessToken: string): AccessToken =>
+  Redacted.make(accessToken, { label: accessTokenLabel })
+
+// MODEL
+
+// 2. Store the wrapper in the Model, never the raw string.
+const Model = Schema.Struct({ accessToken: AccessToken })
+type Model = typeof Model.Type
+
+const init = (accessToken: string) => ({
+  model: { accessToken: makeAccessToken(accessToken) },
+})
+
+// MESSAGE
+
+const Message = defineMessageUnion({
+  CompletedFetchProfile: {},
+  FailedFetchProfile: {},
+})
+
+// COMMAND
+
+const FetchProfile = Command.define('FetchProfile', {
+  // 3. Require a Redacted value because DevTools records Command arguments.
+  args: { accessToken: AccessToken },
+  messages: [Message.CompletedFetchProfile, Message.FailedFetchProfile],
+  execute: ({ accessToken }) =>
+    Effect.tryPromise(() =>
+      fetch('/api/profile', {
+        headers: {
+          // 4. Recover the raw token only at the request boundary that needs it.
+          Authorization: `Bearer ${Redacted.value(accessToken)}`,
+        },
+      }),
+    ).pipe(
+      Effect.as(Message.CompletedFetchProfile()),
+      Effect.catch(() => Effect.succeed(Message.FailedFetchProfile())),
+    ),
+})
+
+const fetchProfile = (model: Model) =>
+  FetchProfile({ accessToken: model.accessToken })
+```
 
 DevTools displays the value as `<redacted:access token>`. This prevents accidental inspection and serialization; it does not encrypt the token or hide it from someone who controls the browser.
 
@@ -43,7 +101,24 @@ DevTools are enabled by default in development. Recording and the MCP bridge liv
 
 Add a `devTools` object to `makeApplication` only when you need to configure DevTools or allow MCP dispatch. To include the overlay in production, move `@foldkit/devtools` to regular `dependencies` and set `show: 'Always'`. You do not need to import the overlay.
 
-Configuring DevTools
+**Configuring DevTools**
+
+```typescript
+import { Runtime } from 'foldkit'
+
+const application = Runtime.makeApplication({
+  Model,
+  init,
+  update,
+  view,
+  container: document.getElementById('root'),
+  devTools: {
+    position: 'BottomLeft',
+  },
+})
+
+Runtime.run(application)
+```
 
 ## Configuration
 
@@ -65,7 +140,26 @@ Controls where the badge and panel appear on screen. One of `'BottomRight'` (def
 
 Pass `{ development, production }` to choose a mode for each environment. When `show: 'Always'` keeps DevTools available in production, use `'TimeTravel'` for local debugging and `'Inspect'` in production. Selecting a row will not pause a visitor's app.
 
-TimeTravel locally, Inspect in production
+**TimeTravel locally, Inspect in production**
+
+```typescript
+import { Runtime } from 'foldkit'
+
+const application = Runtime.makeApplication({
+  Model,
+  init,
+  update,
+  view,
+  container: document.getElementById('root'),
+  devTools: {
+    show: 'Always',
+    mode: { development: 'TimeTravel', production: 'Inspect' },
+    banner: 'Welcome to our app! Browse the state tree to see how it works.',
+  },
+})
+
+Runtime.run(application)
+```
 
 ### banner
 
@@ -85,7 +179,25 @@ Do not use `excludeFromHistory` to hide sensitive data. The current Model and th
 
 When the list contains at least one tag, DevTools stores a full Model snapshot for every recorded entry. That preserves changes made by excluded Messages when you travel to a recorded state. Excluded Messages also update the `Live` Model view, but they do not append a history entry or compute a diff.
 
-Excluding high-frequency Messages from history
+**Excluding high-frequency Messages from history**
+
+```typescript
+import { Runtime } from 'foldkit'
+
+const application = Runtime.makeApplication({
+  Model,
+  init,
+  update,
+  view,
+  subscriptions,
+  container: document.getElementById('root'),
+  devTools: {
+    excludeFromHistory: ['TickedFrame', 'MovedPointer'],
+  },
+})
+
+Runtime.run(application)
+```
 
 ### maxEntries
 
@@ -93,7 +205,24 @@ The maximum number of recorded Messages retained before DevTools evicts the olde
 
 Smaller values reduce work under high Message rates. Larger values provide more history. Memory use grows with `maxEntries` and Model size, especially when `excludeFromHistory` makes every recorded entry store a full Model snapshot.
 
-Raising the DevTools history cap
+**Raising the DevTools history cap**
+
+```typescript
+import { Runtime } from 'foldkit'
+
+const application = Runtime.makeApplication({
+  Model,
+  init,
+  update,
+  view,
+  container: document.getElementById('root'),
+  devTools: {
+    maxEntries: 250,
+  },
+})
+
+Runtime.run(application)
+```
 
 ### keyframeInterval
 
@@ -103,4 +232,21 @@ To reconstruct an entry, DevTools starts at the nearest earlier snapshot and rep
 
 DevTools automatically uses `1` when `excludeFromHistory` is active because excluded Messages are not available for replay.
 
-Snapshotting every entry for constant-time jumps
+**Snapshotting every entry for constant-time jumps**
+
+```typescript
+import { Runtime } from 'foldkit'
+
+const application = Runtime.makeApplication({
+  Model,
+  init,
+  update,
+  view,
+  container: document.getElementById('root'),
+  devTools: {
+    keyframeInterval: 1,
+  },
+})
+
+Runtime.run(application)
+```

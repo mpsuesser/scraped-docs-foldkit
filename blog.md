@@ -2,13 +2,21 @@
 url: https://foldkit.dev/blog
 title: "Blog"
 description: "Announcements, musings, and technical deep dives."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # Blog
 
 Announcements, musings, and technical deep dives.
+
+[Foldkit 0.167.0](https://foldkit.dev/blog/foldkit-0-167-0)
+
+October 7, 2026 · Devin Jameson
+
+SSR without an HTML template, a Node host adapter, VirtualList improvements for chat and feeds, Submodel updates by key, and browser Stream helpers moved to Dom.
+
+[Read more →](https://foldkit.dev/blog/foldkit-0-167-0)
 
 [Foldkit 0.165.0 and 0.166.0](https://foldkit.dev/blog/foldkit-0-166-0)
 

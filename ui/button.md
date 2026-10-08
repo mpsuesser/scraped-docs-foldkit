@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/button
 title: "Button"
 description: "A stateless wrapper around the native button with accessibility attributes, event wiring, and styling hooks."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 ## Overview
@@ -59,7 +59,7 @@ Add your own attributes after the `button` bundle. A later attribute wins, so `h
 
 Button with a live region
 
-```
+```typescript
 h.button([...button, h.AriaLive('polite'), h.AriaAtomic(true)], [label])
 ```
 

@@ -2,11 +2,11 @@
 url: https://foldkit.dev/ui/disclosure
 title: "Disclosure"
 description: "A stateless, controlled show-and-hide helper for inline content, with disclosure semantics and keyboard behavior."
-access_date: 2026-10-06T02:21:45.877Z
-current_date: 2026-10-06T02:21:45.877Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
-```
+```typescript
 // Pseudocode walkthrough of the Foldkit integration points. Each labeled
 // block below is an excerpt. Fit them into your own Model, init, Message,
 // update, and view definitions.

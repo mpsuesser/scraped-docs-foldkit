@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/query
 title: "Query"
 description: "Fetch, cache, and refresh remote data with reusable Submodels and less boilerplate."
-access_date: 2026-10-06T02:21:45.877Z
-current_date: 2026-10-06T02:21:45.877Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # Query
@@ -38,7 +38,39 @@ Query does not react to rendering, expire data after a duration, poll, or refres
 
 Import the `Query` namespace from `foldkit/experimental`. Define the data and error Schemas, give the fetch a name, and provide the Effect that performs it:
 
-Defining a Query for posts
+**Defining a Query for posts**
+
+```typescript
+const PostList = Schema.Array(Post)
+
+// The generated FetchPosts Command performs this Effect.
+const fetchPosts = Effect.gen(function* () {
+  const response = yield* Effect.tryPromise({
+    try: () => fetch('/api/posts'),
+    catch: () => 'Could not load posts',
+  })
+
+  if (!response.ok) {
+    return yield* Effect.fail(`Could not load posts (${response.status})`)
+  }
+
+  const body = yield* Effect.tryPromise({
+    try: () => response.json(),
+    catch: () => 'The posts response was invalid',
+  })
+
+  return yield* Schema.decodeUnknownEffect(PostList)(body).pipe(
+    Effect.mapError(() => 'The posts response was invalid'),
+  )
+})
+
+const postsQuery = Query.define({
+  name: 'Posts',
+  data: PostList,
+  error: Schema.String,
+  execute: fetchPosts,
+})
+```
 
 With no `args`, `Query.define` returns a Query that retains one value. In this definition:
 
@@ -54,7 +86,41 @@ The returned `postsQuery` owns a Model Schema, a Message union, and operations o
 
 The parent wraps the Query's Message and routes that wrapper back through a lifted fold. `lift` also adapts the loading operations so they read and write the Query field inside the parent Model:
 
-Connecting Query to its parent
+**Connecting Query to its parent**
+
+```typescript
+const Model = Schema.Struct({
+  posts: postsQuery.Model,
+})
+type Model = typeof Model.Type
+
+const Message = defineMessageUnion({
+  GotPostsMessage: { message: postsQuery.Message },
+  ClickedRefreshPosts: {},
+})
+type Message = typeof Message.Type
+
+// Lift the Query's operations into the parent Model and Message types.
+const posts = postsQuery.lift<Model, Message>({
+  parentField: 'posts',
+  toParentMessage: message => Message.GotPostsMessage({ message }),
+})
+
+const init = () => {
+  const model = Model.make({ posts: postsQuery.init() })
+
+  // Return the Loading Model state and the first FetchPosts Command.
+  return posts.loadIfMissing(model)
+}
+
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    // Run Query's update, then write its Model back into the parent.
+    GotPostsMessage: ({ message }) => posts.fold(model, message),
+    // Return the transition and Command for either missing or retained data.
+    ClickedRefreshPosts: () => posts.revalidateOrLoad(model),
+  })
+```
 
 The `parentField` form tells `lift` which field contains an always-present Query Model. `toParentMessage` wraps the result Message produced by the Query's fetch Command in the parent's `Got*Message` variant. `lift` returns the child fold and Query operations expressed in the parent Model and Message types. These functions return ordinary update results; they do not perform Effects.
 
@@ -70,7 +136,25 @@ Call a loading operation from init or a parent Message handler. In the example, 
 
 Use `read` to access the Query's retained `AsyncData` value:
 
-Reading and rendering Query data
+**Reading and rendering Query data**
+
+```typescript
+const postsView = (model: Model, h: HtmlBuilder<Message>): Html => {
+  // Read the value through Query's public API.
+  const postsAsyncData = postsQuery.read(model.posts)
+
+  // Render it with the ordinary AsyncData helpers.
+  return AsyncData.matchData(postsAsyncData, {
+    onEmpty: () => h.p([], ['Loading posts…']),
+    onFailure: error => h.p([], [error]),
+    onData: posts =>
+      h.ul(
+        [],
+        Array.map(posts, post => h.keyed('li')(post.id, [], [post.title])),
+      ),
+  })
+}
+```
 
 The parent passes the Query Model to a child-owned accessor; it does not inspect the Query Model's fields. `read` returns an ordinary `AsyncData`, and the parent decides how to render it with `AsyncData.match`, `matchData`, `getData`, `getError`, or another Async Data helper. A viewless Submodel preserves the state and update boundary without creating an `h.submodel` view boundary.
 
@@ -167,9 +251,9 @@ Call `reset` to clear a live Query. Do not replace a live Query Model with a fre
 
 Add a non-empty `args` record to `Query.define` when one definition should retain independent results for dynamic inputs. In this example, `fetchPost(postId)` is an Effect that fetches and decodes one `Post` using the same pattern as `fetchPosts` above:
 
-Defining a KeyedQuery for post details
+**Defining a KeyedQuery for post details**
 
-```
+```typescript
 const postQuery = Query.define({
   name: 'Post',
   data: Post,
@@ -206,11 +290,67 @@ Query fits a request whose result becomes one retained resource, or one entry in
 
 In this checkout, placing the order does more than retain the returned value. `Orders.place(orderDraft)` is the checkout's Effect for submitting an order. The application defines its result Messages and Command around that domain operation:
 
-Defining the order Command and Messages
+**Defining the order Command and Messages**
+
+```typescript
+// These result Messages describe the checkout's domain outcomes.
+const Message = defineMessageUnion({
+  ClickedPlaceOrder: {},
+  SucceededSubmitOrder: { order: Order },
+  FailedSubmitOrder: { error: Schema.String },
+})
+type Message = typeof Message.Type
+
+const SubmitOrder = Command.define('SubmitOrder', {
+  args: { orderDraft: OrderDraft },
+  messages: [Message.SucceededSubmitOrder, Message.FailedSubmitOrder],
+  execute: ({ orderDraft }) =>
+    Orders.place(orderDraft).pipe(
+      Effect.map(order => Message.SucceededSubmitOrder({ order })),
+      Effect.catch(error =>
+        Effect.succeed(Message.FailedSubmitOrder({ error })),
+      ),
+    ),
+})
+```
 
 The Model owns the `AsyncData` field, and update handles each result as part of the larger checkout transition. Success stores the order and moves the application to its confirmation route:
 
-Handling order results in update
+**Handling order results in update**
+
+```typescript
+const OrderData = AsyncData.Schema(Order, Schema.String)
+
+const Model = Schema.Struct({
+  orderDraft: OrderDraft,
+  order: OrderData.schema,
+  route: AppRoute,
+})
+type Model = typeof Model.Type
+
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedPlaceOrder: () => ({
+      model: modifyFields(model, {
+        order: () => OrderData.Loading(),
+      }),
+      commands: [SubmitOrder({ orderDraft: model.orderDraft })],
+    }),
+    // Success changes both the request state and the application route.
+    SucceededSubmitOrder: ({ order }) => ({
+      model: modifyFields(model, {
+        order: () => OrderData.Success({ data: order }),
+        route: () => AppRoute.OrderConfirmation({ orderId: order.id }),
+      }),
+    }),
+    // Failure stays in checkout with the domain error available to the view.
+    FailedSubmitOrder: ({ error }) => ({
+      model: modifyFields(model, {
+        order: () => OrderData.Failure({ error }),
+      }),
+    }),
+  })
+```
 
 The [Async Data guide](https://foldkit.dev/core/async-data) covers the state type, transitions, and rendering helpers used when the application owns this wiring.
 

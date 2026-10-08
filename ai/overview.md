@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ai/overview
 title: "AI"
 description: "How Foldkit’s explicit architecture gives coding agents stable boundaries, plus the source, skills, and DevTools MCP references available to them."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # AI
@@ -22,9 +22,9 @@ Architecture is only half of the context. APIs and conventions change, so the ag
 
 Vendor the Foldkit repository into your project as a git subtree, pinned to the release you have installed:
 
-Vendor the Foldkit repository
+**Vendor the Foldkit repository**
 
-```
+```bash
 git subtree add --prefix=repos/foldkit https://github.com/foldkit/foldkit.git \
   "foldkit@$(node -p "require('./node_modules/foldkit/package.json').version")" --squash
 ```
@@ -37,9 +37,9 @@ Unlike a submodule, a subtree is committed with your repository. Teammates, CI r
 
 The subtree does not move on its own. After upgrading your Foldkit packages, re-pin it to the release you now have:
 
-Refresh the Foldkit repository
+**Refresh the Foldkit repository**
 
-```
+```bash
 git subtree pull --prefix=repos/foldkit https://github.com/foldkit/foldkit.git \
   "foldkit@$(node -p "require('./node_modules/foldkit/package.json').version")" --squash
 ```

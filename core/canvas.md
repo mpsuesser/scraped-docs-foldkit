@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/canvas
 title: "Canvas"
 description: "Declarative 2D rendering with a Schema-defined Shape AST and pointer events translated to canvas-local coordinates."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 ## Overview
@@ -22,7 +22,7 @@ Canvas has five `Shape` variants: `Rect`, `Circle`, `Path`, `Text`, and `Group`.
 
 ## Animation and Input
 
-For continuous animation, pair `Canvas.view` with [`Subscription.animationFrame`](https://foldkit.dev/core/subscriptions#animation-frames). The Subscription emits a Message on each `requestAnimationFrame` tick with the inter-frame delta in milliseconds. The update function advances the Model, view derives the next shapes, and Foldkit batches the resulting patches to one per frame.
+For continuous animation, pair `Canvas.view` with [`Subscription.animationFrameEntry`](https://foldkit.dev/core/subscriptions#animation-frames). While active, the entry emits a Message on each `requestAnimationFrame` tick with the inter-frame delta in milliseconds. The update function advances the Model, view derives the next shapes, and Foldkit batches the resulting patches to one per frame.
 
 `Canvas.view` accepts `onPointerDown`, `onPointerMove`, and `onPointerUp` callbacks. Each receives a `Point` translated into the internal coordinate space set by `width` and `height`, regardless of the canvas's CSS size. Passing the current view builder as the second argument binds the callbacks to that view's Message type.
 

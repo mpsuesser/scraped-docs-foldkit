@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ai/mcp
 title: "DevTools MCP"
 description: "Connect an agent to a running Foldkit application to inspect Models and Message history, compare states, replay the UI, and dispatch Schema-validated Messages."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # DevTools MCP Server
@@ -38,9 +38,9 @@ New projects already include `@foldkit/devtools-mcp` and a `.mcp.json` entry nam
 
 Run the init command in the project root:
 
-Initialize the DevTools MCP server
+**Initialize the DevTools MCP server**
 
-```
+```bash
 npx @foldkit/devtools-mcp init
 ```
 
@@ -48,9 +48,9 @@ The command creates `.mcp.json`, or updates only the `foldkit-devtools` entry wh
 
 Install the server as a development dependency when you want to avoid an `npx` lookup each time the agent starts:
 
-Install the DevTools MCP server
+**Install the DevTools MCP server**
 
-```
+```bash
 npm install -D @foldkit/devtools-mcp
 ```
 
@@ -58,9 +58,9 @@ No Vite config change is needed. The Foldkit plugin serves the relay at `/__fold
 
 If automatic discovery is unavailable, set a fixed `devToolsMcpPort` in `vite.config.ts` and give the MCP server the same value in `FOLDKIT_DEVTOOLS_MCP_PORT`. This is required on Windows:
 
-Vite configuration for a fixed port
+**Vite configuration for a fixed port**
 
-```
+```typescript
 import { defineConfig } from 'vite'
 
 import { foldkit } from '@foldkit/vite-plugin'
@@ -72,9 +72,9 @@ export default defineConfig({
 
 To let an agent dispatch Messages, pass the application's `Message` Schema to `Runtime.makeApplication`:
 
-Application configuration
+**Application configuration**
 
-```
+```typescript
 Runtime.makeApplication({
   devTools: {
     // Rest of your DevTools config

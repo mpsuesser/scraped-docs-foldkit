@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/project-organization
 title: "Project Organization"
 description: "Start with one main module, then separate Messages, Commands, Submodels, and Subscriptions when ownership or file size makes the split useful."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # Project Organization
@@ -20,7 +20,48 @@ Add `story.test.ts` and `scene.test.ts` beside it. The [Counter example](https:/
 
 When one file becomes hard to navigate, separate the root pieces and give each [Submodel](https://foldkit.dev/core/submodel) its own feature folder.
 
-Recommended application structure
+**Recommended application structure**
+
+```text
+src/
++-- entry.ts               Runtime bootstrap
++-- main.ts                App-level init
++-- model.ts               App-level state
++-- message.ts             App-level messages
++-- command.ts             App-level Commands
++-- route.ts               Route definitions
++-- update.ts              App-level update
++-- view.ts                App-level view
++-- subscription.ts        App-level subscriptions
++-- story.test.ts          Story tests for the app-level update
++-- scene.test.ts          Scene tests for flows that cross pages
+|
++-- page/
+|   +-- index.ts           Re-exports all pages
+|   +-- home/
+|   |   +-- index.ts       Re-exports Home module
+|   |   +-- model.ts       Home state
+|   |   +-- message.ts     Home events
+|   |   +-- command.ts     Home Commands
+|   |   +-- update.ts      Home update
+|   |   +-- view.ts        Home view
+|   |   +-- story.test.ts  Story tests for the Home update
+|   |   +-- scene.test.ts  Scene tests for the Home view
+|   +-- products/
+|       +-- index.ts
+|       +-- model.ts
+|       +-- message.ts
+|       +-- command.ts
+|       +-- update.ts
+|       +-- view.ts
+|       +-- story.test.ts
+|       +-- scene.test.ts
+|
++-- domain/
+    +-- index.ts           Re-exports domain modules
+    +-- cart.ts            Cart type + operations
+    +-- item.ts            Item type + operations
+```
 
 Each feature folder owns its Model, Messages, update, view, Commands, Subscriptions, and tests. Do not create empty files only to match the diagram. Add a file when the feature has that concern.
 
@@ -46,7 +87,45 @@ See the [Testing](https://foldkit.dev/testing) page for the full Story and Scene
 
 Put shared business concepts in `domain/`. Each module owns its Schema and pure operations.
 
-Domain module
+**Domain module**
+
+```typescript
+// domain/cart.ts
+import { Array, Option, Schema } from 'effect'
+import { modifyFields } from 'foldkit/struct'
+
+import { CartItem, Item } from './item'
+
+export const Cart = Schema.Array(CartItem)
+export type Cart = typeof Cart.Type
+
+export const addItem =
+  (item: Item) =>
+  (cart: Cart): Cart => {
+    const existing = Array.findFirst(
+      cart,
+      cartItem => cartItem.item.id === item.id,
+    )
+
+    return Option.match(existing, {
+      onNone: () => [...cart, { item, quantity: 1 }],
+      onSome: () =>
+        Array.map(cart, cartItem =>
+          cartItem.item.id === item.id
+            ? modifyFields(cartItem, { quantity: quantity => quantity + 1 })
+            : cartItem,
+        ),
+    })
+  }
+
+export const removeItem =
+  (itemId: string) =>
+  (cart: Cart): Cart =>
+    Array.filter(cart, cartItem => cartItem.item.id !== itemId)
+
+export const totalItems = (cart: Cart): number =>
+  Array.reduce(cart, 0, (total, { quantity }) => total + quantity)
+```
 
 Import the module as a namespace and call operations such as `Cart.addItem` and `Cart.removeItem`.
 
@@ -54,13 +133,30 @@ Import the module as a namespace and call operations such as `Cart.addItem` and 
 
 Use `index.ts` only as a barrel. Re-export the feature's modules from it.
 
-Index re-exports
+**Index re-exports**
+
+```typescript
+// page/home/index.ts
+export { Model } from './model'
+export { Message } from './message'
+export * from './init'
+export * from './update'
+export * from './view'
+
+// page/index.ts
+export * as Home from './home'
+export * as Products from './products'
+
+// domain/index.ts
+export * as Cart from './cart'
+export * as Item from './item'
+```
 
 Consumers can then import the feature as a namespace.
 
-Namespace usage
+**Namespace usage**
 
-```
+```typescript
 import { Cart, Item } from './domain'
 import { Home, Products } from './page'
 

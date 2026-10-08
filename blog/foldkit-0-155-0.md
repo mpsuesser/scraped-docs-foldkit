@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-0-155-0
 title: "Foldkit 0.154.0 and 0.155.0"
 description: "Foldkit 0.154.0 and 0.155.0 expand click and focus controls, unify Vite builds for server-rendered apps, introduce HoverIntent, and more."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 ![The version numbers 0.154.0 and 0.155.0 in large black type over layered translucent zeros on a lime-green background.](https://foldkit.dev/blog/foldkit-0-155-0/cover.webp)
@@ -32,7 +32,7 @@ That separation mattered as soon as another Vite plugin needed to participate in
 
 Vite build configuration
 
-```
+```typescript
 foldkit({
   buildId,
   ssr: {
@@ -62,7 +62,7 @@ Before:
 
 Mount definition before 0.155.0
 
-```
+```typescript
 const AnchorPopover = Mount.define(
   'AnchorPopover',
   { buttonId: Schema.String, anchor: AnchorConfig },
@@ -80,7 +80,7 @@ After:
 
 Mount definition in 0.155.0
 
-```
+```typescript
 const AnchorPopover = Mount.define('AnchorPopover', {
   args: { buttonId: Schema.String, anchor: AnchorConfig },
   messages: [CompletedAnchorPopover],

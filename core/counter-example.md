@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/counter-example
 title: "Counter Example"
 description: "Build and trace a minimal Counter through its Model, Message Schema, update, view, init, and Runtime wiring."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # A Simple Counter Example
@@ -14,11 +14,110 @@ This counter puts the core loop from [Architecture](https://foldkit.dev/core/arc
 
 The example uses two files. `src/main.ts` holds the pure application definitions: Model, Messages, update, init, and view. Larger applications can split those definitions into focused modules. `src/entry.ts` remains the runtime boundary, so tests can import the application without starting it as a side effect.
 
-Counter main.ts
+**Counter main.ts**
+
+```typescript
+import { Schema } from 'effect'
+import { Runtime, type Update } from 'foldkit'
+import type { Document, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
+
+// MODEL
+
+export const Model = Schema.Struct({
+  count: Schema.Number,
+})
+export type Model = typeof Model.Type
+
+// MESSAGE
+
+export const Message = defineMessageUnion({
+  ClickedDecrement: {},
+  ClickedIncrement: {},
+  ClickedReset: {},
+})
+export type Message = typeof Message.Type
+
+// UPDATE
+
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedDecrement: () => ({
+      model: modifyFields(model, { count: count => count - 1 }),
+    }),
+    ClickedIncrement: () => ({
+      model: modifyFields(model, { count: count => count + 1 }),
+    }),
+    ClickedReset: () => ({ model: modifyFields(model, { count: () => 0 }) }),
+  })
+
+// INIT
+
+export const init: Runtime.ApplicationInit<Model, Message> = () => ({
+  model: { count: 0 },
+})
+
+// VIEW
+
+export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: `Counter: ${model.count}`,
+  body: h.div(
+    [
+      h.Class(
+        'min-h-screen bg-white flex flex-col items-center justify-center gap-6 p-6',
+      ),
+    ],
+    [
+      h.div(
+        [h.Class('text-6xl font-bold text-gray-800')],
+        [model.count.toString()],
+      ),
+      h.div(
+        [h.Class('flex flex-wrap justify-center gap-4')],
+        [
+          h.button(
+            [h.OnClick(Message.ClickedDecrement()), h.Class(buttonStyle)],
+            ['-'],
+          ),
+          h.button(
+            [h.OnClick(Message.ClickedReset()), h.Class(buttonStyle)],
+            ['Reset'],
+          ),
+          h.button(
+            [h.OnClick(Message.ClickedIncrement()), h.Class(buttonStyle)],
+            ['+'],
+          ),
+        ],
+      ),
+    ],
+  ),
+})
+
+// STYLE
+
+const buttonStyle = 'bg-black text-white hover:bg-gray-700 px-4 py-2 transition'
+```
 
 The entry imports those definitions and passes them to `Runtime.makeApplication`. `Runtime.run` then starts the application in the selected container.
 
-Counter entry.ts
+**Counter entry.ts**
+
+```typescript
+import { Runtime } from 'foldkit'
+
+import { Model, init, update, view } from './main'
+
+const application = Runtime.makeApplication({
+  Model,
+  init,
+  update,
+  view,
+  container: document.getElementById('root'),
+})
+
+Runtime.run(application)
+```
 
 Read the example once for its shape. The next four pages examine the [Model](https://foldkit.dev/core/model), [Messages](https://foldkit.dev/core/messages), [update](https://foldkit.dev/core/update), and [view](https://foldkit.dev/core/view) in order. Later pages extend the same counter with a delayed reset, automatic counting, and saved state to introduce side effects and ongoing work.
 

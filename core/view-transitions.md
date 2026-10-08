@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view-transitions
 title: "View Transitions"
 description: "Animate qualifying renders with the browser View Transitions API. Covers route direction, shared elements, and when a running transition is skipped."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # View Transitions
@@ -18,7 +18,26 @@ The API expects the DOM update to happen inside `document.startViewTransition(ca
 
 Pass a predicate. Before each render it decides whether that render should animate. It is a total function over your Message union, so animation is opted into one Message at a time. Returning `true` only for `ChangedUrl` animates navigation and leaves every other Message, whatever your application has, rendering plainly:
 
-Using viewTransition on makeApplication
+**Using viewTransition on makeApplication**
+
+```typescript
+import { Runtime } from 'foldkit'
+
+const application = Runtime.makeApplication({
+  Model,
+  init,
+  update,
+  view,
+  container: document.getElementById('root'),
+  routing: {
+    onUrlRequest: request => ClickedLink({ request }),
+    onUrlChange: url => ChangedUrl({ url }),
+  },
+  viewTransition: ({ message }) => message._tag === 'ChangedUrl',
+})
+
+Runtime.run(application)
+```
 
 Return `false` for a plain render, exactly as cheap as before. Return `true` to wrap the render in a transition. With no extra CSS, the browser cross-fades the whole page.
 
@@ -28,17 +47,106 @@ The context carries two Models alongside `message`, because a transition is betw
 
 Return `{ types }` instead of `true` to tag the transition. Direction is the pair, so hand the two routes to [Route.Transition](https://foldkit.dev/api-reference/route) and match on what the navigation entered:
 
-Direction-aware transition types
+**Direction-aware transition types**
+
+```typescript
+import { Option } from 'effect'
+import { Runtime } from 'foldkit'
+import { Transition } from 'foldkit/route'
+
+export const viewTransition: Runtime.ViewTransitionConfig<Model, Message> = ({
+  previousModel,
+  model,
+  message,
+}) => {
+  if (message._tag !== 'ChangedUrl') {
+    return false
+  }
+
+  const transition = Transition.make(previousModel.route, model.route)
+
+  // Every arm past the guard is a navigation, so none of them return `false`.
+  // `true` is "animate, with no direction to declare": an untyped transition
+  // still cross-fades, it just does not slide. Moving between two artworks
+  // enters no route at all, which is `onNone`. Adding a route to AppRoute is a
+  // compile error here until it is given a direction.
+  return Option.match(Transition.enteredAny(transition), {
+    onNone: () => true,
+    onSome: AppRoute.match<Runtime.ViewTransitionDecision>({
+      Artwork: () => ({ types: ['to-artwork-detail'] }),
+      Gallery: () => ({ types: ['to-gallery'] }),
+      NotFound: () => true,
+    }),
+  })
+}
+```
 
 CSS scopes animations to the active types with `:active-view-transition-type(...)`, so drilling into a detail page slides one way and returning slides back:
 
-CSS scoped by transition type
+**CSS scoped by transition type**
+
+```css
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 300ms;
+}
+
+:root:active-view-transition-type(
+    to-artwork-detail
+  )::view-transition-old(root) {
+  animation-name: slide-out-to-left;
+}
+
+:root:active-view-transition-type(
+    to-artwork-detail
+  )::view-transition-new(root) {
+  animation-name: slide-in-from-right;
+}
+
+:root:active-view-transition-type(to-gallery)::view-transition-old(root) {
+  animation-name: slide-out-to-right;
+}
+
+:root:active-view-transition-type(to-gallery)::view-transition-new(root) {
+  animation-name: slide-in-from-left;
+}
+```
 
 ## Shared Elements
 
 Give an element a `viewTransitionName` with `h.Style` and the browser pairs elements that share a name across the old and new states, morphing position, size, and shape between them. A gallery card growing into a detail hero needs nothing more than the same name on both sides:
 
-Shared-element morph via viewTransitionName
+**Shared-element morph via viewTransitionName**
+
+```typescript
+import type { Html, HtmlBuilder } from 'foldkit/html'
+
+const artworkCardView = (artwork: Artwork, h: HtmlBuilder<Message>): Html =>
+  h.a(
+    [h.Href(artworkRouter({ artworkId: artwork.id }))],
+    [
+      h.div(
+        [
+          h.Class('aspect-square rounded-xl'),
+          h.Style({ viewTransitionName: `artwork-${artwork.id}` }),
+        ],
+        [],
+      ),
+    ],
+  )
+
+// The hero keeps the card's aspect ratio. A transition interpolates the two
+// snapshots while it interpolates the box, so a square growing into a wider
+// box visibly stretches mid-flight.
+const artworkHeroView = (artwork: Artwork, h: HtmlBuilder<Message>): Html =>
+  h.div(
+    [
+      h.Class('aspect-square w-full rounded-2xl'),
+      h.Style({ viewTransitionName: `artwork-${artwork.id}` }),
+    ],
+    [],
+  )
+```
 
 Names must be unique
 

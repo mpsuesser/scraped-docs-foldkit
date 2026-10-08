@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/http
 title: "Http"
 description: "Provide a Fetch-backed HttpClient to Commands while keeping browser requests CORS-simple by disabling trace header propagation unless it is required."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # Http
@@ -28,7 +28,54 @@ Provide `Http.layer` at the edge of the Command's Effect with `Effect.provide`. 
 
 The Command remains responsible for status checks, response decoding, and converting failures into declared Messages.
 
-HTTP Command
+**HTTP Command**
+
+```typescript
+import { Effect, Schema } from 'effect'
+import { HttpClient, HttpClientRequest } from 'effect/http'
+import { Command, Http, type Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
+
+const Message = defineMessageUnion({
+  ClickedFetchCount: {},
+  SucceededFetchCount: { count: Schema.Number },
+  FailedFetchCount: { error: Schema.String },
+})
+
+const CountResponse = Schema.Struct({ count: Schema.Number })
+
+const FetchCount = Command.define('FetchCount', {
+  messages: [Message.SucceededFetchCount, Message.FailedFetchCount],
+  execute: Effect.gen(function* () {
+    const client = yield* HttpClient.HttpClient
+    const response = yield* client.execute(HttpClientRequest.get('/api/count'))
+
+    if (response.status !== 200) {
+      return yield* Effect.fail('API request failed')
+    }
+
+    const { count } = yield* Schema.decodeUnknownEffect(CountResponse)(
+      yield* response.json,
+    )
+    return Message.SucceededFetchCount({ count })
+  }).pipe(
+    Effect.catch(error =>
+      Effect.succeed(Message.FailedFetchCount({ error: String(error) })),
+    ),
+    Effect.provide(Http.layer),
+  ),
+})
+
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedFetchCount: () => ({ model, commands: [FetchCount()] }),
+    SucceededFetchCount: ({ count }) => ({
+      model: modifyFields(model, { count: () => count }),
+    }),
+    FailedFetchCount: () => ({ model }),
+  })
+```
 
 ## Customizing the Client
 

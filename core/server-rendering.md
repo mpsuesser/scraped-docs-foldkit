@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/server-rendering
 title: "Server Rendering"
 description: "Render the same application to HTML for request-time SSR or build-time SSG, then hydrate it in place through a validated build-id and Flags handoff."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 ## Overview
@@ -62,15 +62,21 @@ The outer `Promise` keeps `renderPage` callable from Vite, build scripts, server
 
 The entry is application code. Keep it in `src/` (`src/entry.server.ts` in the examples), not in the host's directory. It imports the application's `init`, `view`, and `Flags`, so the server build must compile it with those application imports.
 
+An SSR build also requires `ssr.clientEntry` next to `ssr.serverEntry`, such as `'/src/entry.ts'`. The client entry names the browser script the generated document loads. Import the application's stylesheets from that script so Vite includes them in the browser build.
+
+### Module resolution
+
 The client and server are separate module graphs. Within each graph, the view and the Foldkit runtime that calls it must resolve to one `foldkit` module instance. The HTML builder tracks a render in module-level state. If one render uses two Foldkit copies, the view writes to one copy while the runtime reads the other. The render fails instead of producing the wrong page. Duplicate monorepo installs and aliases that split one graph are common causes.
 
-In server builds and in the dev server's server render, `@foldkit/vite-plugin` bundles `foldkit`, `@foldkit/ui`, and `@foldkit/devtools`, plus every installed package whose `dependencies` or `peerDependencies` include `foldkit` or an `@foldkit/*` package, such as `@foldkit/markdown`. Those packages then run against the one Foldkit copy inside the server bundle. In the dev server, these `ssr.noExternal` packages run through Vite's module runner instead of Node's own import. The plugin finds them by crawling from the application's `package.json`. The crawl follows:
+In server builds and in every server environment of the dev server, `@foldkit/vite-plugin` bundles `foldkit`, `@foldkit/ui`, and `@foldkit/devtools`, plus every installed package whose `dependencies` or `peerDependencies` include `foldkit` or an `@foldkit/*` package, such as `@foldkit/markdown`. Those packages then run against the one Foldkit copy inside the server bundle. In a Node server environment of the dev server, these packages run through Vite's module runner instead of Node's own import. The plugin finds them by crawling from the application's `package.json`. The crawl follows:
 
 - The application's `dependencies` and `devDependencies`.
 - The `dependencies` of each package it bundles.
 - The `devDependencies` of a bundled package that is a private workspace package.
 
-A package the crawl does not reach stays external. For example: a peer the application does not declare, or a package reached only through a package that does not depend on Foldkit. Such a package loads a second Foldkit copy from `node_modules` at runtime. Declare it in the application's `package.json`, or add it to `ssr.noExternal`.
+A package the crawl does not reach stays external. For example: a peer the application does not declare, or a package reached only through a package that does not depend on Foldkit. Such a package loads a second Foldkit copy from `node_modules` at runtime. Declare it in the application's `package.json`, or add it to `resolve.noExternal`, which Vite applies to every environment.
+
+### Rendering a route
 
 A delivery host runs the built `fetch` handler. It does not import the application and render it directly. One `vite build` emits `dist/server/fetch.js` whose default export is `{ fetch }`. The [SSR example](https://foldkit.dev/example-apps/ssr) starts that module with `node scripts/serve.ts`. A Worker can default-export the same module.
 
@@ -82,7 +88,7 @@ For a routing application, pass the request URL so `init` receives the same valu
 
 Using renderToString with a URL
 
-```
+```typescript
 Server.renderToString(config, {
   url: request.url,
   flags,
@@ -97,10 +103,10 @@ Server.renderToString(config, {
 
 A server entry returns one of two variants:
 
-- `Server.Rendered(application, options)` asks the host to place Foldkit's rendered application in its HTML template. Its options can carry an HTTP status and headers.
-- `Server.Responded(response)` bypasses template insertion with a complete Web `Response`. Use it for redirects and any request that does not render a page.
+- `Server.Rendered(application, options)` supplies the rendered application to the entry's document renderer. Its options can carry an HTTP status and headers.
+- `Server.Responded(response)` bypasses document rendering with a complete Web `Response`. Use it for redirects and any request that does not render a page.
 
-`Server.toResponse(template, result)` turns either variant into the Web `Response` the host sends. It inserts a `Rendered` application into the template, defaults to status 200 and a UTF-8 HTML content type, and passes a `Responded` response through unchanged.
+`Server.toResponse(document, result)` turns either variant into the Web `Response` the host sends. Supply a function that produces a complete document, or an HTML template when the host owns one. A `Rendered` result defaults to status 200 and a UTF-8 HTML content type. A `Responded` result passes through unchanged without calling the document renderer.
 
 The render host serves pages, not a data API. Put JSON endpoints on a separate backend, such as an Effect `HttpApi` service.
 
@@ -110,7 +116,7 @@ The rendered application contains the body markup and the Document's initial hea
 
 RenderedApplication type
 
-```
+```typescript
 type RenderedApplication = Readonly<{
   html: string
   title: string
@@ -121,9 +127,32 @@ type RenderedApplication = Readonly<{
 }>
 ```
 
-`injectIntoTemplate` places that output in a standard `index.html`. The template must contain exactly one `<div id="root"></div>` placeholder. The placeholder has no other attributes and no whitespace inside it. The head must contain exactly one `<title>`. A missing or duplicate placeholder or title produces an error that names the problem.
+### The document renderer
 
-Pass `containerId` when the template uses another id. The injector also writes the language, text direction, canonical URL, and Open Graph URL into the corresponding shell elements.
+An SSR build calls the server entry's `renderDocument` export with the rendered application and its browser assets. The default `Server.renderDocument` supplies UTF-8 and viewport metadata, the application's Document fields, stylesheets, module preloads, and the client script. Request-time rendering and prerendering use the same renderer.
+
+The plugin supplies `assets.entryScript`, `assets.stylesheets`, and `assets.modulePreloads`. Import stylesheets from the client script; Vite emits their production URLs and keeps lazy imports out of the initial document. Use a root-relative `clientEntry` and an absolute-path or full-URL Vite `base`. Relative bases cannot locate the same assets consistently on nested routes and are rejected.
+
+Wrap the default renderer to set a default language or add trusted author-owned head markup. For example, this entry adds a favicon:
+
+Custom document head
+
+```typescript
+import { Server } from 'foldkit/experimental'
+
+export const renderDocument: Server.DocumentRenderer = (application, assets) =>
+  Server.renderDocument(application, assets, {
+    head: '<link rel="icon" href="/favicon.svg">',
+  })
+```
+
+The `head` option accepts HTML. Escape request-derived values before interpolating them. The application's language overrides the renderer's default `lang` option.
+
+### Custom HTML templates
+
+For a host that owns an HTML template, `injectIntoTemplate` places the rendered application in its placeholder. The template must contain exactly one `<div id="root"></div>` placeholder with no other attributes or whitespace inside it, and its head must contain exactly one `<title>`. Pass `containerId` when the placeholder uses another id. A missing or duplicate placeholder or title produces an error that names the problem.
+
+The injector also writes the language, text direction, canonical URL, and Open Graph URL into corresponding shell elements. For a Vite development host whose template comes from another build pipeline, omit `clientEntry` and `ssr.build`.
 
 ### Protocol validation
 
@@ -157,6 +186,8 @@ The placeholder's location and the view's root are part of the contract. Browser
 
 ## The hydration handoff
 
+### Handoff markers
+
 A hydratable render carries these markers:
 
 - The application root has `data-foldkit-app`. Its value is the `runtimeId`.
@@ -169,7 +200,7 @@ Conceptually, the handoff appears next to the rendered root:
 
 Hydration handoff markup
 
-```
+```html
 <main data-foldkit-app="app"><!-- rendered view --></main>
 <script type="application/json" data-foldkit-flags="app">
   { "initialCount": 2 }
@@ -184,7 +215,7 @@ The client opts into the handoff in its entry (`src/entry.ts` in the examples):
 
 Hydrating the application
 
-```
+```typescript
 Runtime.hydrate(application)
 ```
 
@@ -192,7 +223,7 @@ Runtime.hydrate(application)
 
 Runtime.run with flags
 
-```
+```typescript
 Runtime.run(application, { flags })
 ```
 
@@ -236,7 +267,7 @@ Set an explicit override only when the artifacts build in separate jobs, or when
 
 Build id override
 
-```
+```typescript
 // vite.config.ts: give separate build jobs the same deployment id.
 foldkit({ buildId: process.env.DEPLOYMENT_ID })
 ```
@@ -259,31 +290,65 @@ View identity also ships in the client bundle. Adding a source hash would expose
 
 ## Request-time SSR
 
+### Development host
+
 In development, enable the Vite host in `vite.config.ts`:
 
 Vite SSR configuration
 
-```
-foldkit({ ssr: { serverEntry: '/src/entry.server.ts' } })
+```typescript
+foldkit({
+  ssr: {
+    clientEntry: '/src/entry.ts',
+    serverEntry: '/src/entry.server.ts',
+  },
+})
 ```
 
 Vite continues to serve the client entry, HMR, and assets. Requests that reach Foldkit become Web `Request` values and pass to `renderPage`. The returned Web `Response` provides the status, headers, and body.
 
 A development reload does not exercise hydration. Foldkit restores the Model but rebuilds the DOM under the root. That DOM came from code that predates the edit. Refresh the page manually to test hydration itself. The stamped root remains required during a development reload; without it, startup fails as it would on a fresh load.
 
-In production, the host is built alongside the client. Set `ssr.build` in the plugin and `vite build` produces both. The server bundle is a Web `fetch` handler: Node and Workers both run it. Static files stay the platform's job. The [SSR example](https://github.com/foldkit/foldkit/tree/main/examples/ssr) starts that handler on Node:
+### Production host
+
+In production, the host is built alongside the client. Set `ssr.build` and `ssr.clientEntry` in the plugin and `vite build` produces both. The server bundle is a Web `fetch` handler: Node and Workers both run it. Static files stay the platform's job. Build-time Vite `transformIndexHtml` hooks do not run for this script-input build. Put document tags in `renderDocument` and import CSS from `clientEntry`.
+
+The [SSR example](https://github.com/foldkit/foldkit/tree/main/examples/ssr) starts that handler on Node:
 
 SSR build configuration
 
-```
+```typescript
 foldkit({
   buildId,
   ssr: {
     serverEntry: '/src/entry.server.ts',
+    clientEntry: '/src/entry.ts',
     build: true,
   },
 })
 ```
+
+`@foldkit/node` is the standard Node host. It reads `foldkit.build.json` to find the client assets and Fetch handler, serves static files for `GET` and `HEAD`, then sends the remaining requests to the handler. `port` selects the listening port. `origin` is the public origin that Node uses to turn each raw request target into a Web `Request` URL.
+
+Start the Node adapter
+
+```typescript
+import { Config, Option, String } from 'effect'
+
+import { NodeRuntime } from '@effect/platform-node'
+import * as Node from '@foldkit/node'
+
+const port = Config.withDefault(Config.Port('PORT'), 3000)
+const origin = Config.option(Config.String('ORIGIN')).pipe(
+  Config.map(Option.filter(String.isNonEmpty)),
+)
+
+NodeRuntime.runMain(Node.serve({ port, origin }))
+```
+
+The manifest records output paths relative to the Vite root. When the server output is outside that root, pass `rootDirectory` so the adapter can resolve both output directories; it refuses an outside-root server path without it.
+
+Set `basePath` to the same root-relative `base` used by Vite, such as `/app/`. The adapter serves static files only through that path and preserves it when it calls the Fetch handler.
 
 Caching personalized responses
 
@@ -291,33 +356,40 @@ When Flags depend on the request, such as a cookie, authorization header, or loc
 
 ## Build-time SSG
 
-Generation is part of the build. `ssr.build.prerender` builds the browser bundle and the server entry, then calls `renderPage` once for every path the entry lists and writes each result as a file, all inside one `vite build`:
+### Built-in prerendering
+
+Generation is part of the build. `ssr.build.prerender` builds the browser bundle and the server entry, then calls `renderPage` once for every path the entry lists and passes each result to `renderDocument` before writing it as a file, all inside one `vite build`:
 
 SSG build configuration
 
-```
+```typescript
 foldkit({
   buildId,
   ssr: {
     serverEntry: '/src/entry.server.ts',
+    clientEntry: '/src/entry.ts',
     build: { prerender: true },
   },
 })
 ```
 
-An `ssr.build` build keeps the HTML template in the `fetch` handler instead of publishing it with the browser assets. The client output contains `index.html` only when `prerender` generates `/`. Publishing the unfilled template would let a static host serve an empty page at `/` with status 200. A host configured to fall back to `index.html` could serve that empty page at every missing deep link.
+An `ssr.build` build emits no unfilled HTML template. The generated document comes from `renderDocument`; SSG writes `index.html` only for paths that `prerender` generates.
 
-To generate more pages from an `ssr.build` output, call its `fetch` handler with a `Request` for each path. The handler fills the template before returning the response, so the loop never reads the template from disk. For example, this loop generates two routes whose server entry is known to return rendered HTML.
+### Generating more pages
+
+To generate more pages from an `ssr.build` output, call its `fetch` handler with a `Request` for each path. The handler returns a complete document, so the loop needs no template. For example, this loop generates two routes whose server entry is known to return rendered HTML.
 
 SSG render loop over the fetch handler
 
 The `fetch` response does not say whether the entry returned `Rendered` or a complete `Responded` response. A 200 `Responded` result could carry headers that the loop would lose when it writes only the body. Use this loop only for routes whose entry is known to return rendered HTML, and check that your static host can reproduce any response metadata you need. Foldkit's built-in `prerender` can reject a `Responded` result before writing a file.
 
+### Browser-only generation
+
 This website does not set `ssr.build`, so its generation loop has no built `fetch` handler. It calls `renderPage` and injects each result into the browser build's template.
 
 SSG render loop over a browser build
 
-```
+```typescript
 for (const path of prerenderPaths) {
   const request = new Request(\`https://example.com${path}\`)
   const result = await serverEntry.renderPage(request)
@@ -343,7 +415,13 @@ A deployed SSG build is a directory of static files. Any static host or CDN can 
 
 A build that `@foldkit/vite-plugin` owns writes `foldkit.build.json` beside the server bundle. It names the two output directories, the server entry, and every generated path. An SSR host can serve those files and send requests that match no file to the server. A static-only SSG host serves the generated files and leaves other paths as misses.
 
-A deployed SSR application needs a host that serves the built client assets and calls `fetch` for page requests. The build writes no fallback document. Send requests that match no file to `fetch`; do not enable a single-page-application fallback that answers those requests with a file. The [SSR example's Node host](https://github.com/foldkit/foldkit/tree/main/examples/ssr/scripts/serve.ts) serves assets and sends page requests to `dist/server/fetch.js`.
+A deployed SSR application needs a host that serves the built client assets and calls `fetch` for page requests. The build writes no fallback document. Send requests that match no file to `fetch`; do not enable a single-page-application fallback that answers those requests with a file. `@foldkit/node` provides that policy for Node and derives the output directories from `foldkit.build.json`.
+
+### Custom hosts
+
+Use a custom host when the deployment needs routing or delivery behavior that `@foldkit/node` does not own. The adapter does not choose a `Cache-Control` policy or application 404 behavior. A custom Node host can make those choices around the same Fetch handler.
+
+A custom host must validate a raw request target against its configured origin before static-file lookup, serve static files only for `GET` and `HEAD`, and send the Vite-base `index.html` path, such as `/app/index.html` for `/app/`, to the Fetch handler instead of a generated file. Static lookup must also stay under that base path, so an unprefixed application request reaches the Fetch handler. The [adapter source](https://github.com/foldkit/foldkit/tree/main/packages/node/src/node.ts) is a reference for that boundary.
 
 ### Reading completed build metadata
 

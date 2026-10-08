@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/port
 title: "Port"
 description: "API documentation for the Port module."
-access_date: 2026-10-06T02:21:45.877Z
-current_date: 2026-10-06T02:21:45.877Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # Port
@@ -14,7 +14,7 @@ current_date: 2026-10-06T02:21:45.877Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/port/port.ts#L245)
+[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/port/port.ts#L245)
 
 ```
 /**
@@ -47,7 +47,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/port/port.ts#L68)
+[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/port/port.ts#L68)
 
 ```
 /**
@@ -62,7 +62,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/port/port.ts#L88)
+[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/port/port.ts#L88)
 
 ```
 /**
@@ -77,13 +77,13 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/port/port.ts#L177)
+[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/port/port.ts#L177)
 
 ```
 /**
  * The decoded values arriving on an inbound Port, as a Stream. This is the
  * atomic primitive for consuming a Port inside a Subscription entry; reach
- * for `Port.subscription` when you want the common always-on form. Values
+ * for `Port.subscriptionEntry` when you want the common always-on form. Values
  * sent while no Stream for the Port is running are dropped, except for
  * values sent before the first Stream attaches, which are buffered and
  * delivered to it in order (so host sends issued right after `Runtime.embed`
@@ -92,19 +92,19 @@ function
 <Value, Encoded>(port: Inbound<Value, Encoded>): Stream<Value>
 ```
 
-### subscription
+### subscriptionEntry
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/port/port.ts#L220)
+[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/port/port.ts#L220)
 
 ```
 /**
  * Builds a Subscription entry that wraps every decoded value arriving on an
- * inbound Port into a Message. The entry is persistent: it runs for the
- * runtime's lifetime, independent of the Model. Pass it as an entry value
- * inside `Subscription.make`. For a Model-gated entry, build one yourself
- * from `Port.stream`.
+ * inbound Port into a Message. The entry has no Model dependencies of its own,
+ * though a parent can gate it when lifting the Subscription. Pass it as an
+ * entry value inside `Subscription.make`. For an entry gated by its own Model,
+ * build one from `Port.stream`.
  */
 <Value, Encoded, Message>(
   port: Inbound<Value, Encoded>,
@@ -118,7 +118,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/port/port.ts#L50)
+[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/port/port.ts#L50)
 
 ```
 /**
@@ -138,13 +138,13 @@ type Ports = Readonly<{
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/port/port.ts#L29)
+[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/port/port.ts#L29)
 
 ```
 /**
  * A typed channel for values flowing from the host into the app. The app
  * consumes the decoded values as a Subscription source via `Port.stream` or
- * `Port.subscription`; the host pushes encoded values through the
+ * `Port.subscriptionEntry`; the host pushes encoded values through the
  * `EmbedHandle` returned by `Runtime.embed`. Create with `Port.inbound`.
  */
 interface Inbound {
@@ -157,7 +157,7 @@ interface Inbound {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/port/port.ts#L40)
+[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/port/port.ts#L40)
 
 ```
 /**
@@ -178,7 +178,7 @@ interface Outbound {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/port/port.ts#L7)
+[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/port/port.ts#L7)
 
 ```
 /** Type-level brand for inbound Port values. */
@@ -189,7 +189,7 @@ const InboundTypeId: unique symbol
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/03baf1666c9902e94a755e4ad1b0c44207453f9f/packages/foldkit/src/port/port.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/port/port.ts#L16)
 
 ```
 /** Type-level brand for outbound Port values. */

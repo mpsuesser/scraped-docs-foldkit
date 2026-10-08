@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-has-server-rendering
 title: "Foldkit Has Server Rendering"
 description: "Your Foldkit application can now render to HTML at build time or per request, then hydrate on the client."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
@@ -32,7 +32,40 @@ A Foldkit app can remain a pure client-side SPA. Server rendering is opt-in.
 
 SSG and SSR are the same thing run at different times. Either a build script calls your server entry once per URL and writes files, or a server calls it once per request and sends the response. The entry is a small module that derives flags from a `Request` and asks Foldkit to render:
 
-Server entry
+**Server entry**
+
+```typescript
+import { Effect } from 'effect'
+import { Server } from 'foldkit/experimental'
+
+import { readCountCookie } from './cookie'
+import { Flags, init, view } from './main'
+
+export const renderDocument = Server.renderDocument
+
+const flagsForRequest = (request: Request): Flags => ({
+  initialCount: readCountCookie(request.headers.get('cookie') ?? ''),
+})
+
+export const renderPage = (request: Request): Promise<Server.EntryResult> =>
+  Effect.runPromise(
+    Effect.gen(function* () {
+      const renderedApplication = yield* Server.renderToString(
+        { Flags, init, view },
+        {
+          flags: flagsForRequest(request),
+        },
+      )
+
+      return Server.Rendered(renderedApplication, {
+        headers: {
+          'cache-control': 'private, no-store',
+          vary: 'cookie',
+        },
+      })
+    }),
+  )
+```
 
 The `Flags` Schema, `init`, `view`, and `flagsForRequest` are provided by you. The rest is wiring.
 
@@ -67,9 +100,9 @@ There are no server components, no `'use client'` or `'use server'` boundaries, 
 
 Scaffold a Foldkit SSR application:
 
-Create a server-rendered Foldkit project
+**Create a server-rendered Foldkit project**
 
-```
+```bash
 npx create-foldkit-app@latest --rendering ssr
 ```
 

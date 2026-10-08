@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/coming-from-react
 title: "Coming from React"
 description: "See how Foldkit replaces component-owned state and Effects with one Model, Messages, update, Commands, Subscriptions, and Submodels."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # Coming from React
@@ -16,11 +16,74 @@ Foldkit does not compete with React on the brevity of a small component, and it 
 
 Here is a counter in React:
 
-React counter
+**React counter**
+
+```tsx
+import { useState } from 'react'
+
+function Counter() {
+  const [count, setCount] = useState(0)
+
+  const handleClickIncrement = () => {
+    setCount(count => count + 1)
+  }
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={handleClickIncrement}>Increment</button>
+    </div>
+  )
+}
+```
 
 The Foldkit version separates state, events, transitions, and rendering:
 
-Foldkit counter
+**Foldkit counter**
+
+```typescript
+import { Schema } from 'effect'
+import { type Update } from 'foldkit'
+import type { Document, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
+
+// MODEL - Your entire application state
+
+const Model = Schema.Struct({
+  count: Schema.Number,
+})
+type Model = typeof Model.Type
+
+// MESSAGE - Events that can happen in your app
+
+const Message = defineMessageUnion({
+  ClickedIncrement: {},
+})
+type Message = typeof Message.Type
+
+// UPDATE - How Messages change the Model
+
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedIncrement: () => ({
+      model: modifyFields(model, { count: count => count + 1 }),
+    }),
+  })
+
+// VIEW - A pure function from Model to a Document
+
+const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: `Count: ${model.count}`,
+  body: h.div(
+    [],
+    [
+      h.p([], [`Count: ${model.count}`]),
+      h.button([h.OnClick(Message.ClickedIncrement())], ['Increment']),
+    ],
+  ),
+})
+```
 
 For one number and one button, React is more compact. Foldkit’s structure starts paying for itself when the same state participates in timers, network requests, keyboard input, or several views. The rest of this page adds one of those concerns at a time.
 
@@ -30,13 +93,136 @@ The next requirement is a play/pause button that increments the counter every se
 
 React uses an Effect to synchronize an interval with `isAutoCounting`:
 
-React counter with auto-count
+**React counter with auto-count**
+
+```tsx
+import { useEffect, useState } from 'react'
+
+const TICK_INTERVAL_MS = 1000
+
+function Counter() {
+  const [count, setCount] = useState(0)
+  const [isAutoCounting, setIsPlaying] = useState(false)
+
+  const handleClickIncrement = () => {
+    setCount(count => count + 1)
+  }
+
+  const handleClickAutoCount = () => {
+    setIsPlaying(isAutoCounting => !isAutoCounting)
+  }
+
+  useEffect(() => {
+    if (!isAutoCounting) {
+      return
+    }
+
+    const intervalId = setInterval(() => {
+      setCount(count => count + 1)
+    }, TICK_INTERVAL_MS)
+
+    return () => clearInterval(intervalId)
+  }, [isAutoCounting])
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={handleClickIncrement}>Increment</button>
+      <button onClick={handleClickAutoCount}>
+        {isAutoCounting ? 'Stop' : 'Auto-Count'}
+      </button>
+    </div>
+  )
+}
+```
 
 The Effect starts the interval when auto-counting is active and returns the cleanup that stops it. React runs the cleanup before the Effect starts again and when the component unmounts. The functional state updater keeps the interval from depending on a captured `count`.
 
 Foldkit adds a Subscription and a `Ticked` Message:
 
-Foldkit counter with auto-count
+**Foldkit counter with auto-count**
+
+```typescript
+import { Duration, Effect, Schema, Stream } from 'effect'
+import { Subscription, type Update } from 'foldkit'
+import type { Document, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
+
+const TICK_INTERVAL_MS = 1000
+
+// MODEL
+
+const Model = Schema.Struct({
+  count: Schema.Number,
+  isAutoCounting: Schema.Boolean,
+})
+type Model = typeof Model.Type
+
+// MESSAGE
+
+const Message = defineMessageUnion({
+  ClickedIncrement: {},
+  ClickedToggleAutoCount: {},
+  Ticked: {},
+})
+type Message = typeof Message.Type
+
+// SUBSCRIPTION
+
+const subscriptions = Subscription.make<Model, Message>()(entry => ({
+  tick: entry(
+    { isAutoCounting: Schema.Boolean },
+    {
+      modelToDependencies: model => ({
+        isAutoCounting: model.isAutoCounting,
+      }),
+      dependenciesToStream: ({ isAutoCounting }) =>
+        Stream.when(
+          Stream.tick(Duration.millis(TICK_INTERVAL_MS)).pipe(
+            Stream.drop(1),
+            Stream.map(Message.Ticked),
+          ),
+          Effect.sync(() => isAutoCounting),
+        ),
+    },
+  ),
+}))
+
+// UPDATE
+
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedIncrement: () => ({
+      model: modifyFields(model, { count: count => count + 1 }),
+    }),
+    ClickedToggleAutoCount: () => ({
+      model: modifyFields(model, {
+        isAutoCounting: isAutoCounting => !isAutoCounting,
+      }),
+    }),
+    Ticked: () => ({
+      model: modifyFields(model, { count: count => count + 1 }),
+    }),
+  })
+
+// VIEW
+
+const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: `Count: ${model.count}`,
+  body: h.div(
+    [],
+    [
+      h.p([], [`Count: ${model.count}`]),
+      h.button([h.OnClick(Message.ClickedIncrement())], ['Increment']),
+      h.button(
+        [h.OnClick(Message.ClickedToggleAutoCount())],
+        [model.isAutoCounting ? 'Stop' : 'Auto-Count'],
+      ),
+    ],
+  ),
+})
+```
 
 The Subscription emits `Ticked` while `isAutoCounting` is true. Foldkit scopes the Stream to that Model condition, so the runtime starts and stops it as the condition changes. The interval does not live in the view, and its ticks enter the application through the same update function as button clicks.
 
@@ -46,13 +232,161 @@ Now the user can choose how much each manual click and timer tick adds.
 
 A naive React interval that reads `step` from its original closure keeps using that old value. Adding `step` to the Effect dependencies gives the interval the latest value, but also restarts the interval whenever the input changes. If the interval should keep its rhythm, React 19.2’s `useEffectEvent` lets the tick read the latest committed `step` without making `step` a synchronization dependency:
 
-React counter with step size
+**React counter with step size**
+
+```tsx
+import { useEffect, useEffectEvent, useState } from 'react'
+
+const TICK_INTERVAL_MS = 1000
+
+function Counter() {
+  const [count, setCount] = useState(0)
+  const [isAutoCounting, setIsPlaying] = useState(false)
+  const [step, setStep] = useState(1)
+
+  const handleClickIncrement = () => {
+    setCount(count => count + step)
+  }
+
+  const handleClickAutoCount = () => {
+    setIsPlaying(isAutoCounting => !isAutoCounting)
+  }
+
+  const onTick = useEffectEvent(() => {
+    setCount(count => count + step)
+  })
+
+  useEffect(() => {
+    if (!isAutoCounting) {
+      return
+    }
+
+    const intervalId = setInterval(() => onTick(), TICK_INTERVAL_MS)
+
+    return () => clearInterval(intervalId)
+  }, [isAutoCounting])
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <label>
+        Step:
+        <input
+          type="number"
+          value={step}
+          onChange={e => setStep(Number(e.target.value))}
+        />
+      </label>
+      <button onClick={handleClickIncrement}>Increment</button>
+      <button onClick={handleClickAutoCount}>
+        {isAutoCounting ? 'Stop' : 'Auto-Count'}
+      </button>
+    </div>
+  )
+}
+```
 
 The distinction is meaningful in React. `isAutoCounting` controls whether the external interval exists, so it is an Effect dependency. `step` is data read when the interval fires, so the Effect Event reads its current value without restarting the interval. The Hooks linter enforces where an Effect Event may be called and keeps it out of the dependency array.
 
 The Foldkit version adds `step` to the Model and handles `ChangedStep`:
 
-Foldkit counter with step size
+**Foldkit counter with step size**
+
+```typescript
+import { Duration, Effect, Schema, Stream } from 'effect'
+import { Subscription, type Update } from 'foldkit'
+import type { Document, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
+
+const TICK_INTERVAL_MS = 1000
+
+// MODEL
+
+const Model = Schema.Struct({
+  count: Schema.Number,
+  step: Schema.Number,
+  isAutoCounting: Schema.Boolean,
+})
+type Model = typeof Model.Type
+
+// MESSAGE
+
+const Message = defineMessageUnion({
+  ClickedIncrement: {},
+  ClickedToggleAutoCount: {},
+  ChangedStep: { step: Schema.Number },
+  Ticked: {},
+})
+type Message = typeof Message.Type
+
+// SUBSCRIPTION
+
+const subscriptions = Subscription.make<Model, Message>()(entry => ({
+  tick: entry(
+    { isAutoCounting: Schema.Boolean },
+    {
+      modelToDependencies: model => ({
+        isAutoCounting: model.isAutoCounting,
+      }),
+      dependenciesToStream: ({ isAutoCounting }) =>
+        Stream.when(
+          Stream.tick(Duration.millis(TICK_INTERVAL_MS)).pipe(
+            Stream.drop(1),
+            Stream.map(Message.Ticked),
+          ),
+          Effect.sync(() => isAutoCounting),
+        ),
+    },
+  ),
+}))
+
+// UPDATE
+
+const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedIncrement: () => ({
+      model: modifyFields(model, { count: count => count + model.step }),
+    }),
+    ClickedToggleAutoCount: () => ({
+      model: modifyFields(model, {
+        isAutoCounting: isAutoCounting => !isAutoCounting,
+      }),
+    }),
+    ChangedStep: ({ step }) => ({
+      model: modifyFields(model, { step: () => step }),
+    }),
+    Ticked: () => ({
+      model: modifyFields(model, { count: count => count + model.step }),
+    }),
+  })
+
+// VIEW
+
+const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: `Count: ${model.count}`,
+  body: h.div(
+    [],
+    [
+      h.p([], [`Count: ${model.count}`]),
+      h.label(
+        [],
+        [
+          'Step: ',
+          h.input([
+            h.OnInput(value => Message.ChangedStep({ step: Number(value) })),
+          ]),
+        ],
+      ),
+      h.button([h.OnClick(Message.ClickedIncrement())], ['Increment']),
+      h.button(
+        [h.OnClick(Message.ClickedToggleAutoCount())],
+        [model.isAutoCounting ? 'Stop' : 'Auto-Count'],
+      ),
+    ],
+  ),
+})
+```
 
 Each `Ticked` Message is handled with the current Model, so `model.step` is current when update calculates the next count. The Subscription still depends only on whether auto-counting is active. There is no closure decision to make and no second mechanism for reading the latest value.
 

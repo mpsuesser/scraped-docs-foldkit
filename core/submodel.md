@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/submodel
 title: "Submodel"
 description: "Split a large application into child state machines while preserving parent-to-child Message flow. Covers Update.foldChild, h.submodel, OutMessages, reflection, testing, and DevTools."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 ## When to Create a Submodel
@@ -45,7 +45,7 @@ The child’s Model becomes a field in the parent’s Model:
 
 Parent Model
 
-```
+```typescript
 import { Schema } from 'effect'
 
 import * as Settings from './page/settings'
@@ -63,7 +63,7 @@ The parent stores the child Model, but the child still owns it. Do not use [modi
 
 ❌ Resetting child state directly
 
-```
+```typescript
 // ❌ Don't reach into the child's Model from the parent's update.
 // This bypasses Settings.update, so its invariants, Commands,
 // and OutMessages are skipped.
@@ -94,7 +94,7 @@ Every Message eventually reaches the root update. Each parent therefore declares
 
 Wrapper Message
 
-```
+```typescript
 import { Schema } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 
@@ -124,7 +124,7 @@ The resulting fold reads the child, runs its update, writes it back, and lifts i
 
 Using foldChild
 
-`read` returns an `Option` because a routed page or keyed child may no longer exist when its Message arrives. `None` makes the fold a no-op. An always-present child returns `Option.some(model.settings)`.
+`read` returns an `Option` because a routed page or child entry may be absent from the parent Model. When `read` returns `None`, the fold leaves the parent Model unchanged. An always-present child returns `Option.some(model.settings)`.
 
 The fold is dual. `foldSettings(model, message)` runs it immediately. `foldSettings(message)` returns an `Update.Step<ParentModel, ParentMessage>` for `Update.combine`. Close over per-dispatch context in the `update` field, and apply route gates before calling the fold.
 
@@ -189,13 +189,17 @@ Foldkit throws while building the view when sibling boundaries reuse a `slotId`.
 
 A parent can hold a fixed or dynamic number of child instances.
 
-For a fixed set, give each child its own Model field and `slotId`. For a dynamic set, store the children in an array. Use the same stable identifier for the row key, `slotId`, and wrapper Message.
+For a fixed set, give each child its own Model field and `slotId`. For a dynamic set, start with an array. Use the same stable identifier for the row key, `slotId`, and wrapper Message.
 
-Multiple instances
+When at most one child instance is active, store one child Model and an `Option` of its key. A table with at most one open row menu can share one Menu Model. Use a collection when multiple instances need independent state at once, such as editors on several rows or progress for several uploads.
 
-`foldApplicant(entryId)` reads and writes only the matching child. When the child no longer exists, `read` returns `None` and a late Message becomes a no-op. The [job-application example](https://foldkit.dev/example-apps/job-application) uses this shape for repeated education and work-history entries.
+### Folding a Child by Key
 
-Start with an array. If profiling shows that finding and replacing a child is expensive, use a `HashMap` keyed by the same identifier. `Update.foldChild` still works because `HashMap.get` already returns an `Option`.
+Folding a child in a collection
+
+Use `Update.foldChildAt` to run a child update for one Submodel selected by key. `readAt` finds the child Model, and `writeAt` stores the next one. `toParentMessage` receives the key when wrapping the result Message of each child Command. If `readAt` returns `None` for that key, the fold leaves the parent Model unchanged. The [job-application example](https://foldkit.dev/example-apps/job-application) stores education, work-history, and skills Submodels in arrays. Each Submodel has a stable entry ID that `foldChildAt` uses as its key.
+
+When the selected child emits an OutMessage, `foldOutMessage` takes the key and returns a matcher whose handlers produce parent Steps. If an OutMessage handler returns a child Command, give the `foldOutMessage` factory a second `FoldContext` parameter and use its lifters to wrap the Command's result Message. To forward an OutMessage, `toParentOutMessage` takes the key and returns a matcher that produces a parent OutMessage. Neither factory runs when the child emits no OutMessage.
 
 ## Memoization Across Submodel Boundaries
 
@@ -286,7 +290,7 @@ Define reflect helpers with `Function.dual` so they work point-free in [modifyFi
 
 Reflecting URL price bounds into a Slider
 
-```
+```typescript
 ChangedUrl: ({ route }) => ({
   model: modifyFields(model, {
     // The URL owns the price bounds, so reflect them onto the Slider. reflectRange

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/dialog
 title: "Dialog"
 description: "A modal dialog backed by the native dialog element with focus trapping and scroll locking."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 ## Overview
@@ -58,7 +58,7 @@ Use `Dialog.boot()` when a Dialog should be open when the application starts. Pa
 
 Starting with an open Dialog
 
-```
+```typescript
 return Update.foldChildInit(Dialog.boot({ id: 'confirm' }), {
   toParentModel: dialog => ({ dialog }),
   toParentMessage: toGotDialogMessage,

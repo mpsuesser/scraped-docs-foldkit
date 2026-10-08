@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/model
 title: "Model"
 description: "Define application state as one Schema-backed Model. Foldkit uses its runtime Schema to preserve state across hot updates and validate unknown data."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # Model
@@ -16,9 +16,9 @@ In the [restaurant analogy](https://foldkit.dev/core/architecture#the-restaurant
 
 The counter defines its Model with [Effect Schema](https://effect.website/docs/schema/introduction/):
 
-Counter Model
+**Counter Model**
 
-```
+```typescript
 import { Schema } from 'effect'
 
 // MODEL
@@ -37,7 +37,35 @@ That runtime value matters because TypeScript types disappear after compilation.
 
 Use `defineTaggedUnion` when a Model field can have several named shapes. Declare every variant together, then construct and match values through the union:
 
-Model state union
+**Model state union**
+
+```typescript
+import { Schema } from 'effect'
+import { defineTaggedUnion } from 'foldkit/schema'
+
+const EditorMode = defineTaggedUnion({
+  Browsing: {},
+  Editing: { noteId: Schema.String },
+  Previewing: { noteId: Schema.String },
+})
+type EditorMode = typeof EditorMode.Type
+
+const Model = Schema.Struct({
+  editorMode: EditorMode,
+})
+type Model = typeof Model.Type
+
+const init = (): Model => ({
+  editorMode: EditorMode.Browsing(),
+})
+
+const modeLabel = (mode: EditorMode): string =>
+  EditorMode.match(mode, {
+    Browsing: () => 'Browsing notes',
+    Editing: ({ noteId }) => `Editing ${noteId}`,
+    Previewing: ({ noteId }) => `Previewing ${noteId}`,
+  })
+```
 
 `EditorMode` is the Schema stored in `Model` and the namespace used to construct values such as `EditorMode.Browsing()`. Its `match` method requires every variant to be handled. If you add another editor mode, TypeScript finds each match that needs a new branch.
 
@@ -51,9 +79,9 @@ Use `taggedStruct` only when the variants cannot be declared together. Recursive
 
 The counter starts with one field. When automatic counting becomes part of the application state, the Model grows to record it:
 
-Expanded counter Model
+**Expanded counter Model**
 
-```
+```typescript
 import { Schema } from 'effect'
 
 // When the counter gains auto-counting,

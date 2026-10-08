@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/mount
 title: "Mount"
 description: "Run DOM work while a specific rendered element exists. Mount supplies the live Element, emits declared result Messages, and keeps setup paired with cleanup."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 ## Overview
@@ -66,7 +66,7 @@ A Mount often needs an input that differs by element instance, such as an initia
 
 Mount args definition
 
-```
+```typescript
 Mount.define(name, {
   args: argSchemas,
   messages: [ResultMessage],

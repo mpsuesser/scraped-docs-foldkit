@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing
 title: "Testing"
 description: "Test Foldkit programs with Story and Scene. Story drives the update loop directly, while Scene drives the rendered view through accessible locators."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # Testing
@@ -51,7 +51,25 @@ The names stay accurate whether update and view live together or in separate fil
 
 Story can test a root update or a child update in isolation. The update function is the contract at either level.
 
-Delayed-reset Story test
+**Delayed-reset Story test**
+
+```typescript
+import { Command, given, message, model, story } from 'foldkit/story'
+import { expect, test } from 'vitest'
+
+test('delayed reset: count resets after the delay fires', () => {
+  story(
+    update,
+    given({ count: 5 }),
+    message(ClickedResetAfterDelay()),
+    Command.expectExact(DelayReset),
+    Command.resolve(DelayReset, CompletedDelayReset()),
+    model(model => {
+      expect(model.count).toBe(0)
+    }),
+  )
+})
+```
 
 ## Scene
 
@@ -61,4 +79,44 @@ Scene can also start at the root or at a child Submodel. `withViewInputs` adapts
 
 Choose the level by ownership. Test a Submodel's rendering, interactions, Commands, and OutMessages at the Submodel. Test parent folding, lifted Commands, route changes, and parent-computed ViewInputs at the root. Those behaviors cross the boundary and cannot be observed from the child.
 
-Weather search Scene test
+**Weather search Scene test**
+
+```typescript
+import {
+  Command,
+  click,
+  expect,
+  given,
+  inside,
+  label,
+  role,
+  scene,
+  text,
+  type,
+} from 'foldkit/scene'
+import { test } from 'vitest'
+
+test('type a zip code, click get weather, see the forecast', () => {
+  scene(
+    { update, view },
+    given(model),
+
+    type(label('Zip code'), '90210'),
+    click(role('button', { name: 'Get Weather' })),
+    expect(role('button', { name: 'Loading...' })).toExist(),
+
+    // Instance form: locks in the zipCode the runtime captured.
+    Command.expectExact(FetchWeather({ zipCode: '90210' })),
+    Command.resolve(
+      FetchWeather,
+      SucceededFetchWeather({ weather: beverlyHillsWeather }),
+    ),
+    inside(
+      role('article'),
+      expect(text('Beverly Hills, California')).toExist(),
+      expect(text('72\u00B0F')).toExist(),
+      expect(text('Clear sky')).toExist(),
+    ),
+  )
+})
+```

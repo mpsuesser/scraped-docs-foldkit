@@ -2,8 +2,8 @@
 url: https://foldkit.dev/get-started
 title: "Get Started"
 description: "Create a Foldkit project from a starter, inspect the generated structure, or add Foldkit to an existing Vite application."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # Get Started
@@ -16,9 +16,9 @@ Before you begin, install Node.js 22.22.2 or newer and make sure the package man
 
 Run the scaffolder:
 
-Create a Foldkit project
+**Create a Foldkit project**
 
-```
+```bash
 npx create-foldkit-app@latest
 ```
 
@@ -30,9 +30,9 @@ The CLI asks for a project name, a rendering mode, and a package manager. If you
 
 The scaffolder creates the project and installs its dependencies. Move into the new directory, then start the development server with the package manager you selected:
 
-Enter the project directory
+**Enter the project directory**
 
-```
+```bash
 cd your-project
 ```
 
@@ -72,9 +72,9 @@ Foldkit uses Effect 4 stable and pins its peer dependencies to exact versions: `
 
 Install Foldkit together with its pinned peer dependencies:
 
-Install Foldkit and Effect
+**Install Foldkit and Effect**
 
-```
+```bash
 npm install foldkit effect@4.0.0 @effect/platform-browser@4.0.0
 ```
 

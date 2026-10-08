@@ -2,8 +2,8 @@
 url: https://foldkit.dev/tooling/oxlint-plugin
 title: "Oxlint Plugin"
 description: "Install and configure @foldkit/oxlint-plugin, then see what each Foldkit-specific rule accepts and rejects."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 # Oxlint Plugin
@@ -16,7 +16,60 @@ Foldkit projects use `oxlint` for general linting and `@foldkit/oxlint-plugin` f
 
 [Create Foldkit app](https://foldkit.dev/get-started) includes `.oxlintrc.json`, a `lint` script, `oxlint`, and `@foldkit/oxlint-plugin`. Generated projects extend the recommended Foldkit preset:
 
-Configuration for oxlint
+**Configuration for oxlint**
+
+```json
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript"],
+  "jsPlugins": [
+    {
+      "name": "foldkit",
+      "specifier": "@foldkit/oxlint-plugin"
+    }
+  ],
+  "categories": {
+    "correctness": "off"
+  },
+  "rules": {
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_"
+      }
+    ],
+    "typescript/no-explicit-any": "error",
+    "typescript/consistent-type-assertions": [
+      "error",
+      {
+        "assertionStyle": "never"
+      }
+    ],
+    "foldkit/no-noop-message": "error",
+    "foldkit/got-submodel-message-name": "error",
+    "foldkit/got-prefix-requires-submodel-payload": "error",
+    "foldkit/no-empty-commands-array": "error",
+    "foldkit/no-empty-to-parent-out-message": "error",
+    "foldkit/no-empty-object-tagged-call": "error",
+    "foldkit/prefer-callable-message-constructor": "error",
+    "foldkit/command-binding-matches-name": "error",
+    "foldkit/no-module-level-mutable-state": "error"
+  },
+  "ignorePatterns": [
+    "dist/",
+    "node_modules/",
+    "repos/",
+    "**/*.d.ts",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "**/*.config.js",
+    "**/*.config.mjs"
+  ]
+}
+```
 
 Override an individual rule in the project's `rules` block when an application needs a narrower policy. The complete rule set is grouped by the part of the architecture it protects below.
 
@@ -32,9 +85,9 @@ The rule safely fixes a binding and its references when the exported name is ava
 
 Disable the rule when a project deliberately keeps Effect module aliases:
 
-Disabling one Oxlint rule
+**Disabling one Oxlint rule**
 
-```
+```json
 {
   "rules": {
     "foldkit/prefer-effect-module-names": "off"
@@ -60,9 +113,9 @@ This rule is a portability guardrail, not a security boundary or an exhaustive c
 
 Rejects catch-all Messages that make update branches and traces less meaningful. Name the event that happened instead.
 
-Rule: foldkit/no-noop-message
+**Rule: foldkit/no-noop-message**
 
-```
+```typescript
 import { defineMessageUnion } from 'foldkit/message'
 
 // ❌ Bad
@@ -80,9 +133,9 @@ const Message = defineMessageUnion({
 
 Catches no-field variants called with an unnecessary empty object. The rule recognizes namespaces whose names end in Message, Route, or State, plus unions declared in the same file with Foldkit's union helpers. Call those constructors with no arguments.
 
-Rule: foldkit/no-empty-object-tagged-call
+**Rule: foldkit/no-empty-object-tagged-call**
 
-```
+```typescript
 import { defineTaggedUnion } from 'foldkit/schema'
 
 const Submission = defineTaggedUnion({
@@ -101,7 +154,25 @@ const goodSubmission = Submission.NotSubmitted()
 
 Prevents constructing Messages by typing or casting object literals. Use the callable Schema constructor instead.
 
-Rule: foldkit/prefer-callable-message-constructor
+**Rule: foldkit/prefer-callable-message-constructor**
+
+```typescript
+import { Schema } from 'effect'
+import { defineMessageUnion } from 'foldkit/message'
+
+const Message = defineMessageUnion({
+  ClickedSave: {},
+})
+type Message = typeof Message.Type
+
+// ❌ Bad
+const badMessage: Message = {
+  _tag: 'ClickedSave',
+}
+
+// ✅ Good
+const goodMessage = Message.ClickedSave()
+```
 
 ## Command Shape
 
@@ -109,19 +180,76 @@ Rule: foldkit/prefer-callable-message-constructor
 
 Keeps a Command binding name in sync with the name passed to Command.define.
 
-Rule: foldkit/command-binding-matches-name
+**Rule: foldkit/command-binding-matches-name**
+
+```typescript
+import { Effect } from 'effect'
+import { Command } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+
+const Message = defineMessageUnion({
+  CompletedFetchUser: {},
+})
+
+// ❌ Bad
+const SaveUser = Command.define('FetchUser', {
+  messages: [Message.CompletedFetchUser],
+  execute: Effect.succeed(Message.CompletedFetchUser()),
+})
+
+// ✅ Good
+const FetchUser = Command.define('FetchUser', {
+  messages: [Message.CompletedFetchUser],
+  execute: Effect.succeed(Message.CompletedFetchUser()),
+})
+```
 
 ### foldkit/command-define-pascal-const
 
 Requires the const holding a Command.define result to be a non-empty PascalCase identifier that matches the Command name.
 
-Rule: foldkit/command-define-pascal-const
+**Rule: foldkit/command-define-pascal-const**
+
+```typescript
+import { Command } from 'foldkit'
+
+// ❌ Bad
+// A Command binding should be PascalCase, like the Command name it holds.
+const fetchWeather = Command.define('FetchWeather', {
+  messages: [SucceededFetchWeather],
+  execute: fetchWeatherEffect,
+})
+
+// ✅ Good
+const FetchWeather = Command.define('FetchWeather', {
+  messages: [SucceededFetchWeather],
+  execute: fetchWeatherEffect,
+})
+```
 
 ### foldkit/no-hand-rolled-command-struct
 
 Rejects Command structs assembled by hand. Command.define attaches the identity, args, and tracing metadata a plain object literal skips.
 
-Rule: foldkit/no-hand-rolled-command-struct
+**Rule: foldkit/no-hand-rolled-command-struct**
+
+```typescript
+import { Command } from 'foldkit'
+
+// ❌ Bad
+// Hand-rolling the Command struct skips the identity, args, and tracing
+// metadata that Command.define attaches.
+const SaveDraft = {
+  name: 'SaveDraft',
+  effect: saveDraftEffect,
+}
+
+// ✅ Good
+const FetchWeather = Command.define('FetchWeather', {
+  messages: [SucceededFetchWeather],
+  execute: fetchWeatherEffect,
+})
+```
 
 ## Commands and Effects
 
@@ -131,7 +259,25 @@ Requires the acquire Effect passed to `Effect.acquireRelease` to construct its r
 
 The Effect type tracks the resource value, failure, and requirements, but not whether the resource was constructed before the acquire Effect began. That timing distinction cannot be enforced by the `Effect.acquireRelease` API or TypeScript alone, so the lint rule checks the construction shape.
 
-Rule: foldkit/acquire-release-constructs-in-acquire-body
+**Rule: foldkit/acquire-release-constructs-in-acquire-body**
+
+```typescript
+import { Effect } from 'effect'
+
+const closeSocket = (socket: WebSocket) => Effect.sync(() => socket.close())
+
+// ❌ Bad
+// An interruption between constructing the socket and acquire leaks it.
+const socket = new WebSocket('/updates')
+const badResource = Effect.acquireRelease(Effect.succeed(socket), closeSocket)
+
+// ✅ Good
+// Construct the socket inside acquire, so acquire owns the whole lifetime.
+const goodResource = Effect.acquireRelease(
+  Effect.sync(() => new WebSocket('/updates')),
+  closeSocket,
+)
+```
 
 ### foldkit/prefer-command-mapmessage
 
@@ -139,7 +285,30 @@ Lifts a Command result Message with `Command.mapMessage` or `Command.mapMessages
 
 `Command.mapEffect` is appropriate when the result Message stays the same and the Effect's execution changes, such as providing a service, adding retry or delay behavior, or changing its error or requirement channel. Its type preserves the result Message; use the Message-specific helpers when the result itself changes.
 
-Rule: foldkit/prefer-command-mapmessage
+**Rule: foldkit/prefer-command-mapmessage**
+
+```typescript
+import { Effect } from 'effect'
+import { Command } from 'foldkit'
+
+// ❌ Bad
+// Effect.map lifts the result Message but records nothing on the mapping chain,
+// so Story/Scene resolve sees the child's raw Message.
+const badCommand = Command.mapEffect(
+  childCommand,
+  Effect.map(message => Message.GotChildMessage({ message })),
+)
+
+// ✅ Good
+// mapEffect may change execution while preserving the result Message.
+const infallibleCommand = Command.mapEffect(childCommand, Effect.orDie)
+
+// ✅ Good
+// mapMessage records the lift, so resolve can recover it in tests.
+const goodCommand = Command.mapMessage(childCommand, message =>
+  Message.GotChildMessage({ message }),
+)
+```
 
 ## Model Updates
 
@@ -151,13 +320,50 @@ The rule can remove the property when doing so will not disturb comments, spread
 
 This is a syntax-only rule. It flags any literal property named `commands`, even when the object is unrelated to an update result. If `commands: []` is genuine domain data, suppress the rule on that property with `// oxlint-disable-next-line foldkit/no-empty-commands-array`.
 
-Rule: foldkit/no-empty-commands-array
+**Rule: foldkit/no-empty-commands-array**
+
+```typescript
+declare const model: Model
+declare const commands: ReadonlyArray<Command<Message>>
+declare const optionalCommands: ReadonlyArray<Command<Message>> | undefined
+declare const buildCommands: (model: Model) => ReadonlyArray<Command<Message>>
+
+// ❌ Bad
+// A producer that statically creates no Commands omits the field.
+const noCommands = { model, commands: [] }
+
+// ✅ Good
+const omittedCommands = { model }
+const existingCommands = { model, commands }
+const computedCommands = { model, commands: buildCommands(model) }
+
+// Code that spreads, concatenates, executes, or asserts on Commands needs an array.
+const normalizedCommands = { model, commands: optionalCommands ?? [] }
+```
 
 ### foldkit/no-spread-in-modify-fields
 
 Rejects object spreads inside a modifyFields updater. Evolve nested fields with a nested modifyFields instead.
 
-Rule: foldkit/no-spread-in-modify-fields
+**Rule: foldkit/no-spread-in-modify-fields**
+
+```typescript
+import { modifyFields } from 'foldkit/struct'
+
+// ❌ Bad
+// Spreading a nested field inside modifyFields defeats the point of modifyFields.
+const badUpdate = (model: Model) =>
+  modifyFields(model, {
+    user: () => ({ ...model.user, name: 'Ada' }),
+  })
+
+// ✅ Good
+// Evolve the nested field with a nested modifyFields.
+const goodUpdate = (model: Model) =>
+  modifyFields(model, {
+    user: user => modifyFields(user, { name: () => 'Ada' }),
+  })
+```
 
 ## State Modeling
 
@@ -165,13 +371,53 @@ Rule: foldkit/no-spread-in-modify-fields
 
 Rejects a `switch` on a Message or state `_tag`. Use the tagged union’s `match` helper for exhaustive dispatch, or Effect `Match` when the union has no matcher, so adding a variant produces a type error instead of a silent fall-through. Matchers are also the idiomatic Foldkit form: they organize behavior around named variants and keep low-level `_tag` branching out of application logic.
 
-Rule: foldkit/no-switch-on-message-tag
+**Rule: foldkit/no-switch-on-message-tag**
+
+```typescript
+// ❌ Bad
+// A switch on _tag has no exhaustiveness check, so a new variant silently
+// falls through. It also exposes dispatch mechanics instead of organizing the
+// logic around named variants.
+const badLabel = (message: Message): string => {
+  switch (message._tag) {
+    case 'Incremented':
+      return 'up'
+    case 'Decremented':
+      return 'down'
+  }
+}
+
+// ✅ Good
+// The idiomatic union matcher makes a forgotten variant a type error.
+const goodLabel = (message: Message): string =>
+  Message.match<string>(message, {
+    Incremented: () => 'up',
+    Decremented: () => 'down',
+  })
+```
 
 ### foldkit/prefer-option-over-nullable-in-model
 
 Requires a direct field in the `Model` Schema to represent absence with `Schema.Option`, not a nullable, undefined, or optional Schema field. The rule stays scoped to `const Model = Schema.Struct({...})`, leaving wire and API Schemas free to preserve nullable input formats.
 
-Rule: foldkit/prefer-option-over-nullable-in-model
+**Rule: foldkit/prefer-option-over-nullable-in-model**
+
+```typescript
+import { Schema } from 'effect'
+
+// ❌ Bad
+// Nullable and optional Schemas model absence as values the update layer must
+// guard.
+const Model = Schema.Struct({
+  currentUser: Schema.NullOr(User),
+})
+
+// ✅ Good
+// Option makes presence explicit and threads through update without null checks.
+const ModelWithOption = Schema.Struct({
+  currentUser: Schema.Option(User),
+})
+```
 
 ## Routing
 
@@ -179,9 +425,9 @@ Rule: foldkit/prefer-option-over-nullable-in-model
 
 Rejects hardcoded path and URL strings passed to link and navigation helpers. Build them from the Route module so they stay in sync with the routes.
 
-Rule: foldkit/no-hardcoded-route-strings
+**Rule: foldkit/no-hardcoded-route-strings**
 
-```
+```typescript
 import type { HtmlBuilder } from 'foldkit/html'
 
 import { tasksRouter } from './route'
@@ -200,7 +446,41 @@ const goodLink = (h: HtmlBuilder<Message>) =>
 
 Rejects `Schema.withConstructorDefault` inside `Route.query`. Constructor defaults run only when a Schema constructs a value with `make`; route query parameters are decoded and encoded, so the annotation does not supply a default for a missing parameter. Use `Schema.withDecodingDefaultKey` when an absent key should decode to a value, or `Schema.OptionFromOptional` when absence belongs in the Route.
 
-Rule: foldkit/no-route-query-constructor-default
+**Rule: foldkit/no-route-query-constructor-default**
+
+```typescript
+import { Effect, Schema, pipe } from 'effect'
+import { Route } from 'foldkit'
+import { literal } from 'foldkit/route'
+
+// ❌ Bad
+// Constructor defaults run only during make, not Route.query decoding.
+const badSearchRouter = pipe(
+  literal('search'),
+  Route.query(
+    Schema.Struct({
+      page: Schema.FiniteFromString.pipe(
+        Schema.withConstructorDefault(Effect.succeed(1)),
+      ),
+    }),
+  ),
+  Route.mapTo(SearchRoute),
+)
+
+// ✅ Good
+// Use a decoding default when an absent query key should produce a value.
+const goodSearchRouter = pipe(
+  literal('search'),
+  Route.query(
+    Schema.Struct({
+      page: Schema.FiniteFromString.pipe(
+        Schema.withDecodingDefaultKey(Effect.succeed('1')),
+      ),
+    }),
+  ),
+  Route.mapTo(SearchRoute),
+)
+```
 
 ## View Keying and Accessibility
 
@@ -208,27 +488,95 @@ Rule: foldkit/no-route-query-constructor-default
 
 Rejects the array index as a view key. Key by a stable Model identifier, or reordering the list patches the wrong rows.
 
-Rule: foldkit/no-array-index-view-keys
+**Rule: foldkit/no-array-index-view-keys**
+
+```typescript
+import type { HtmlBuilder } from 'foldkit/html'
+
+// ❌ Bad
+// The array index is not a stable identity: reordering patches the wrong rows.
+const badList = (tasks: ReadonlyArray<Task>, h: HtmlBuilder<Message>) =>
+  h.ul(
+    [],
+    tasks.map((task, index) => h.keyed('li')(index, [], [task.title])),
+  )
+
+// ✅ Good
+// Key by a stable Model identifier.
+const goodList = (tasks: ReadonlyArray<Task>, h: HtmlBuilder<Message>) =>
+  h.ul(
+    [],
+    tasks.map(task => h.keyed('li')(task.id, [], [task.title])),
+  )
+```
 
 ### foldkit/keyed-required-for-mapped-rows
 
 Requires an identity-bearing mapped row element to be wrapped in keyed, so the runtime patches the right rows when the list reorders or shrinks.
 
-Rule: foldkit/keyed-required-for-mapped-rows
+**Rule: foldkit/keyed-required-for-mapped-rows**
+
+```typescript
+import type { HtmlBuilder } from 'foldkit/html'
+
+// ❌ Bad
+// The row carries the task's identity (its id), so leaving it unkeyed lets the
+// runtime patch the wrong row when the list reorders or shrinks.
+const badList = (tasks: ReadonlyArray<Task>, h: HtmlBuilder<Message>) =>
+  h.ul(
+    [],
+    tasks.map(task =>
+      h.li([h.OnClick(ClickedTask({ id: task.id }))], [task.title]),
+    ),
+  )
+
+// ✅ Good
+const goodList = (tasks: ReadonlyArray<Task>, h: HtmlBuilder<Message>) =>
+  h.ul(
+    [],
+    tasks.map(task =>
+      h.keyed('li')(
+        task.id,
+        [h.OnClick(ClickedTask({ id: task.id }))],
+        [task.title],
+      ),
+    ),
+  )
+```
 
 ### foldkit/require-rel-for-external-link
 
 Requires target="_blank" links to carry a rel with noopener or noreferrer.
 
-Rule: foldkit/require-rel-for-external-link
+**Rule: foldkit/require-rel-for-external-link**
+
+```typescript
+import type { HtmlBuilder } from 'foldkit/html'
+
+// ❌ Bad
+// target="_blank" without rel leaves the new tab able to reach window.opener.
+const badLink = (h: HtmlBuilder<Message>) =>
+  h.a([h.Href('https://example.com'), h.Target('_blank')], ['Docs'])
+
+// ✅ Good
+const goodLink = (h: HtmlBuilder<Message>) =>
+  h.a(
+    [
+      h.Href('https://example.com'),
+      h.Target('_blank'),
+      h.Rel('noopener noreferrer'),
+    ],
+    ['Docs'],
+  )
+```
 
 ### foldkit/no-raw-dom-event-attributes
 
 Rejects raw DOM event attributes. Use the typed event helpers so handlers dispatch Messages through the runtime.
 
-Rule: foldkit/no-raw-dom-event-attributes
+**Rule: foldkit/no-raw-dom-event-attributes**
 
-```
+```typescript
 import type { HtmlBuilder } from 'foldkit/html'
 
 // ❌ Bad
@@ -246,7 +594,31 @@ const goodButton = (h: HtmlBuilder<Message>) =>
 
 Catches an inline empty array in the children slot, on element builders and on keyed. The argument is optional, so an element with no children omits it. The shorter form needs the Foldkit release that made children optional, so bump `foldkit` alongside the plugin.
 
-Rule: foldkit/no-empty-children-array
+**Rule: foldkit/no-empty-children-array**
+
+```typescript
+import type { HtmlBuilder } from 'foldkit/html'
+
+// ❌ Bad
+// The trailing [] is what the builder already defaults to, so it carries nothing.
+const badDivider = (h: HtmlBuilder<Message>) =>
+  h.div([h.Class('h-px bg-gray-200')], [])
+const badRows = (tags: ReadonlyArray<Tag>, h: HtmlBuilder<Message>) =>
+  h.ul(
+    [],
+    tags.map(tag => h.keyed('li')(tag.id, [h.Class(tag.className)], [])),
+  )
+
+// ✅ Good
+// Omit the argument. Attributes stay required, so h.div([]) is an element with neither.
+const goodDivider = (h: HtmlBuilder<Message>) =>
+  h.div([h.Class('h-px bg-gray-200')])
+const goodRows = (tags: ReadonlyArray<Tag>, h: HtmlBuilder<Message>) =>
+  h.ul(
+    [],
+    tags.map(tag => h.keyed('li')(tag.id, [h.Class(tag.className)])),
+  )
+```
 
 ## Purity Boundaries
 
@@ -254,11 +626,39 @@ Rule: foldkit/no-empty-children-array
 
 Flags `preventDefault()` inside callbacks passed to `Stream.map`, `Stream.mapEffect`, `Stream.filterMap`, `Stream.filterMapEffect`, `Stream.filter`, `Stream.filterEffect`, or `Stream.tap`. A DOM event placed into a callback-backed Stream is queued before downstream operators run, so cancellation there happens after the native listener returns and may be too late for the browser.
 
-Use `Subscription.fromEventFilterMapPreventDefault` instead. Its `filterMapEvent` mapper returns `Option.some(value)` for a handled event or `Option.none()` for an event the browser should handle normally. Foldkit calls `preventDefault()` for handled events before the native listener returns.
+Use [`Dom.streamFromEventFilterMapPreventDefault`](https://foldkit.dev/core/dom#filtered-events-and-synchronous-cancellation) instead. Its `filterMapEvent` mapper returns `Option.some(value)` for a handled event or `Option.none()` for an event the browser should handle normally. Foldkit calls `preventDefault()` for handled events before the native listener returns.
 
 The rule recognizes inline callbacks and functions declared in the same module. It is intentionally conservative about the Stream's source. Suppress it when the value is not a DOM event or the Stream is deliberately executed synchronously inside a native listener.
 
-Rule: foldkit/no-prevent-default-in-stream-operator
+**Rule: foldkit/no-prevent-default-in-stream-operator**
+
+```typescript
+import { Effect, Option, Stream } from 'effect'
+import { Dom } from 'foldkit'
+
+// ❌ Bad: fromEventListener queues the event and returns before mapEffect runs.
+const keyboardBad = Stream.fromEventListener<KeyboardEvent>(
+  document,
+  'keydown',
+).pipe(
+  Stream.mapEffect(event =>
+    Effect.sync(() => {
+      event.preventDefault() // The browser may have started its default action.
+      return Message.PressedKey({ key: event.key })
+    }),
+  ),
+)
+
+// ✅ Good: Some marks Tab handled, so Foldkit cancels it inside the listener.
+const keyboardGood = Dom.streamFromEventFilterMapPreventDefault({
+  target: document,
+  type: 'keydown',
+  filterMapEvent: event =>
+    event.key === 'Tab'
+      ? Option.some(Message.PressedKey({ key: event.key }))
+      : Option.none(),
+})
+```
 
 ### foldkit/no-impure-call-at-decision-time
 
@@ -290,15 +690,50 @@ The presets also disable the rule in TypeScript files under a `server` directory
 
 This direct-call catalog does not prove that a file is pure. It recognizes static global member paths and ignores locally shadowed globals. It does not follow a method alias such as `const now = Date.now` to a later `now()` call, nor does it inspect a helper's call graph.
 
-Rule: foldkit/no-impure-call-at-decision-time
+**Rule: foldkit/no-impure-call-at-decision-time**
+
+```typescript
+import { Crypto, Effect, Schema } from 'effect'
+import { Command } from 'foldkit'
+
+import { BrowserCrypto } from '@effect/platform-browser'
+
+const SaveDraftWithId = Command.define('SaveDraftWithId', {
+  args: { body: Schema.String, draftId: Schema.String },
+  messages: [Message.CompletedSaveDraftWithId],
+  execute: ({ draftId }) =>
+    Effect.succeed(Message.CompletedSaveDraftWithId({ draftId })),
+})
+
+// ❌ Bad: assigning the UUID first does not defer the call.
+const saveBad = (body: string) => {
+  const draftId = crypto.randomUUID()
+
+  return SaveDraftWithId({ body, draftId })
+}
+
+// ✅ Good: the runtime obtains the UUID when it executes the Command.
+const SaveDraft = Command.define('SaveDraft', {
+  args: { body: Schema.String },
+  messages: [Message.CompletedSaveDraft],
+  execute: ({ body: _body }) =>
+    Effect.gen(function* () {
+      const crypto = yield* Crypto.Crypto
+      const draftId = yield* Effect.orDie(crypto.randomUUIDv4)
+      return Message.CompletedSaveDraft({ draftId })
+    }).pipe(Effect.provide(BrowserCrypto.layer)),
+})
+
+const saveGood = (body: string) => SaveDraft({ body })
+```
 
 ### foldkit/no-module-level-mutable-state
 
 Rejects module-level let and var bindings, which hold state outside the Model. Move the data into the Model, or scope a live handle to a lifecycle primitive like Mount or ManagedResource.
 
-Rule: foldkit/no-module-level-mutable-state
+**Rule: foldkit/no-module-level-mutable-state**
 
-```
+```typescript
 import { Schema } from 'effect'
 
 // ❌ Bad
@@ -315,67 +750,307 @@ export type Model = typeof Model.Type
 
 Flags turning off the freezeModel or slow dev guardrails. Fix the mutation or slow phase they caught instead of silencing the feedback.
 
-Rule: foldkit/no-disabling-dev-guardrails
+**Rule: foldkit/no-disabling-dev-guardrails**
+
+```typescript
+import { Runtime } from 'foldkit'
+
+// ❌ Bad
+// Turning off freezeModel silences the dev warning instead of fixing the
+// mutation it caught.
+const badApp = Runtime.makeApplication({
+  Model,
+  init,
+  update,
+  view,
+  freezeModel: false,
+})
+
+// ✅ Good
+// Leave the guardrail on and fix the in-place mutation it flags.
+const goodApp = Runtime.makeApplication({ Model, init, update, view })
+```
 
 ## Submodel Wiring
 
 ### foldkit/no-empty-to-parent-out-message
 
-Flags an inline `toParentOutMessage` mapper that directly returns `undefined`. That mapper forwards nothing to the parent, so omit the property.
+Flags an inline `toParentOutMessage` mapper that always returns `undefined`, including a keyed factory whose returned mapper does so. That mapper forwards nothing to the parent, so omit the property.
 
 Partial forwarding is valid. Match every child OutMessage variant. Return a parent OutMessage for each variant you want to forward, and return `undefined` for each variant that stops at this Submodel.
 
 The rule fixes straightforward object literals. If removal could disturb a comment, spread, dynamic computed property, or duplicate `toParentOutMessage` key, it reports the problem without changing the code. It does not inspect async functions, generators, getters, setters, or mappers referenced by name.
 
-Rule: foldkit/no-empty-to-parent-out-message
+**Rule: foldkit/no-empty-to-parent-out-message**
+
+```typescript
+import { Option } from 'effect'
+import { Update } from 'foldkit'
+import { modifyFields } from 'foldkit/struct'
+
+import * as Settings from './settings'
+
+// ❌ Bad
+const badFoldSettings = Update.foldChild({
+  update: Settings.setTheme,
+  read: (model: Model) => Option.some(model.settings),
+  write: (model, nextSettings) =>
+    modifyFields(model, { settings: () => nextSettings }),
+  toParentMessage: message => Message.GotSettingsMessage({ message }),
+  foldOutMessage: foldSettingsOutMessage,
+  // This mapper directly returns undefined, so it forwards no OutMessage.
+  toParentOutMessage: () => undefined,
+})
+
+// ✅ Good
+// This fold emits no parent OutMessage. Other branches in the same update may
+// still emit an OutMessage.
+const foldSettings = Update.foldChild({
+  update: Settings.setTheme,
+  read: (model: Model) => Option.some(model.settings),
+  write: (model, nextSettings) =>
+    modifyFields(model, { settings: () => nextSettings }),
+  toParentMessage: message => Message.GotSettingsMessage({ message }),
+  foldOutMessage: foldSettingsOutMessage,
+})
+```
 
 ### foldkit/got-submodel-message-name
 
 Requires wrapper Messages around Submodel Messages to use the Got*Message convention.
 
-Rule: foldkit/got-submodel-message-name
+**Rule: foldkit/got-submodel-message-name**
+
+```typescript
+import { defineMessageUnion } from 'foldkit/message'
+
+import * as Child from './child'
+
+// ❌ Bad
+const BadMessage = defineMessageUnion({
+  ChildChanged: { message: Child.Message },
+})
+
+// ✅ Good
+const Message = defineMessageUnion({
+  GotChildMessage: { message: Child.Message },
+})
+```
 
 ### foldkit/got-prefix-requires-submodel-payload
 
 Reserves the Got* prefix for Submodel wrappers. Any Got-prefixed Message must include a child Message payload named message.
 
-Rule: foldkit/got-prefix-requires-submodel-payload
+**Rule: foldkit/got-prefix-requires-submodel-payload**
+
+```typescript
+import { Schema } from 'effect'
+import { defineMessageUnion } from 'foldkit/message'
+
+import * as Child from './child'
+
+{
+  // ❌ Bad: Got is reserved for Submodel wrappers.
+  const Message = defineMessageUnion({
+    GotWeather: { temperature: Schema.Number },
+  })
+}
+
+{
+  // ✅ Good: use a name that does not start with Got for Command results.
+  const Message = defineMessageUnion({
+    ReceivedWeather: { temperature: Schema.Number },
+  })
+}
+
+{
+  // ❌ Bad: Got-prefixed wrappers must carry child Messages.
+  const Message = defineMessageUnion({
+    GotChildMessage: { id: Schema.String },
+  })
+}
+
+{
+  // ✅ Good: Got wraps a child Message.
+  const Message = defineMessageUnion({
+    GotChildMessage: {
+      id: Schema.String,
+      message: Child.Message,
+    },
+  })
+}
+```
 
 ### foldkit/wrap-child-output-in-got-message
 
 Requires child Command and Subscription output to be wrapped through a Got*Message constructor, preserving the one-wrap-per-level Submodel convention.
 
-Rule: foldkit/wrap-child-output-in-got-message
+**Rule: foldkit/wrap-child-output-in-got-message**
+
+```typescript
+import { Command } from 'foldkit'
+
+// ❌ Bad
+// The mapper wraps child output in a plain parent Message, not a Got*Message,
+// so this Submodel level never records the wrap.
+const badCommands = Command.mapMessages(childCommands, message =>
+  ForwardedChildMessage({ message }),
+)
+
+// ✅ Good
+const goodCommands = Command.mapMessages(childCommands, message =>
+  GotChildMessage({ message }),
+)
+```
 
 ### foldkit/got-wrapper-carries-only-routing
 
 Keeps a Got wrapper payload to the child Message plus routing keys: message, id, or keys ending in Id.
 
-Rule: foldkit/got-wrapper-carries-only-routing
+**Rule: foldkit/got-wrapper-carries-only-routing**
+
+```typescript
+import { Schema } from 'effect'
+import { defineMessageUnion } from 'foldkit/message'
+
+// ❌ Bad
+// A Got wrapper carries the child Message plus routing context only. Extra
+// payload like timestamp belongs on the child Message or a parent Message.
+const BadMessage = defineMessageUnion({
+  GotSettingsMessage: {
+    message: Settings.Message,
+    timestamp: Schema.Number,
+  },
+})
+
+// ✅ Good
+// message plus routing keys (id, or keys ending in Id) only.
+const Message = defineMessageUnion({
+  GotCounterMessage: {
+    id: Schema.String,
+    message: Counter.Message,
+  },
+})
+```
 
 ### foldkit/no-child-message-construction-in-root
 
 Rejects constructing a child Message variant from a parent, including through a local `const` alias of the child constructor or namespace. Expose a child-owned update capability that applies the internal fact, then integrate it with `Update.foldChild` or `Update.foldChildStep`. A child-owned view, Command, or Subscription may still construct that child's Messages. The rule cannot infer the origin of an arbitrary prebuilt Message value. See [Informing Submodels](https://foldkit.dev/patterns/informing-submodels) for the complete pattern.
 
-Rule: foldkit/no-child-message-construction-in-root
+**Rule: foldkit/no-child-message-construction-in-root**
+
+```typescript
+import * as Child from './child'
+
+// ❌ Bad
+// The root reaches into the child Message namespace to build a child Message.
+const badRouting = () =>
+  GotChildMessage({ message: Child.Message.ClickedSave() })
+
+const clickedSave = Child.Message.ClickedSave
+const badAliasRouting = () => GotChildMessage({ message: clickedSave() })
+
+// ✅ Good
+// The child exports an update capability. The parent folds the complete child
+// result without importing or constructing its internal Message.
+const foldChildSave = Update.foldChildStep({
+  update: Child.save,
+  read: model => Option.some(model.child),
+  write: (model, nextChild) => modifyFields(model, { child: () => nextChild }),
+  toParentMessage: message => GotChildMessage({ message }),
+})
+
+const goodRouting = model => foldChildSave(model)
+```
 
 ### foldkit/no-direct-submodel-state-update
 
 Flags a parent update that uses nested `modifyFields` to change a known Submodel field directly. The child update does not run, so validation, Commands, and OutMessages can be skipped. The rule establishes ownership from a module-scope `Update.foldChild` or `Update.foldChildStep` whose `read` and `write` point to the same field, then checks the parent Model passed through that fold. It leaves an unrelated Model with the same field name, fold `write` callbacks, and child-owned silent `reflect*` helpers alone.
 
-Rule: foldkit/no-direct-submodel-state-update
+**Rule: foldkit/no-direct-submodel-state-update**
+
+```typescript
+import { Option } from 'effect'
+import { Update } from 'foldkit'
+import { modifyFields } from 'foldkit/struct'
+
+import * as Settings from './settings'
+
+const foldSettingsTheme = Update.foldChild({
+  update: Settings.setTheme,
+  read: model => Option.some(model.settings),
+  write: (model, nextSettings) =>
+    modifyFields(model, { settings: () => nextSettings }),
+  toParentMessage: message => Message.GotSettingsMessage({ message }),
+})
+
+// ❌ Bad: the parent changes a child field without running Settings.update.
+const badReset = model => ({
+  model: modifyFields(model, {
+    settings: settings => modifyFields(settings, { theme: () => 'Light' }),
+  }),
+})
+
+// ✅ Good: the child decides the transition and the fold preserves its result.
+const goodReset = model => foldSettingsTheme(model, 'Light')
+```
 
 ### foldkit/require-fold-for-child-update-result
 
 Flags a parent that copies only `.model` from a child helper or update result into its own Model instead of folding the complete result. This can silently discard Commands or an OutMessage. The rule requires an in-file `Update.foldChild` or `Update.foldChildStep` whose `update`, `read`, and `write` establish the child module and field, then follows a local result from that child's helper into the matching `modifyFields` field. The field need not be named after the module: `Products.update(model.productsPage)` is one example. It leaves unrelated helpers, initial Model assembly, fold `write` callbacks, and child-owned silent `reflect*` helpers alone. It does not infer direct helper imports or parent assembly outside `modifyFields`.
 
-Rule: foldkit/require-fold-for-child-update-result
+**Rule: foldkit/require-fold-for-child-update-result**
+
+```typescript
+import { Option } from 'effect'
+import { Update } from 'foldkit'
+import { modifyFields } from 'foldkit/struct'
+
+import * as Settings from './settings'
+
+const foldSettingsTheme = Update.foldChild({
+  update: Settings.setTheme,
+  read: model => Option.some(model.settings),
+  write: (model, nextSettings) =>
+    modifyFields(model, { settings: () => nextSettings }),
+  toParentMessage: message => Message.GotSettingsMessage({ message }),
+})
+
+// ❌ Bad: copying the child Model drops any Commands or OutMessage.
+const badReset = model => {
+  const settingsReset = Settings.setTheme(model.settings, 'Light')
+
+  return { model: modifyFields(model, { settings: () => settingsReset.model }) }
+}
+
+// ✅ Good: the fold preserves the complete child update result.
+const goodReset = model => foldSettingsTheme(model, 'Light')
+```
 
 ### foldkit/selection-submodel-factory-at-module-scope
 
 Requires selection component factories, such as Combobox, Listbox, Menu, and Tabs, to be created at module scope so their identity stays stable across renders.
 
-Rule: foldkit/selection-submodel-factory-at-module-scope
+**Rule: foldkit/selection-submodel-factory-at-module-scope**
+
+```typescript
+import { Listbox } from '@foldkit/ui'
+
+const sortListbox = Listbox.create()
+
+// ❌ Bad
+// Re-creating the factory on each update gives it a fresh identity, so its
+// internal selection state never persists.
+const badUpdate = (model: Model, message: Message) => {
+  const listbox = Listbox.create()
+  return listbox.update(model.sort, message)
+}
+
+// ✅ Good
+// Reuse the module-scope factory.
+const goodUpdate = (model: Model, message: Message) =>
+  sortListbox.update(model.sort, message)
+```
 
 ## Lifecycle Handles
 
@@ -383,15 +1058,34 @@ Rule: foldkit/selection-submodel-factory-at-module-scope
 
 Requires a Mount's `execute` to read or write its element. If it never touches the element, the cause was misidentified and Mount is the wrong primitive.
 
-Rule: foldkit/mount-factory-must-use-element
+**Rule: foldkit/mount-factory-must-use-element**
+
+```typescript
+import { Effect } from 'effect'
+import { Mount } from 'foldkit'
+
+// ❌ Bad
+// execute never reads its element, so Mount is the wrong primitive here.
+const MountAnalytics = Mount.define('MountAnalytics', {
+  messages: [CompletedMountAnalytics],
+  execute: () => Effect.sync(() => startAnalytics()),
+})
+
+// ✅ Good
+// execute reads its element to wire the observer.
+const MountResize = Mount.define('MountResize', {
+  messages: [CompletedMountResize],
+  execute: ({ element }) => Effect.sync(() => resizeObserver.observe(element)),
+})
+```
 
 ### foldkit/no-duplicate-onmount-per-element
 
 Rejects two OnMount handlers on one element, where the second silently overwrites the first.
 
-Rule: foldkit/no-duplicate-onmount-per-element
+**Rule: foldkit/no-duplicate-onmount-per-element**
 
-```
+```typescript
 import type { HtmlBuilder } from 'foldkit/html'
 
 // ❌ Bad
@@ -411,4 +1105,22 @@ const goodPanel = (h: HtmlBuilder<Message>) =>
 
 Requires lazy view slots to be declared at module scope so their references stay stable and the memoization actually hits its cache.
 
-Rule: foldkit/lazy-view-stable-references
+**Rule: foldkit/lazy-view-stable-references**
+
+```typescript
+import { type HtmlBuilder, createLazy } from 'foldkit/html'
+
+// ❌ Bad
+// Creating the lazy slot inside the view gives it a new identity every render,
+// so the memoized view never hits its cache.
+const badView = (model: Model, h: HtmlBuilder<Message>) => {
+  const lazyHeader = createLazy()
+  return lazyHeader(renderHeader, [model.title, h])
+}
+
+// ✅ Good
+// Declare the lazy slot once at module scope.
+const lazyHeader = createLazy()
+const goodView = (model: Model, h: HtmlBuilder<Message>) =>
+  lazyHeader(renderHeader, [model.title, h])
+```

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/popover
 title: "Popover"
 description: "An anchored floating panel for arbitrary content, with dismissal, focus return, portaling, and optional modal behavior."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 ## Overview
@@ -71,7 +71,7 @@ An arrow sits outside the panel, so scrolling the panel itself would clip it. An
 
 Scrollable popover panel styles
 
-```
+```css
 .popover-panel {
   box-sizing: border-box;
   display: flex;

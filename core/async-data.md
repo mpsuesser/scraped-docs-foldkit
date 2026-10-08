@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/async-data
 title: "Async Data"
 description: "A six-state value type for asynchronously loaded data in the Model: Idle, Loading, Refreshing, Failure, Stale, and Success, with stale-while-revalidate and keep-stale-on-failure built in."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 `foldkit/asyncData` is a plain value type in the spirit of Effect’s `Option` and `Result`, built for data that arrives asynchronously. This page introduces the state model and the combinators you reach for most. The [API Reference](https://foldkit.dev/api-reference/async-data) has the exhaustive catalog.
@@ -35,7 +35,7 @@ The public type is value-first `AsyncData<A, E>`, matching `Result<A, E>` and `E
 
 AsyncData type
 
-```
+```typescript
 export type AsyncData<A, E> =
   | { readonly _tag: 'Idle' }
   | { readonly _tag: 'Loading' }
@@ -81,7 +81,7 @@ To construct a value, use the namespace constructors (generic in `A` / `E`) or t
 
 AsyncData constructors
 
-```
+```typescript
 const idle = AsyncData.Idle() // { _tag: 'Idle' }
 const success = NotesAsyncData.Success({ data: [] }) // { _tag: 'Success', data: [] }
 ```
@@ -94,7 +94,7 @@ The fundamental way to read a value is `match`. It dispatches on the tag and pas
 
 Matching every state
 
-```
+```typescript
 AsyncData.match(model.allNotes, {
   onIdle: () => spinner(),
   onLoading: () => spinner(),
@@ -109,7 +109,7 @@ Most views do not need six arms. `matchData` collapses the six states into the t
 
 Using matchData
 
-```
+```typescript
 AsyncData.matchData(model.allNotes, {
   onEmpty: () => spinner(),
   onFailure: error => errorBanner(error),
@@ -125,7 +125,7 @@ Transforming successful data
 
 Using getData
 
-```
+```typescript
 export const noteNotebookId = (
   model: Model,
   noteId: NoteId,
@@ -152,7 +152,7 @@ Two transitions drive route-entry loading, and both send `Success` and `Stale` f
 
 Using revalidateOrLoad
 
-```
+```typescript
 const enterNotebooksRoute = (model: Model): Update.Return<Model, Message> =>
   Option.match(AsyncData.revalidateOrLoad(model.notebooks), {
     onNone: () => ({ model }),
@@ -167,7 +167,7 @@ const enterNotebooksRoute = (model: Model): Update.Return<Model, Message> =>
 
 Using revalidate
 
-```
+```typescript
 const revalidateAllNotes = (model: Model): Update.Return<Model, Message> =>
   Option.match(AsyncData.revalidate(model.allNotes), {
     onNone: () => ({ model }),
@@ -182,7 +182,7 @@ const revalidateAllNotes = (model: Model): Update.Return<Model, Message> =>
 
 Using loadIfMissing
 
-```
+```typescript
 const enterStatsRoute = (model: Model): Update.Return<Model, Message> =>
   Option.match(AsyncData.loadIfMissing(model.stats), {
     onNone: () => ({ model }),
@@ -221,7 +221,7 @@ A screen that needs several resources at once combines them with one precedence 
 
 Combining several values
 
-```
+```typescript
 const screenData = AsyncData.all({
   notebooks: model.notebooks,
   allNotes: model.allNotes,

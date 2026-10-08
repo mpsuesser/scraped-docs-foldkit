@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/update
 title: "Update"
 description: "Handle every Message with a pure update function that returns the next Model and Commands. Use Match and modifyFields to keep transitions exhaustive and immutable."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 ## One Function Defines Every Transition
@@ -42,7 +42,7 @@ Fold a child `init` or `boot` result into the parent instead of unpacking its Mo
 
 Composing an init result
 
-```
+```typescript
 return Update.foldChildInit(Home.init(), {
   toParentModel: home => ({ home }),
   toParentMessage: message => Message.GotHomeMessage({ message }),
@@ -53,7 +53,7 @@ For another update-like result, keep it attached to the operation that produced 
 
 Testing an update result
 
-```
+```typescript
 const formSubmit = update(model, Message.SubmittedForm())
 
 expect(formSubmit.model.status).toBe('Submitting')
@@ -68,7 +68,7 @@ Pass optional Commands directly to APIs that accept them, including `Command.map
 
 TypeScript rejects this manual composition when the enclosing update returns `Update.Return<Model, Message>`:
 
-```
+```typescript
 const dialogOpen = openDialog(model)
 
 return {
@@ -85,7 +85,7 @@ This error often points to update results being composed by hand. When both oper
 
 Composing Update Steps
 
-```
+```typescript
 return Update.combine(model, [
   openDialog,
   stepModel => ({
@@ -100,7 +100,7 @@ Use `Update.combine` when two or more operations transform the same Model and a 
 
 Composing a child fold and another Step
 
-```
+```typescript
 return Update.combine(model, [
   foldDialogClose,
   stepModel => ({
@@ -163,7 +163,7 @@ Use `Update.Return<Model, Message>` for an update that cannot emit an OutMessage
 
 Rejected OutMessage-producing result
 
-```
+```typescript
 const childUpdate: Update.ReturnWithOutMessage<
   Child.Model,
   Child.Message,
@@ -180,7 +180,7 @@ A result with no `outMessage` can still be used where `Update.ReturnWithOutMessa
 
 Accepted plain update result
 
-```
+```typescript
 const plainUpdate: Update.Return<Model, Message> = { model }
 
 const submodelUpdate: Update.ReturnWithOutMessage<Model, Message, OutMessage> =
@@ -195,7 +195,7 @@ When the OutMessage is already known while constructing a new result, include it
 
 Returning a known OutMessage
 
-```
+```typescript
 return { model, outMessage: OutMessage.Closed() }
 ```
 
@@ -203,7 +203,7 @@ Use `Update.withOutMessage` when attaching an OutMessage to an existing plain re
 
 Attaching an optional OutMessage
 
-```
+```typescript
 const dialogClose = closeDialog(model)
 
 return pipe(dialogClose, Update.withOutMessage(outMessage))
@@ -213,7 +213,7 @@ The object-spread alternative is easy to get wrong:
 
 Invalid OutMessage object spread
 
-```
+```typescript
 // Avoid: this writes outMessage: undefined and accepts a result that already has an OutMessage.
 return { ...dialogClose, outMessage }
 ```

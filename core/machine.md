@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/machine
 title: "Machine"
 description: "Model multi-state workflows as typed transition tables with guards, shared Edges, update integration, structural analysis, and pure tests."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 Experimental
@@ -30,7 +30,7 @@ Import the Machine namespace from `foldkit/experimental` and its Edge constructo
 
 Machine imports
 
-```
+```typescript
 import { Machine } from 'foldkit/experimental'
 import { ignore, otherwise, to, when } from 'foldkit/experimental/machine'
 ```
@@ -41,7 +41,7 @@ import { ignore, otherwise, to, when } from 'foldkit/experimental/machine'
 
 Edge with a Command
 
-```
+```typescript
 ClickedPlaceOrder: to('Placing', ({ state }) => ({
   model: CheckoutState.Placing({ order: state.order }),
   commands: [PlaceOrder({ order: state.order })],
@@ -67,7 +67,7 @@ A boolean guard answers only whether its Edge can fire. An `Option` guard can va
 
 Option guard
 
-```
+```typescript
 SubmittedPromoCode: [
   when(
     (_state, message) => findDiscount(message.code),
@@ -100,7 +100,7 @@ Add a context Schema when transition decisions need current parent-owned data th
 
 Machine context
 
-```
+```typescript
 const checkoutMachine = Machine.define({
   state: CheckoutState,
   message: Message,
@@ -187,7 +187,7 @@ A nested Machine is ordinary state composition too. Say an order flow has Browsi
 
 Machine state nested in another state
 
-```
+```typescript
 import { defineTaggedUnion } from 'foldkit/schema'
 
 import { CheckoutState } from './machineDefinition'

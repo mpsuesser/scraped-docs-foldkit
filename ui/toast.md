@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/toast
 title: "Toast"
 description: "Stack of transient notifications anchored to a corner of the viewport with per-entry enter/leave animations and auto-dismiss."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-08T02:46:24.261Z
+current_date: 2026-10-08T02:46:24.261Z
 ---
 
 ## Overview
@@ -44,7 +44,7 @@ Releasing at or below the threshold, or cancelling with Escape, returns the entr
 
 Swipe transition styles
 
-```
+```css
 .toast-entry[data-swipe='settling'] {
   transition: translate 150ms ease-out;
 }
