@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/toast
 title: "Toast"
 description: "Stack of transient notifications anchored to a corner of the viewport with per-entry enter/leave animations and auto-dismiss."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 ## Overview
@@ -32,11 +32,19 @@ Each entry’s enter and leave phases flow through [Animation](https://foldkit.d
 
 ## Gestures
 
+### Enable Swipe to Dismiss
+
 Swipe is pointer-driven and opt-in. Pass `swipeToDismiss` to `Toast.init`. For example: `{}` enables a rightward swipe with a 40px threshold, `{ threshold: 120 }` requires a longer swipe, and `{ direction: 'Left' }` enables a leftward swipe. Without it, `Toast.view` attaches no `pointerdown` handler or `touch-action` restriction. Direction is independent of `position`, so configure it explicitly for a left-anchored stack.
+
+### Track the Pointer
 
 With swipe enabled, `Toast.view` handles `pointerdown` on each entry. Wire `Toast.subscriptions` at the app root with `Subscription.lift(Toast.subscriptions)` to track `pointermove`, `pointerup`, and `pointercancel` even when the pointer leaves the entry. Without those subscriptions, a drag cannot finish. Escape cancels active drags. While dragging, Toast prevents text selection and shows the grabbing cursor. The example above includes the lift; see also [Toast subscriptions in the demo app](https://github.com/foldkit/foldkit/blob/main/packages/website/src/page/ui/subscriptions.ts).
 
+### Preserve Nested Interactions
+
 Presses on buttons, links, form controls, and editable elements do not start a swipe, so a close button keeps its normal pointer behavior. To make text selectable with a mouse or pen, put `data-toast-swipe-ignore` on a span around the text, as the demo does. A touch can still start a swipe over that text. Other areas of the entry remain draggable.
+
+### Complete or Cancel a Swipe
 
 While dragging, the entry follows the pointer only in the configured direction; movement in the opposite direction is clamped to zero. `Toast.view` sets `data-swipe="move"` and the entry's inline `translate` offset. The `translate` property composes with any `transform` animation you apply. Dismissal depends on release distance, not velocity. Releasing more than the threshold sets `data-swipe="end"`, holds the release offset until leave animation starts, then targets `100vw` or `-100vw` to carry the entry off-screen before `DismissedToast` fires.
 
@@ -53,6 +61,8 @@ Swipe transition styles
   transition: translate 240ms ease-in;
 }
 ```
+
+### Style the Swipe Offset
 
 While an entry is translated, the view exposes its drag or release offset as `--toast-swipe-move-x`. You can use it to style an action background behind the moving entry.
 
@@ -116,9 +126,13 @@ Toast helpers are child entry points. Fold `show` and `dismiss` with `Update.fol
 
 ### Subscriptions
 
+#### Lift Pointer Subscriptions
+
 Toast exposes `Toast.subscriptions` with `swipePointer` and `swipeEscape`. Lift them once at the app root so pointer tracking continues even when the pointer leaves the entry. The [example above](#examples) shows the lift alongside the Toast Model and Message, and the [demo app](https://github.com/foldkit/foldkit/blob/main/packages/website/src/page/ui/subscriptions.ts) shows it in context.
 
 Without the lift the view still renders `data-swipe="move"` for the initial `pointerdown`, but `pointermove` and `pointerup` never reach the update and the gesture cannot complete.
+
+#### Render Toasts Without Toast.view
 
 If you render the Toast Model without `Toast.view`, you own the entry markup, accessibility roles, `pointerdown` handler, and swipe styling. Read the pointer offset with `Toast.swipeOffset(entry.swipeState)` and apply the `translate` property yourself. Mirror the `data-swipe` phases: `move` while the entry is `Dragging`, `settling` while it is `Settling`, and `end` while it is `Dismissing`. In the `end` phase, retain the offset at `LeaveStart`, then move toward `100vw` or `-100vw` at `LeaveAnimating` according to the swipe direction. By contrast, `entryToView` only renders content inside the `<div>` wrapper owned by `Toast.view`.
 

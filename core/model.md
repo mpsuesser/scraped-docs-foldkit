@@ -2,17 +2,21 @@
 url: https://foldkit.dev/core/model
 title: "Model"
 description: "Define application state as one Schema-backed Model. Foldkit uses its runtime Schema to preserve state across hot updates and validate unknown data."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Model
 
 ## One State Tree
 
+### Complete Application State
+
 The Model is the complete application state in one immutable data structure. Everything the application can be at a moment lives here, rather than being divided between component-local and global stores.
 
 In the [restaurant analogy](https://foldkit.dev/core/architecture#the-restaurant-analogy), this is the waiter's notebook. The analogy is a memory aid; the literal contract is one state tree that every transition receives and returns.
+
+### Runtime Schema
 
 The counter defines its Model with [Effect Schema](https://effect.website/docs/schema/introduction/):
 
@@ -34,6 +38,8 @@ type Model = typeof Model.Type
 That runtime value matters because TypeScript types disappear after compilation. Foldkit uses the Model Schema to encode and decode state preserved across hot updates. The same Schema can validate unknown data at application boundaries.
 
 ## State with Variants
+
+### Defining and Matching Variants
 
 Use `defineTaggedUnion` when a Model field can have several named shapes. Declare every variant together, then construct and match values through the union:
 
@@ -69,13 +75,19 @@ const modeLabel = (mode: EditorMode): string =>
 
 `EditorMode` is the Schema stored in `Model` and the namespace used to construct values such as `EditorMode.Browsing()`. Its `match` method requires every variant to be handled. If you add another editor mode, TypeScript finds each match that needs a new branch.
 
+#### Partial Matching and Guards
+
 Use `EditorMode.matchOrElse` when selected variants need their own handlers and every remaining variant shares one fallback. The fallback is called only for variants not named in the case record; when the return type is inferred, its parameter narrows to those variants. Adding another editor mode includes it in that fallback.
 
 Use `EditorMode.guards.Editing` to check one variant and `EditorMode.isAnyOf(['Editing', 'Previewing'])` to check several.
 
+### Subsets and Recursive Unions
+
 When another Schema accepts only some editor modes, build it with `EditorMode.subset(['Editing', 'Previewing'])`. `subset` includes only the tags you name. If you add another mode later, the smaller Schema will not accept it until you add its tag. There is no `omit`: an exclusion list would silently accept every mode added later.
 
 Use `taggedStruct` only when the variants cannot be declared together. Recursive unions and standalone tagged structs are the common cases.
+
+### Growing the Model
 
 The counter starts with one field. When automatic counting becomes part of the application state, the Model grows to record it:
 
@@ -93,6 +105,8 @@ const Model = Schema.Struct({
 })
 type Model = typeof Model.Type
 ```
+
+#### Derived View Values
 
 Model the application, not the screen
 

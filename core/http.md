@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/http
 title: "Http"
 description: "Provide a Fetch-backed HttpClient to Commands while keeping browser requests CORS-simple by disabling trace header propagation unless it is required."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Http
@@ -16,9 +16,15 @@ Import client modules from `effect/http`, their path in Effect 4 stable.
 
 ## Why Propagation Is Off
 
+### Server Default
+
 Effect records an `http.client` span for each request. Its standard Fetch client also propagates the span context through `traceparent` and `b3` request headers. That default suits a server calling downstream services that participate in the same distributed trace.
 
+### Browser CORS
+
 In a browser, those extra headers can turn an otherwise CORS-simple cross-origin request into a preflighted request. `Http.layer` disables propagation so tracing alone does not change the request's CORS behavior.
+
+### Local Spans
 
 Local observability remains intact. The `http.client` span still records request method, URL, and status, and a Foldkit app nests it under the Command span. Only the outgoing trace-context headers are removed.
 

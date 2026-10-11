@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-disclosure
 title: "Ui/Disclosure"
 description: "API documentation for the Ui/Disclosure module."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Ui/Disclosure
@@ -14,7 +14,7 @@ current_date: 2026-10-08T02:46:24.261Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/ui/src/disclosure/index.ts#L10)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/disclosure/index.ts#L10)
 
 ```
 /**
@@ -30,7 +30,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/ui/src/disclosure/index.ts#L96)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/disclosure/index.ts#L96)
 
 ```
 /**
@@ -70,7 +70,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/ui/src/disclosure/index.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/disclosure/index.ts#L48)
 
 ```
 /**
@@ -89,7 +89,7 @@ type AnimatePanelOptions = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/ui/src/disclosure/index.ts#L26)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/disclosure/index.ts#L26)
 
 ```
 /**
@@ -115,7 +115,7 @@ type DisclosureAttributes = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/ui/src/disclosure/index.ts#L63)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/disclosure/index.ts#L63)
 
 ```
 /**

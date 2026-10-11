@@ -2,19 +2,25 @@
 url: https://foldkit.dev/patterns/informing-submodels
 title: "Informing Submodels"
 description: "Relay a change a Submodel does not own (a URL, a server push, an auth change) through a helper it exposes, so it can update its own state in response."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Informing Submodels
 
 ## Parent-Owned Changes
 
+### Preserve Child Ownership
+
 A Submodel sometimes needs to react to a change it does not own. The URL may change, a server may push new data, or a sibling field may establish a new constraint. The parent observes that change, but the child still owns the state transition it causes.
 
 Export an `inform*` helper from the child. The helper runs an internal child Message through update and returns the next child Model and Commands. The parent folds that helper with `Update.foldChild`, so it never imports or constructs the internal Message.
 
+### Choose Inform or Reflect
+
 Use `inform*` when the child must derive a transition or return Commands. Use a silent [`reflect*` helper](https://foldkit.dev/core/submodel#reflecting-external-state) when the child only needs to conform one of its values to an external source.
+
+### Routing Example
 
 The example below uses routing. A People Submodel owns its search input, results, and recent searches. The root owns the Route. When the URL resolves to a People Route, the root calls `People.informRouteChanged`.
 
@@ -24,9 +30,13 @@ This page builds on the [Submodels](https://foldkit.dev/core/submodel) pattern. 
 
 ## The Child
 
+### Keep the Message Private
+
 People declares an internal `ChangedRoute` Message carrying only `PeopleRoute`, the part of the application Route that the feature understands.
 
 Update copies the route query into the input, records it in recent searches, and returns `FetchPeople` for the new results.
+
+### Expose a Public Helper
 
 `informRouteChanged` is the public entry point. It calls `update(model, ChangedRoute({ route }))`, keeping the Message constructor private.
 
@@ -109,6 +119,8 @@ Not an OutMessage
 
 ## The Parent
 
+### Define the Parent Folds
+
 The root defines one fold for regular People Messages and another for `informRouteChanged`. Both folds use the same `read`, `write`, and `toParentMessage` boundary. The `ChangedUrl` handler stores the next Route, then composes the relevant child step with `Update.combine`.
 
 **Parent route fold**
@@ -164,9 +176,13 @@ Multiple Submodels
 
 When several page Submodels react to routing, match the next Route and return the `informRouteChanged` step for the page that owns that Route.
 
+### Handle Cold Loads Separately
+
 Cold loads
 
 `informRouteChanged` handles later URL changes. On a cold load, root init parses the initial URL and passes the People Route to child init. See [Cold Loads and the Initial Route](https://foldkit.dev/core/routing-and-navigation#cold-loads).
+
+### Reuse the Pattern for Other Causes
 
 The [Routing example](https://foldkit.dev/example-apps/routing) contains the complete search flow. [Routing and Navigation](https://foldkit.dev/core/routing-and-navigation) covers the parser that produces these Routes.
 

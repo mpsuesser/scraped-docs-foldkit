@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/meter
 title: "Meter"
 description: "A scalar value in a known range with meter semantics, clamped aria-valuenow, and threshold data attributes."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 ## Overview
@@ -51,7 +51,11 @@ The `fill` attribute group carries an inline `width` matching the value's positi
 
 The meter element receives `role="meter"`, `aria-valuemin`, `aria-valuemax`, and `aria-valuenow`. By default, it is named through `aria-labelledby`, which points to the id carried by the `label` attribute group. Use `ariaLabel` when there is no visible label, or `ariaLabelledBy` to reference a different labeling element. When both overrides are provided, `ariaLabel` takes precedence.
 
+### Value Announcements
+
 Use `valueText` when the number needs a natural-language equivalent. It accepts either a string or a `(value, max) => string` formatter and sets `aria-valuetext` from the clamped value.
+
+### Range Normalization
 
 Meter clamps `value` into `[min, max]`. If `max` is lower than `min`, it is normalized to `min` before any ARIA or data attributes are emitted, so the rendered range remains valid.
 

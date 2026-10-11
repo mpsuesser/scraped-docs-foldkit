@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/anti-patterns
 title: "Anti-patterns"
 description: "Architectural warning signs in Foldkit apps, with idiomatic replacements for ambiguous state, leaky Submodel boundaries, misplaced side effects, stale async results, Command ordering, and live handles."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Anti-patterns
@@ -26,6 +26,8 @@ When reviewing an application, ask:
 The sections below show how each problem appears in code and the Foldkit design that avoids it.
 
 ## Make Impossible States Unrepresentable
+
+### Contradictory Fields
 
 Imagine a screen that can be idle, loading, showing data, or showing an error. Representing those mutually exclusive states in separate fields allows the Model to describe impossible combinations.
 
@@ -52,6 +54,8 @@ const impossibleModel: Model = {
 
 Every handler must now remember which fields to set and which fields to clear. If one handler forgets, view and update receive a state the application never intended to support.
 
+### One State Union
+
 Use one discriminated union when only one state can be active. Each variant carries exactly the data available in that state.
 
 **✅ One union permits only valid states**
@@ -75,11 +79,15 @@ const Model = Schema.Struct({
 type Model = typeof Model.Type
 ```
 
+### Choose the State Shape
+
 See [State with Variants](https://foldkit.dev/core/model#state-with-variants) for the general Foldkit pattern. [AsyncData](https://foldkit.dev/core/async-data) provides the usual remote-data states.
 
 For smaller custom flows, enforce legal transitions in an exhaustive Message match. Consider the experimental [Machine](https://foldkit.dev/core/machine) module when a substantial transition table needs to be collected and traced. Use a Boolean for an independent yes-or-no fact and `Option` when one value may be absent independently of the surrounding state.
 
 ## Store Each Piece of State Once
+
+### Stored Derived State
 
 Suppose the Model stores `items`, the current `query`, and a filtered copy named `visibleItems`. Every handler that changes either `items` or `query` must also update `visibleItems`.
 
@@ -115,6 +123,8 @@ const update = (model: Model, message: Message) =>
   })
 ```
 
+### Derive from Source State
+
 The source fields and `visibleItems` now give two answers to the same question: which items should be shown. Store only `items` and `query`, then derive the filtered collection when the view needs it.
 
 **✅ The view derives visible items from source state**
@@ -142,9 +152,13 @@ The same rule applies outside derived collections. Browser storage may persist a
 
 Copying parent-owned data into a child Model just so the child can render it also creates two sources of truth. Pass that data through the child's `viewInputs` instead. When child update needs current parent context while handling its own Message, pass the value through update's third `context` argument. Use a public child helper when a parent-owned change must trigger a child transition.
 
+### Cache Only After Profiling
+
 Cache a derived Model value only after profiling shows that deriving it is expensive. If the cost comes from building or diffing the view, prefer [view memoization](https://foldkit.dev/core/view-memoization). A value users can change independently is domain state, not a cache. The [performance guide](https://foldkit.dev/faq/performance#the-optimization-toolkit) compares Model caching with view memoization.
 
 ## Define the Model with Schema
+
+### Divergent Type and Schema
 
 Suppose a handwritten TypeScript type says that `session` contains a user, while the Model Schema accepts any value in that field. TypeScript lets update and view read `userId`, but the decoder can produce a value with no `userId` at all.
 
@@ -166,6 +180,8 @@ const ModelSchema = Schema.Struct({
   session: Schema.Unknown,
 })
 ```
+
+### One Schema Source
 
 Define the Model with Schema and derive the TypeScript type from it. The decoder and the type checker then agree on the Model's shape.
 
@@ -191,6 +207,8 @@ Deriving the Model type from its Schema matters even when the application does n
 
 ## Keep Effects Out of init, update, and view
 
+### Effects Inside Pure Functions
+
 Calling `fetch` inside view starts another request whenever Foldkit renders that view. Reading `Date.now()` or `Math.random()` inside init or update lets the same inputs produce a different Model. Writing to the DOM or browser storage inside update repeats that write when DevTools replays the Message.
 
 **❌ DOM effect inside update**
@@ -210,6 +228,8 @@ const update = (model: Model, message: Message) =>
     },
   })
 ```
+
+### Return Work to the Runtime
 
 Keep init, update, and view deterministic. The `ClickedOpenDialog` handler should set `dialogState` to `Open` and return a `FocusSearchInput` Command.
 
@@ -246,7 +266,11 @@ Use [Flags](https://foldkit.dev/core/init-and-flags#flags) when the initial Mode
 
 ## Keep Live Handles Behind Runtime Boundaries
 
+### Handles Outside the Runtime
+
 Imagine a chat screen that needs a `WebSocket` only while the visitor is in a room. Opening the socket inside update and storing it in a module variable puts it outside the Runtime's lifecycle. The Runtime therefore cannot close it when the visitor leaves the room, and replaying the Message in DevTools can open another connection.
+
+### Runtime-Owned Resource Lifetimes
 
 Storing the socket in the Model does not give it a Runtime-controlled lifetime. The live connection cannot be recreated from the Model Schema after a development reload, and update would still be responsible for opening and closing it. Keep the room and connection status in the Model, and let a ManagedResource own the `WebSocket` itself.
 
@@ -314,6 +338,8 @@ const SendChatMessage = Command.define('SendChatMessage', {
 ```
 
 ManagedResource fits when Commands or Subscriptions need the typed handle. In this example, `acquire` returns the Effect that creates the socket, and `release` returns the Effect that closes it when the room requirements disappear. The Runtime performs both Effects. When the Runtime performs `SendChatMessage`, that Command's Effect retrieves the live `ChatSocket`. When the socket only produces an event stream, a Subscription can own the connection directly.
+
+### Choose by Cause and Lifetime
 
 Choose the boundary whose lifetime matches the work:
 
@@ -624,6 +650,8 @@ The old `FetchSuggestions` Command may finish just before the Interrupt runs, le
 
 ## Preserve Submodel Boundaries
 
+### Keep Transitions Inside the Child
+
 A parent stores a Submodel's Model, but the child owns every transition of that state. If the parent changes a child field directly, the child's update function does not run.
 
 **❌ The parent changes a child field directly**
@@ -668,6 +696,8 @@ const update = (model: Model, message: Message) =>
       foldSettings(model, SettingsMessage.ChangedTheme({ theme: 'Light' })),
   })
 ```
+
+### Keep the Complete Child Result
 
 Manually copying the child Model from a helper result causes a separate problem. The parent can keep the next child Model while silently discarding Commands returned with it.
 
@@ -728,6 +758,8 @@ const update = (model: Model, message: Message) =>
 `Update.foldChild` and `Update.foldChildStep` write the returned child Model into the parent and lift the child's Commands. When the child can emit OutMessages, pass `foldOutMessage` so the parent handles every variant instead of accidentally omitting one. The [Submodel guide](https://foldkit.dev/core/submodel) explains child Messages and OutMessages. [Informing Submodels](https://foldkit.dev/patterns/informing-submodels) covers parent-owned facts that a child needs to hear about.
 
 ## Fold Child Initialization Results Completely
+
+### Fold One Child Result
 
 A child `init` or `boot` can return a Model, Commands, and an OutMessage. Here, `Settings.boot` applies a Message through `update` and returns all three:
 
@@ -845,6 +877,8 @@ const init = (username: string, savedTheme: Settings.Theme) => {
 ```
 
 The helper lifts the child's Commands, then runs the OutMessage fold against the completed parent Model. Its returned Command array puts lifted child Commands before Commands from the fold; the Runtime starts those Commands independently, so array order does not sequence their execution or completion. See [Folding Update](https://foldkit.dev/core/submodel#fold-child) and [Composing Update Steps](https://foldkit.dev/core/update#composing-update-steps).
+
+### Fold Several Independent Child Results
 
 Assembling one complete parent Model from several independent child init results is valid. Use `Update.foldChildInits` to construct that Model once and handle each child's OutMessage against it. Each local fold receives the Model produced by the preceding fold, so later folds preserve earlier changes:
 

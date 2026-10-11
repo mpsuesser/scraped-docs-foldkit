@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/overview
 title: "Foldkit UI"
 description: "Choose between stateful Submodels and stateless render helpers in Foldkit’s headless UI package. Covers accessibility, styling, installation, and the component catalog."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Foldkit UI
@@ -26,7 +26,11 @@ npm install @foldkit/ui
 
 Components are either stateful Submodels or stateless render helpers.
 
+### Stateful Submodels
+
 Stateful [Submodels](https://foldkit.dev/core/submodel), including Menu, Listbox, Combobox, Calendar, Dialog, and Popover, have their own Model, Message union, update, and OutMessage. Embed them with `h.submodel` and fold their OutMessages into the parent update.
+
+### Stateless Render Helpers
 
 Stateless render helpers, including Button, Input, Textarea, Select, Checkbox, Switch, Disclosure, Fieldset, and Nav, take a `ViewConfig` and your builder and return Html. They bundle ARIA, data, and event attributes for DOM elements that you render. They need no child Model or `h.submodel` wiring. The builder determines the Message type returned by their callbacks, so you do not provide a Message type argument.
 

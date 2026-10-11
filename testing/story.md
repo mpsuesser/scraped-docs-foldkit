@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/story
 title: "Story"
 description: "Drive update with Messages, inspect the Model and Commands, and supply Command results without executing their Effects."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Story
@@ -15,6 +15,8 @@ current_date: 2026-10-08T02:46:24.261Z
 The entire test is one `story` call. Start from a Model, send a Message, resolve any Commands, and assert on the next Model.
 
 ## The API
+
+### Import Story Steps
 
 Import the steps you need from `foldkit/story`.
 
@@ -107,6 +109,8 @@ story(
 )
 ```
 
+### Match Commands by Definition or Instance
+
 A Command matcher accepts either a Definition or an instance. A Definition matches by name. An instance also checks structurally equal arguments.
 
 Use `FetchWeather` when the test only cares that the Command was dispatched. Use `FetchWeather({ zipCode: '90210' })` when the zip code is part of the contract.
@@ -142,6 +146,8 @@ test('delayed reset: count resets after the delay fires', () => {
 Read it from top to bottom. The Model starts at 5. `ClickedResetAfterDelay()` returns `DelayReset`. The test resolves that Command with `CompletedDelayReset()`, which update handles by setting the count to 0.
 
 ## Multi-Step Flows
+
+### Resolve Commands in Order
 
 Keep each Command result next to the Message that caused it. `Command.resolve`, `Command.resolveAll`, and `Command.resolveAllExact` let a longer test stay chronological:
 
@@ -243,7 +249,11 @@ Do not use Effect's `flow` to group Story steps. Message and OutMessage steps ar
 
 ## Testing Side Effects
 
+### Test Returned Commands
+
 Story tests the state machine. It does not run the Effect inside a Command.
+
+### Test Command Effects
 
 To test that a Command’s Effect works correctly (for example, that an HTTP request parses the response right), test it separately with `Effect.provide` and a mock service layer:
 

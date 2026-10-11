@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/mount
 title: "Mount"
 description: "Run DOM work while a specific rendered element exists. Mount supplies the live Element, emits declared result Messages, and keeps setup paired with cleanup."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 ## Overview
@@ -12,9 +12,13 @@ Most Foldkit code is declarative. The [view](https://foldkit.dev/core/view) is a
 
 Mount is the escape hatch for work whose cause is a particular element existing in the DOM. `OnMount` supplies the live `Element`, starts the work when that element enters the DOM, and tears it down when the element leaves.
 
+### Mount Definitions
+
 Use `Mount.define` for work that produces one Message when it starts. Its `execute` receives the live element and the rendered view's state, then returns an `Effect<Message>` that emits that Message. Its scope remains open until unmount so cleanup registered with `Effect.acquireRelease` runs at the right time. Use `Mount.defineStream` when listeners or observers on the element must emit a continuing `Stream<Message>`.
 
-Both forms require at least one declared result Message. When no result needs to change the Model, return a descriptive `Completed*` Message and leave the Model unchanged in update. The Message keeps the effect visible to DevTools, Scene tests, and replay.
+### Result Messages
+
+Both `Mount.define` and `Mount.defineStream` require at least one declared result Message. When no result needs to change the Model, return a descriptive `Completed*` Message and leave the Model unchanged in update. The Message keeps the effect visible to DevTools, Scene tests, and replay.
 
 Functional core, imperative shell
 
@@ -26,6 +30,8 @@ Scene records every `OnMount` in the rendered view as a pending Mount. A test mu
 
 ## When to Reach for Mount
 
+### Lifecycle Ownership
+
 Choose a lifecycle primitive by what causes the work:
 
 - A [Command](https://foldkit.dev/core/commands) runs because update just handled a Message. Use it for one-time work such as navigation, network requests, storage, analytics, or focusing an input after `OpenedDialog`.
@@ -34,33 +40,51 @@ Choose a lifecycle primitive by what causes the work:
 - A [ManagedResource](https://foldkit.dev/core/managed-resources) owns a stateful handle whose lifetime follows a Model condition and whose operations are performed by Commands.
 - A [CustomElement](https://foldkit.dev/core/custom-element) renders a native web component with declarative properties and `CustomEvent` s. Use Mount only when the foreign element requires an imperative API instead.
 
+### Check the Cause
+
 Check the cause, not the timing
 
 Work that happens when an element appears is not necessarily caused by that element. For example: when `OpenedDialog` makes a search input visible, focusing it is still caused by the Message. Return a `FocusInput` Command from that Message's update handler. Reach for Mount only when the work is inseparable from the live element and its lifetime.
 
 ## Side Effects on Mount
 
+### DOM Node Lifetime
+
 A Mount follows the lifetime of a DOM node, not a VNode. Foldkit reconstructs VNodes on every render, but the differ reuses an existing DOM node when its tag and identity still match. A reused node keeps its Mount running. A replaced node closes the old Mount's scope, runs its finalizers, and starts a fresh Mount on the new node.
 
+### Stable Identity
+
 View-function identity and stable keys keep that lifecycle attached to the right logical element. This matters in mapped lists, where an unkeyed reorder can reuse the same DOM position for different data. Key each item by a stable Model identifier so its DOM node and Mount move together.
+
+### Portal Example
 
 Portal-to-body is a small example. When an overlay enters the DOM, its Mount moves the live element to `document.body` so it can escape clipping ancestors. When the element unmounts, the paired release removes it.
 
 Portal-to-body
 
+#### Mount Work Requirements
+
 Two rules for Mount work
 
 First, `execute` must use the live element. If it does not read or write that element, a Message or Model condition is probably the real cause. Second, the work must be safe to repeat whenever that element is inserted again. DOM measurement, paired DOM manipulation, observers, and element-owned library instances fit these rules.
 
+#### One Mount per Element
+
 Attach one Mount per element
 
 A VNode has one `insert` and `destroy` hook. If the same element receives `[h.OnMount(A), h.OnMount(B)]`, the second action silently replaces the first and `A` never runs. Combine both behaviors in one Mount and register both releases in its scope.
+
+#### Historical Renders
 
 Mounts re-run during DevTools time-travel
 
 DevTools re-renders historical Models. Elements inserted during replay run their Mounts again, and elements removed during replay run their finalizers. Keep Mount work replay-safe and local to the element. External mutations such as network calls, storage writes, and analytics belong in Commands.
 
 ## Per-Instance Args
+
+### Declaring Args
+
+#### Definition Shape
 
 A Mount often needs an input that differs by element instance, such as an initial scroll position, chart data, or a stable host id. Declare those under `args`, using the same Schema record shape a [Command](https://foldkit.dev/core/commands) takes. `args`, `messages`, and `execute` are all named fields on one config object. `execute` receives the runtime fields `element` and `viewStateChanges` alongside the declared args, so those names are reserved and rejected under `args`:
 
@@ -74,13 +98,19 @@ Mount.define(name, {
 })
 ```
 
+#### Runtime Invocation
+
 Calling the Definition with an args record creates the MountAction passed to `OnMount`. That call never runs `execute`. The runtime calls it when the element enters the DOM, so nothing `execute` does happens inside the pure view that built the action. `Mount.defineStream` takes the same fields, and its `execute` returns a `Stream<Message>` instead.
+
+#### What Belongs in Args
 
 Args are only per-instance inputs. Module constants stay in lexical scope, app-wide services come from Foldkit `Resources`, Model-owned handles come from `ManagedResources`, and Effect services remain available through `yield*` inside `execute`.
 
 Args surface in DevTools and tests
 
 DevTools shows the args beside the Mount name. Scene tests can target one instance by passing the same args record to `Mount.expectHas` or `Mount.resolve`. See [Scene](https://foldkit.dev/testing/scene) for the Definition and instance matcher contract.
+
+### Capture Time and Reactivity
 
 Args are captured at mount
 
@@ -106,7 +136,11 @@ Making an editor read-only during time travel
 
 ### Live and Historical Mounts
 
+#### Live Mounts During Time Travel
+
 A Mount acquired by the live view keeps participating in the live application while a historical view is displayed. Its asynchronous setup can complete, and its external streams can keep producing Messages. Foldkit cannot tell whether an arbitrary Stream emission came from historical DOM interaction, a timer, an observer, or a network source, so the integration must use `viewStateChanges` to stop its own DOM-derived interaction while paused. Do not translate this signal into an application Message. It describes which Model the DOM currently represents, not a change to application state.
+
+#### Mounts Created by Historical Renders
 
 A Mount acquired by a historical render is different: its Messages cannot reach update, change the live Model, or enter history. If the resumed live view reuses that element and declares a Mount there, Foldkit releases the replay acquisition before starting the live action with the live render's args and dispatch. Cleanup finishes before the replacement setup begins, so the old integration cannot tear down the new handle. Within the live render owner, a surviving Mount follows the latest live Submodel `toParentMessage` wiring, matching event handlers without ever borrowing a historical render's wiring.
 
@@ -114,15 +148,21 @@ A Mount acquired by a historical render is different: its Messages cannot reach 
 
 Mount is especially useful when a library owns a rendered subtree. Charts, code editors, map renderers, and force-directed graphs all need a real element to render into and a way to release their resources.
 
+### Acquisition and Cleanup
+
 Construct the handle in an acquire Effect, return the Mount's result Message, and register teardown with `Effect.acquireRelease`. The Effect can finish after emitting its Message because Foldkit keeps its scope open until the element unmounts.
 
 Chart Mount with cleanup
+
+#### Resource Construction
 
 Construct the handle inside the acquire body
 
 `Effect.acquireRelease` registers the release only after its acquire Effect succeeds. Constructing a chart, map, or other stateful handle before that Effect can leak the handle if interruption happens before registration. Make construction the acquire Effect's success value. For example: use `Effect.sync(() => new Thing(...))`, or put an asynchronous import and construction in the same Effect pipeline. Whatever the release needs must be produced by the acquire Effect.
 
 The Model owns the input data. The library owns its rendered subtree. Foldkit owns the lifecycle.
+
+#### Unmount
 
 Unmount interrupts the work
 

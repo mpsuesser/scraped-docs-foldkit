@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view-memoization
 title: "View Memoization"
 description: "Skip stable view subtrees with createLazy and createKeyedLazy, choose cache keys by entity identity, and profile before adding memoization."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # View Memoization
@@ -206,11 +206,15 @@ Keys are never evicted
 
 ## When to Use Lazy Views
 
+### Good Candidates
+
 Consider a lazy view when:
 
 - A large subtree changes less often than its parent.
 - A long list usually changes only a few items.
 - Profiling shows that building or diffing a view is expensive.
+
+### Verify with Profiling
 
 Do not add lazy views to every function. Small views and inputs that change on every render receive no useful cache hits. Confirm the repeated work with the [slow warnings](https://foldkit.dev/core/slow-warnings) and a profiler first.
 

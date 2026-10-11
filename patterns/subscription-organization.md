@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/subscription-organization
 title: "Subscription Organization"
 description: "Organize Subscription records by ownership and lift child Subscriptions through nested Model and Message types."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Subscription Organization
@@ -271,6 +271,8 @@ export const subscriptions = Subscription.aggregate(signedInSubscriptions)
 
 A child can express conditions from its own Model in its dependencies and Stream construction. It cannot see parent-owned state such as the active Route.
 
+### Gate from Parent State
+
 Put a parent-owned condition in `when` on the lift. The predicate receives the parent Model. The gated entries run only while it returns `true` and `read` returns a child. A closed gate skips `read` and the child’s dependency functions.
 
 **Route-gated lift**
@@ -298,6 +300,8 @@ export const subscriptions = Subscription.aggregate(settingsSubscriptions)
 
 Closing a gate tears down the Stream. Foldkit also stops calling the child's `modelToDependencies` until the gate reopens, so hidden child changes do not restart it.
 
+### Gate Named Entries
+
 `when` accepts either one predicate for the whole record or a map of predicates by entry name. An omitted entry has no additional activity condition, but still stops when `read` returns `None`. For example: a Room page can keep its WebSocket alive across navigation while gating its keyboard listener to the active Room Route.
 
 **Per-entry gated lift**
@@ -323,6 +327,8 @@ const roomSubscriptions = Subscription.lift(Room.subscriptions)({
 
 export const subscriptions = Subscription.aggregate(roomSubscriptions)
 ```
+
+### Compose Gates Across Levels
 
 The parent owns `when`. The child keeps its child-owned conditions in its own Subscription definition.
 

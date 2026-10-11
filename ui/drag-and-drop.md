@@ -2,13 +2,15 @@
 url: https://foldkit.dev/ui/drag-and-drop
 title: "Drag and Drop"
 description: "Accessible drag and drop with keyboard support, auto-scrolling, and screen reader announcements."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 ## Overview
 
 Sortable lists and cross-container movement with pointer tracking, keyboard navigation, collision detection, auto-scrolling, and screen reader announcements.
+
+### Integration Model
 
 DragAndDrop is different from other Foldkit UI components in two ways. First, it doesn’t have a `view()` function. Instead, you spread `draggable()` and `droppable()` attributes onto your own elements. Second, its update function can return `Reordered` and `Cancelled` through the optional `outMessage` field. You handle those OutMessages to decide how to reorder your data.
 

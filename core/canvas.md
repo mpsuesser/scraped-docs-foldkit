@@ -2,15 +2,19 @@
 url: https://foldkit.dev/core/canvas
 title: "Canvas"
 description: "Declarative 2D rendering with a Schema-defined Shape AST and pointer events translated to canvas-local coordinates."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 ## Overview
 
+### Declarative Scenes
+
 The `Canvas` module makes 2D canvas rendering declarative. `Canvas.view` returns a `<canvas>` VNode whose dimensions, scene, styling, and pointer Messages come from one config object.
 
 The scene is a `ReadonlyArray<Shape>`. Foldkit clears and repaints the canvas when the VNode is inserted and after every patch, so the pixels contain no hidden application state. The same shapes produce the same pixels, and DevTools time-travel can reproduce an earlier frame by rendering its Model again.
+
+### When to Use Canvas
 
 Use Canvas for interfaces whose natural representation is a 2D scene. For example: pixel art, board games, generative art, charts, and data visualization. The [canvas-art example](https://foldkit.dev/example-apps/canvas-art) shows the full update loop with a click-to-spawn bouncing-ball scene.
 

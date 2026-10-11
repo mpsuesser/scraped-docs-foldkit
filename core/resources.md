@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/resources
 title: "Resources"
 description: "Provide app-lifetime Effect services to Commands, Subscriptions, Mounts, and Flags, or provide a service directly when sharing is unnecessary."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Resources
@@ -15,6 +15,8 @@ Commands are self-contained by default. Each execution starts fresh with no shar
 Think of it like a restaurant kitchen
 
 Resources are the kitchen equipment that stays available all night. Every dish can use the same oven; the kitchen does not install a new one for each order. An `RpcClient` or analytics client has the same app-wide lifetime. Combine several service Layers with `Layer.mergeAll`.
+
+### Building Shared Resources
 
 Define a service with [Context.Service](https://effect.website/docs/requirements-management/services/), then pass its Layer through the runtime’s `resources` config. The runtime builds that Layer once, the first time it is needed: during startup when a fresh Flags Effect resolves or Subscriptions begin, otherwise when the first Command runs. It shares the built services for the runtime’s lifetime and releases them at teardown. Commands access a service by yielding its tag.
 
@@ -89,6 +91,8 @@ No. One implementation is bound for the runtime.
 
 Yes. Each Command can provide its own.
 
+### Common Service Lifetimes
+
 Common cases follow directly from that distinction:
 
 - **`HttpClient` starts per Command.** `Effect.provide(Http.layer)` keeps the Command self-contained, and the Layer is only a thin wrapper around `fetch`. Foldkit’s `Http.layer` uses Effect’s Fetch-backed client with trace header propagation disabled. Browser `traceparent` headers can turn otherwise CORS-simple requests into preflighted requests against plain APIs and development proxies.
@@ -121,6 +125,8 @@ const FetchWeather = Command.define('FetchWeather', {
     ),
 })
 ```
+
+### Moving a Client to Resources
 
 An HTTP client can still graduate. When an app grows many HTTP Commands, or shares a derived `HttpApiClient` across modules, provide `Http.layer` once via `resources` instead. The moment you find yourself writing a `withClient` helper to cut the repetition is the signal. Providing at the edge also helps tests: the Command’s Effect keeps `HttpClient` in its requirements, so an Effect-level test can provide a mock with `Layer.succeed(HttpClient.HttpClient, mockClient)` directly. A per-Command provide needs a separately exported raw Effect to test the same way.
 
@@ -176,7 +182,11 @@ Failure before the first render
 
 If the Flags Effect needs a service whose Layer fails to build, startup cannot reach init or the first render. There is no Model for the crash view yet, so startup fails directly. The Layer build cause remains visible alongside any unrelated Flags failure. If Flags can resolve without the broken service, the app can render; the cached Layer failure then reaches the crash view when the first Command or Subscription needs it.
 
+### Requirement Inference
+
 Requirements are checked where the Effect is supplied: at `Runtime.run` for an application and in `makeElement` for an element. Let inference connect those requirements to the `resources` Layer. Explicitly naming the `Resources` type argument can detach the requirement from a concrete Layer and bypass that check.
+
+### Flags-Only Services
 
 Provide a service used only by Flags with `Effect.provide` inside the Flags Effect, just as you would inside a Command. Reading persisted startup state through `KeyValueStore` is the common case.
 

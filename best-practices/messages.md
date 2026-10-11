@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/messages
 title: "Messages"
 description: "Name Messages as verb-first, past-tense facts, and name Command result Messages after the Command that produced them."
-access_date: 2026-08-31T07:29:25.100Z
-current_date: 2026-08-31T07:29:25.100Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Messages
@@ -60,11 +60,15 @@ Avoid imperative names such as `SetCartItems`, `UpdateSearchText`, and `MutateUs
 
 For an infallible Command, add `Completed` to the Command name. `FocusSearchInput` produces `CompletedFocusSearchInput`, and `LockScroll` produces `CompletedLockScroll`.
 
+### Naming the Command
+
 Name the Command for what its `execute` body does, not the later Model transition. A timer that only waits before update begins a dismissal is `WaitBeforeDismissal`, not `DismissAfter`. Its result is `CompletedWaitBeforeDismissal`.
 
 A payload does not change the rule. `DetermineStartTime` produces `CompletedDetermineStartTime({ startTime })`, and `GenerateCardId` produces `CompletedGenerateCardId({ cardId })`. Names such as `DeterminedStartTime` hide the Command-to-Message pair.
 
 When a Command can meaningfully fail, use the same pairing with `Succeeded` and `Failed`: `FetchUser` produces `SucceededFetchUser` or `FailedFetchUser`.
+
+### Results with More Than One Cause
 
 The exception is a Message with more than one cause. Name that Message for the shared fact. For example, `EndedAnimation` can come from `WaitForAnimationSettled` or a component-specific Command that races animation settlement against another event.
 

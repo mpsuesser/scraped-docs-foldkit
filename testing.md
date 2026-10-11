@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing
 title: "Testing"
 description: "Test Foldkit programs with Story and Scene. Story drives the update loop directly, while Scene drives the rendered view through accessible locators."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Testing
@@ -11,6 +11,8 @@ current_date: 2026-10-08T02:46:24.261Z
 ## Story and Scene
 
 Foldkit tests at two boundaries. Story calls update directly. Scene enters through the rendered view. Neither test runs a browser or executes the Effects inside Commands, so both stay deterministic and fast.
+
+### Compare the Boundaries
 
 Story
 
@@ -34,7 +36,11 @@ Update logic, edge cases, and Command wiring
 
 User flows, view behavior, and accessibility
 
+### Use Both Boundaries
+
 Use both. Story proves the state machine behaves correctly. Scene proves that a person can reach that behavior through the view.
+
+### Name Test Files by Boundary
 
 Name each file for the boundary it tests:
 
@@ -48,6 +54,8 @@ The names stay accurate whether update and view live together or in separate fil
 ## Story
 
 `story` starts from a Model, sends Messages through update, and keeps Commands as data until the test supplies their result Messages. See the [Story](https://foldkit.dev/testing/story) page for the full API.
+
+### Test a Root or Child Update
 
 Story can test a root update or a child update in isolation. The update function is the contract at either level.
 
@@ -74,6 +82,8 @@ test('delayed reset: count resets after the delay fires', () => {
 ## Scene
 
 `scene` renders the view after every step. Locators find elements by role, label, placeholder, and visible text. Interactions invoke the view's event handlers, while cause-named steps supply Subscription, ManagedResource, and CustomElement results. Scene also tracks pending Commands and Mounts. See the [Scene](https://foldkit.dev/testing/scene) page for the full API.
+
+### Test at the Owning Level
 
 Scene can also start at the root or at a child Submodel. `withViewInputs` adapts a Submodel view that needs ViewInputs, and `expectOutMessage` checks a child's OutMessage directly.
 

@@ -2,17 +2,21 @@
 url: https://foldkit.dev/core/slow-warnings
 title: "Slow Warnings"
 description: "Measure development-mode update, view, patch, and Subscription dependency phases, interpret warnings, and tune thresholds after profiling."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Slow Warnings
 
 ## Phase Budgets
 
+### Measured Work
+
 Slow synchronous work blocks the browser from responding to input or drawing the next frame. During development, Foldkit measures update, view, DOM patching, and Subscription dependency extraction so you can find which phase held the main thread.
 
 Each phase has its own time budget. When work exceeds that budget, Foldkit logs a warning with the phase, duration, threshold, and attribution context. Configure `slow.onSlow` to send the same context to another destination.
+
+### Development Defaults
 
 Measurement runs only under Vite's dev server by default. Set `show: 'Always'` to measure the selected phases in every environment.
 
@@ -23,6 +27,8 @@ The [Slow Warnings example](https://foldkit.dev/example-apps/slow-warnings) inte
 Treat warnings as signals
 
 A warning identifies work worth profiling. It does not prove that the application is slow for users. Do not disable the guardrail or add memoization only to clear the console.
+
+### Confirm with Profiling
 
 Live reload, DevTools recording, breakpoints, and slow CI workers can all inflate development measurements. Reproduce the problem in a production build and use a profiler to confirm where the time goes.
 
@@ -50,9 +56,13 @@ Foldkit measures four phases independently:
 
 ## Configuration
 
+### Defaults and Overrides
+
 Omit `slow` to measure all four phases during development with their default budgets. Pass `slow: false` to disable measurement.
 
 Passing an object also measures every phase unless `measuredPhases` narrows the list. Use `thresholdOverrides` to replace individual budgets. An omitted override keeps the Foldkit default, and an override for an unmeasured phase has no effect.
+
+### Warning Output
 
 `show` and `onSlow` apply to every measured phase. Passing `onSlow` replaces the default `console.warn`, so Foldkit will not also log phases that the callback ignores. The callback receives the full tagged `SlowContext` union even when `measuredPhases` selects a subset.
 
@@ -105,5 +115,7 @@ const application = Runtime.makeApplication({
 
 Runtime.run(application)
 ```
+
+### Memoization Follow-up
 
 When profiling confirms repeated work in View or Patch, the [view memoization](https://foldkit.dev/core/view-memoization) page explains how `createLazy` and `createKeyedLazy` can skip stable subtrees.

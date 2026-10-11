@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/schema
 title: "Schema"
 description: "API documentation for the Schema module."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Schema
@@ -14,7 +14,7 @@ current_date: 2026-10-08T02:46:24.261Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/schema/index.ts#L577)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/schema/index.ts#L577)
 
 ```
 /**
@@ -45,7 +45,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/schema/index.ts#L655)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/schema/index.ts#L655)
 
 ```
 /**
@@ -71,7 +71,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/schema/index.ts#L4)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/schema/index.ts#L4)
 
 ```
 /** A `TaggedStruct` schema that can be called directly as a constructor: `Foo({ count: 1 })` instead of `Foo.make({ count: 1 })`. */
@@ -88,7 +88,7 @@ type CallableTaggedStruct = Schema.TaggedStruct<Tag, Fields> & keyof Fields exte
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/schema/index.ts#L416)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/schema/index.ts#L416)
 
 ```
 /**

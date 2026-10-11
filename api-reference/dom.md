@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/dom
 title: "Dom"
 description: "API documentation for the Dom module."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Dom
@@ -14,7 +14,7 @@ current_date: 2026-10-08T02:46:24.261Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/dom.ts#L798)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/dom.ts#L798)
 
 ```
 /**
@@ -31,7 +31,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/dom.ts#L654)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/dom.ts#L654)
 
 ```
 /**
@@ -45,7 +45,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/dom.ts#L534)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/dom.ts#L534)
 
 ```
 /**
@@ -68,7 +68,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/elementMovement.ts#L23)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/elementMovement.ts#L23)
 
 ```
 /**
@@ -89,7 +89,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/dom.ts#L329)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/dom.ts#L329)
 
 ```
 /**
@@ -147,7 +147,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/inert.ts#L203)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/inert.ts#L203)
 
 ```
 /**
@@ -167,7 +167,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/dom.ts#L636)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/dom.ts#L636)
 
 ```
 /**
@@ -206,7 +206,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/inert.ts#L235)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/inert.ts#L235)
 
 ```
 /**
@@ -221,7 +221,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/dom.ts#L678)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/dom.ts#L678)
 
 ```
 /**
@@ -245,7 +245,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/dom.ts#L709)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/dom.ts#L709)
 
 ```
 /**
@@ -275,7 +275,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/dom.ts#L755)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/dom.ts#L755)
 
 ```
 /**
@@ -308,7 +308,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/dom.ts#L373)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/dom.ts#L373)
 
 ```
 /**
@@ -349,7 +349,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromEvent.ts#L394)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromEvent.ts#L394)
 
 ```
 /**
@@ -389,7 +389,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromEvent.ts#L335)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromEvent.ts#L335)
 
 ```
 /**
@@ -439,7 +439,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromEvent.ts#L465)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromEvent.ts#L465)
 
 ```
 /**
@@ -487,7 +487,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromKeyBindings.ts#L955)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromKeyBindings.ts#L955)
 
 ```
 /**
@@ -538,7 +538,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromMediaQuery.ts#L58)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromMediaQuery.ts#L58)
 
 ```
 /**
@@ -569,7 +569,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/waitForAnimation.ts#L17)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/waitForAnimation.ts#L17)
 
 ```
 /**
@@ -590,7 +590,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/dom.ts#L787)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/dom.ts#L787)
 
 ```
 /** Direction for focus advancement: forward or backward in tab order. */
@@ -601,7 +601,7 @@ type FocusDirection = "Next" | "Previous"
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromKeyBindings.ts#L36)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromKeyBindings.ts#L36)
 
 ```
 /**
@@ -624,7 +624,7 @@ type KeyBinding = BindingBase<Output> & Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromKeyBindings.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromKeyBindings.ts#L19)
 
 ```
 /** A single key press or a sequence of two or more key presses. */
@@ -635,7 +635,7 @@ type KeySequence = string | Readonly<[string, string, ...Array<string>]>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromEvent.ts#L149)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromEvent.ts#L149)
 
 ```
 /**
@@ -675,7 +675,7 @@ type StreamFromEventConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromEvent.ts#L185)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromEvent.ts#L185)
 
 ```
 /**
@@ -715,7 +715,7 @@ type StreamFromEventFilterMapConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromEvent.ts#L260)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromEvent.ts#L260)
 
 ```
 /**
@@ -757,7 +757,7 @@ type StreamFromEventFilterMapPreventDefaultConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromKeyBindings.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromKeyBindings.ts#L51)
 
 ```
 /** Configuration for the streamFromKeyBindings Stream helper. */
@@ -773,7 +773,7 @@ type StreamFromKeyBindingsConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromMediaQuery.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromMediaQuery.ts#L19)
 
 ```
 /**
@@ -802,7 +802,7 @@ type StreamFromMediaQueryConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromKeyBindings.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromKeyBindings.ts#L16)
 
 ```
 /** Whether a key binding may fire when its event comes from an editable element. */
@@ -815,7 +815,7 @@ type WhileTyping = "Suppress" | "Allow"
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/streamFromEvent.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/streamFromEvent.ts#L25)
 
 ```
 /**
@@ -845,7 +845,7 @@ interface TypedEventTarget {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/scrollLock.ts#L59)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/scrollLock.ts#L59)
 
 ```
 /**
@@ -863,7 +863,7 @@ const lockScroll: Effect.Effect<void>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/foldkit/src/dom/scrollLock.ts#L95)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/dom/scrollLock.ts#L95)
 
 ```
 /**

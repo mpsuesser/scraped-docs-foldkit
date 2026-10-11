@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/routing-and-navigation
 title: "Routing & Navigation"
 description: "Define routes with bidirectional parser combinators that decode URLs into typed values and build URLs from Schema-validated parameters."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Routing & Navigation
@@ -45,9 +45,13 @@ type AppRoute = typeof AppRoute.Type
 - `AppRoute.People`: holds an optional `searchText: Option<string>`
 - `AppRoute.NotFound`: holds the unmatched `path: string`
 
+### Construct and Match Routes
+
 Keep each variant on `AppRoute`, just as Message variants stay on `Message`. `AppRoute.Person({ personId: 42 })` constructs a Route, while `Route.mapTo(AppRoute.Person)` uses the same variant as a Schema.
 
 Use `AppRoute.match` when every Route needs a branch. Use `AppRoute.isAnyOf(['Blog', 'BlogPost'])` when one check accepts several tags.
+
+### Accept a Subset of Routes
 
 If a Model or Schema accepts only some application Routes, create that Schema with `subset`:
 
@@ -182,6 +186,8 @@ TypeScript ensures you provide the correct data. If `personRouter` expects `{ pe
 
 Query parameters use [Effect Schema](https://effect.website/docs/schema/introduction/) for validation. This gives you type-safe parsing, optional parameters, and automatic encoding/decoding.
 
+### Decode Query Values
+
 **Query parameters**
 
 ```typescript
@@ -216,6 +222,8 @@ console.log(searchUrl)
 ```
 
 `Schema.OptionFromOptional` makes parameters optional. Missing params become `Option.none()`. `Schema.FiniteFromString` automatically parses string query values into numbers.
+
+### Choose Missing-Key Behavior
 
 `Schema.withConstructorDefault` does not provide a query-string default. Constructor defaults run only when calling a Schema’s `make` constructor, while `Route.query` decodes and encodes values. Use `Schema.withDecodingDefaultKey` when a missing query key should decode to a concrete value, or `Schema.OptionFromOptional` when the Route should preserve its absence. The [`foldkit/no-route-query-constructor-default`](https://foldkit.dev/tooling/oxlint-plugin#no-route-query-constructor-default) lint rule catches the inert constructor-default form.
 
@@ -255,6 +263,8 @@ const personRouter = pipe(
 // id type is a compile error.
 const personUrl = personRouter({ personId: PersonId.make(42) })
 ```
+
+### Match and Decode a Segment
 
 Whether a segment decodes is the route’s match test, and the decoded value is what the route carries when it passes. `int` already works this way: it claims `/users/42` but not `/users/banana`. `schemaSegment` generalizes that to any rule a schema can express, from a UUID pattern to a fixed set of string literals. Refine a `ProductId` to a UUID and the route matches a real one but declines `/products/banana`, so a malformed id falls through to the next route in `oneOf` (or to not-found) rather than reaching a component that has to handle it. Refinement and a brand compose, so one segment is both validated and carried as a distinct type.
 
@@ -329,11 +339,15 @@ const filesRouter = pipe(
 const taxesUrl = filesRouter({ path: ['documents', 'taxes'] })
 ```
 
+### Match and Order Rest Routes
+
 `rest` requires at least one segment, so the bare prefix `/files` does not match the rest route. Give the prefix its own route, like `AppRoute.FilesIndex` above. The two never overlap: one matches exactly `/files`, the other matches anything beneath it.
 
 A specific route under the same prefix is different. The rest route also matches every URL that `literal('files'), slash(literal('shared'))` accepts, so in `oneOf` the specific route must come first.
 
 Nothing can follow `rest` in the path, so `slash` cannot extend it. TypeScript rejects the composition. `query` can still follow, since query parameters live after the path.
+
+### Capture a Path as One String
 
 When the path itself is the value, `restString` captures the same tail as a single string, slashes included, so the route schema declares the field with `Schema.String`. A repository-relative file path like `20-upgrade/teach/the-elm-architecture.md` round-trips as one value instead of an array of segments.
 
@@ -473,6 +487,8 @@ const OpenUrl = Command.define('OpenUrl', {
 - `Navigation.load`: full page load (for external URLs)
 - `Navigation.openUrl`: opens an external URL in a new browsing context (tab or window), leaving the current page untouched
 
+### Handle Link Requests
+
 When a link is clicked in your application, the `routing.onUrlRequest` handler receives either an Internal or External request. Handle Internal links with `pushUrl` and External links with `load`:
 
 **URL request handling**
@@ -568,11 +584,15 @@ After `pushUrl` or `replaceUrl` changes the URL, Foldkit automatically calls you
 
 ## Cold Loads and the Initial Route
 
+### Seed the Initial Route
+
 `onUrlChange` fires when the URL changes after boot. On a cold load (a direct visit, a bookmark, a reload) there is no change to report: `init` receives the initial URL, parses it, and seeds the Model with the starting route. Foldkit does not synthesize a `ChangedUrl` for it, because the initial route is starting state, not a transition.
 
 Don’t wire route fetches into navigation alone.
 
 A fetch Command returned only from the `ChangedUrl` handler fires on every in-app navigation and never on a cold load. During development you reach every route by clicking from the home page, so everything works. Then a user reloads on a sub-route or follows a bookmark and lands on a Model stuck in its initial state, with no fetch in flight.
+
+### Share Route-Driven Commands
 
 Both code paths resolve a URL into a route, and both should produce the same route-driven Commands. Factor those Commands into one helper and call it from both places:
 
@@ -612,13 +632,17 @@ ChangedUrl: ({ url }) => {
 }
 ```
 
+### Preserve the Submodel Boundary
+
 When the route-driven state lives in a Submodel, the same factoring follows the Submodel boundary instead of a shared helper: the Submodel’s `init(route)` seeds its state and returns the boot Commands for the cold load, and its `informRouteChanged` helper covers later transitions. [Informing Submodels](https://foldkit.dev/patterns/informing-submodels) shows that shape, and the [Routing example](https://foldkit.dev/example-apps/routing) runs on it.
 
 ## Route Transitions
 
 The shared helper above answers what a route needs, so its Commands fire on every navigation that lands on the route. For `FetchPeople` that is the point: every search text is a new query. Other Commands should run once when the user arrives, loading a filter catalog, starting a poll, recording a page view. For those the route alone cannot answer the real question: did this navigation enter the route, or was the application already there?
 
-The `Transition` namespace in `foldkit/route` answers it. A `Transition.Transition` carries both halves of the question: the route the application was on and the route it is on now. `Transition.make(previousRoute, nextRoute)` builds the navigation case, `Transition.coldLoad(nextRoute)` builds the cold load, where there is no previous route, and `Transition.isEntering` asks the question: a transition enters a route when the next route carries the tag and the previous route did not, and a cold load counts as an entry. Navigating within a route, between two ids of one detail route or two search texts of one list route, is not an entry.
+### Detect Route Entries
+
+The `Transition` namespace in `foldkit/route` identifies route entries. A `Transition.Transition` carries both halves of the question: the route the application was on and the route it is on now. `Transition.make(previousRoute, nextRoute)` builds the navigation case, `Transition.coldLoad(nextRoute)` builds the cold load, where there is no previous route, and `Transition.isEntering` asks the question: a transition enters a route when the next route carries the tag and the previous route did not, and a cold load counts as an entry. Navigating within a route, between two ids of one detail route or two search texts of one list route, is not an entry.
 
 The route union is inferred from the transition argument and the tag is checked against it, so a misspelled route name fails to compile. Build the transition in the same two places that resolve a URL into a route: `init` holds no route yet, so it builds the cold load, and the `ChangedUrl` handler transitions from the route the Model still holds:
 
@@ -655,6 +679,8 @@ ChangedUrl: ({ url }) => {
 }
 ```
 
+### Read the Entered Route
+
 A predicate answers whether, not which. When the entry Command needs the route’s payload, `Transition.entered(transition, tag)` returns the entered route narrowed to the tag, so a detail id arrives typed:
 
 **Using entered**
@@ -674,6 +700,8 @@ const commandsForTransition = (
     onSome: ({ personId }) => [FetchPerson({ personId })],
   })
 ```
+
+### Handle Entry Into Any Route
 
 Every helper that takes a tag answers for one named route. When several routes have entry Commands, ask the transition which route it entered instead: `Transition.enteredAny` returns the entered route in a `Some`, whichever route that was, and `Option.none()` when the transition stayed within one route. Match on the result to dispatch every entry policy in one place:
 
@@ -700,9 +728,13 @@ const commandsForTransition = (
   })
 ```
 
-Entering has a mirror. `Transition.exited(transition, tag)` returns the route the transition left, narrowed to the tag, and `Transition.exitedAny` is its whichever-route form. Exits are for one-shot Commands on the way out, saving a draft, recording that a visit ended. They are not for tearing down things that live while a route is active: listeners, timers, and handles belong to a [Subscription](https://foldkit.dev/core/subscriptions) or [ManagedResource](https://foldkit.dev/core/managed-resources) condition on the Model, which also ends them when the route state disappears for reasons other than navigation.
+### Detect Route Exits
 
-The last case is staying. `Transition.stayed(transition, tag)` returns both sides of a within-route navigation, narrowed to the tag: `Some({ previousRoute, nextRoute })` when the transition stayed on that route, `Option.none()` when it entered it, left it, or never touched it. A cold load stays nowhere. Reach for it when the previous payload matters, comparing a detail id or diffing query parameters; when only the next value matters, the `ChangedUrl` handler already has the next route. Staying has no whichever-route form: without a tag the two sides could not narrow to the same route variant together, so matching on one would leave the other typed as the whole union.
+`Transition.exited(transition, tag)` returns the route the transition left, narrowed to the tag, and `Transition.exitedAny` is its whichever-route form. Exits are for one-shot Commands on the way out, saving a draft, recording that a visit ended. They are not for tearing down things that live while a route is active: listeners, timers, and handles belong to a [Subscription](https://foldkit.dev/core/subscriptions) or [ManagedResource](https://foldkit.dev/core/managed-resources) condition on the Model, which also ends them when the route state disappears for reasons other than navigation.
+
+### Compare Within-Route Changes
+
+`Transition.stayed(transition, tag)` returns both sides of a within-route navigation, narrowed to the tag: `Some({ previousRoute, nextRoute })` when the transition stayed on that route, `Option.none()` when it entered it, left it, or never touched it. A cold load stays nowhere. Reach for it when the previous payload matters, comparing a detail id or diffing query parameters; when only the next value matters, the `ChangedUrl` handler already has the next route. Staying has no whichever-route form: without a tag the two sides could not narrow to the same route variant together, so matching on one would leave the other typed as the whole union.
 
 **Exited and stayed**
 

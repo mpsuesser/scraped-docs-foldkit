@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-anchor
 title: "Ui/Anchor"
 description: "API documentation for the Ui/Anchor module."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Ui/Anchor
@@ -14,7 +14,7 @@ current_date: 2026-10-08T02:46:24.261Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/ui/src/anchor/anchor.ts#L294)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L294)
 
 ```
 /**
@@ -53,7 +53,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/ui/src/anchor/anchor.ts#L194)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L194)
 
 ```
 /**
@@ -85,7 +85,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/ui/src/anchor/anchor.ts#L141)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L141)
 
 ```
 /**
@@ -111,7 +111,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/ui/src/anchor/anchor.ts#L240)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L240)
 
 ```
 /**
@@ -155,7 +155,7 @@ type SetupConfig = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/ui/src/anchor/anchor.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L48)
 
 ```
 /** Static configuration for anchor-based positioning of a floating element relative to a button. */
@@ -181,7 +181,7 @@ const AnchorConfig: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/ui/src/anchor/anchor.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L35)
 
 ```
 /**
@@ -203,7 +203,7 @@ const Padding: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/74071173b1253e9efeec050a31ca86df1931ce5a/packages/ui/src/anchor/anchor.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L16)
 
 ```
 /**

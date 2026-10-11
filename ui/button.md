@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/button
 title: "Button"
 description: "A stateless wrapper around the native button with accessibility attributes, event wiring, and styling hooks."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 ## Overview
@@ -51,9 +51,13 @@ Button uses the native `<button>` element, so keyboard interaction is handled by
 
 ## Accessibility
 
+### Disabled Buttons
+
 Button sets `aria-disabled="true"` when disabled instead of the native `disabled` attribute. This ensures the button remains in the tab order and is announced by screen readers, while preventing click handlers from firing.
 
 `tabindex="0"` is always set to ensure focusability. The `type` attribute defaults to `"button"` to prevent accidental form submissions.
+
+### Custom Attributes and Live Regions
 
 Add your own attributes after the `button` bundle. A later attribute wins, so `h.Type('submit')` after the bundle replaces the default. A button that changes its own text, such as one cycling through values on a tap, announces each change by carrying a live region: spread `h.AriaLive('polite')` and `h.AriaAtomic(true)` after the bundle. Button does not add `aria-live` or `aria-atomic` for you.
 

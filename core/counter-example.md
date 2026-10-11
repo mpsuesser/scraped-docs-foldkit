@@ -2,13 +2,15 @@
 url: https://foldkit.dev/core/counter-example
 title: "Counter Example"
 description: "Build and trace a minimal Counter through its Model, Message Schema, update, view, init, and Runtime wiring."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # A Simple Counter Example
 
 ## See the Whole Loop
+
+### Application Definitions
 
 This counter puts the core loop from [Architecture](https://foldkit.dev/core/architecture) into one small application. Its Model holds the count. Its Messages record button clicks. Its update function decides the next count, and its view renders the result.
 
@@ -99,6 +101,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 const buttonStyle = 'bg-black text-white hover:bg-gray-700 px-4 py-2 transition'
 ```
 
+### Runtime Entry
+
 The entry imports those definitions and passes them to `Runtime.makeApplication`. `Runtime.run` then starts the application in the selected container.
 
 **Counter entry.ts**
@@ -118,6 +122,8 @@ const application = Runtime.makeApplication({
 
 Runtime.run(application)
 ```
+
+### Where to Go Next
 
 Read the example once for its shape. The next four pages examine the [Model](https://foldkit.dev/core/model), [Messages](https://foldkit.dev/core/messages), [update](https://foldkit.dev/core/update), and [view](https://foldkit.dev/core/view) in order. Later pages extend the same counter with a delayed reset, automatic counting, and saved state to introduce side effects and ongoing work.
 

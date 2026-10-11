@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/keying
 title: "Keying"
 description: "Use stable Model identifiers to preserve identity for mapped list items and entities rendered at one position."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Keying
@@ -12,7 +12,9 @@ current_date: 2026-10-08T02:46:24.261Z
 
 Keys identify Model entities across renders. Write a key when one view function renders several entities, either in a dynamic collection or at one fixed position over time. Use a stable identifier such as an id or slug.
 
-Foldkit handles the other kind of identity for you. The `@foldkit/vite-plugin` build stamps the VNodes returned by each view function. The same function at one position patches the existing DOM; a different function replaces it. Focus, uncontrolled input values, scroll position, and other element-owned state therefore stay with the view that owns them.
+### View Function Identity
+
+Foldkit tracks view function identity for you. The `@foldkit/vite-plugin` build stamps the VNodes returned by each view function. The same function at one position patches the existing DOM; a different function replaces it. Focus, uncontrolled input values, scroll position, and other element-owned state therefore stay with the view that owns them.
 
 Coming from React
 

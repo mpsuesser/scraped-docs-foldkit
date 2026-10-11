@@ -2,13 +2,15 @@
 url: https://foldkit.dev/ui/tabs
 title: "Tabs"
 description: "A selection Submodel for tab panels, with roving tabindex, horizontal and vertical orientation, and automatic or manual activation."
-access_date: 2026-10-05T07:06:39.496Z
-current_date: 2026-10-05T07:06:39.496Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 ## Overview
 
 Tab panel navigation with roving tabindex keyboard support, horizontal and vertical orientation, and automatic or manual activation modes. Tabs renders a tab list with buttons and corresponding panels. Only the active panel is visible.
+
+### State Ownership and Bundle Type
 
 Tabs is a Submodel that keeps its own keyboard-focus state, but the parent owns the active tab. Store the active value in your Model, pass it in as `selectedValue`, and fold the `Selected` OutMessage back into that field through [`Update.foldChild`](https://foldkit.dev/core/submodel#fold-child).
 

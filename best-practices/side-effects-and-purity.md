@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/side-effects-and-purity
 title: "Side Effects & Purity"
 description: "Keep update and view deterministic by confining outside work to Commands, Subscriptions, Mounts, ManagedResources, and other Runtime-managed boundaries."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-11T22:31:42.984Z
+current_date: 2026-10-11T22:31:42.984Z
 ---
 
 # Side Effects and Purity
@@ -12,7 +12,11 @@ current_date: 2026-10-08T02:46:24.261Z
 
 Foldkit keeps view and update pure. They describe the next UI and any work to perform, but they do not perform that work themselves.
 
+### View and Update Outputs
+
 `view` returns a `Document` or `Html` value. Its event handlers construct Messages. `update` returns the next Model, Commands, and, for a Submodel, an optional OutMessage. Given the same inputs, both functions make the same decisions without reading or changing the outside world.
+
+### Runtime Effect Boundaries
 
 Effectful work lives at boundaries managed by the Runtime. Depending on the boundary, that work is described by an Effect, Stream, or Layer:
 
@@ -23,7 +27,11 @@ Effectful work lives at boundaries managed by the Runtime. Depending on the boun
 - [Resources](https://foldkit.dev/core/resources) provide app-lifetime services shared by Commands, Subscriptions, Mounts, and Flags.
 - [ManagedResource](https://foldkit.dev/core/managed-resources) acquires a typed stateful handle while a Model condition holds. Commands and Subscriptions can use that handle while it is live.
 
-These descriptions do nothing until the Runtime starts them. One narrow exception stays inside its boundary: a DOM-event mapper may need to perform synchronous browser work before returning a value. Use [`Dom.streamFromEventFilterMapPreventDefault`](https://foldkit.dev/core/dom#filtered-events-and-synchronous-cancellation) when handling an event should also cancel its default action. The helper runs `filterMapEvent` and calls `preventDefault()` inside the browser's dispatch, while a downstream `Stream` operator runs too late to cancel the event. `Subscription.make` checks that the final Stream emits Messages.
+### Synchronous DOM Event Work
+
+Effects, Streams, and Layers do nothing until the Runtime starts them. One narrow exception stays inside its boundary: a DOM-event mapper may need to perform synchronous browser work before returning a value. Use [`Dom.streamFromEventFilterMapPreventDefault`](https://foldkit.dev/core/dom#filtered-events-and-synchronous-cancellation) when handling an event should also cancel its default action. The helper runs `filterMapEvent` and calls `preventDefault()` inside the browser's dispatch, while a downstream `Stream` operator runs too late to cancel the event. `Subscription.make` checks that the final Stream emits Messages.
+
+### CustomElement Boundaries
 
 A [CustomElement](https://foldkit.dev/core/custom-element) binding remains declarative. Properties flow from the Model into the native element, and its events return as Messages. The browser owns the custom element's internal implementation.
 
@@ -146,6 +154,8 @@ The [Testing](https://foldkit.dev/testing) guide shows how Story drives update a
 
 Randomness, clocks, storage, and browser APIs produce values that are not already in the Model or Message. Request those values through a Command.
 
+### Reading Randomness Inside Update
+
 This version generates a different position each time update receives the same inputs:
 
 **❌ Randomness inside update**
@@ -168,6 +178,8 @@ const update = (model: Model, message: Message) =>
     },
   })
 ```
+
+### Returning Randomness Through a Message
 
 The pure version returns `GenerateApplePosition`. Its Effect generates the coordinates and sends them back in `CompletedGenerateApplePosition`:
 
