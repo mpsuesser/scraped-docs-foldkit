@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/route-transition
 title: "Route/Transition"
 description: "API documentation for the Route/Transition module."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 # Route/Transition
@@ -14,7 +14,7 @@ current_date: 2026-10-11T22:31:42.984Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/route/transition.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L28)
 
 ```
 /**
@@ -29,7 +29,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/route/transition.ts#L62)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L62)
 
 ```
 /**
@@ -53,7 +53,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/route/transition.ts#L40)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L40)
 
 ```
 /**
@@ -74,7 +74,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/route/transition.ts#L92)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L92)
 
 ```
 /**
@@ -96,7 +96,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/route/transition.ts#L80)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L80)
 
 ```
 /**
@@ -119,7 +119,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/route/transition.ts#L140)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L140)
 
 ```
 /**
@@ -140,11 +140,49 @@ function
 ): boolean
 ```
 
+### isExiting
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L150)
+
+```
+/**
+ * Whether the transition left the selected route. A cold load never exits.
+ *  Use exited when its payload is needed.
+ */
+<Route extends Readonly<{
+  _tag: string
+}>, Tag extends string>(
+  transition: Transition<Route>,
+  routeTag: Tag
+): boolean
+```
+
+### isStaying
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L160)
+
+```
+/**
+ * Whether both routes have the selected tag. A cold load never stays. Use
+ *  stayed for both payloads.
+ */
+<Route extends Readonly<{
+  _tag: string
+}>, Tag extends string>(
+  transition: Transition<Route>,
+  routeTag: Tag
+): boolean
+```
+
 ### make
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/route/transition.ts#L17)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L17)
 
 ```
 /**
@@ -158,11 +196,70 @@ function
 ): Transition<Route>
 ```
 
+### match
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L223)
+
+```
+/**
+ * Runs exactly one handler for the selected route tag. A cold load is
+ *  `Entered` or `Unrelated`. When both routes have the selected tag, the case
+ *  is `Stayed`, even when their payloads differ. Handler routes are narrowed
+ *  to the tag. The direct form infers a union of handler returns.
+ *  `match<Output>()(...)` constrains every handler to `Output` while inferring
+ *  the Route and tag.
+ */
+<Output>(): (transition: Transition<Route>, routeTag: Tag, handlers: MatchHandlers<Extract<Route, {
+  _tag: Tag
+}>, Output, Output, Output, Output>) => Output
+
+<Route extends Readonly<{
+  _tag: string
+}>, Tag extends string, Entered, Exited, Stayed, Unrelated>(
+  transition: Transition<Route>,
+  routeTag: Tag,
+  handlers: MatchHandlers<Extract<Route, {
+    _tag: Tag
+  }>, Entered, Exited, Stayed, Unrelated>
+): Entered | Exited | Stayed | Unrelated
+```
+
+### matchOrElse
+
+function
+
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L324)
+
+```
+/**
+ * Runs the matching handler, or the fallback when that handler is omitted.
+ *  A handler that returns `undefined` has handled the case. The direct form
+ *  infers a union of callback returns. `matchOrElse<Output>()(...)` constrains
+ *  every callback to `Output` while inferring the Route and tag.
+ */
+<Output>(): (transition: Transition<Route>, routeTag: Tag, handlers: Partial<MatchHandlers<Extract<Route, {
+  _tag: Tag
+}>, Output, Output, Output, Output>>, fallback: () => Output) => Output
+
+<Route extends Readonly<{
+  _tag: string
+}>, Tag extends string, Entered = never, Exited = never, Stayed = never, Unrelated = never, Fallback = never>(
+  transition: Transition<Route>,
+  routeTag: Tag,
+  handlers: Partial<MatchHandlers<Extract<Route, {
+    _tag: Tag
+  }>, Entered, Exited, Stayed, Unrelated>>,
+  fallback: () => Fallback
+): Entered | Exited | Stayed | Unrelated | Fallback
+```
+
 ### stayed
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/route/transition.ts#L111)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L111)
 
 ```
 /**
@@ -194,11 +291,30 @@ function
 
 ## Types
 
+### MatchHandlers
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L169)
+
+```
+/** Handlers for match, with Route narrowed to the selected tag. */
+type MatchHandlers = Readonly<{
+  Entered: (nextRoute: Route) => Entered
+  Exited: (previousRoute: Route) => Exited
+  Stayed: (routes: Readonly<{
+    nextRoute: Route
+    previousRoute: Route
+  }>) => Stayed
+  Unrelated: () => Unrelated
+}>
+```
+
 ### Transition
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/foldkit/src/route/transition.ts#L9)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/foldkit/src/route/transition.ts#L9)
 
 ```
 /**

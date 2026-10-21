@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/combobox
 title: "Combobox"
 description: "A searchable selection Submodel with parent-controlled filtering, single-select and multi-select modes, and anchored positioning."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 ## Overview
@@ -130,6 +130,8 @@ Focus stays on the input while arrow keys navigate items via `aria-activedescend
 | `End` | Moves to the last enabled item. |
 | `Escape` | Closes the dropdown. |
 | `Type a character` | Filters the items list. You control filtering in your view by passing filtered items. Frozen when isReadOnly is set. |
+
+While an input method is composing, these keys stay with the composition. Enter confirms the conversion instead of selecting the active item.
 
 Opening, closing, and arrow, `Home`, and `End` navigation are unaffected by `isReadOnly`. See [Read-Only](#read-only).
 

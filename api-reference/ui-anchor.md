@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-anchor
 title: "Ui/Anchor"
 description: "API documentation for the Ui/Anchor module."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 # Ui/Anchor
@@ -14,7 +14,7 @@ current_date: 2026-10-11T22:31:42.984Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L294)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/anchor/anchor.ts#L293)
 
 ```
 /**
@@ -53,7 +53,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L194)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/anchor/anchor.ts#L193)
 
 ```
 /**
@@ -85,7 +85,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L141)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/anchor/anchor.ts#L139)
 
 ```
 /**
@@ -93,14 +93,15 @@ function
  *  that removes it again. Inside a `<dialog>`, the portal root is a div
  *  appended to that dialog, so the element stays above the dialog's content
  *  and interactive while a modal dialog makes everything outside it inert.
- *  The cleanup removes that div once it is empty. Otherwise the portal root
- *  is the shared `foldkit-portal-root` div within the element's containing
- *  root: the shadow root when mounted inside one, otherwise `document.body`.
- *  Either way the element escapes the clipping and stacking contexts of the
- *  ancestors it leaves, and keeps its root's scoped styles. Use
- *  `portalBackdrop` for a click-outside backdrop. Designed to be called from
- *  inside an `OnMount` action: the consumer wraps the call in `Effect.sync`
- *  and stashes the returned cleanup in the `Mount` result.
+ *  Otherwise the portal root is the shared `foldkit-portal-root` div within
+ *  the element's containing root: the shadow root when mounted inside one,
+ *  otherwise `document.body`. Either way the element escapes the clipping
+ *  and stacking contexts of the ancestors it leaves, and keeps its root's
+ *  scoped styles. The cleanup removes the portal root once it is empty, so
+ *  the next open creates a fresh one. Use `portalBackdrop` for a
+ *  click-outside backdrop. Designed to be called from inside an `OnMount`
+ *  action: the consumer wraps the call in `Effect.sync` and stashes the
+ *  returned cleanup in the `Mount` result.
  */
 (element: Element): () => void
 ```
@@ -111,7 +112,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L240)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/anchor/anchor.ts#L239)
 
 ```
 /**
@@ -155,7 +156,7 @@ type SetupConfig = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/anchor/anchor.ts#L48)
 
 ```
 /** Static configuration for anchor-based positioning of a floating element relative to a button. */
@@ -181,7 +182,7 @@ const AnchorConfig: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/anchor/anchor.ts#L35)
 
 ```
 /**
@@ -203,7 +204,7 @@ const Padding: Union<readonly [
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/anchor/anchor.ts#L16)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/anchor/anchor.ts#L16)
 
 ```
 /**

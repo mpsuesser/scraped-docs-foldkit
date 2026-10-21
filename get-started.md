@@ -2,8 +2,8 @@
 url: https://foldkit.dev/get-started
 title: "Get Started"
 description: "Create a Foldkit project from a starter, inspect the generated structure, or add Foldkit to an existing Vite application."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 # Get Started
@@ -64,6 +64,7 @@ The Counter starter begins with these files:
 - `vite.config.ts`: Vite configuration with `@foldkit/vite-plugin`
 - `tsconfig.json`: TypeScript configuration
 - `.oxlintrc.json`: Oxlint configuration
+- `.oxlintrc.effect.json`: Effect type-aware lint configuration
 - `.oxfmtrc.json`: Oxfmt configuration
 - `AGENTS.md`: your instructions for AI coding assistants working on the project
 - `FOLDKIT.md`: Foldkit's own conventions for those assistants, [replaced from the current template when you upgrade Foldkit](https://foldkit.dev/ai/overview)
@@ -76,7 +77,7 @@ For the Counter starter, `src/entry.ts` imports the application definitions and 
 
 ### Project Scripts
 
-The generated project also includes `lint` and `format` scripts. Run them with your selected package manager. For example: `pnpm lint` and `pnpm format`. See [Oxlint Plugin](https://foldkit.dev/tooling/oxlint-plugin) for the Foldkit-specific rules.
+The generated project also includes `lint` and `format` scripts. Run them with your selected package manager. For example: `pnpm lint` and `pnpm format`. The `lint` script checks Foldkit conventions and Effect usage. See [Oxlint Plugin](https://foldkit.dev/tooling/oxlint-plugin) for the Foldkit-specific rules.
 
 ## Add Foldkit to an Existing Project
 

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/story
 title: "Story"
 description: "Drive update with Messages, inspect the Model and Commands, and supply Command results without executing their Effects."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 # Story
@@ -207,6 +207,14 @@ Use `resolveAllExact` when the resolver list is also a claim about which Command
 Unresolved Commands
 
 `message` throws if there are pending Commands from a previous step. Resolve all Commands before sending the next Message. `story` throws at the end if any Commands remain unresolved. Every Command your update function produces must be accounted for.
+
+### Resolve Child Commands
+
+When resolving a Command from a [child Submodel](https://foldkit.dev/core/submodel), pass the child's result Message. Story applies the parent Message mapping automatically.
+
+### UI Component Test Helpers
+
+Before writing resolvers for an `@foldkit/ui` component, check its `test` namespace for helpers. For example, [`Toast.test.drainEntry`](https://foldkit.dev/ui/toast#testing) handles the animation and timer Commands for a newly shown toast that auto-dismisses.
 
 ## Reusable Step Groups
 

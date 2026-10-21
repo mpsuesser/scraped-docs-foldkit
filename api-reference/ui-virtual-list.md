@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-virtual-list
 title: "Ui/VirtualList"
 description: "API documentation for the Ui/VirtualList module."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 # Ui/VirtualList
@@ -14,7 +14,7 @@ current_date: 2026-10-11T22:31:42.984Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L825)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L825)
 
 ```
 /**
@@ -32,7 +32,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L205)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L205)
 
 ```
 /**
@@ -46,7 +46,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L775)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L775)
 
 ```
 /** Programmatically scrolls to a logical target. */
@@ -72,7 +72,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L819)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L819)
 
 ```
 /** Programmatically scrolls to the end of the list. */
@@ -83,7 +83,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L799)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L799)
 
 ```
 /**
@@ -102,7 +102,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L807)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L807)
 
 ```
 /**
@@ -120,7 +120,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L815)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L815)
 
 ```
 /**
@@ -137,13 +137,13 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L717)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L717)
 
 ### view
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L1337)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L1337)
 
 ```
 <Item>(): ViewForItem<Item>
@@ -155,7 +155,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L170)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L170)
 
 ```
 /** Configuration for creating a virtual list model with `init`. */
@@ -177,7 +177,7 @@ type InitConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L1308)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L1308)
 
 ```
 /**
@@ -203,7 +203,7 @@ type RowHeightInputs = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L530)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L530)
 
 ```
 /** Options shared by row-targeted programmatic scrolling helpers. */
@@ -216,7 +216,7 @@ type ScrollToOptions = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L1325)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L1325)
 
 ```
 type ViewInputs = BaseViewInputs<Item> & RowHeightInputs<Item>
@@ -228,7 +228,7 @@ type ViewInputs = BaseViewInputs<Item> & RowHeightInputs<Item>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L874)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L874)
 
 ```
 /** Alignment of content when its total height is shorter than the viewport. */
@@ -239,7 +239,7 @@ const ContentAlignment: Literals<readonly ["Start", "End"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L139)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L139)
 
 ```
 /** Union of all messages the virtual list component can produce. */
@@ -294,7 +294,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L120)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L120)
 
 ```
 /**
@@ -393,7 +393,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L46)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L46)
 
 ```
 /** Alignment of a row within the viewport after a programmatic scroll. */
@@ -404,7 +404,7 @@ const ScrollAlignment: Literals<readonly ["Start", "Center", "End", "Nearest"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/060271955cc2fdd34ddb5e17a64b6662268f79c5/packages/ui/src/virtualList/index.ts#L56)
+[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/virtualList/index.ts#L56)
 
 ```
 /** Logical destination for initial and programmatic scrolling. */

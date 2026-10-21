@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/toast
 title: "Toast"
 description: "Stack of transient notifications anchored to a corner of the viewport with per-entry enter/leave animations and auto-dismiss."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 ## Overview
@@ -78,6 +78,10 @@ While an entry is translated, the view exposes its drag or release offset as `--
 ## Accessibility
 
 The container has `role="region"` and `aria-live="polite"`. It stays in the DOM when empty so screen readers can observe notifications added later. Each entry has `aria-atomic="true"` and receives `role="status"` for Info and Success or `role="alert"` for Warning and Error. Auto-dismiss pauses on pointer hover and while dragging. Swipe and close-button dismissal both use the leave animation and emit `DismissedToast` when the entry is removed.
+
+## Testing
+
+Use `Toast.test.drainEntry({ entryId })` in a [Story test](https://foldkit.dev/testing/story) to resolve the animation and timer Commands for a newly shown toast that auto-dismisses. The entry is removed from the Model and the `DismissedToast` OutMessage is emitted.
 
 ## API Reference
 

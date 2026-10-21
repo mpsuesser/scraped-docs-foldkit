@@ -2,8 +2,8 @@
 url: https://foldkit.dev/tooling/oxlint-plugin
 title: "Oxlint Plugin"
 description: "Install and configure @foldkit/oxlint-plugin, then see what each Foldkit-specific rule accepts and rejects."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 # Oxlint Plugin
@@ -72,6 +72,8 @@ Foldkit projects use `oxlint` for general linting and `@foldkit/oxlint-plugin` f
 ```
 
 Override an individual rule in the project's `rules` block when an application needs a narrower policy. The complete rule set is grouped by the part of the architecture it protects below.
+
+The scaffold also includes `.oxlintrc.effect.json`, `@effect/tsgo`, and `oxlint-tsgolint`. The `lint` script runs Effect's type-aware correctness rules after the Foldkit rules and treats warnings as failures.
 
 ## Effect Imports
 

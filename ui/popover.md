@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/popover
 title: "Popover"
 description: "An anchored floating panel for arbitrary content, with dismissal, focus return, portaling, and optional modal behavior."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 ## Overview
@@ -100,7 +100,7 @@ Do not put `max-height: inherit` on the child. That copies the panel's full meas
 
 ## Keyboard Interaction
 
-By default, the panel receives `tabindex="0"` so it can receive focus. Tab navigates naturally through the panel content. Escape closes and returns focus to the button.
+By default, the panel receives `tabindex="0"` so it can receive focus. Tab navigates naturally through the panel content. Moving focus from the panel into a control inside it leaves the popover open. Escape closes and returns focus to the button.
 
 | Key | Description |
 | --- | --- |
@@ -124,6 +124,8 @@ Two ViewConfig fields cover the cases a `<label for>` does not. Pass `ariaLabel`
 
 Spreading the `arrow` bundle supplies the arrow id in application markup. A Scene test that asserts the panel Mount's `arrowId` argument needs to construct that value directly. Use `Popover.arrowId(id)` rather than hardcoding the `-arrow` convention.
 
+Use `Scene.focusLeave(panel)` to test that a default Popover closes when focus leaves its panel.
+
 ## API Reference
 
 ### InitConfig
@@ -135,7 +137,7 @@ Configuration object passed to `Popover.init()`.
 | `id` | `string` | — | Unique ID for the popover instance. |
 | `isAnimated` | `boolean` | `false` | Enables animation coordination. |
 | `isModal` | `boolean` | `false` | Locks page scroll and marks other elements inert when open. |
-| `contentFocus` | `boolean` | `false` | Hands focus ownership to the consumer. When true, the panel is not focusable and does not close on blur; the consumer must focus a descendant on open and decide on its own blur rules. |
+| `contentFocus` | `boolean` | `false` | Hands focus ownership to the consumer. When true, the panel is not focusable and does not close when focus leaves; the consumer must focus a descendant on open and decide on its own focus-leave rules. |
 
 ### ViewConfig
 
@@ -160,7 +162,7 @@ Payload delivered to the `toView` callback each render.
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `button` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the trigger button. Includes the button id, `aria-expanded`, `aria-controls`, and pointer/keyboard handlers. |
-| `panel` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the floating panel. Includes the anchor Mount that positions the panel via Floating UI, ARIA linkage to the button, and panel keydown/blur handlers. |
+| `panel` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the floating panel. Includes the anchor Mount that positions the panel via Floating UI, ARIA linkage to the button, and panel keydown and focus-leave handlers. |
 | `backdrop` | `ReadonlyArray<ChildAttribute>` | — | Spread onto the modal backdrop element. Includes the portal Mount that moves the backdrop to `document.body`. Inside a dialog, it moves the backdrop to directly before the element it is rendered in, so render it inside the positioned wrapper that holds the button. The backdrop's click handler dispatches `RequestedClose`. |
 | `arrow` | `ReadonlyArray<ChildAttribute>` | — | Spread onto your arrow element inside the panel. Carries the id the anchor Mount resolves and `aria-hidden`. Nothing renders until you add the element and the CSS above. |
 | `isVisible` | `boolean` | — | Derived from `isOpen` and the Animation `transitionState`. Render the panel and backdrop only while this is true. |

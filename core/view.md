@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view
 title: "View"
 description: "Return a Document or Html value as a pure function of the Model. Covers document metadata, element builders, events, and view decomposition."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 ## Model In, HTML Out
@@ -147,6 +147,8 @@ A handler can do more than return a one-line Message. The constraint is purity, 
 Complex handler
 
 For `OnKeyDownPreventDefault`, returning `Some` claims the key. Foldkit suppresses the browser's default action and dispatches the Message. Returning `None` leaves the key to the browser.
+
+Every `OnKeyDown` attribute leaves a keydown alone while an input method is still composing. Foldkit does not call the handler and does not suppress the browser default, so Enter can confirm a Japanese, Chinese, or Korean conversion.
 
 ### Self-Targeted Keydowns
 

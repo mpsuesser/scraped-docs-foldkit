@@ -2,13 +2,21 @@
 url: https://foldkit.dev/blog
 title: "Blog"
 description: "Announcements, musings, and technical deep dives."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 # Blog
 
 Announcements, musings, and technical deep dives.
+
+[Foldkit 0.169.0](https://foldkit.dev/blog/foldkit-0-169-0)
+
+October 20, 2026 · Devin Jameson
+
+Runtime and overlay fixes, better DevTools MCP discovery, and new testing and Route transition helpers.
+
+[Read more →](https://foldkit.dev/blog/foldkit-0-169-0)
 
 [Foldkit 0.167.0](https://foldkit.dev/blog/foldkit-0-167-0)
 

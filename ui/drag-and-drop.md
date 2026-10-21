@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/drag-and-drop
 title: "Drag and Drop"
 description: "Accessible drag and drop with keyboard support, auto-scrolling, and screen reader announcements."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 ## Overview
@@ -58,6 +58,13 @@ DragAndDrop supports full keyboard navigation. Space/Enter activates drag mode, 
 ## Accessibility
 
 Draggable items receive `role="option"` with `aria-roledescription="draggable"`. Drop containers receive `role="listbox"`. Screen reader announcements are emitted for drag start, movement, and drop via a live region.
+
+## Testing
+
+In [Story tests](https://foldkit.dev/testing/story), use `DragAndDrop.test` to resolve keyboard drag Commands:
+
+- `DragAndDrop.test.settleFocus({ itemId })` resolves the item's focus after a drop or cancellation.
+- `DragAndDrop.test.resolveKeyboardMove({ itemId, targetContainerId, targetIndex })` supplies a target container and index for an arrow-key move, then resolves the item's focus.
 
 ## API Reference
 

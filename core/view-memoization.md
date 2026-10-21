@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view-memoization
 title: "View Memoization"
 description: "Skip stable view subtrees with createLazy and createKeyedLazy, choose cache keys by entity identity, and profile before adding memoization."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-21T00:39:13.665Z
+current_date: 2026-10-21T00:39:13.665Z
 ---
 
 # View Memoization
@@ -223,3 +223,59 @@ How it works under the hood
 Foldkit's differ compares the old and new VNode by reference before diffing. When they are the same object, it skips attribute comparison, child reconciliation, and DOM updates.
 
 The active dispatch is also part of the internal cache key because event handlers close over it. A DevTools replay uses a non-live dispatch, so Foldkit rebuilds the subtree before returning to the live application even when the function and arguments are unchanged.
+
+## Testing Cache Reuse
+
+Use `Lazy.expectAllReused` from `foldkit/test` to check that lazy views reuse their cached results. It renders the view twice with the same Model and throws if any lazy call misses its cache on the second render.
+
+**Checking lazy cache reuse**
+
+```typescript
+import { Lazy } from 'foldkit/test'
+import { test } from 'vitest'
+
+import { initialModel } from './main'
+import { view } from './view'
+
+test('reuses lazy views for an unchanged Model', () => {
+  Lazy.expectAllReused({ view, model: initialModel })
+})
+```
+
+The error identifies each cache miss by slot number, includes the key for keyed calls, and gives a hint for each kind of miss. For `ArgumentsChanged`, it lists the changed argument indices, starting at zero.
+
+Slot numbers follow the order in which lazy instances are first called on the second render. All keys from one `createKeyedLazy` instance share a slot number.
+
+### Choosing Models to Test
+
+Test each Model state that renders different memoized content. For example, a view whose Model has an `activeTab` field needs a case for each tab:
+
+**Checking cache reuse for each tab**
+
+```typescript
+import { modifyFields } from 'foldkit/struct'
+import { Lazy } from 'foldkit/test'
+import { test } from 'vitest'
+
+import { initialModel } from './main'
+import { view } from './view'
+
+const cases = [
+  {
+    name: 'Overview',
+    model: modifyFields(initialModel, { activeTab: () => 'Overview' }),
+  },
+  {
+    name: 'Details',
+    model: modifyFields(initialModel, { activeTab: () => 'Details' }),
+  },
+]
+
+test.each(cases)('reuses lazy views on the $name tab', ({ model }) => {
+  Lazy.expectAllReused({ view, model })
+})
+```
+
+The helper throws when the second render makes no lazy calls. Choose Models that render the memoized content you want to test. For keyed lists, include several items so the test exercises separate cache entries. Use the view's other tests for states that make no lazy calls.
+
+An outer lazy cache hit skips its child view. Test that child view directly to check the lazy calls inside it. A passing assertion covers only the lazy calls made during the second render.
