@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/mount
 title: "Mount"
 description: "Run DOM work while a specific rendered element exists. Mount supplies the live Element, emits declared result Messages, and keeps setup paired with cleanup."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-10-29T19:36:43.640Z
+current_date: 2026-10-29T19:36:43.640Z
 ---
 
 ## Overview
@@ -159,6 +159,8 @@ Chart Mount with cleanup
 Construct the handle inside the acquire body
 
 `Effect.acquireRelease` registers the release only after its acquire Effect succeeds. Constructing a chart, map, or other stateful handle before that Effect can leak the handle if interruption happens before registration. Make construction the acquire Effect's success value. For example: use `Effect.sync(() => new Thing(...))`, or put an asynchronous import and construction in the same Effect pipeline. Whatever the release needs must be produced by the acquire Effect.
+
+Acquisition is uninterruptible by default. For asynchronous setup that must stop when the element unmounts, pass `{ interruptible: true }` as the third argument to `Effect.acquireRelease`, as the chart integration does above. Construct the handle after the interruptible wait so cancellation leaves no handle to release.
 
 The Model owns the input data. The library owns its rendered subtree. Foldkit owns the lifecycle.
 

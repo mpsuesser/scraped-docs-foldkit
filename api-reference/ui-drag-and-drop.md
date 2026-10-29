@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-drag-and-drop
 title: "Ui/DragAndDrop"
 description: "API documentation for the Ui/DragAndDrop module."
-access_date: 2026-10-21T00:39:13.665Z
-current_date: 2026-10-21T00:39:13.665Z
+access_date: 2026-10-29T19:36:43.640Z
+current_date: 2026-10-29T19:36:43.640Z
 ---
 
 # Ui/DragAndDrop
@@ -14,7 +14,7 @@ current_date: 2026-10-21T00:39:13.665Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L757)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L757)
 
 ```
 /** Returns attributes the parent attaches to a draggable element. Handles pointer-down, keyboard activation, and ARIA. */
@@ -28,7 +28,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L824)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L824)
 
 ```
 /**
@@ -46,7 +46,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L845)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L845)
 
 ```
 /** Returns positioning styles for the ghost element, or None when not dragging with a pointer. */
@@ -57,7 +57,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L155)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L155)
 
 ```
 /** Creates an initial drag-and-drop model. Starts idle with Vertical orientation and a 5px activation threshold by default. */
@@ -68,7 +68,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L864)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L864)
 
 ```
 /** Returns true when the component is actively dragging (pointer or keyboard). */
@@ -79,7 +79,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L868)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L868)
 
 ```
 /** Returns the ID of the item currently being dragged or pending, if any. */
@@ -90,7 +90,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L877)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L877)
 
 ```
 /** Returns the current drop target, if any. Populated during pointer drag (from collision detection) and keyboard drag (from resolved position). */
@@ -104,7 +104,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L837)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L837)
 
 ```
 /**
@@ -120,7 +120,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L313)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L313)
 
 ## Types
 
@@ -128,7 +128,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L748)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L748)
 
 ```
 /** Configuration for creating draggable attributes with `draggable`. */
@@ -145,7 +145,7 @@ type DraggableConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L743)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L743)
 
 ```
 /** Messages the draggable view helper can dispatch. */
@@ -156,7 +156,7 @@ type DraggableMessage = typeof Message.PressedDraggable.Type | typeof Message.Ac
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L148)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L148)
 
 ```
 type InitConfig = Readonly<{
@@ -172,7 +172,7 @@ type InitConfig = Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L45)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L45)
 
 ```
 /** Schema for the current pointer or keyboard drag phase. */
@@ -218,7 +218,7 @@ const DragState: TaggedUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L168)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L168)
 
 ```
 /** Focuses a draggable item by ID after a keyboard move, drop, or cancel. */
@@ -233,7 +233,7 @@ const FocusItem: CommandDefinitionWithArgs<"FocusItem", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L85)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L85)
 
 ```
 /** Union of all messages the drag-and-drop component can produce. */
@@ -279,7 +279,7 @@ const Message: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L73)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L73)
 
 ```
 /** Schema for the drag-and-drop component's state, tracking its unique ID, orientation, and current drag phase. */
@@ -330,7 +330,7 @@ const Model: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L131)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L131)
 
 ```
 /** Union of all out-messages the drag-and-drop component can emit to its parent. */
@@ -350,7 +350,7 @@ const OutMessage: MessageUnion<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L288)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L288)
 
 ```
 /** Resolves the next keyboard drag position by querying the DOM for adjacent sortable items and containers. */
@@ -370,7 +370,7 @@ const ResolveKeyboardMove: CommandDefinitionWithArgs<"ResolveKeyboardMove", {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/7ee214268c602967937b80f6f20d1e831f2e8ab6/packages/ui/src/dragAndDrop/index.ts#L574)
+[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/index.ts#L574)
 
 ```
 /** Document-level subscriptions for pointer and keyboard events during drag operations. */

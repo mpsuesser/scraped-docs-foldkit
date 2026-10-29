@@ -2,8 +2,8 @@
 url: https://foldkit.dev/get-started
 title: "Get Started"
 description: "Create a Foldkit project from a starter, inspect the generated structure, or add Foldkit to an existing Vite application."
-access_date: 2026-10-21T00:39:13.665Z
-current_date: 2026-10-21T00:39:13.665Z
+access_date: 2026-10-29T19:36:43.640Z
+current_date: 2026-10-29T19:36:43.640Z
 ---
 
 # Get Started
@@ -83,14 +83,14 @@ The generated project also includes `lint` and `format` scripts. Run them with y
 
 Skip this section if you used `create-foldkit-app`. Scaffolded projects already receive compatible package versions.
 
-Foldkit uses Effect 4 stable and pins its peer dependencies to exact versions: `effect@4.0.0` and `@effect/platform-browser@4.0.0`. Install those versions together. When upgrading an existing app, update every Effect package to the same version. Use the stable import paths, such as `effect/http` and `effect/persistence`, in place of their `effect/unstable` paths.
+Foldkit requires Effect 4.1 and accepts patch updates through `~4.1.0` peer ranges for `effect` and `@effect/platform-browser`. Effect minor releases can change APIs, so each minor upgrade is verified before Foldkit widens those ranges. When upgrading an existing app, update every Effect package together within the supported minor version. Use the stable import paths, such as `effect/http` and `effect/persistence`, in place of their `effect/unstable` paths.
 
-Install Foldkit together with its pinned peer dependencies:
+Install Foldkit together with its compatible peer dependencies:
 
 **Install Foldkit and Effect**
 
 ```bash
-npm install foldkit effect@4.0.0 @effect/platform-browser@4.0.0
+npm install foldkit effect@~4.1.0 @effect/platform-browser@~4.1.0
 ```
 
 ## Where to Go Next

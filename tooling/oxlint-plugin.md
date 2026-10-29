@@ -2,8 +2,8 @@
 url: https://foldkit.dev/tooling/oxlint-plugin
 title: "Oxlint Plugin"
 description: "Install and configure @foldkit/oxlint-plugin, then see what each Foldkit-specific rule accepts and rejects."
-access_date: 2026-10-21T00:39:13.665Z
-current_date: 2026-10-21T00:39:13.665Z
+access_date: 2026-10-29T19:36:43.640Z
+current_date: 2026-10-29T19:36:43.640Z
 ---
 
 # Oxlint Plugin
@@ -698,7 +698,7 @@ The rule reports the call wherever it is written. Assigning its result to a loca
 
 #### Deferred Execution Boundaries
 
-Obtain time or randomness inside the Command's `execute` callback instead. Use `Clock` or `Random` for time and ordinary randomness. For UUIDs and cryptographic randomness, use the `Crypto.Crypto` service with the platform's Crypto layer. Return the value in the result Message.
+Obtain time or randomness inside the Command's `execute` callback instead. Use `Clock` or `Random` for time and ordinary randomness. For UUIDs and cryptographic randomness, import `SecureRandom` from `effect/crypto` and use its service with `BrowserCrypto.layerSecureRandom` in the browser. Return the value in the result Message.
 
 The rule recognizes the deferred callback positions in Effect and Stream. It also recognizes these Foldkit lifecycle callbacks when they are declared inline:
 
@@ -721,7 +721,8 @@ This direct-call catalog does not prove that a file is pure. It recognizes stati
 **Rule: foldkit/no-impure-call-at-decision-time**
 
 ```typescript
-import { Crypto, Effect, Schema } from 'effect'
+import { Effect, Schema } from 'effect'
+import { SecureRandom } from 'effect/crypto'
 import { Command } from 'foldkit'
 
 import { BrowserCrypto } from '@effect/platform-browser'
@@ -746,10 +747,10 @@ const SaveDraft = Command.define('SaveDraft', {
   messages: [Message.CompletedSaveDraft],
   execute: ({ body: _body }) =>
     Effect.gen(function* () {
-      const crypto = yield* Crypto.Crypto
-      const draftId = yield* Effect.orDie(crypto.randomUUIDv4)
+      const secureRandom = yield* SecureRandom.SecureRandom
+      const draftId = yield* secureRandom.uuidV4()
       return Message.CompletedSaveDraft({ draftId })
-    }).pipe(Effect.provide(BrowserCrypto.layer)),
+    }).pipe(Effect.provide(BrowserCrypto.layerSecureRandom)),
 })
 
 const saveGood = (body: string) => SaveDraft({ body })
