@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-toast-test
 title: "Ui/Toast/test"
 description: "API documentation for the Ui/Toast/test module."
-access_date: 2026-10-29T19:36:43.640Z
-current_date: 2026-10-29T19:36:43.640Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Ui/Toast/test
@@ -14,7 +14,7 @@ current_date: 2026-10-29T19:36:43.640Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/toast/test.ts#L57)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/ui/src/toast/test.ts#L57)
 
 ```
 /**
@@ -54,7 +54,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/toast/test.ts#L11)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/ui/src/toast/test.ts#L11)
 
 ```
 /**

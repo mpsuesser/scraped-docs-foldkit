@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api
 title: "Foldkit Content API"
 description: "The read-only JSON API for this documentation site: endpoints, authentication, versioning and deprecation policy, rate limit headers, and the RFC 9457 error model."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Foldkit Content API
@@ -34,47 +34,14 @@ curl https://foldkit.dev/api/v1
 
 ## Endpoints
 
-Operation
-
-Path
-
-Returns
-
-`getServiceIndex`
-
-`/api/v1`
-
-The endpoint list and the policies on this page.
-
-`listPages`
-
-`/api/v1/pages.json`
-
-Every documentation page with title, description, section, and the URLs of its HTML, Markdown, and JSON forms.
-
-`getPage`
-
-`/api/v1/page.json?path={path}`
-
-One page with its metadata and its full Markdown content.
-
-`listSections`
-
-`/api/v1/sections.json`
-
-The documentation sections in reading order, each with the paths of the pages it holds.
-
-`listExamples`
-
-`/api/v1/examples.json`
-
-Every example application with difficulty, tags, and the URLs of its write-up, playground, and source.
-
-`listBlogPosts`
-
-`/api/v1/blog.json`
-
-Every blog post with its publication date and the URLs of its HTML and Markdown forms.
+| Operation | Path | Returns |
+| --- | --- | --- |
+| `getServiceIndex` | `/api/v1` | The endpoint list and the policies on this page. |
+| `listPages` | `/api/v1/pages.json` | Every documentation page with title, description, section, and the URLs of its HTML, Markdown, and JSON forms. |
+| `getPage` | `/api/v1/page.json?path={path}` | One page with its metadata and its full Markdown content. |
+| `listSections` | `/api/v1/sections.json` | The documentation sections in reading order, each with the paths of the pages it holds. |
+| `listExamples` | `/api/v1/examples.json` | Every example application with difficulty, tags, and the URLs of its write-up, playground, and source. |
+| `listBlogPosts` | `/api/v1/blog.json` | Every blog post with its publication date and the URLs of its HTML and Markdown forms. |
 
 The `path` query parameter of `getPage` is the page's URL path without the leading slash. Query encoding handles nested paths such as `core/model`, so ordinary OpenAPI clients can call the endpoint without special path handling. The homepage is `index`. Every entry from `listPages` also carries a ready-made `apiUrl`.
 

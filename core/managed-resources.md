@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/managed-resources
 title: "Managed Resources"
 description: "Acquire a stateful handle while a Model condition holds, expose it to Commands, and release it when dependencies change. Covers Layers and Submodel lifting."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Managed Resources
@@ -74,53 +74,12 @@ const application = Runtime.makeApplication({
 
 The runtime compares the requirements after every Model change and performs the corresponding transition.
 
-Requirements transition
-
-Runtime behavior
-
-`Option.none()`
-
-to
-
-`Option.some(params)`
-
-Acquire the handle, then dispatch
-
-`onAcquired`
-
-.
-
-`Option.some(params)`
-
-to
-
-`Option.none()`
-
-Release the handle, then dispatch
-
-`onReleased`
-
-.
-
-`Option.some(a)`
-
-to a different
-
-`Option.some(b)`
-
-Release and dispatch
-
-`onReleased`
-
-, then acquire and dispatch
-
-`onAcquired`
-
-.
-
-Structurally equal requirements
-
-Keep the current handle.
+| Requirements transition | Runtime behavior |
+| --- | --- |
+| `Option.none()` to `Option.some(params)` | Acquire the handle, then dispatch `onAcquired`. |
+| `Option.some(params)` to `Option.none()` | Release the handle, then dispatch `onReleased`. |
+| `Option.some(a)` to a different `Option.some(b)` | Release and dispatch `onReleased`, then acquire and dispatch `onAcquired`. |
+| Structurally equal requirements | Keep the current handle. |
 
 If acquisition fails, the runtime dispatches `onAcquireError` as a Message. The lifecycle keeps watching for the next requirements change, and the failed acquisition does not crash the application.
 

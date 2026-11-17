@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/foldkit-vs-react-effect-atom
 title: "Foldkit vs React + Effect Atom"
 description: "Two Effect-native architectures: Effect Atom distributes state across reactive cells inside React, while Foldkit builds the application around one Model and update function."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Foldkit vs React + Effect Atom
@@ -543,59 +543,13 @@ Effect Atom favors feature-local atoms, so an agent instead follows imports, der
 
 Architecture aside, several practical factors affect the choice.
 
-React + Effect Atom
-
-Foldkit
-
-Ecosystem
-
-React components, tooling, and libraries
-
-[Foldkit UI](https://foldkit.dev/ui/overview)
-
-, plus
-
-[Mount](https://foldkit.dev/core/mount)
-
-and
-
-[CustomElement](https://foldkit.dev/core/custom-element)
-
-for third-party integration
-
-Incremental adoption
-
-Add atoms to an existing React application
-
-Owns the application runtime, though
-
-[Embedding](https://foldkit.dev/core/embedding)
-
-can mount it inside another page
-
-Data fetching
-
-`AsyncResult`
-
-, SWR, Suspense, families, and Effect HTTP/RPC integration
-
-[AsyncData](https://foldkit.dev/core/async-data)
-
-for state, with fetching, caching, and refresh policy modeled through the Model and Commands
-
-Fine-grained reactivity
-
-Components subscribe to the atoms they read
-
-Top-down view evaluation with virtual DOM diffing and
-
-[view memoization](https://foldkit.dev/core/view-memoization)
-
-View model
-
-React components and JSX
-
-Typed view functions and an HTML builder DSL
+|  | React + Effect Atom | Foldkit |
+| --- | --- | --- |
+| Ecosystem | React components, tooling, and libraries | [Foldkit UI](https://foldkit.dev/ui/overview), plus [Mount](https://foldkit.dev/core/mount) and [CustomElement](https://foldkit.dev/core/custom-element) for third-party integration |
+| Incremental adoption | Add atoms to an existing React application | Owns the application runtime, though [Embedding](https://foldkit.dev/core/embedding) can mount it inside another page |
+| Data fetching | `AsyncResult`, SWR, Suspense, families, and Effect HTTP/RPC integration | [AsyncData](https://foldkit.dev/core/async-data) for state, with fetching, caching, and refresh policy modeled through the Model and Commands |
+| Fine-grained reactivity | Components subscribe to the atoms they read | Top-down view evaluation with virtual DOM diffing and [view memoization](https://foldkit.dev/core/view-memoization) |
+| View model | React components and JSX | Typed view functions and an HTML builder DSL |
 
 ## Conclusion
 

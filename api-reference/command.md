@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/command
 title: "Command"
 description: "API documentation for the Command module."
-access_date: 2026-10-29T19:36:43.640Z
-current_date: 2026-10-29T19:36:43.640Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Command
@@ -14,7 +14,7 @@ current_date: 2026-10-29T19:36:43.640Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/command/index.ts#L220)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/command/index.ts#L229)
 
 ## Types
 
@@ -22,7 +22,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/command/index.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/command/index.ts#L15)
 
 ```
 /**
@@ -50,7 +50,7 @@ type Command = [T] extends [Schema.Top]
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/command/index.ts#L76)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/command/index.ts#L79)
 
 ```
 /** A Command definition created with `Command.define`. Union over the no-args and with-args shapes; consumers that only need name/identity can accept this. */
@@ -61,7 +61,7 @@ type CommandDefinition = CommandDefinitionNoArgs<Name, Effect.Effect<ResultMessa
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/command/index.ts#L92)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/command/index.ts#L95)
 
 ```
 /**
@@ -81,13 +81,33 @@ type InterruptOption = true | Readonly<{
 }>
 ```
 
+### ResultMessageSchemas
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/messageSchemas.ts#L17)
+
+```
+/**
+ * A non-empty tuple of result Message Schemas, each with a decoded type other
+ *  than `never`. Use this type for a generic factory's `messages` parameter
+ *  when forwarding it to `Command.define`, `Mount.define`, or
+ *  `Mount.defineStream`.
+ */
+type ResultMessageSchemas = Messages & NoInfer<{
+  readonly [Index in keyof Messages]: [NeverMessageSchema<Messages[Index]>] extends [never]
+    ? Messages[Index]
+    : never
+}>
+```
+
 ## Interfaces
 
 ### CommandDefinitionNoArgs
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/command/index.ts#L51)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/command/index.ts#L54)
 
 ```
 /** A Command definition for a Command with no declared args. Call as `Definition()` to produce a Command instance. */
@@ -101,7 +121,7 @@ interface CommandDefinitionNoArgs {
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/command/index.ts#L61)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/command/index.ts#L64)
 
 ```
 /** A Command definition for a Command with declared args. Call as `Definition(args)` to produce a Command instance. */
@@ -117,7 +137,7 @@ interface CommandDefinitionWithArgs {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/command/brand.ts#L3)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/command/brand.ts#L3)
 
 ```
 /** Type-level brand for CommandDefinition values. */
@@ -128,7 +148,7 @@ const CommandDefinitionTypeId: unique symbol
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/command/index.ts#L402)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/command/index.ts#L411)
 
 ```
 /**
@@ -151,7 +171,7 @@ const mapEffect: (f: (effect: Effect<A, E1, R1>) => Effect<NoInfer<A>, E2, R2>) 
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/command/index.ts#L447)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/command/index.ts#L456)
 
 ```
 /**
@@ -184,7 +204,7 @@ const mapMessage: (command: Command<FromMessage, E, R>, f: (message: FromMessage
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/command/index.ts#L512)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/command/index.ts#L521)
 
 ```
 /**

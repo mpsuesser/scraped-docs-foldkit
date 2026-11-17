@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/overview
 title: "Foldkit UI"
 description: "Choose between stateful Submodels and stateless render helpers in Foldkit’s headless UI package. Covers accessibility, styling, installation, and the component catalog."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Foldkit UI
@@ -38,195 +38,36 @@ The Kind column below identifies each component category.
 
 ## Components
 
-Component
-
-Kind
-
-Description
-
-[Button](https://foldkit.dev/ui/button)
-
-Helper
-
-Accessible button with consistent ARIA attributes and data-attribute hooks for styling.
-
-[Input](https://foldkit.dev/ui/input)
-
-Helper
-
-Text input with ARIA label/description linking and data-attribute hooks.
-
-[Textarea](https://foldkit.dev/ui/textarea)
-
-Helper
-
-Multi-line text input with ARIA label/description linking and data-attribute hooks.
-
-[Checkbox](https://foldkit.dev/ui/checkbox)
-
-Helper
-
-Toggle with accessible labeling, keyboard support, indeterminate state, and optional form integration.
-
-[Fieldset](https://foldkit.dev/ui/fieldset)
-
-Helper
-
-Groups related form controls with a legend and description. Disabled state propagates to all children.
-
-[Radio Group](https://foldkit.dev/ui/radio-group)
-
-Submodel
-
-Radio options with roving tabindex, keyboard navigation, read-only navigation, and per-option label/description linking.
-
-[Switch](https://foldkit.dev/ui/switch)
-
-Helper
-
-On/off toggle with accessible labeling, keyboard support, and optional form integration.
-
-[Slider](https://foldkit.dev/ui/slider)
-
-Submodel
-
-Numeric range input with pointer drag, keyboard step / page / home / end navigation, and ARIA slider semantics.
-
-[Meter](https://foldkit.dev/ui/meter)
-
-Helper
-
-Scalar value in a known range with
-
-`role="meter"`
-
-, clamped
-
-`aria-valuenow`
-
-, and threshold data attributes.
-
-[Progress](https://foldkit.dev/ui/progress)
-
-Helper
-
-Task progress with
-
-`role="progressbar"`
-
-, determinate and indeterminate states, and
-
-`data-state`
-
-styling hooks.
-
-[Select](https://foldkit.dev/ui/select)
-
-Helper
-
-Native select wrapper with ARIA label/description linking and data-attribute hooks.
-
-[Listbox](https://foldkit.dev/ui/listbox)
-
-Submodel
-
-Custom select dropdown with persistent selection, keyboard navigation, typeahead search, and read-only browsing.
-
-[Combobox](https://foldkit.dev/ui/combobox)
-
-Submodel
-
-Autocomplete input with filtering, keyboard navigation, custom rendering, and read-only browsing.
-
-[Dialog](https://foldkit.dev/ui/dialog)
-
-Submodel
-
-Modal dialog using native <dialog> with focus trapping, backdrop, and scroll locking.
-
-[Menu](https://foldkit.dev/ui/menu)
-
-Submodel
-
-Dropdown menu with keyboard navigation, typeahead search, and aria-activedescendant focus.
-
-[Popover](https://foldkit.dev/ui/popover)
-
-Submodel
-
-Floating panel with arbitrary content and natural Tab navigation.
-
-[Tooltip](https://foldkit.dev/ui/tooltip)
-
-Submodel
-
-Non-interactive floating label anchored to a trigger. Shows on hover after a delay or immediately on keyboard focus, and hides on pointer-leave, blur, or Escape.
-
-[Toast](https://foldkit.dev/ui/toast)
-
-Submodel
-
-Stack of transient notifications anchored to a corner of the viewport. Each entry has its own enter and leave animation, auto-dismiss timer, and hover-to-pause behavior.
-
-[Disclosure](https://foldkit.dev/ui/disclosure)
-
-Helper
-
-Show/hide toggle for building collapsible sections like FAQs and accordions.
-
-[Tabs](https://foldkit.dev/ui/tabs)
-
-Submodel
-
-Tabbed interface with keyboard navigation, Home/End support, and wrapping.
-
-[Nav](https://foldkit.dev/ui/nav)
-
-Helper
-
-Stateless, URL-driven navigation landmark whose items are links, marking the current destination with aria-current="page".
-
-[Drag and Drop](https://foldkit.dev/ui/drag-and-drop)
-
-Submodel
-
-Sortable lists and cross-container movement with pointer tracking, keyboard navigation, auto-scrolling, and screen reader announcements.
-
-[File Drop](https://foldkit.dev/ui/file-drop)
-
-Submodel
-
-File input with drag-and-drop support, configurable accept patterns, and multiple-file mode. Emits typed OutMessages for received files and non-file drops.
-
-[Calendar](https://foldkit.dev/ui/calendar)
-
-Submodel
-
-Inline calendar grid with 2D keyboard navigation, locale-aware headers, min/max constraints, and disabled-date support. Foundation for date pickers.
-
-[Date Picker](https://foldkit.dev/ui/date-picker)
-
-Submodel
-
-Input paired with a popover Calendar. Inherits the calendar’s constraint and keyboard-navigation support, with programmatic open/close and setters.
-
-[Animation](https://foldkit.dev/ui/animation)
-
-Submodel
-
-Coordinates CSS enter/leave animations via a state machine and data attributes. Works with both CSS transitions and CSS keyframe animations. Sends an OutMessage when the leave animation completes.
-
-[Hover Intent](https://foldkit.dev/ui/hover-intent)
-
-Submodel
-
-Headless hover and focus behavior for a trigger and panel, with delayed pointer opening and a closing grace period. The consumer owns semantics, positioning, and styling.
-
-[Virtual List](https://foldkit.dev/ui/virtual-list)
-
-Submodel
-
-Virtualization for large lists. Only the items inside the viewport plus an overscan buffer are mounted, and spacer elements above and below the visible slice keep the scrollbar accurate.
+| Component | Kind | Description |
+| --- | --- | --- |
+| [Button](https://foldkit.dev/ui/button) | Helper | Accessible button with consistent ARIA attributes and data-attribute hooks for styling. |
+| [Input](https://foldkit.dev/ui/input) | Helper | Text input with ARIA label/description linking and data-attribute hooks. |
+| [Textarea](https://foldkit.dev/ui/textarea) | Helper | Multi-line text input with ARIA label/description linking and data-attribute hooks. |
+| [Checkbox](https://foldkit.dev/ui/checkbox) | Helper | Toggle with accessible labeling, keyboard support, indeterminate state, and optional form integration. |
+| [Fieldset](https://foldkit.dev/ui/fieldset) | Helper | Groups related form controls with a legend and description. Disabled state propagates to all children. |
+| [Radio Group](https://foldkit.dev/ui/radio-group) | Submodel | Radio options with roving tabindex, keyboard navigation, read-only navigation, and per-option label/description linking. |
+| [Switch](https://foldkit.dev/ui/switch) | Helper | On/off toggle with accessible labeling, keyboard support, and optional form integration. |
+| [Slider](https://foldkit.dev/ui/slider) | Submodel | Numeric range input with pointer drag, keyboard step / page / home / end navigation, and ARIA slider semantics. |
+| [Meter](https://foldkit.dev/ui/meter) | Helper | Scalar value in a known range with `role="meter"`, clamped `aria-valuenow`, and threshold data attributes. |
+| [Progress](https://foldkit.dev/ui/progress) | Helper | Task progress with `role="progressbar"`, determinate and indeterminate states, and `data-state` styling hooks. |
+| [Select](https://foldkit.dev/ui/select) | Helper | Native select wrapper with ARIA label/description linking and data-attribute hooks. |
+| [Listbox](https://foldkit.dev/ui/listbox) | Submodel | Custom select dropdown with persistent selection, keyboard navigation, typeahead search, and read-only browsing. |
+| [Combobox](https://foldkit.dev/ui/combobox) | Submodel | Autocomplete input with filtering, keyboard navigation, custom rendering, and read-only browsing. |
+| [Dialog](https://foldkit.dev/ui/dialog) | Submodel | Modal dialog using native <dialog> with focus trapping, backdrop, and scroll locking. |
+| [Menu](https://foldkit.dev/ui/menu) | Submodel | Dropdown menu with keyboard navigation, typeahead search, and aria-activedescendant focus. |
+| [Popover](https://foldkit.dev/ui/popover) | Submodel | Floating panel with arbitrary content and natural Tab navigation. |
+| [Tooltip](https://foldkit.dev/ui/tooltip) | Submodel | Non-interactive floating label anchored to a trigger. Shows on hover after a delay or immediately on keyboard focus, and hides on pointer-leave, blur, or Escape. |
+| [Toast](https://foldkit.dev/ui/toast) | Submodel | Stack of transient notifications anchored to a corner of the viewport. Each entry has its own enter and leave animation, auto-dismiss timer, and hover-to-pause behavior. |
+| [Disclosure](https://foldkit.dev/ui/disclosure) | Helper | Show/hide toggle for building collapsible sections like FAQs and accordions. |
+| [Tabs](https://foldkit.dev/ui/tabs) | Submodel | Tabbed interface with keyboard navigation, Home/End support, and wrapping. |
+| [Nav](https://foldkit.dev/ui/nav) | Helper | Stateless, URL-driven navigation landmark whose items are links, marking the current destination with aria-current="page". |
+| [Drag and Drop](https://foldkit.dev/ui/drag-and-drop) | Submodel | Sortable lists and cross-container movement with pointer tracking, keyboard navigation, auto-scrolling, and screen reader announcements. |
+| [File Drop](https://foldkit.dev/ui/file-drop) | Submodel | File input with drag-and-drop support, configurable accept patterns, and multiple-file mode. Emits typed OutMessages for received files and non-file drops. |
+| [Calendar](https://foldkit.dev/ui/calendar) | Submodel | Inline calendar grid with 2D keyboard navigation, locale-aware headers, min/max constraints, and disabled-date support. Foundation for date pickers. |
+| [Date Picker](https://foldkit.dev/ui/date-picker) | Submodel | Input paired with a popover Calendar. Inherits the calendar’s constraint and keyboard-navigation support, with programmatic open/close and setters. |
+| [Animation](https://foldkit.dev/ui/animation) | Submodel | Coordinates CSS enter/leave animations via a state machine and data attributes. Works with both CSS transitions and CSS keyframe animations. Sends an OutMessage when the leave animation completes. |
+| [Hover Intent](https://foldkit.dev/ui/hover-intent) | Submodel | Headless hover and focus behavior for a trigger and panel, with delayed pointer opening and a closing grace period. The consumer owns semantics, positioning, and styling. |
+| [Virtual List](https://foldkit.dev/ui/virtual-list) | Submodel | Virtualization for large lists. Only the items inside the viewport plus an overscan buffer are mounted, and spacer elements above and below the visible slice keep the scrollbar accurate. |
 
 Underneath the floating components sits [Anchor](https://foldkit.dev/ui/anchor), the positioning runtime Listbox, Combobox, Menu, Popover, Tooltip, and Date Picker share. It is neither a helper nor a Submodel, so it has no row above. Reach for it directly only when you are building an anchored component none of those cover.
 

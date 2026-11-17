@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/html
 title: "Html"
 description: "API documentation for the Html module."
-access_date: 2026-10-29T19:36:43.640Z
-current_date: 2026-10-29T19:36:43.640Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Html
@@ -14,7 +14,7 @@ current_date: 2026-10-29T19:36:43.640Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/childAttribute.ts#L70)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/childAttribute.ts#L70)
 
 ```
 /**
@@ -59,7 +59,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/lazy.ts#L268)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/lazy.ts#L381)
 
 ```
 /**
@@ -76,39 +76,47 @@ function
  *  a detail page keyed `post.slug` memoizes under `post.slug`. Reusing that one
  *  identifier keeps the memo and the DOM invalidating together.
  * 
- *  Entries are never evicted, so keys are expected to be bounded, such as an
- *  entity registry, a route table, or a fixed set of call sites. A key drawn
- *  from something unbounded, such as a search query or a paged cursor, grows
- *  the map for the lifetime of the page. If that becomes the shape an app
- *  needs, the upgrade path is a variant that drops keys absent from the latest
- *  render pass, not a cap on this one.
+ *  Each entry holds the cached VNode, and that VNode holds its DOM element on
+ *  `.elm`. A key that stays in the map keeps that element alive.
+ * 
+ *  By default, entries unused by a completed render are released. This bounds
+ *  the keyed cache to entries used by the latest completed render, including
+ *  entries beneath a cached parent. Cache writes roll back if view construction
+ *  fails. Each runtime or server render has its own cache, so separate apps and
+ *  requests cannot evict each other.
+ * 
+ *  Pass `{ evict: 'None' }` to retain entries across renders where their keys
+ *  are absent. Use explicit retention only with a bounded set, such as an
+ *  entity registry, a route table, or fixed call sites. Every retained entry
+ *  holds its VNode and DOM element after that element leaves the document.
  * 
  *  Like `createLazy`, each key's cached VNode must be rendered at a single
  *  position in the tree. If the same content needs to appear in multiple
  *  positions, give each position its own key.
  */
-(): (key: PropertyKey, fn: (args: Args) => VNode | null, args: Args) => VNode | null
+(config?: Readonly<{
+  evict: KeyedLazyEviction
+}>): (key: PropertyKey, fn: (args: Args) => VNode | null, args: Args) => VNode | null
 ```
 
 ### createLazy
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/lazy.ts#L229)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/lazy.ts#L261)
 
 ```
 /**
- * Creates a memoization slot for a view function. On each render, if the
- *  function reference, dispatchers, Mount render owner, and all arguments are
- *  equal to the previous call, the cached VNode is returned without
- *  re-running the view function. Snabbdom's `patchVnode` short-circuits when
- *  it sees the same VNode reference, so both VNode construction and subtree
- *  diffing are skipped.
+ * Creates a memoization slot for a view function. A cache hit returns the
+ *  cached VNode without re-running the view. The function reference, runtime
+ *  registry, dispatchers, Mount render owner, and every argument must equal
+ *  the preceding call. Snabbdom's `patchVnode` short-circuits on the same VNode
+ *  reference, skipping both construction and subtree diffing.
  * 
- *  Dispatchers and Mount render ownership are part of the cache key because
- *  event handlers and Mounts in the cached VNode close over the frame active
- *  when the VNode was built. Returning a VNode built under a different frame
- *  would silently misroute events or retain the wrong Mount lifecycle owner.
+ *  The runtime frame is part of the cache key because event handlers and
+ *  Mounts close over the frame active when the VNode was built. Reusing a
+ *  VNode from another frame would misroute events or retain the wrong Mount
+ *  lifecycle owner.
  * 
  *  The cached VNode must be rendered at a single position in the tree.
  *  Snabbdom tracks the real DOM through each VNode's mutable `.elm` field
@@ -126,7 +134,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/index.ts#L589)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/index.ts#L594)
 
 ```
 /**
@@ -1100,7 +1108,7 @@ type Attribute = Data.TaggedEnum<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/childAttribute.ts#L35)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/childAttribute.ts#L35)
 
 ```
 /**
@@ -1137,7 +1145,7 @@ type ChildAttribute = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/index.ts#L295)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/index.ts#L300)
 
 ```
 /**
@@ -1183,7 +1191,7 @@ type Document = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/index.ts#L215)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/index.ts#L220)
 
 ```
 /**
@@ -1198,7 +1206,7 @@ type Html = VNode | null
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/index.ts#L5547)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/index.ts#L5552)
 
 ```
 /**
@@ -1239,7 +1247,7 @@ type HtmlBuilder = MessageUniverse<Message> & HtmlElements<Message> & HtmlAttrib
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/index.ts#L152)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/index.ts#L157)
 
 ```
 /** Modifier key state extracted from a `KeyboardEvent`. */
@@ -1251,11 +1259,38 @@ type KeyboardModifiers = Readonly<{
 }>
 ```
 
+### KeyedLazyConfig
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/lazy.ts#L282)
+
+```
+/** Options for createKeyedLazy. `evict` defaults to `AbsentFromRender`. */
+type KeyedLazyConfig = Readonly<{
+  evict: KeyedLazyEviction
+}>
+```
+
+### KeyedLazyEviction
+
+type
+
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/lazy.ts#L279)
+
+```
+/**
+ * Retention policy for a keyed view cache. `None` retains every key.
+ *  `AbsentFromRender` releases entries unused by a completed render.
+ */
+type KeyedLazyEviction = "None" | "AbsentFromRender"
+```
+
 ### TagName
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/index.ts#L305)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/index.ts#L310)
 
 ```
 /** Union of all valid HTML, SVG, and MathML tag names. */
@@ -1266,7 +1301,7 @@ type TagName = "a" | "abbr" | "address" | "area" | "article" | "aside" | "audio"
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/index.ts#L3271)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/index.ts#L3276)
 
 ```
 /**
@@ -1285,7 +1320,7 @@ type TextareaAttribute = Exclude<Attribute<Message>, Readonly<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/index.ts#L235)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/index.ts#L240)
 
 ```
 /**
@@ -1304,7 +1339,7 @@ const ClickOptions: Struct<{
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/index.ts#L220)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/index.ts#L225)
 
 ```
 /**
@@ -1318,7 +1353,7 @@ const DefaultAction: Literals<readonly ["Allow", "Prevent"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/index.ts#L227)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/index.ts#L232)
 
 ```
 /**
@@ -1332,7 +1367,7 @@ const EventPropagation: Literals<readonly ["Bubble", "Stop"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/index.ts#L247)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/index.ts#L252)
 
 ```
 /**
@@ -1346,7 +1381,7 @@ const TextDirection: Literals<readonly ["Ltr", "Rtl", "Auto"]>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/html/index.ts#L5624)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/html/index.ts#L5629)
 
 ```
 /**

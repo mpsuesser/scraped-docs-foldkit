@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/view-memoization
 title: "View Memoization"
 description: "Skip stable view subtrees with createLazy and createKeyedLazy, choose cache keys by entity identity, and profile before adding memoization."
-access_date: 2026-10-21T00:39:13.665Z
-current_date: 2026-10-21T00:39:13.665Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # View Memoization
@@ -146,7 +146,7 @@ A cached VNode can appear at only one position in the tree. Foldkit records its 
 
 ## Keying by Entity Identity
 
-A keyed lazy also separates entities rendered at the same position. A blog page can cache each post by slug, so returning to a previous post can reuse its VNode instead of rebuilding it.
+A keyed lazy also separates entities rendered at the same position. A blog with a bounded post registry can use `{ evict: 'None' }` to cache each post by slug. Returning to a previous post can then reuse its VNode instead of rebuilding it.
 
 Use the same stable Model identifier for memoization and [DOM identity](https://foldkit.dev/best-practices/keying#keys-and-view-identity). A post addressed by `post.slug` uses `post.slug`. A row keyed with `todo.id` uses `todo.id`. One identifier then names the entity in both systems.
 
@@ -183,9 +183,9 @@ const postView = (
   return BlogPostPage.view(post, content)
 }
 
-// One slot per post, keyed by the same slug the route already uses to give
-// the post its DOM identity.
-const lazyPostView = createKeyedLazy()
+// Retain one slot per post in the bounded registry, keyed by the same slug
+// the route already uses to give the post its DOM identity.
+const lazyPostView = createKeyedLazy({ evict: 'None' })
 
 // Navigating between posts moves between slots instead of overwriting one.
 // Coming back to a post you already read returns its cached VNode.
@@ -200,9 +200,39 @@ const view = (
 
 Keys can also identify fixed call sites. If one view function renders in two places, give those positions distinct keys instead of maintaining two `createLazy` slots.
 
-Keys are never evicted
+## Evicting unused keys
 
-`createKeyedLazy` keeps every key it has seen for the lifetime of the page. Use it with a bounded set, such as an entity registry, route table, or fixed set of call sites. A search query or paged cursor can produce unbounded keys and grow the cache without limit.
+`createKeyedLazy()` releases entries absent from the latest completed render. Removing a row from a list or scrolling it out of a virtual window releases its keyed cache entry. Rows present in the next render retain their cache hits.
+
+**Releasing unused row entries**
+
+```typescript
+import { Array, Schema } from 'effect'
+import { type HtmlBuilder, createKeyedLazy } from 'foldkit/html'
+
+const Contact = Schema.Struct({ id: Schema.String, name: Schema.String })
+type Contact = typeof Contact.Type
+
+const contactView = (contact: Contact, h: HtmlBuilder<never>) =>
+  h.keyed('li')(contact.id, [], [contact.name])
+
+const lazyContact = createKeyedLazy()
+
+const contactListView = (
+  contacts: ReadonlyArray<Contact>,
+  h: HtmlBuilder<never>,
+) =>
+  h.ul(
+    [],
+    Array.map(contacts, contact =>
+      lazyContact(contact.id, contactView, [contact, h]),
+    ),
+  )
+```
+
+A cached parent preserves the entries used by its children. Cache writes roll back if view construction fails. Each runtime and server render has its own cache, so rendering another app or request cannot evict the first app's rows.
+
+Pass `{ evict: 'None' }` when a bounded cache must reuse entries after their keys are absent from a render. A fixed route table or post registry can use this to reuse an entity view on a later visit. Each retained entry holds its VNode and DOM element, including after that element leaves the document. Use the default for lists whose row identities can grow.
 
 ## When to Use Lazy Views
 

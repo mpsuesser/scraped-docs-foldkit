@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/subscriptions
 title: "Subscriptions"
 description: "Run ongoing Streams whose lifetime follows Model-derived dependencies. Covers restart behavior, timers, animation frames, live dependency reads, and Submodel lifting."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 ## Ongoing Work with a Model-Driven Lifetime
@@ -92,7 +92,7 @@ The [websocket-chat example](https://foldkit.dev/example-apps/websocket-chat) sh
 
 ## Animation Frames
 
-`Subscription.animationFrameEntry` is a ready-made entry for work tied to the browser's paint clock. It emits a Message on each `requestAnimationFrame` tick while its `isActive` function returns `true`, and supplies the inter-frame delta in milliseconds.
+`Subscription.animationFrameEntry` is a ready-made entry for work tied to the browser's paint clock. It emits a Message on each `requestAnimationFrame` tick while its `isActive` function returns `true`, and supplies the inter-frame delta in milliseconds. Ticks can render before the current frame paints. The runtime advances at most one render per application per frame this way and coalesces ticks into a render that is already pending. Messages from other applications or later browser tasks retain their next-frame scheduling.
 
 The helper returns a complete entry with `{ isActive: boolean }` dependencies. Its `toMessage` maps frame deltas to the entry's Message type. Place it directly in the record passed to `Subscription.make`:
 
@@ -139,6 +139,8 @@ Most entries should use the first `dependencies` argument directly. Reach for `r
 ## Lifting Subscriptions
 
 When a parent embeds a Submodel with Subscriptions, the parent must lift the child's Messages into its own Message type. `Subscription.lift` composes the entire record in one call. Its `read` returns an `Option` of the child Model, matching `Update.foldChild` and `ManagedResource.lift`. Returning `None` stops every child Stream without reading child dependencies. Wrap an always-present child in `Option.some`.
+
+Entries that read the same parent Model object or function share one `read` result. Primitive parent Models are read separately for each entry. Keep `read` a pure projection of the parent Model.
 
 ### Gating Child Subscriptions
 

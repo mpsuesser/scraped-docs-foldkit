@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/field-validation
 title: "Field Validation"
 description: "Model each field as NotValidated, Validating, Invalid, or Valid. Compose synchronous and asynchronous Rules, cross-field checks, and form-level validation."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Field Validation
@@ -50,25 +50,12 @@ type Model = typeof Model.Type
 
 Every state carries the current `value`. `Invalid` also carries a non-empty `errors` array.
 
-Variant
-
-Meaning
-
-`NotValidated`
-
-Validation has not run.
-
-`Validating`
-
-An async check is in flight.
-
-`Valid`
-
-Every applicable rule passed.
-
-`Invalid`
-
-One or more rules failed, with the errors.
+| Variant | Meaning |
+| --- | --- |
+| `NotValidated` | Validation has not run. |
+| `Validating` | An async check is in flight. |
+| `Valid` | Every applicable rule passed. |
+| `Invalid` | One or more rules failed, with the errors. |
 
 ### Choose the Field Schema
 
@@ -369,49 +356,18 @@ Pass an `isEmpty` predicate to `makeRules` when your control needs a different d
 
 ### String and Array Rules
 
-Rule
-
-Description
-
-`Rule.minLength(min, message?)`
-
-Minimum character count
-
-`Rule.maxLength(max, message?)`
-
-Maximum character count
-
-`Rule.pattern(regex, message?)`
-
-Matches a regular expression
-
-`Rule.email(message?)`
-
-Valid email format
-
-`Rule.url(options?)`
-
-Valid URL format
-
-`Rule.startsWith(prefix, message?)`
-
-Begins with a prefix
-
-`Rule.endsWith(suffix, message?)`
-
-Ends with a suffix
-
-`Rule.includes(substring, message?)`
-
-Contains a substring
-
-`Rule.equals(expected, message?)`
-
-Exact string match
-
-`Rule.oneOf(values, message?)`
-
-Value is in a set of allowed strings
+| Rule | Description |
+| --- | --- |
+| `Rule.minLength(min, message?)` | Minimum character count |
+| `Rule.maxLength(max, message?)` | Maximum character count |
+| `Rule.pattern(regex, message?)` | Matches a regular expression |
+| `Rule.email(message?)` | Valid email format |
+| `Rule.url(options?)` | Valid URL format |
+| `Rule.startsWith(prefix, message?)` | Begins with a prefix |
+| `Rule.endsWith(suffix, message?)` | Ends with a suffix |
+| `Rule.includes(substring, message?)` | Contains a substring |
+| `Rule.equals(expected, message?)` | Exact string match |
+| `Rule.oneOf(values, message?)` | Value is in a set of allowed strings |
 
 For array-valued fields like a multi-select, validate with `Rule.minItems(min, message?)` and `Rule.maxItems(max, message?)`. A required array field already treats the empty array as missing, so reach for these when you need a specific count.
 

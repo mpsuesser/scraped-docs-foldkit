@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing/scene
 title: "Scene"
 description: "Drive the rendered VNode tree with accessible locators, dispatch interactions, resolve lifecycle results, and assert on the resulting HTML."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Scene
@@ -50,69 +50,17 @@ displayValue('alice@example.com')
 selector('.fallback-class')
 ```
 
-Locator
-
-Finds
-
-Example
-
-`role(role, options?)`
-
-Elements by ARIA role (explicit or implicit). Options narrow by accessible name and ARIA state.
-
-`role('button', { name: 'Save' })`
-
-`label(text)`
-
-Form controls by their aria-label or associated <label> text.
-
-`label('Email')`
-
-`placeholder(text)`
-
-Inputs by their placeholder attribute.
-
-`placeholder('Search...')`
-
-`text(target, options?)`
-
-Elements whose rendered text matches a string or
-
-`RegExp`
-
-.
-
-`text('Welcome back')`
-
-`altText(text)`
-
-Images and similar elements by their alt attribute.
-
-`altText('Profile photo')`
-
-`title(text)`
-
-Elements by their title attribute (tooltip text).
-
-`title('Delete')`
-
-`testId(id)`
-
-Elements by data-testid: the escape hatch for tests.
-
-`testId('cart-item-3')`
-
-`displayValue(value)`
-
-Form controls by their current value.
-
-`displayValue('US')`
-
-`selector(css)`
-
-Elements by CSS selector. Use when no accessible query fits.
-
-`selector('.chart-legend')`
+| Locator | Finds | Example |
+| --- | --- | --- |
+| `role(role, options?)` | Elements by ARIA role (explicit or implicit). Options narrow by accessible name and ARIA state. | `role('button', { name: 'Save' })` |
+| `label(text)` | Form controls by their aria-label or associated <label> text. | `label('Email')` |
+| `placeholder(text)` | Inputs by their placeholder attribute. | `placeholder('Search...')` |
+| `text(target, options?)` | Elements whose rendered text matches a string or `RegExp`. | `text('Welcome back')` |
+| `altText(text)` | Images and similar elements by their alt attribute. | `altText('Profile photo')` |
+| `title(text)` | Elements by their title attribute (tooltip text). | `title('Delete')` |
+| `testId(id)` | Elements by data-testid: the escape hatch for tests. | `testId('cart-item-3')` |
+| `displayValue(value)` | Form controls by their current value. | `displayValue('US')` |
+| `selector(css)` | Elements by CSS selector. Use when no accessible query fits. | `selector('.chart-legend')` |
 
 ### Text locators
 
@@ -155,75 +103,16 @@ role('button', { pressed: true, disabled: false })
 role('link', { current: 'page' })
 ```
 
-Option
-
-Type
-
-Matches
-
-`name`
-
-`string | RegExp`
-
-Accessible name (aria-label, aria-labelledby, label[for], or text content). Strings match exactly; regular expressions match against the full name.
-
-`level`
-
-`number`
-
-Heading level (for role: "heading")
-
-`checked`
-
-`boolean | 'mixed'`
-
-aria-checked or the checked attribute
-
-`selected`
-
-`boolean`
-
-aria-selected
-
-`pressed`
-
-`boolean | 'mixed'`
-
-aria-pressed
-
-`expanded`
-
-`boolean`
-
-aria-expanded
-
-`disabled`
-
-`boolean`
-
-aria-disabled or the disabled attribute
-
-`current`
-
-`boolean | 'page' | 'step' | 'location' | 'date' | 'time'`
-
-aria-current.
-
-`true`
-
-matches
-
-`"true"`
-
-only,
-
-`false`
-
-matches a missing attribute or
-
-`"false"`
-
-, and a token matches itself.
+| Option | Type | Matches |
+| --- | --- | --- |
+| `name` | `string \| RegExp` | Accessible name (aria-label, aria-labelledby, label[for], or text content). Strings match exactly; regular expressions match against the full name. |
+| `level` | `number` | Heading level (for role: "heading") |
+| `checked` | `boolean \| 'mixed'` | aria-checked or the checked attribute |
+| `selected` | `boolean` | aria-selected |
+| `pressed` | `boolean \| 'mixed'` | aria-pressed |
+| `expanded` | `boolean` | aria-expanded |
+| `disabled` | `boolean` | aria-disabled or the disabled attribute |
+| `current` | `boolean \| 'page' \| 'step' \| 'location' \| 'date' \| 'time'` | aria-current. `true` matches `"true"` only, `false` matches a missing attribute or `"false"`, and a token matches itself. |
 
 ### Selector locators
 
@@ -288,25 +177,12 @@ pipe(
 )
 ```
 
-Filter option
-
-Keeps matches where
-
-`has`
-
-The element contains a descendant matching the given Locator
-
-`hasNot`
-
-The element does not contain a descendant matching the Locator
-
-`hasText`
-
-The element’s text content includes the given substring
-
-`hasNotText`
-
-The element’s text content does not include the substring
+| Filter option | Keeps matches where |
+| --- | --- |
+| `has` | The element contains a descendant matching the given Locator |
+| `hasNot` | The element does not contain a descendant matching the Locator |
+| `hasText` | The element’s text content includes the given substring |
+| `hasNotText` | The element’s text content does not include the substring |
 
 ## Interactions
 
@@ -348,133 +224,24 @@ submit(role('form'))
 keydown(label('Search'), 'Enter')
 ```
 
-Step
-
-Invokes
-
-`click(target)`
-
-`OnClick`
-
-(runs target and ancestor handlers until propagation stops)
-
-`doubleClick(target)`
-
-`OnDoubleClick`
-
-(bubbles to ancestors)
-
-`contextMenu(target)`
-
-`OnContextMenu`
-
-(bubbles to ancestors)
-
-`pointerDown(target, options?)`
-
-`OnPointerDown`
-
-with optional
-
-`{ pointerType, button, screenX, screenY, clientX, clientY, pointerId }`
-
-(bubbles to ancestors)
-
-`pointerUp(target, options?)`
-
-`OnPointerUp`
-
-with optional
-
-`{ pointerType, screenX, screenY }`
-
-(bubbles to ancestors)
-
-`hover(target)`
-
-`OnMouseEnter`
-
-(falls back to
-
-`OnMouseOver`
-
-)
-
-`focus(target)`
-
-`OnFocus`
-
-`blur(target)`
-
-`OnBlur`
-
-`focusEnter(target)`
-
-`OnFocusEnter`
-
-`focusLeave(target)`
-
-`OnFocusLeave`
-
-`type(target, text)`
-
-`OnInput`
-
-with the given text
-
-`typeContentEditable(target, text)`
-
-`OnInput`
-
-on a
-
-`Contenteditable`
-
-host, with the given rendered text
-
-`change(target, value)`
-
-`OnChange`
-
-with the given value, for
-
-`<select>`
-
-and similar
-
-`beforeInput(target, inputType, data)`
-
-`OnBeforeInput`
-
-or
-
-`OnBeforeInputPreventDefault`
-
-, with the given
-
-`inputType`
-
-and
-
-`Option`
-
-data
-
-`keydown(target, key, modifiers?)`
-
-`OnKeyDown`
-
-or
-
-`OnKeyDownPreventDefault`
-
-with optional
-
-`{ shiftKey, ctrlKey, altKey, metaKey }`
-
-`submit(target)`
-
-`OnSubmit`
+| Step | Invokes |
+| --- | --- |
+| `click(target)` | `OnClick` (runs target and ancestor handlers until propagation stops) |
+| `doubleClick(target)` | `OnDoubleClick` (bubbles to ancestors) |
+| `contextMenu(target)` | `OnContextMenu` (bubbles to ancestors) |
+| `pointerDown(target, options?)` | `OnPointerDown` with optional `{ pointerType, button, screenX, screenY, clientX, clientY, pointerId }` (bubbles to ancestors) |
+| `pointerUp(target, options?)` | `OnPointerUp` with optional `{ pointerType, screenX, screenY }` (bubbles to ancestors) |
+| `hover(target)` | `OnMouseEnter` (falls back to `OnMouseOver`) |
+| `focus(target)` | `OnFocus` |
+| `blur(target)` | `OnBlur` |
+| `focusEnter(target)` | `OnFocusEnter` |
+| `focusLeave(target)` | `OnFocusLeave` |
+| `type(target, text)` | `OnInput` with the given text |
+| `typeContentEditable(target, text)` | `OnInput` on a `Contenteditable` host, with the given rendered text |
+| `change(target, value)` | `OnChange` with the given value, for `<select>` and similar |
+| `beforeInput(target, inputType, data)` | `OnBeforeInput` or `OnBeforeInputPreventDefault`, with the given `inputType` and `Option` data |
+| `keydown(target, key, modifiers?)` | `OnKeyDown` or `OnKeyDownPreventDefault` with optional `{ shiftKey, ctrlKey, altKey, metaKey }` |
+| `submit(target)` | `OnSubmit` |
 
 ### Input and Inspection Steps
 
@@ -517,73 +284,24 @@ expectAll(all.role('row')).toHaveCount(3)
 expectAll(all.role('alert')).toBeEmpty()
 ```
 
-Matcher
-
-Asserts that the element
-
-`.toExist()`
-
-Is present in the tree
-
-`.toBeAbsent()`
-
-Is not present in the tree
-
-`.toBeVisible()`
-
-Is not hidden via the hidden attribute, aria-hidden, display: none, or visibility: hidden
-
-`.toBeEmpty()`
-
-Has no text content or child elements
-
-`.toHaveText(value)`
-
-Has text content equal to the given string or matching the given regex
-
-`.toContainText(value)`
-
-Has text content including the given substring or matching the regex
-
-`.toHaveAccessibleName(name)`
-
-Has the given accessible name (resolves aria-labelledby, aria-label, label[for], native host-language sources, accessible text content, and title)
-
-`.toHaveAccessibleDescription(description)`
-
-Has the given accessible description (resolves aria-describedby)
-
-`.toBeDisabled()`
-
-Has aria-disabled or the disabled attribute
-
-`.toBeEnabled()`
-
-Is not disabled
-
-`.toBeChecked()`
-
-Has aria-checked="true" or the checked attribute
-
-`.toHaveValue(value)`
-
-Has the given current form-control value
-
-`.toHaveAttr(name, value)`
-
-Has the given attribute set to the given value
-
-`.toHaveId(id)`
-
-Has the given id
-
-`.toHaveClass(name)`
-
-Has the given CSS class
-
-`.toHaveStyle(name, value)`
-
-Has the given inline style property
+| Matcher | Asserts that the element |
+| --- | --- |
+| `.toExist()` | Is present in the tree |
+| `.toBeAbsent()` | Is not present in the tree |
+| `.toBeVisible()` | Is not hidden via the hidden attribute, aria-hidden, display: none, or visibility: hidden |
+| `.toBeEmpty()` | Has no text content or child elements |
+| `.toHaveText(value)` | Has text content equal to the given string or matching the given regex |
+| `.toContainText(value)` | Has text content including the given substring or matching the regex |
+| `.toHaveAccessibleName(name)` | Has the given accessible name (resolves aria-labelledby, aria-label, label[for], native host-language sources, accessible text content, and title) |
+| `.toHaveAccessibleDescription(description)` | Has the given accessible description (resolves aria-describedby) |
+| `.toBeDisabled()` | Has aria-disabled or the disabled attribute |
+| `.toBeEnabled()` | Is not disabled |
+| `.toBeChecked()` | Has aria-checked="true" or the checked attribute |
+| `.toHaveValue(value)` | Has the given current form-control value |
+| `.toHaveAttr(name, value)` | Has the given attribute set to the given value |
+| `.toHaveId(id)` | Has the given id |
+| `.toHaveClass(name)` | Has the given CSS class |
+| `.toHaveStyle(name, value)` | Has the given inline style property |
 
 ### Accessible Names and Descriptions
 
@@ -593,17 +311,10 @@ Accessible-name and accessible-description matching excludes hidden descendant c
 
 For `LocatorAll` (from `all.*`), use `expectAll(locatorAll)` for count-based assertions:
 
-Matcher
-
-Asserts that
-
-`.toHaveCount(n)`
-
-The locator matches exactly n elements
-
-`.toBeEmpty()`
-
-The locator matches zero elements
+| Matcher | Asserts that |
+| --- | --- |
+| `.toHaveCount(n)` | The locator matches exactly n elements |
+| `.toBeEmpty()` | The locator matches zero elements |
 
 ## Handled and Ignored Interactions
 
@@ -682,41 +393,14 @@ Command.resolve(
 )
 ```
 
-Step
-
-Effect
-
-`Command.resolve(Def, ResultMessage)`
-
-Resolves the first pending Command with the given name by feeding
-
-`ResultMessage`
-
-through update. For a child Submodel Command, pass the child’s raw result Message; resolve replays the Command’s own
-
-`mapMessages`
-
-wrapping automatically.
-
-`Command.resolveAll([Def, ResultMessage], ...)`
-
-Resolves a batch of pending Commands, walking cascades. Each entry resolves exactly one matching dispatch in declaration order and unmatched entries carry forward; compose with Array.makeBy for N identical responses.
-
-`Command.resolveAllExact([Def, ResultMessage], ...)`
-
-Resolves a batch and throws unless every listed resolver matches within the call and no actual Commands remain unresolved. Repeated Definition entries consume repeated dispatches in declaration order.
-
-`Command.expectExact(A, B)`
-
-The pending Commands are exactly A and B (order-independent).
-
-`Command.expectHas(A)`
-
-A is among the pending Commands (subset check).
-
-`Command.expectNone()`
-
-There are no pending Commands.
+| Step | Effect |
+| --- | --- |
+| `Command.resolve(Def, ResultMessage)` | Resolves the first pending Command with the given name by feeding `ResultMessage` through update. For a child Submodel Command, pass the child’s raw result Message; resolve replays the Command’s own `mapMessages` wrapping automatically. |
+| `Command.resolveAll([Def, ResultMessage], ...)` | Resolves a batch of pending Commands, walking cascades. Each entry resolves exactly one matching dispatch in declaration order and unmatched entries carry forward; compose with Array.makeBy for N identical responses. |
+| `Command.resolveAllExact([Def, ResultMessage], ...)` | Resolves a batch and throws unless every listed resolver matches within the call and no actual Commands remain unresolved. Repeated Definition entries consume repeated dispatches in declaration order. |
+| `Command.expectExact(A, B)` | The pending Commands are exactly A and B (order-independent). |
+| `Command.expectHas(A)` | A is among the pending Commands (subset check). |
+| `Command.expectNone()` | There are no pending Commands. |
 
 ### Match Command Names and Arguments
 
@@ -780,37 +464,14 @@ Mount.expectEnded(Popover.AnchorPopover)
 Mount.resolve(Popover.AnchorPopover, Popover.Message.CompletedAnchorPopover())
 ```
 
-Step
-
-Effect
-
-`Mount.resolve(Def, ResultMessage)`
-
-Resolves the first pending mount with the given name by feeding
-
-`ResultMessage`
-
-through update. For a mount inside a child Submodel, resolve replays the boundary lift automatically, so you pass the child’s raw result Message.
-
-`Mount.resolveAll([Def, ResultMessage], ...)`
-
-Resolves a batch of pending mounts in order.
-
-`Mount.expectExact(A, B)`
-
-The pending mounts are exactly A and B (order-independent, by name).
-
-`Mount.expectHas(A)`
-
-A is among the pending mounts (subset check).
-
-`Mount.expectNone()`
-
-There are no pending mounts.
-
-`Mount.expectEnded(A)`
-
-A has disappeared from the rendered tree. Required for every Mount that fires and then unmounts during the scene, regardless of whether it was resolved first; otherwise the scene throws at the end.
+| Step | Effect |
+| --- | --- |
+| `Mount.resolve(Def, ResultMessage)` | Resolves the first pending mount with the given name by feeding `ResultMessage` through update. For a mount inside a child Submodel, resolve replays the boundary lift automatically, so you pass the child’s raw result Message. |
+| `Mount.resolveAll([Def, ResultMessage], ...)` | Resolves a batch of pending mounts in order. |
+| `Mount.expectExact(A, B)` | The pending mounts are exactly A and B (order-independent, by name). |
+| `Mount.expectHas(A)` | A is among the pending mounts (subset check). |
+| `Mount.expectNone()` | There are no pending mounts. |
+| `Mount.expectEnded(A)` | A has disappeared from the rendered tree. Required for every Mount that fires and then unmounts during the scene, regardless of whether it was resolved first; otherwise the scene throws at the end. |
 
 UI components export their Mount definitions (`Popover.AnchorPopover`, `Listbox.AnchorListbox`, and so on) so consumer tests can name them in `Mount.resolve`.
 
@@ -875,33 +536,11 @@ click(role('button', { name: 'Open feed' }))
 ManagedResource.failAcquire(resources.feedSocket, new Error('offline'))
 ```
 
-Step
-
-Effect
-
-`ManagedResource.acquire(entry, ...args)`
-
-Feeds
-
-`onAcquired(...args)`
-
-through update. The Model must request the resource.
-
-`ManagedResource.failAcquire(entry, error)`
-
-Feeds
-
-`onAcquireError(error)`
-
-through update. The Model must request the resource.
-
-`ManagedResource.release(entry)`
-
-Feeds
-
-`onReleased()`
-
-through update. The Model must no longer request the resource.
+| Step | Effect |
+| --- | --- |
+| `ManagedResource.acquire(entry, ...args)` | Feeds `onAcquired(...args)` through update. The Model must request the resource. |
+| `ManagedResource.failAcquire(entry, error)` | Feeds `onAcquireError(error)` through update. The Model must request the resource. |
+| `ManagedResource.release(entry)` | Feeds `onReleased()` through update. The Model must no longer request the resource. |
 
 Scene does not model a `Some` to structurally different `Some` reacquisition. At runtime, that transition releases and reacquires the resource while the Model continues to request it. There is no Scene step for that transition yet.
 

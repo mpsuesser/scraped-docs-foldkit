@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/dom
 title: "Dom"
 description: "API documentation for the Dom module."
-access_date: 2026-10-29T19:36:43.640Z
-current_date: 2026-10-29T19:36:43.640Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Dom
@@ -14,7 +14,7 @@ current_date: 2026-10-29T19:36:43.640Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/dom.ts#L798)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/dom.ts#L850)
 
 ```
 /**
@@ -31,7 +31,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/dom.ts#L654)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/dom.ts#L706)
 
 ```
 /**
@@ -45,7 +45,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/dom.ts#L534)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/dom.ts#L580)
 
 ```
 /**
@@ -56,8 +56,8 @@ function
  * a stacked dialog).
  * Resolves to `true` when it released the keyboard handlers, the return
  * focus, and the stack entry.
- * Resolves to `false` when the dialog held none, for example when the close
- * runs before `showDialog` has installed them. A caller that unlocks page
+ * Resolves to `false` when the dialog held none or its acquisition was
+ * interrupted before `showDialog` returned. A caller that unlocks page
  * scroll after the close should unlock only when the result is `true`.
  * Fails with `ElementNotFound` if the selector does not match an `HTMLDialogElement`.
  */
@@ -68,7 +68,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/elementMovement.ts#L23)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/elementMovement.ts#L23)
 
 ```
 /**
@@ -89,7 +89,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/dom.ts#L329)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/dom.ts#L321)
 
 ```
 /**
@@ -147,7 +147,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/inert.ts#L218)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/inert.ts#L208)
 
 ```
 /**
@@ -171,7 +171,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/dom.ts#L636)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/dom.ts#L687)
 
 ```
 /**
@@ -180,7 +180,7 @@ function
  * the dialog stack entry, the z-index counter, and one page scroll lock.
  * Use this when the element is removed without a close Message, such as
  * navigation away from a route-keyed subtree. The runtime also calls it
- * directly on disposal. The normal close path already releases these.
+ * directly on crash or disposal. The normal close path already releases these.
  * That path is `closeDialog` first, then the Dialog component's scroll unlock
  * when `closeDialog` reports a release. This function is the cleanup for the
  * case where no close Message ever reaches `update`.
@@ -192,6 +192,8 @@ function
  * non-empty and unique within the document, since it keys this cleanup
  * accounting; a duplicate or empty id would release the wrong dialog's hygiene.
  * 
+ * An acquisition interrupted during focus has not acquired its paired scroll
+ * lock, so releasing that pending acquisition does not unlock page scroll.
  * Idempotent and exactly-once. It releases only when the dialog currently
  * holds hygiene, then clears the per-dialog marker, so calling it after a
  * normal close, or twice, is a no-op that never under-counts the shared
@@ -210,7 +212,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/inert.ts#L252)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/inert.ts#L242)
 
 ```
 /**
@@ -225,7 +227,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/dom.ts#L678)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/dom.ts#L730)
 
 ```
 /**
@@ -249,7 +251,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/dom.ts#L709)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/dom.ts#L761)
 
 ```
 /**
@@ -279,7 +281,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/dom.ts#L755)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/dom.ts#L807)
 
 ```
 /**
@@ -312,7 +314,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/dom.ts#L373)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/dom.ts#L370)
 
 ```
 /**
@@ -323,8 +325,12 @@ function
  * `showModal()` so that DevTools (and any other high-z-index overlay) remains
  * interactive. Pass `isModal: true` to make the background inert and hide it
  * from assistive technology. `allowedOutsideSelectors` keeps separate developer
- * overlays available while modal isolation is active. Stacked modal dialogs
- * isolate against the topmost one, and closing it restores the dialog beneath.
+ * overlays available while modal isolation is active. Newly added background
+ * content is isolated. External changes to `inert` and `aria-hidden` are
+ * preserved while the dialog is open and during cleanup, so another script
+ * can override background isolation without competing attribute writes.
+ * Stacked modal dialogs isolate against the topmost one, and closing it
+ * restores the dialog beneath.
  * The Dialog component provides its own backdrop, scroll locking,
  * and transitions. Fails with `ElementNotFound` if the selector does not match
  * an `HTMLDialogElement`.
@@ -335,9 +341,10 @@ function
  * 
  * Records the element that had focus when the dialog opened so `closeDialog`
  * can return focus there, the way `showModal()` would natively. Resolves to
- * `true` when it installs the dialog resources, or `false` when that id already
- * holds them. The latter makes concurrent lifecycle recovery and application
- * Commands safe without duplicating focus traps or stack entries.
+ * `true` when the dialog holds its acquired resources. Resolves to `false`
+ * when the id already holds them, the element leaves or closes during focus,
+ * or its runtime stops before acquisition completes. Callers that lock scroll
+ * should do so only when the result is `true`.
  */
 (
   selector: string,
@@ -353,7 +360,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromEvent.ts#L394)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromEvent.ts#L394)
 
 ```
 /**
@@ -393,7 +400,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromEvent.ts#L335)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromEvent.ts#L335)
 
 ```
 /**
@@ -443,7 +450,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromEvent.ts#L465)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromEvent.ts#L465)
 
 ```
 /**
@@ -491,7 +498,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromKeyBindings.ts#L959)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromKeyBindings.ts#L959)
 
 ```
 /**
@@ -544,7 +551,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromMediaQuery.ts#L58)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromMediaQuery.ts#L58)
 
 ```
 /**
@@ -575,7 +582,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/waitForAnimation.ts#L17)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/waitForAnimation.ts#L17)
 
 ```
 /**
@@ -596,7 +603,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/dom.ts#L787)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/dom.ts#L839)
 
 ```
 /** Direction for focus advancement: forward or backward in tab order. */
@@ -607,7 +614,7 @@ type FocusDirection = "Next" | "Previous"
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromKeyBindings.ts#L38)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromKeyBindings.ts#L38)
 
 ```
 /**
@@ -630,7 +637,7 @@ type KeyBinding = BindingBase<Output> & Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromKeyBindings.ts#L21)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromKeyBindings.ts#L21)
 
 ```
 /** A single key press or a sequence of two or more key presses. */
@@ -641,7 +648,7 @@ type KeySequence = string | Readonly<[string, string, ...Array<string>]>
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromEvent.ts#L149)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromEvent.ts#L149)
 
 ```
 /**
@@ -681,7 +688,7 @@ type StreamFromEventConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromEvent.ts#L185)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromEvent.ts#L185)
 
 ```
 /**
@@ -721,7 +728,7 @@ type StreamFromEventFilterMapConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromEvent.ts#L260)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromEvent.ts#L260)
 
 ```
 /**
@@ -763,7 +770,7 @@ type StreamFromEventFilterMapPreventDefaultConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromKeyBindings.ts#L53)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromKeyBindings.ts#L53)
 
 ```
 /** Configuration for the streamFromKeyBindings Stream helper. */
@@ -779,7 +786,7 @@ type StreamFromKeyBindingsConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromMediaQuery.ts#L19)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromMediaQuery.ts#L19)
 
 ```
 /**
@@ -808,7 +815,7 @@ type StreamFromMediaQueryConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromKeyBindings.ts#L18)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromKeyBindings.ts#L18)
 
 ```
 /** Whether a key binding may fire when its event comes from an editable element. */
@@ -821,7 +828,7 @@ type WhileTyping = "Suppress" | "Allow"
 
 interface
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/streamFromEvent.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/streamFromEvent.ts#L25)
 
 ```
 /**
@@ -851,7 +858,7 @@ interface TypedEventTarget {
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/scrollLock.ts#L59)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/scrollLock.ts#L62)
 
 ```
 /**
@@ -861,6 +868,7 @@ const
  * while allowing scrolling within overflow containers.
  * Uses reference counting so nested locks are safe. The page only unlocks
  * when every lock has been released.
+ * Calls from a crashed or disposed runtime do not acquire a new lock.
  */
 const lockScroll: Effect.Effect<void>
 ```
@@ -869,7 +877,7 @@ const lockScroll: Effect.Effect<void>
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/dom/scrollLock.ts#L95)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/dom/scrollLock.ts#L104)
 
 ```
 /**

@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/dialog
 title: "Dialog"
 description: "A modal dialog backed by the native dialog element with focus trapping and scroll locking."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 ## Overview
@@ -79,7 +79,9 @@ See [Folding Update with Update.foldChild](https://foldkit.dev/core/submodel#fol
 
 ### Focus and Modal Isolation
 
-When the Dialog opens, Foldkit marks surrounding content inert and `aria-hidden="true"`, and sets `aria-modal="true"` on the Dialog. Keyboard focus stays inside until it closes, then the original inert and ARIA state is restored before focus returns to the element that opened it. The DevTools overlay remains interactive during development.
+When the Dialog opens, Foldkit marks surrounding content inert and `aria-hidden="true"`, and sets `aria-modal="true"` on the Dialog. Newly added background content is isolated too. Keyboard focus stays inside until it closes, then background state is restored before focus returns to the element that opened it. The DevTools overlay remains interactive during development.
+
+If another script changes `inert` or `aria-hidden` on an isolated element, Foldkit preserves that value while the Dialog is open and during cleanup. This prevents competing DOM observers from freezing the page. An external change can make background content interactive or expose it to assistive technology; the Dialog's keyboard focus trap stays active.
 
 ### Names and Descriptions
 

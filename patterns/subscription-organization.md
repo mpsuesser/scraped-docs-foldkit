@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/subscription-organization
 title: "Subscription Organization"
 description: "Organize Subscription records by ownership and lift child Subscriptions through nested Model and Message types."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Subscription Organization
@@ -48,41 +48,11 @@ Runtime
 
 Three functions build the hierarchy.
 
-Verb
-
-What it does
-
-When to reach for it
-
-`Subscription.make`
-
-Declares local entries from dependency Schemas,
-
-`modelToDependencies`
-
-, and
-
-`dependenciesToStream`
-
-.
-
-The current level owns a Subscription.
-
-`Subscription.lift`
-
-Reads a child Model and wraps each emitted child Message. An optional
-
-`when`
-
-adds a parent-owned gate.
-
-A child exports a Subscriptions record.
-
-`Subscription.aggregate`
-
-Combines records, infers their shared types, and rejects duplicate keys at startup.
-
-A level has more than one local or lifted record.
+| Verb | What it does | When to reach for it |
+| --- | --- | --- |
+| `Subscription.make` | Declares local entries from dependency Schemas, `modelToDependencies`, and `dependenciesToStream`. | The current level owns a Subscription. |
+| `Subscription.lift` | Reads a child Model and wraps each emitted child Message. An optional `when` adds a parent-owned gate. | A child exports a Subscriptions record. |
+| `Subscription.aggregate` | Combines records, infers their shared types, and rejects duplicate keys at startup. | A level has more than one local or lifted record. |
 
 ## Organization Principles
 

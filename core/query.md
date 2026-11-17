@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/query
 title: "Query"
 description: "Fetch, cache, and refresh remote data with reusable Submodels and less boilerplate."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Query
@@ -182,57 +182,11 @@ The parent passes the Query Model to a child-owned accessor; it does not inspect
 
 Query provides three operations for loading and refreshing data. Each operation applies its transition rule to the current `AsyncData` state. When that rule calls for a request, the operation returns the next Model together with the fetch Command. The Runtime performs that Command after it receives the update result. A first load enters `Loading`; a refresh enters `Refreshing` and keeps the previous data available.
 
-Current state
-
-`loadIfMissing`
-
-`revalidate`
-
-`revalidateOrLoad`
-
-`Idle`
-
-,
-
-`Failure`
-
-enter
-
-`Loading`
-
-no change
-
-enter
-
-`Loading`
-
-`Loading`
-
-,
-
-`Refreshing`
-
-no change
-
-no change
-
-no change
-
-`Success`
-
-,
-
-`Stale`
-
-no change
-
-enter
-
-`Refreshing`
-
-enter
-
-`Refreshing`
+| Current state | `loadIfMissing` | `revalidate` | `revalidateOrLoad` |
+| --- | --- | --- | --- |
+| `Idle`, `Failure` | enter `Loading` | no change | enter `Loading` |
+| `Loading`, `Refreshing` | no change | no change | no change |
+| `Success`, `Stale` | no change | enter `Refreshing` | enter `Refreshing` |
 
 The no-change cases return no Command. Calling the same operation again while its Query is pending therefore does not duplicate the request. A KeyedQuery applies this check to the selected entry, so different keys may load concurrently.
 

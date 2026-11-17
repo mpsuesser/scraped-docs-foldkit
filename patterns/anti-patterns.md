@@ -2,8 +2,8 @@
 url: https://foldkit.dev/patterns/anti-patterns
 title: "Anti-patterns"
 description: "Architectural warning signs in Foldkit apps, with idiomatic replacements for ambiguous state, leaky Submodel boundaries, misplaced side effects, stale async results, Command ordering, and live handles."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Anti-patterns
@@ -343,33 +343,14 @@ ManagedResource fits when Commands or Subscriptions need the typed handle. In th
 
 Choose the boundary whose lifetime matches the work:
 
-Cause or lifetime
-
-Boundary
-
-One-time work started while handling a Message
-
-[Command](https://foldkit.dev/core/commands)
-
-Work that requires one rendered element
-
-[Mount](https://foldkit.dev/core/mount)
-
-Ongoing work controlled by Model-derived dependencies
-
-[Subscription](https://foldkit.dev/core/subscriptions)
-
-A typed handle needed while a Model condition holds
-
-[ManagedResource](https://foldkit.dev/core/managed-resources)
-
-A service shared for the entire application Runtime
-
-[Resources](https://foldkit.dev/core/resources)
-
-A native web component whose properties and events remain declarative
-
-[CustomElement](https://foldkit.dev/core/custom-element)
+| Cause or lifetime | Boundary |
+| --- | --- |
+| One-time work started while handling a Message | [Command](https://foldkit.dev/core/commands) |
+| Work that requires one rendered element | [Mount](https://foldkit.dev/core/mount) |
+| Ongoing work controlled by Model-derived dependencies | [Subscription](https://foldkit.dev/core/subscriptions) |
+| A typed handle needed while a Model condition holds | [ManagedResource](https://foldkit.dev/core/managed-resources) |
+| A service shared for the entire application Runtime | [Resources](https://foldkit.dev/core/resources) |
+| A native web component whose properties and events remain declarative | [CustomElement](https://foldkit.dev/core/custom-element) |
 
 If a Mount's `execute` function never uses its element, the work should not be tied to that element's lifetime. Choose the boundary based on what actually starts and stops the work. The [Mount comparison](https://foldkit.dev/core/mount#when-to-reach-for-mount) and [Managed Resources](https://foldkit.dev/core/managed-resources) guides cover these choices in depth.
 

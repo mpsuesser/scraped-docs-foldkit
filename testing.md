@@ -2,8 +2,8 @@
 url: https://foldkit.dev/testing
 title: "Testing"
 description: "Test Foldkit programs with Story and Scene. Story drives the update loop directly, while Scene drives the rendered view through accessible locators."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Testing
@@ -14,27 +14,11 @@ Foldkit tests at two boundaries. Story calls update directly. Scene enters throu
 
 ### Compare the Boundaries
 
-Story
-
-Scene
-
-Enters through
-
-A Message
-
-An interaction or lifecycle result
-
-Observes
-
-Model changes, Commands, and OutMessages
-
-Rendered output, Commands, Mounts, and OutMessages
-
-Best suited to
-
-Update logic, edge cases, and Command wiring
-
-User flows, view behavior, and accessibility
+|  | Story | Scene |
+| --- | --- | --- |
+| Enters through | A Message | An interaction or lifecycle result |
+| Observes | Model changes, Commands, and OutMessages | Rendered output, Commands, Mounts, and OutMessages |
+| Best suited to | Update logic, edge cases, and Command wiring | User flows, view behavior, and accessibility |
 
 ### Use Both Boundaries
 

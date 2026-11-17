@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/mount
 title: "Mount"
 description: "Run DOM work while a specific rendered element exists. Mount supplies the live Element, emits declared result Messages, and keeps setup paired with cleanup."
-access_date: 2026-10-29T19:36:43.640Z
-current_date: 2026-10-29T19:36:43.640Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 ## Overview
@@ -18,7 +18,11 @@ Use `Mount.define` for work that produces one Message when it starts. Its `execu
 
 ### Result Messages
 
-Both `Mount.define` and `Mount.defineStream` require at least one declared result Message. When no result needs to change the Model, return a descriptive `Completed*` Message and leave the Model unchanged in update. The Message keeps the effect visible to DevTools, Scene tests, and replay.
+Both `Mount.define` and `Mount.defineStream` require a non-empty list of result Message Schemas. Entries whose decoded type is `never`, including `Schema.Never`, are rejected by TypeScript. When no result needs to change the Model, return a descriptive `Completed*` Message and leave the Model unchanged in update. The Message records completion for DevTools, Scene tests, and replay.
+
+Returning the completion Message leaves the Mount's scope open. Resources registered with `Effect.acquireRelease` are released when the element unmounts.
+
+Keep shared declarations typed as non-empty tuples. A generic definition factory can accept `Mount.ResultMessageSchemas<Messages>` and pass `Messages` explicitly to `Mount.define` or `Mount.defineStream` to preserve the validation when forwarding its schemas.
 
 Functional core, imperative shell
 

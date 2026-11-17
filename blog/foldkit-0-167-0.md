@@ -2,8 +2,8 @@
 url: https://foldkit.dev/blog/foldkit-0-167-0
 title: "Foldkit 0.167.0"
 description: "SSR without an HTML template, a Node host adapter, VirtualList improvements for chat and feeds, Submodel updates by key, and browser Stream helpers moved to Dom."
-access_date: 2026-10-08T02:46:24.261Z
-current_date: 2026-10-08T02:46:24.261Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 [← Blog](https://foldkit.dev/blog)
@@ -87,21 +87,11 @@ Browser event, media query, and key-binding Stream helpers move from `Subscripti
 
 Subscription entry helpers are also renamed to describe what they return:
 
-Before
-
-After
-
-`Subscription.persistent`
-
-`Subscription.persistentEntry`
-
-`Subscription.animationFrame`
-
-`Subscription.animationFrameEntry`
-
-`Port.subscription`
-
-`Port.subscriptionEntry`
+| Before | After |
+| --- | --- |
+| `Subscription.persistent` | `Subscription.persistentEntry` |
+| `Subscription.animationFrame` | `Subscription.animationFrameEntry` |
+| `Port.subscription` | `Port.subscriptionEntry` |
 
 ## More in this release
 

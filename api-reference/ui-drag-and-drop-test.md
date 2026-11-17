@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/ui-drag-and-drop-test
 title: "Ui/DragAndDrop/test"
 description: "API documentation for the Ui/DragAndDrop/test module."
-access_date: 2026-10-29T19:36:43.640Z
-current_date: 2026-10-29T19:36:43.640Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Ui/DragAndDrop/test
@@ -14,7 +14,7 @@ current_date: 2026-10-29T19:36:43.640Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/test.ts#L64)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/ui/src/dragAndDrop/test.ts#L64)
 
 ```
 /**
@@ -34,7 +34,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/test.ts#L28)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/ui/src/dragAndDrop/test.ts#L28)
 
 ```
 /**
@@ -51,7 +51,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/test.ts#L32)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/ui/src/dragAndDrop/test.ts#L32)
 
 ```
 /** The dragged item and target position supplied to resolveKeyboardMove. */
@@ -66,7 +66,7 @@ type ResolveKeyboardMoveInput = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/ui/src/dragAndDrop/test.ts#L6)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/ui/src/dragAndDrop/test.ts#L6)
 
 ```
 /** Identifies the item whose focus Command settleFocus resolves. */

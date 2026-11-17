@@ -2,8 +2,8 @@
 url: https://foldkit.dev/best-practices/messages
 title: "Messages"
 description: "Name Messages as verb-first, past-tense facts, and name Command result Messages after the Command that produced them."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Messages
@@ -14,45 +14,13 @@ Messages record what happened. They do not tell update what to do. Name them as 
 
 Common prefixes make the source of a fact visible:
 
-Prefix
-
-Use
-
-Example
-
-`Clicked*`
-
-A particular button or control was clicked.
-
-`ClickedAddToCart`
-
-`Updated*`
-
-An input value changed.
-
-`UpdatedSearchInput`
-
-`Succeeded*`
-
-/
-
-`Failed*`
-
-A Command completed with a meaningful success or failure.
-
-`SucceededFetchUser`
-
-`Completed*`
-
-Any other Command result.
-
-`CompletedFocusSearchInput`
-
-`Got*`
-
-A parent received a child Submodel result.
-
-`GotSearchMessage`
+| Prefix | Use | Example |
+| --- | --- | --- |
+| `Clicked*` | A particular button or control was clicked. | `ClickedAddToCart` |
+| `Updated*` | An input value changed. | `UpdatedSearchInput` |
+| `Succeeded*`/`Failed*` | A Command completed with a meaningful success or failure. | `SucceededFetchUser` |
+| `Completed*` | Any other Command result. | `CompletedFocusSearchInput` |
+| `Got*` | A parent received a child Submodel result. | `GotSearchMessage` |
 
 Avoid imperative names such as `SetCartItems`, `UpdateSearchText`, and `MutateUserState`. Those names prescribe a transition before update has seen the current Model. A fact leaves the decision where it belongs: in update.
 

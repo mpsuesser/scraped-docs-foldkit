@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/resources
 title: "Resources"
 description: "Provide app-lifetime Effect services to Commands, Subscriptions, Mounts, and Flags, or provide a service directly when sharing is unnecessary."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Resources
@@ -59,37 +59,12 @@ Commands declare their resource requirements in the type signature via the third
 
 A Command can also satisfy a service requirement locally with `Effect.provide`. Choose the placement from the service’s intended lifetime and identity.
 
-Question
-
-`resources`
-
-Per-Command
-
-`Effect.provide`
-
-How often is the Layer built?
-
-Once for the runtime.
-
-Once per Command execution.
-
-Do Commands share an instance?
-
-Yes.
-
-No. Each execution gets a fresh instance.
-
-What if construction fails?
-
-The runtime fails loudly through its crash path.
-
-The Command handles the failure at its boundary.
-
-Can one tag vary by Command?
-
-No. One implementation is bound for the runtime.
-
-Yes. Each Command can provide its own.
+| Question | `resources` | Per-Command `Effect.provide` |
+| --- | --- | --- |
+| How often is the Layer built? | Once for the runtime. | Once per Command execution. |
+| Do Commands share an instance? | Yes. | No. Each execution gets a fresh instance. |
+| What if construction fails? | The runtime fails loudly through its crash path. | The Command handles the failure at its boundary. |
+| Can one tag vary by Command? | No. One implementation is bound for the runtime. | Yes. Each Command can provide its own. |
 
 ### Common Service Lifetimes
 

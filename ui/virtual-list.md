@@ -2,8 +2,8 @@
 url: https://foldkit.dev/ui/virtual-list
 title: "Virtual List"
 description: "Render only visible rows plus overscan while spacers preserve scroll geometry. Supports fixed and variable row heights, measurement, and programmatic scrolling."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 ## Overview
@@ -81,6 +81,14 @@ The Mount also supplies the live container to scroll Commands, so programmatic s
 ### Handle Observations
 
 The Mount emits `ObservedContainerScroll` with the scroll position, scroll height, container height, and visible row anchor, and `ResizedContainer` with both container dimensions. Delete manual `ScrolledContainer` and `MeasuredContainer` dispatches; the Mount supplies those observations. Update exhaustive Message matches for the new variants.
+
+## Memoizing rows
+
+`itemToKey` is the row's DOM identity. Use that same id when memoizing the row view with `createKeyedLazy`.
+
+The default cache releases entries absent from the completed render, including rows that scroll out of the window. Rows in the window retain their cache hits, including when a memoized parent skips its view.
+
+Memoizing visible VirtualList rows
 
 ## Styling
 

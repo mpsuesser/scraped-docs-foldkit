@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/subscription
 title: "Subscription"
 description: "API documentation for the Subscription module."
-access_date: 2026-10-29T19:36:43.640Z
-current_date: 2026-10-29T19:36:43.640Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Subscription
@@ -14,12 +14,17 @@ current_date: 2026-10-29T19:36:43.640Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/subscription/animationFrame.ts#L66)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/animationFrame.ts#L48)
 
 ```
 /**
  * Build a Subscription entry that emits a Message on every
  * `requestAnimationFrame` tick, with the inter-frame delta in milliseconds.
+ * Ticks can render before the current frame paints. The runtime advances
+ * at most one render per frame this way and coalesces ticks into a render
+ * that is already pending.
+ * Frame timing is local to the application. Messages from later browser tasks
+ * retain their next-frame scheduling.
  */
 <Model, Message>(config: AnimationFrameConfig<Model, Message>): {
   dependenciesSchema: Struct<{
@@ -38,7 +43,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/subscription/subscription.ts#L580)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L609)
 
 ```
 /**
@@ -55,6 +60,12 @@ function
  * projection. Entries omitted from a gate map still stop when the child
  * is absent.
  * 
+ * Entries that read the same parent Model object or function share one
+ * `read` result. Primitive parent Models are read separately for each entry.
+ * Keep `read` a pure projection of the parent Model. A slow `read` is reported
+ * as slow dependencies under the key of whichever entry reads that Model
+ * first.
+ * 
  * Every lifted entry wraps its dependencies in GatedDependencies.
  * The child's dependency Schema, service requirements, and
  * `keepAliveEquivalence` are preserved inside that wrapper. A running child
@@ -68,7 +79,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/subscription/subscription.ts#L175)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L176)
 
 ```
 /**
@@ -89,7 +100,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/subscription/subscription.ts#L366)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L367)
 
 ```
 /**
@@ -111,7 +122,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/subscription/animationFrame.ts#L12)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/animationFrame.ts#L14)
 
 ```
 /**
@@ -133,7 +144,7 @@ type AnimationFrameConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/subscription/subscription.ts#L415)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L416)
 
 ```
 /**
@@ -147,7 +158,7 @@ type EntryGates = Readonly<Partial<Record<keyof Subscriptions, WhenPredicate<Par
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/subscription/subscription.ts#L25)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L26)
 
 ```
 /**
@@ -167,7 +178,7 @@ type EntryWithoutKeepAlive = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/subscription/subscription.ts#L405)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L406)
 
 ```
 /**
@@ -185,7 +196,7 @@ type GatedDependencies = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/subscription/subscription.ts#L73)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L74)
 
 ```
 /**
@@ -220,7 +231,7 @@ type Subscription = Entry<Model, Message, Dependencies, Services> & Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/subscription/subscription.ts#L81)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L82)
 
 ```
 /** A record of named Subscriptions keyed by dependency field name. */
@@ -233,7 +244,7 @@ type Subscriptions = Readonly<Record<string, Subscription<Model, Message, any, S
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/a471adb24d750ab9e8d8312edad53ff6f26d961b/packages/foldkit/src/subscription/subscription.ts#L337)
+[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L338)
 
 ```
 /**

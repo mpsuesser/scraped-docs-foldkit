@@ -2,8 +2,8 @@
 url: https://foldkit.dev/react/coming-from-react
 title: "Coming from React"
 description: "See how Foldkit replaces component-owned state and Effects with one Model, Messages, update, Commands, Subscriptions, and Submodels."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Coming from React
@@ -418,105 +418,26 @@ The Foldkit example can be tested below the view by passing Models and Messages 
 
 The mappings below are starting points, not one-to-one replacements:
 
-React ecosystem
-
-Foldkit
-
-`useState`
-
-/ component state
-
-Fields in the Model
-
-`useReducer`
-
-The update function and Message union
-
-Event-driven side effect
-
-A Command returned from update
-
-External event source tied to state
-
-A Subscription gated by Model dependencies
-
-DOM work tied to an element
-
-`Mount.define`
-
-or
-
-`Mount.defineStream`
-
-Stateful resource shared with Commands
-
-ManagedResource
-
-Context used for application state
-
-The Model
-
-Context used for services
-
-Effect services and Layers
-
-`useMemo`
-
-/
-
-`useCallback`
-
-Often no equivalent;
-
-`createLazy`
-
-and
-
-`createKeyedLazy`
-
-skip expensive view work when needed
-
-Custom Hook
-
-A domain module, pure helper, lifecycle primitive, or combination of them
-
-JSX
-
-Typed HTML builder functions
-
-Component props
-
-Function parameters
-
-Event handler
-
-A Message value or a function that constructs one
-
-React Router / TanStack Router
-
-Built-in typed routing
-
-Next.js SSG / SSR
-
-[Server rendering](https://foldkit.dev/core/server-rendering)
-
-, at build time or per request
-
-React Hook Form / Formik
-
-Model, Messages, and
-
-[field validation](https://foldkit.dev/core/field-validation)
-
-Headless UI / Radix UI
-
-[Foldkit UI](https://foldkit.dev/ui/overview)
-
-Error Boundary for an unexpected rendering crash
-
-[Crash view](https://foldkit.dev/core/crash-view)
-
-; expected Effect failures return as Messages and become explicit Model state
+| React ecosystem | Foldkit |
+| --- | --- |
+| `useState` / component state | Fields in the Model |
+| `useReducer` | The update function and Message union |
+| Event-driven side effect | A Command returned from update |
+| External event source tied to state | A Subscription gated by Model dependencies |
+| DOM work tied to an element | `Mount.define` or `Mount.defineStream` |
+| Stateful resource shared with Commands | ManagedResource |
+| Context used for application state | The Model |
+| Context used for services | Effect services and Layers |
+| `useMemo` / `useCallback` | Often no equivalent; `createLazy` and `createKeyedLazy` skip expensive view work when needed |
+| Custom Hook | A domain module, pure helper, lifecycle primitive, or combination of them |
+| JSX | Typed HTML builder functions |
+| Component props | Function parameters |
+| Event handler | A Message value or a function that constructs one |
+| React Router / TanStack Router | Built-in typed routing |
+| Next.js SSG / SSR | [Server rendering](https://foldkit.dev/core/server-rendering), at build time or per request |
+| React Hook Form / Formik | Model, Messages, and [field validation](https://foldkit.dev/core/field-validation) |
+| Headless UI / Radix UI | [Foldkit UI](https://foldkit.dev/ui/overview) |
+| Error Boundary for an unexpected rendering crash | [Crash view](https://foldkit.dev/core/crash-view); expected Effect failures return as Messages and become explicit Model state |
 
 If you know Redux
 

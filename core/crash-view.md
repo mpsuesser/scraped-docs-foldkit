@@ -2,8 +2,8 @@
 url: https://foldkit.dev/core/crash-view
 title: "Crash View"
 description: "Replace the default Runtime crash screen and report unrecoverable failures without treating expected Effect failures as crashes."
-access_date: 2026-10-11T22:31:42.984Z
-current_date: 2026-10-11T22:31:42.984Z
+access_date: 2026-11-17T22:33:54.784Z
+current_date: 2026-11-17T22:33:54.784Z
 ---
 
 # Crash View
@@ -92,6 +92,14 @@ In a normal Foldkit app, always use `OnClick` with Messages, never raw DOM event
 #### Crash View Failures
 
 If the custom crash view throws, Foldkit renders the default crash screen with both errors.
+
+### Modal Dialogs
+
+Before calling `crash.report` and rendering the crash view, Foldkit releases dialogs registered with the failed runtime through `Dom.showDialog`. This removes their focus traps, modal isolation, and scroll locks so an open Dialog cannot block recovery. Dialogs owned by other runtimes retain their resources.
+
+Dialog opens interrupted by a focus handler cannot restore the released resources. Calls to `Dom.showDialog` and `Dom.lockScroll` from a crashed or disposed runtime do not acquire new resources.
+
+Crash reporting and rendering do not wait for Command, Subscription, or ManagedResource finalizers. Dispose the runtime when the host removes the crashed application to complete its teardown and restore an embedded container.
 
 ## Crash Reporting
 
