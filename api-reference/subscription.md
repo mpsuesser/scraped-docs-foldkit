@@ -2,8 +2,8 @@
 url: https://foldkit.dev/api-reference/subscription
 title: "Subscription"
 description: "API documentation for the Subscription module."
-access_date: 2026-11-17T22:33:54.784Z
-current_date: 2026-11-17T22:33:54.784Z
+access_date: 2026-11-19T17:46:07.734Z
+current_date: 2026-11-19T17:46:07.734Z
 ---
 
 # Subscription
@@ -14,7 +14,7 @@ current_date: 2026-11-17T22:33:54.784Z
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/animationFrame.ts#L48)
+[source](https://github.com/foldkit/foldkit/blob/144eeb4797f1b1d7a07fde8b112bae5d290fe90d/packages/foldkit/src/subscription/animationFrame.ts#L48)
 
 ```
 /**
@@ -43,7 +43,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L609)
+[source](https://github.com/foldkit/foldkit/blob/144eeb4797f1b1d7a07fde8b112bae5d290fe90d/packages/foldkit/src/subscription/subscription.ts#L609)
 
 ```
 /**
@@ -79,7 +79,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L176)
+[source](https://github.com/foldkit/foldkit/blob/144eeb4797f1b1d7a07fde8b112bae5d290fe90d/packages/foldkit/src/subscription/subscription.ts#L176)
 
 ```
 /**
@@ -100,7 +100,7 @@ function
 
 function
 
-[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L367)
+[source](https://github.com/foldkit/foldkit/blob/144eeb4797f1b1d7a07fde8b112bae5d290fe90d/packages/foldkit/src/subscription/subscription.ts#L367)
 
 ```
 /**
@@ -122,7 +122,7 @@ function
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/animationFrame.ts#L14)
+[source](https://github.com/foldkit/foldkit/blob/144eeb4797f1b1d7a07fde8b112bae5d290fe90d/packages/foldkit/src/subscription/animationFrame.ts#L14)
 
 ```
 /**
@@ -144,7 +144,7 @@ type AnimationFrameConfig = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L416)
+[source](https://github.com/foldkit/foldkit/blob/144eeb4797f1b1d7a07fde8b112bae5d290fe90d/packages/foldkit/src/subscription/subscription.ts#L416)
 
 ```
 /**
@@ -158,7 +158,7 @@ type EntryGates = Readonly<Partial<Record<keyof Subscriptions, WhenPredicate<Par
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L26)
+[source](https://github.com/foldkit/foldkit/blob/144eeb4797f1b1d7a07fde8b112bae5d290fe90d/packages/foldkit/src/subscription/subscription.ts#L26)
 
 ```
 /**
@@ -178,7 +178,7 @@ type EntryWithoutKeepAlive = {
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L406)
+[source](https://github.com/foldkit/foldkit/blob/144eeb4797f1b1d7a07fde8b112bae5d290fe90d/packages/foldkit/src/subscription/subscription.ts#L406)
 
 ```
 /**
@@ -196,7 +196,7 @@ type GatedDependencies = Readonly<{
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L74)
+[source](https://github.com/foldkit/foldkit/blob/144eeb4797f1b1d7a07fde8b112bae5d290fe90d/packages/foldkit/src/subscription/subscription.ts#L74)
 
 ```
 /**
@@ -231,7 +231,7 @@ type Subscription = Entry<Model, Message, Dependencies, Services> & Subscription
 
 type
 
-[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L82)
+[source](https://github.com/foldkit/foldkit/blob/144eeb4797f1b1d7a07fde8b112bae5d290fe90d/packages/foldkit/src/subscription/subscription.ts#L82)
 
 ```
 /** A record of named Subscriptions keyed by dependency field name. */
@@ -244,7 +244,7 @@ type Subscriptions = Readonly<Record<string, Subscription<Model, Message, any, S
 
 const
 
-[source](https://github.com/foldkit/foldkit/blob/9154209bd6e4776a34f909c8c9795680a8cbac71/packages/foldkit/src/subscription/subscription.ts#L338)
+[source](https://github.com/foldkit/foldkit/blob/144eeb4797f1b1d7a07fde8b112bae5d290fe90d/packages/foldkit/src/subscription/subscription.ts#L338)
 
 ```
 /**

@@ -2,13 +2,21 @@
 url: https://foldkit.dev/blog
 title: "Blog"
 description: "Announcements, musings, and technical deep dives."
-access_date: 2026-11-17T22:33:54.784Z
-current_date: 2026-11-17T22:33:54.784Z
+access_date: 2026-11-19T17:46:07.734Z
+current_date: 2026-11-19T17:46:07.734Z
 ---
 
 # Blog
 
 Announcements, musings, and technical deep dives.
+
+[Foldkit Joins Effect](https://foldkit.dev/blog/foldkit-joins-effect)
+
+November 19, 2026 · Devin Jameson
+
+Foldkit is becoming part of Effect and will become its full-stack application framework.
+
+[Read more →](https://foldkit.dev/blog/foldkit-joins-effect)
 
 [Foldkit 0.171.0](https://foldkit.dev/blog/foldkit-0-171-0)
 
